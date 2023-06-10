@@ -92,3 +92,31 @@ vim.keymap.set({ 'i' }, 'II', '<Esc>', { desc = 'Switch to normal mode' })
 -- Diagnostic keymaps.
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+
+-- [[ Auto commands ]]
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+    callback = function()
+        vim.highlight.on_yank()
+    end,
+    group = highlight_group,
+    pattern = '*',
+})
+
+-- Format on save.
+local format_sync_group = vim.api.nvim_create_augroup('Format', {})
+vim.api.nvim_create_autocmd('BufWritePre', {
+    pattern = { '*.rs', '*.lua' },
+    callback = function()
+        vim.lsp.buf.format({ timeout_ms = 200 })
+    end,
+    group = format_sync_group,
+})
+
+-- Add rounded borders to hovers.
+local open_floating_preview = vim.lsp.util.open_floating_preview
+---@diagnostic disable-next-line: duplicate-set-field
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+    opts.border = 'rounded'
+    return open_floating_preview(contents, syntax, opts, ...)
+end
