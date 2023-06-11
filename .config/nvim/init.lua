@@ -17,9 +17,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Configure plugins.
-require('lazy').setup('plugins')
-
 -- [[ Settings ]]
 -- Use an indentation of 4 spaces.
 vim.o.sw = 4
@@ -68,6 +65,10 @@ vim.o.termguicolors = true
 
 -- Disable the vim intro.
 vim.opt.shortmess = 'I'
+
+-- nvim-tree needs netrw to be disabled.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- [[ Keymaps ]]
 -- Make the leader a noop when not followed by something.
@@ -120,3 +121,6 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
     opts.border = 'rounded'
     return open_floating_preview(contents, syntax, opts, ...)
 end
+
+-- Configure plugins.
+require('lazy').setup('plugins')
