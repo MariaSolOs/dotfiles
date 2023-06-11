@@ -87,12 +87,8 @@ vim.keymap.set({ 'n' }, '<C-j>', '<C-w>j', { desc = 'Move to the bottom window' 
 vim.keymap.set({ 'n' }, '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
 vim.keymap.set({ 'n' }, '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
 
--- Exit insert mode.
-vim.keymap.set({ 'i' }, 'II', '<Esc>', { desc = 'Switch to normal mode' })
-
--- Diagnostic keymaps.
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+-- Exit insert mode and save the changes.
+vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc><cr>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- [[ Auto commands ]]
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })

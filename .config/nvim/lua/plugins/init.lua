@@ -14,9 +14,7 @@ return {
         event = 'VeryLazy'
     },
 
-    -- Toggle relative numbers.
-    { 'sitiom/nvim-numbertoggle' },
-
+    -- Icons used by a bunch of UI extensions.
     { 'nvim-tree/nvim-web-devicons', lazy = true },
 
     -- Highlight colors.
