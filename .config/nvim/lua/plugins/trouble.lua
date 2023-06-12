@@ -2,7 +2,7 @@
 return {
     'folke/trouble.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    cmd = 'Trouble',
+    cmd = { 'Trouble', 'TroubleToggle' },
     init = function(_)
         vim.keymap.set('n', '<leader>x', '<cmd>TroubleToggle<cr>',
             { silent = true, noremap = true }

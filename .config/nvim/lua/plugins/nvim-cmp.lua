@@ -8,6 +8,7 @@ return {
             'saadparwaiz1/cmp_luasnip',
             'hrsh7th/cmp-nvim-lsp',
             'rafamadriz/friendly-snippets',
+            'hrsh7th/cmp-nvim-lsp-signature-help'
         },
         event = 'InsertEnter',
         config = function(_, _)
@@ -54,6 +55,7 @@ return {
                 sources = {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
+                    { name = 'nvim_lsp_signature_help' }
                 },
             }
         end

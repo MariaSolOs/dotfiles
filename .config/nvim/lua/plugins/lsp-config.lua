@@ -109,7 +109,7 @@ return {
     -- Nicer UI.
     {
         'glepnir/lspsaga.nvim',
-        events = 'LspAttach',
+        event = 'LspAttach',
         dependencies = {
             { 'nvim-tree/nvim-web-devicons' },
             { 'nvim-treesitter/nvim-treesitter' }
@@ -118,6 +118,11 @@ return {
             ui = {
                 border = 'rounded',
                 code_action = ''
+            },
+            outline = {
+                keys = {
+                    expand_or_jump = '<cr>'
+                }
             }
         }
     }
