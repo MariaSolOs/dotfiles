@@ -2,6 +2,7 @@ return {
     {
         -- Highlight, edit, and navigate code.
         'nvim-treesitter/nvim-treesitter',
+        dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
         lazy = true,
         build = ':TSUpdate',
         opts = {
@@ -14,6 +15,32 @@ return {
                 keymaps = {
                     node_incremental = '<C-o>',
                     node_decremental = '<C-i>',
+                },
+            },
+            textobjects = {
+                select = {
+                    enable = true,
+                    lookahead = true,
+                    keymaps = {
+                        ['af'] = '@function.outer',
+                        ['if'] = '@function.inner'
+                    }
+                },
+                move = {
+                    enable = true,
+                    set_jumps = true,
+                    goto_next_start = {
+                        [']m'] = '@function.outer'
+                    },
+                    goto_next_end = {
+                        [']M'] = '@function.outer'
+                    },
+                    goto_previous_start = {
+                        ['[m'] = '@function.outer'
+                    },
+                    goto_previous_end = {
+                        ['[M'] = '@function.outer'
+                    },
                 },
             }
         },
