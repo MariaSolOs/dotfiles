@@ -81,11 +81,15 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Use ';' for opening the command line.
 vim.keymap.set({ 'n', 'v' }, ';', ':')
 
+-- Adding blank lines in normal mode.
+vim.keymap.set('n', '<Enter>', 'o<Esc>', { desc = 'Insert a line below' })
+vim.keymap.set('n', '<S-Enter>', 'O<Esc>', { desc = 'Insert a line above' })
+
 -- Switch between windows.
-vim.keymap.set({ 'n' }, '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
-vim.keymap.set({ 'n' }, '<C-j>', '<C-w>j', { desc = 'Move to the bottom window' })
-vim.keymap.set({ 'n' }, '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
-vim.keymap.set({ 'n' }, '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to the bottom window' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
 
 -- Exit insert mode and save the changes.
 vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
