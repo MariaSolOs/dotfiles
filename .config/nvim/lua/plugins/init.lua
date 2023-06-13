@@ -18,5 +18,11 @@ return {
     { 'nvim-tree/nvim-web-devicons', lazy = true },
 
     -- Highlight colors.
-    { 'norcalli/nvim-colorizer.lua', config = true, ft = 'lua', opts = { 'lua' } }
+    { 'norcalli/nvim-colorizer.lua', config = true,      ft = 'lua',   opts = { 'lua' } },
+
+    -- Copilot.
+    { 'github/copilot.vim',          event = 'VeryLazy' },
+
+    -- Surround selections, add quotes, etc.
+    { 'kylechui/nvim-surround',      event = 'VeryLazy', config = true }
 }
