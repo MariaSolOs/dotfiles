@@ -88,7 +88,7 @@ vim.keymap.set({ 'n' }, '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
 vim.keymap.set({ 'n' }, '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
 
 -- Exit insert mode and save the changes.
-vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc><cr>:w<cr>', { desc = 'Exit insert mode and save changes.' })
+vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- [[ Auto commands ]]
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
