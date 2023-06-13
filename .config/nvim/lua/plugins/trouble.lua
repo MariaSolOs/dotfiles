@@ -4,7 +4,10 @@ return {
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     cmd = { 'Trouble', 'TroubleToggle' },
     init = function(_)
-        vim.keymap.set('n', '<leader>x', '<cmd>TroubleToggle<cr>',
+        vim.keymap.set('n', '<leader>xd', '<cmd>TroubleToggle workspace_diagnostics<cr>',
+            { silent = true, noremap = true }
+        )
+        vim.keymap.set('n', '<leader>xq', '<cmd>TroubleToggle quickfix<cr>',
             { silent = true, noremap = true }
         )
     end

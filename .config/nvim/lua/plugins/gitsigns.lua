@@ -13,17 +13,33 @@ return {
                 changedelete = { text = '~' },
             },
             on_attach = function(bufnr)
-                vim.keymap.set('n', '[c', require('gitsigns').prev_hunk,
-                    { buffer = bufnr, desc = 'Go to Previous Hunk' })
-                vim.keymap.set('n', ']c', require('gitsigns').next_hunk,
-                    { buffer = bufnr, desc = 'Go to Next Hunk' })
-                vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk,
-                    { buffer = bufnr, desc = '[P]review [H]unk' })
-                vim.keymap.set('n', '<leader>sth', require('gitsigns').stage_hunk,
-                    { buffer = bufnr, desc = '[St]age [H]unk' })
-                vim.keymap.set('n', '<leader>df~', function() require('gitsigns').diffthis('~') end,
-                    { buffer = bufnr, desc = '[D]i[f]f with [~]' })
-            end,
+                local gs = package.loaded.gitsigns
+
+                local nmap = function(l, r, desc)
+                    vim.keymap.set('n', l, r, { buffer = bufnr, desc = desc })
+                end
+
+                nmap(']c', function()
+                    if vim.wo.diff then return ']c' end
+                    vim.schedule(function() gs.next_hunk() end)
+                    return '<Ignore>'
+                end, 'Go to next hunk')
+                nmap('[c', function()
+                    if vim.wo.diff then return '[c' end
+                    vim.schedule(function() gs.prev_hunk() end)
+                    return '<Ignore>'
+                end, 'Go to previous hunk')
+                nmap('<leader>hs', gs.stage_hunk, 'Stage hunk')
+                nmap('<leader>hr', gs.reset_hunk, 'Reset hunk')
+                nmap('<leader>hS', gs.stage_buffer, 'Stage all hunks in buffer')
+                nmap('<leader>hu', gs.undo_stage_hunk, 'Undo stage hunk')
+                nmap('<leader>hR', gs.reset_buffer, 'Reset hunks in buffer')
+                nmap('<leader>hp', gs.preview_hunk, 'Preview hunk')
+                nmap('<leader>hb', gs.blame_line, 'Blame line')
+                nmap('<leader>hd', gs.diffthis, 'Diff against the index')
+                nmap('<leader>hD', function() gs.diffthis('~') end, 'Diff against the last commit')
+                nmap('<leader>hq', function() gs.setqflist('all') end, 'Populate quickfix list with hunks')
+            end
         },
     }
 }
