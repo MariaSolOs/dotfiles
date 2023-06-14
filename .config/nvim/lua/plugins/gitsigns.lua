@@ -38,11 +38,7 @@ return {
                 nmap('<leader>hb', gs.blame_line, 'Blame line')
                 nmap('<leader>hd', gs.diffthis, 'Diff against the index')
                 nmap('<leader>hD', function() gs.diffthis('~') end, 'Diff against the last commit')
-                -- Populate the quickfix list with hunks.
-                vim.keymap.set('n', '<leader>xh', function()
-                    gs.setqflist('all')
-                    vim.cmd('TroubleToggle quickfix')
-                end, { silent = true, noremap = true, desc = 'Open hunks in quickfix list' })
+                nmap('<leader>hq', function() gs.setqflist('all') end, 'TroubleToggle quickfix list with hunks')
             end
         },
     }
