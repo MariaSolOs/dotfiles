@@ -1,4 +1,5 @@
 -- Icons to use in the completion menu.
+-- These are the ones that VSCode uses.
 local cmp_kinds = {
     Text = '  ',
     Method = '  ',

@@ -1,3 +1,4 @@
+-- Hop instead of hjkl all the time.
 return {
     {
         'phaazon/hop.nvim',

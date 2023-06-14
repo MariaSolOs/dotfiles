@@ -12,6 +12,7 @@ return {
             update_focused_file = {
                 enable = true
             },
+            -- Make the width kinda-dynamic based on the length of the longest filename.
             view = {
                 width = { min = 30, max = 50 }
             },
@@ -23,11 +24,13 @@ return {
                     enable = true
                 }
             },
+            -- Don't show empty folders when filtering.
             live_filter = {
                 always_show_folders = false
             },
             actions = {
                 open_file = {
+                    -- Close the explorer when opening a file.
                     quit_on_open = true
                 }
             }

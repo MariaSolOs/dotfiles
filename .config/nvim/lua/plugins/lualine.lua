@@ -5,7 +5,6 @@ return {
         event = 'VeryLazy',
         opts = {
             options = {
-                icons_enabled = false,
                 theme = 'catppuccin',
                 component_separators = '|',
                 section_separators = '',
@@ -18,7 +17,6 @@ return {
                 lualine_x = {
                     {
                         'diagnostics',
-                        icons_enabled = true,
                         sections = { 'error', 'warn', 'info', 'hint' },
                     }
                 },

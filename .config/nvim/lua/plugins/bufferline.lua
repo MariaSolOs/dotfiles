@@ -7,6 +7,8 @@ return {
             options = {
                 offsets = {
                     {
+                        -- When toggling the explorer, place a "File Explorer" title
+                        -- in the bufferline.
                         filetype = 'NvimTree',
                         text = 'File Explorer',
                         highlight = 'Directory',
@@ -24,7 +26,7 @@ return {
             vim.keymap.set('n', '[b', ':BufferLineCyclePrev<cr>', { desc = 'Navigate to the previous buffer' })
             vim.keymap.set('n', ']b', ':BufferLineCycleNext<cr>', { desc = 'Navigate to the next buffer' })
             vim.keymap.set('n', '<leader>bl', ':BufferLineCloseLeft<cr>', { desc = 'Close buffers in the left' })
-            vim.keymap.set('n', '<leader>br', ':BufferLineRight<cr>', { desc = 'Close buffers to the right' })
+            vim.keymap.set('n', '<leader>br', ':BufferLineCloseRight<cr>', { desc = 'Close buffers to the right' })
         end
     }
 }

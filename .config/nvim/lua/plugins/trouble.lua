@@ -5,14 +5,12 @@ return {
     cmd = { 'Trouble', 'TroubleToggle' },
     opts = {
         action_keys = {
+            -- When opening a diagnostic with <Enter>, close the list.
             jump_close = '<cr>'
         }
     },
     init = function(_)
         vim.keymap.set('n', '<leader>xd', '<cmd>TroubleToggle workspace_diagnostics<cr>',
-            { silent = true, noremap = true }
-        )
-        vim.keymap.set('n', '<leader>xq', '<cmd>TroubleToggle quickfix<cr>',
             { silent = true, noremap = true }
         )
     end

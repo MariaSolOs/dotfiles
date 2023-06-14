@@ -9,6 +9,7 @@ return {
         init = function(_)
             local telescope_builtin = require 'telescope.builtin'
 
+            -- Configure bindings for the pickers.
             vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles,
                 { desc = '[?] Find recently opened files' })
             vim.keymap.set('n', '<leader>/', function()
