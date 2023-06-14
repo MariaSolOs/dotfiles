@@ -101,17 +101,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank()
     end,
     group = highlight_group,
-    pattern = '*',
+    pattern = '*'
 })
 
 -- Format on save.
-local format_sync_group = vim.api.nvim_create_augroup('Format', {})
+local format_sync_group = vim.api.nvim_create_augroup('Format', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePre', {
     pattern = { '*.rs', '*.lua' },
     callback = function()
         vim.lsp.buf.format({ timeout_ms = 200 })
     end,
-    group = format_sync_group,
+    group = format_sync_group
 })
 
 -- Add rounded borders to hovers.

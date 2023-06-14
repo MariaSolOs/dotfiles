@@ -9,7 +9,7 @@ return {
                     {
                         -- When toggling the explorer, place a "File Explorer" title
                         -- in the bufferline.
-                        filetype = 'NvimTree',
+                        filetype = 'neo-tree',
                         text = 'File Explorer',
                         highlight = 'Directory',
                         separator = true

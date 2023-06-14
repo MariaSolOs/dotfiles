@@ -13,7 +13,8 @@ return {
                     next = '<M-]>',
                     prev = '<M-[>',
                     dismiss = '<M-/>',
-                }
+                },
+                auto_trigger = true
             },
             -- I don't care or use the panel.
             panel = {
