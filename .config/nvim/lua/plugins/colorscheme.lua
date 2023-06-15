@@ -1,4 +1,3 @@
--- Color theme.
 return {
     {
         'Mofiqul/dracula.nvim',
@@ -15,8 +14,25 @@ return {
                 orange = '#FFAACF'
             },
             italic_comment = true,
+            overrides = {
+                -- Used in git blames by Gitsigns.
+                MoreMsg = { fg = '#DD58D6' }
+            }
         }
     },
+
+    -- {
+    --     'folke/tokyonight.nvim',
+    --     lazy = false,
+    --     priority = 1000,
+    --     config = function(_, opts)
+    --         require('tokyonight').setup(opts)
+    --         vim.cmd.colorscheme 'tokyonight-night'
+    --     end,
+    --     opts = {
+    --         -- style = 'deep'
+    --     }
+    -- },
     -- {
     --     'catppuccin/nvim',
     --     lazy = false,

@@ -3,12 +3,12 @@ return {
     {
         'ziontee113/icon-picker.nvim',
         dependencies = 'stevearc/dressing.nvim',
-        cmd = 'IconPickerInsert',
+        cmd = 'IconPickerNormal',
         opts = {
             disable_legacy_commands = true
         },
-        init = function(_)
-            vim.keymap.set('n', '<leader>ii', '<cmd>IconPickerInsert<cr>', { desc = 'Pick and insert an icon' })
-        end
+        keys = {
+            { '<leader>ii', '<cmd>IconPickerNormal<cr>', desc = 'Pick and insert an icon' }
+        }
     }
 }

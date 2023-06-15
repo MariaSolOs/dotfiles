@@ -15,20 +15,23 @@ return {
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns
 
-                local nmap = function(l, r, desc)
-                    vim.keymap.set('n', l, r, { buffer = bufnr, desc = desc })
+                local nmap = function(l, r, desc, opts)
+                    opts = opts or {}
+                    opts.desc = desc
+                    opts.buffer = bufnr
+                    vim.keymap.set('n', l, r, opts)
                 end
 
                 nmap(']c', function()
                     if vim.wo.diff then return ']c' end
                     vim.schedule(function() gs.next_hunk() end)
                     return '<Ignore>'
-                end, 'Go to next hunk')
+                end, 'Go to next hunk', { expr = true })
                 nmap('[c', function()
                     if vim.wo.diff then return '[c' end
                     vim.schedule(function() gs.prev_hunk() end)
                     return '<Ignore>'
-                end, 'Go to previous hunk')
+                end, 'Go to previous hunk', { expr = true })
                 nmap('<leader>hs', gs.stage_hunk, 'Stage hunk')
                 nmap('<leader>hr', gs.reset_hunk, 'Reset hunk')
                 nmap('<leader>hS', gs.stage_buffer, 'Stage all hunks in buffer')

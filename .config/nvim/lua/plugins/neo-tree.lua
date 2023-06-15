@@ -13,6 +13,7 @@ return {
             vim.g.neo_tree_remove_legacy_commands = 1
         end,
         opts = {
+            popup_border_style = 'rounded',
             event_handlers = {
                 -- Auto-close when opening a file.
                 {
@@ -23,14 +24,31 @@ return {
                 }
             },
             mappings = {
-                -- Make space a noop.
-                ['<space>'] = 'none'
+                ['<space>'] = 'noop',
+                ['l'] = 'noop'
             },
             filesystem = {
                 follow_current_file = true
             },
             window = {
                 mappings = {
+                    -- Go to the first child.
+                    ['hh'] = function(state)
+                        local node = state.tree:get_node()
+                        if node.type == "file" then
+                            local first_sibling = state.tree:get_nodes(node:get_parent_id())[1]
+                            require('neo-tree.ui.renderer').focus_node(state, first_sibling:get_id())
+                        end
+                    end,
+                    -- Go to the last child.
+                    ['ll'] = function(state)
+                        local node = state.tree:get_node()
+                        if node.type == "file" then
+                            local children = state.tree:get_nodes(node:get_parent_id())
+                            require('neo-tree.ui.renderer').focus_node(state, children[#children]:get_id())
+                        end
+                    end,
+                    -- Mappings to toggle the explorer mode.
                     ['e'] = function()
                         require('neo-tree.command').execute({ action = 'focus', source = 'filesystem', position = 'left' })
                     end,
@@ -41,7 +59,20 @@ return {
                         require('neo-tree.command').execute({ action = 'focus', source = 'git_status', position = 'left' })
                     end,
                 }
-            }
+            },
+            default_component_configs = {
+                git_status = {
+                    symbols = {
+                        deleted   = "",
+                        renamed   = "",
+                        untracked = "",
+                        ignored   = "⊝",
+                        unstaged  = "",
+                        staged    = "ﱣ",
+                        conflict  = "",
+                    }
+                },
+            },
         },
         keys = {
             {

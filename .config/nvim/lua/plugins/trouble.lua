@@ -11,9 +11,7 @@ return {
             jump_close = '<cr>'
         }
     },
-    init = function()
-        vim.keymap.set('n', '<leader>xd', '<cmd>TroubleToggle workspace_diagnostics<cr>',
-            { silent = true, noremap = true }
-        )
-    end
+    keys = {
+        { '<leader>xd', ':TroubleToggle workspace_diagnostics<cr>', { silent = true, noremap = true } }
+    }
 }

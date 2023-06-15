@@ -26,6 +26,7 @@ local cmp_kinds = {
     Event = '  ',
     Operator = '  ',
     TypeParameter = '  ',
+    Copilot = "  ",
 }
 
 -- Autocompletions.
@@ -46,6 +47,16 @@ return {
             local luasnip = require 'luasnip'
             require('luasnip.loaders.from_vscode').lazy_load()
             luasnip.config.setup {}
+
+            -- Utility function to only trigger completions when the line isn't
+            -- just prefixed with whitespace.
+            local has_words_before = function()
+                if vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt' then
+                    return false
+                end
+                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+                return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match('^%s+$') == nil
+            end
 
             cmp.setup {
                 formatting = {
@@ -70,14 +81,14 @@ return {
                     },
                     ['/'] = cmp.mapping.abort(),
                     ['<Tab>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
+                        if cmp.visible() and has_words_before() then
                             cmp.select_next_item()
                         elseif luasnip.expand_or_locally_jumpable() then
                             luasnip.expand_or_jump()
                         else
                             fallback()
                         end
-                    end, { 'i', 's' }),
+                    end),
                     ['<S-Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item()
@@ -91,7 +102,8 @@ return {
                 sources = {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
-                    { name = 'nvim_lsp_signature_help' }
+                    { name = 'nvim_lsp_signature_help' },
+                    { name = 'copilot' }
                 },
             }
         end
