@@ -6,7 +6,7 @@ return {
         lazy = true,
         build = ':TSUpdate',
         opts = {
-            ensure_installed = { 'lua', 'rust', 'typescript', 'vim', 'vimdoc' },
+            ensure_installed = { 'bash', 'lua', 'regex', 'rust', 'typescript', 'vim', 'vimdoc' },
             auto_install = false,
             highlight = { enable = true },
             indent = { enable = true },

@@ -6,7 +6,7 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim' },
         cmd = 'Telescope',
         opts = {},
-        init = function(_)
+        init = function()
             local telescope_builtin = require 'telescope.builtin'
 
             -- Configure bindings for the pickers.

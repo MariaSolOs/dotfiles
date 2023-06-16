@@ -42,7 +42,7 @@ return {
             'hrsh7th/cmp-nvim-lsp-signature-help'
         },
         event = 'InsertEnter',
-        config = function(_, _)
+        config = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
             require('luasnip.loaders.from_vscode').lazy_load()
@@ -70,6 +70,11 @@ return {
                         luasnip.lsp_expand(args.body)
                     end,
                 },
+                window = {
+                    -- Make the completion menus bordered.
+                    completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
+                },
                 mapping = cmp.mapping.preset.insert {
                     ['<C-n>'] = cmp.mapping.select_next_item(),
                     ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -88,7 +93,7 @@ return {
                         else
                             fallback()
                         end
-                    end),
+                    end, { 'i', 's' }),
                     ['<S-Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item()

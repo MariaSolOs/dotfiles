@@ -3,7 +3,7 @@ return {
     {
         'HiPhish/nvim-ts-rainbow2',
         dependencies = 'nvim-treesitter/nvim-treesitter',
-        config = function(_, _)
+        config = function()
             -- Set up the colors to use.
             vim.cmd('highlight TSRainbowRed guifg=#F266AB ctermfg=Red')
             vim.cmd('highlight TSRainbowOrange guifg=#FFB84C ctermfg=White')

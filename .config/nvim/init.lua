@@ -63,8 +63,8 @@ vim.o.completeopt = 'menuone,noselect'
 -- For color themes to look pretty.
 vim.o.termguicolors = true
 
--- Disable the vim intro.
-vim.opt.shortmess = 'I'
+-- Disable some of those annoying hit-enter messages.
+vim.opt.shortmess:append 'IWs'
 
 -- nvim-tree needs netrw to be disabled.
 vim.g.loaded_netrw = 1
@@ -80,6 +80,9 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 -- Use ';' for opening the command line.
 vim.keymap.set({ 'n', 'v' }, ';', ':')
+
+-- Quit Neovim.
+vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = 'Quit Neovim' })
 
 -- Adding blank lines in normal mode.
 vim.keymap.set('n', '<Enter>', 'o<Esc>', { desc = 'Insert a line below' })

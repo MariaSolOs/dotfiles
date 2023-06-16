@@ -19,7 +19,7 @@ return {
                 diagnostics = 'nvim-lsp'
             }
         },
-        init = function(_)
+        init = function()
             vim.keymap.set('n', '<leader>bp', ':BufferLinePick<cr>',
                 { desc = 'Select a buffer to open', silent = true })
             vim.keymap.set('n', '<leader>bc', ':BufferLinePickClose<cr>',

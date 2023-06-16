@@ -1,3 +1,5 @@
+-- Plugins with a simple enough config
+-- that don't deserve their own file.
 return {
     -- Git wrapper.
     { 'tpope/vim-fugitive' },
@@ -5,7 +7,7 @@ return {
     -- Popup for pending keybinds.
     { 'folke/which-key.nvim', opts = {} },
 
-    -- "gc" to comment visual regions/lines.
+    -- 'gc' to comment visual regions/lines.
     {
         'numToStr/Comment.nvim',
         opts = {
@@ -26,4 +28,7 @@ return {
 
     -- Surround selections, add quotes, etc.
     { 'kylechui/nvim-surround',      event = 'VeryLazy', config = true },
+
+    -- Toggle relative line numbers in normal mode.
+    { 'sitiom/nvim-numbertoggle' }
 }

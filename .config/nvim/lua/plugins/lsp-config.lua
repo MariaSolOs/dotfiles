@@ -28,12 +28,10 @@ local on_attach = function(_, bufnr)
     nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
     nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
     nmap('<leader>Ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-    nmap('K', '<cmd>Lspsaga hover_doc<cr>', 'Hover Documentation')
+    nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
     nmap('[d', '<cmd>Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
     nmap(']d', '<cmd>Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
-    nmap('<leader>Wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-    nmap('<leader>Wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
     nmap('<leader>Wl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, '[W]orkspace [L]ist Folders')
@@ -66,7 +64,7 @@ return {
             { 'williamboman/mason-lspconfig.nvim', lazy = true },
             { 'folke/neodev.nvim',                 lazy = true }
         },
-        config = function(_, _)
+        config = function()
             -- Setup neovim lua configuration.
             require('neodev').setup()
 
@@ -108,7 +106,6 @@ return {
     -- Nicer UI.
     {
         'glepnir/lspsaga.nvim',
-        event = 'LspAttach',
         cmd = 'Lspsaga',
         dependencies = {
             { 'nvim-tree/nvim-web-devicons' },
@@ -122,7 +119,8 @@ return {
             outline = {
                 keys = {
                     expand_or_jump = '<cr>'
-                }
+                },
+                auto_resize = true
             }
         }
     },
@@ -132,7 +130,7 @@ return {
         'jose-elias-alvarez/null-ls.nvim',
         dependencies = { 'nvim-lua/plenary.nvim' },
         event = 'VeryLazy',
-        config = function(_, _)
+        config = function()
             local null_ls = require('null-ls')
             null_ls.setup {
                 sources = {

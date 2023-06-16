@@ -13,6 +13,7 @@ return {
             vim.g.neo_tree_remove_legacy_commands = 1
         end,
         opts = {
+            sources = { 'filesystem', 'buffers', 'git_status' },
             popup_border_style = 'rounded',
             event_handlers = {
                 -- Auto-close when opening a file.
@@ -23,28 +24,29 @@ return {
                     end
                 }
             },
-            mappings = {
-                ['<space>'] = 'noop',
-                ['l'] = 'noop'
-            },
             filesystem = {
                 follow_current_file = true
             },
             window = {
                 mappings = {
+                    ['<space>'] = 'none',
+                    ['l'] = 'none',
+                    ['w'] = 'none',
                     -- Go to the first child.
                     ['hh'] = function(state)
                         local node = state.tree:get_node()
-                        if node.type == "file" then
-                            local first_sibling = state.tree:get_nodes(node:get_parent_id())[1]
+                        local parent = state.tree:get_node(node:get_parent_id())
+                        if parent:has_children() then
+                            local first_sibling = state.tree:get_nodes(parent:get_id())[1]
                             require('neo-tree.ui.renderer').focus_node(state, first_sibling:get_id())
                         end
                     end,
                     -- Go to the last child.
                     ['ll'] = function(state)
                         local node = state.tree:get_node()
-                        if node.type == "file" then
-                            local children = state.tree:get_nodes(node:get_parent_id())
+                        local parent = state.tree:get_node(node:get_parent_id())
+                        if parent:has_children() then
+                            local children = state.tree:get_nodes(parent:get_id())
                             require('neo-tree.ui.renderer').focus_node(state, children[#children]:get_id())
                         end
                     end,
@@ -58,18 +60,18 @@ return {
                     ['g'] = function()
                         require('neo-tree.command').execute({ action = 'focus', source = 'git_status', position = 'left' })
                     end,
-                }
+                },
             },
             default_component_configs = {
                 git_status = {
                     symbols = {
-                        deleted   = "",
-                        renamed   = "",
-                        untracked = "",
-                        ignored   = "⊝",
-                        unstaged  = "",
-                        staged    = "ﱣ",
-                        conflict  = "",
+                        deleted   = '',
+                        renamed   = '',
+                        untracked = '',
+                        ignored   = '⊝',
+                        unstaged  = '',
+                        staged    = 'ﱣ',
+                        conflict  = '',
                     }
                 },
             },

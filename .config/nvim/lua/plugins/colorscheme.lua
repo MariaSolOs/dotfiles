@@ -47,20 +47,12 @@ return {
     --             mocha = {
     --                 -- I prefer a darker background :)
     --                 base = '#0E1419',
+    --                 crust = '#7F7489',
+    --                 mantle = '#1D1A2D'
     --             }
     --         },
     --         custom_highlights = function(colors)
     --             return {
-    --                 -- Make the file explorer purple-ish.
-    --                 NvimTreeFolderName = { fg = colors.mauve },
-    --                 NvimTreeFolderIcon = { fg = colors.mauve },
-    --                 NvimTreeOpenedFolderName = { fg = colors.mauve },
-    --                 NvimTreeEmptyFolderName = { fg = colors.mauve },
-    --
-    --                 -- Make variables pink-ish.
-    --                 ['@variable'] = { fg = colors.pink },
-    --                 ['@parameter'] = { fg = colors.pink },
-    --
     --                 DiagnosticUnnecessary = { fg = colors.subtext1, style = { 'italic' } }
     --             }
     --         end
