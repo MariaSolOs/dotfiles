@@ -20,13 +20,13 @@ return {
             }
         },
         init = function()
-            vim.keymap.set('n', '<leader>bp', ':BufferLinePick<cr>',
+            vim.keymap.set('n', '<leader>bo', ':BufferLinePick<cr>',
                 { desc = 'Select a buffer to open', silent = true })
             vim.keymap.set('n', '<leader>bc', ':BufferLinePickClose<cr>',
                 { desc = 'Select a buffer to close', silent = true })
-            vim.keymap.set('n', '[b', ':BufferLineCyclePrev<cr>', { desc = 'Navigate to the previous buffer' })
-            vim.keymap.set('n', ']b', ':BufferLineCycleNext<cr>', { desc = 'Navigate to the next buffer' })
-            vim.keymap.set('n', '<leader>bl', ':BufferLineCloseLeft<cr>', { desc = 'Close buffers in the left' })
+            vim.keymap.set('n', '[b', ':BufferLineCyclePrev<cr>', { desc = 'Previous buffer' })
+            vim.keymap.set('n', ']b', ':BufferLineCycleNext<cr>', { desc = 'Next buffer' })
+            vim.keymap.set('n', '<leader>bl', ':BufferLineCloseLeft<cr>', { desc = 'Close buffers to the left' })
             vim.keymap.set('n', '<leader>br', ':BufferLineCloseRight<cr>', { desc = 'Close buffers to the right' })
         end
     }

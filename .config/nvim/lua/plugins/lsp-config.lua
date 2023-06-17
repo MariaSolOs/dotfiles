@@ -7,34 +7,31 @@ local servers = {
         },
     },
     jdtls = {},
-    tsserver = {}
+    tsserver = {},
 }
 
 local on_attach = function(_, bufnr)
     local nmap = function(keys, func, desc)
-        if desc then
-            desc = 'LSP: ' .. desc
-        end
-
         vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
     end
 
-    nmap('<leader>rn', '<cmd>Lspsaga rename<cr>', '[R]e[n]ame')
-    nmap('ca', '<cmd>Lspsaga code_action<cr>', '[C]ode [A]ction')
-    nmap('<leader>o', '<cmd>Lspsaga outline<cr>', 'Toggle [O]utline')
-    nmap('gd', '<cmd>Lspsaga goto_definition<cr>', '[G]oto [D]efinition')
-    nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-    nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-    nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-    nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-    nmap('<leader>Ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-    nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+    nmap('<leader>r', '<cmd>Lspsaga rename<cr>', 'Rename')
+    nmap('<leader>c', '<cmd>Lspsaga code_action<cr>', 'Code action')
+    nmap('<leader>o', '<cmd>Lspsaga outline<cr>', 'Toggle outline')
+    nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols')
+    nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols')
+
+    nmap('gd', '<cmd>Lspsaga goto_definition<cr>', 'Go to definition')
+    nmap('gr', require('telescope.builtin').lsp_references, 'Go to references')
+    nmap('gI', vim.lsp.buf.implementation, 'Go to implementation')
+    nmap('gD', vim.lsp.buf.declaration, 'Go to declaration')
+    nmap('gt', vim.lsp.buf.type_definition, 'Go to type definition')
+
+    -- noice deals with the UI.
+    nmap('K', vim.lsp.buf.hover, 'Hover')
+
     nmap('[d', '<cmd>Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
     nmap(']d', '<cmd>Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
-    nmap('<leader>Wl', function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, '[W]orkspace [L]ist Folders')
 
     -- Toggle the floating terminal.
     vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
@@ -42,7 +39,7 @@ local on_attach = function(_, bufnr)
     -- Create a command `:Fmt` local to the LSP buffer
     vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function(_)
         vim.lsp.buf.format()
-    end, { desc = 'Format current buffer with LSP' })
+    end, { desc = 'Format current buffer' })
 end
 
 return {
@@ -59,10 +56,10 @@ return {
                     require('mason-lspconfig').setup {
                         ensure_installed = vim.tbl_keys(servers),
                     }
-                end
+                end,
             },
             { 'williamboman/mason-lspconfig.nvim', lazy = true },
-            { 'folke/neodev.nvim',                 lazy = true }
+            { 'folke/neodev.nvim',                 lazy = true },
         },
         config = function()
             -- Setup neovim lua configuration.
@@ -87,17 +84,17 @@ return {
                             inlay_hints = {
                                 other_hints_prefix = '',
                                 parameter_hints_prefix = '',
-                                show_parameter_hints = false
-                            }
+                                show_parameter_hints = false,
+                            },
                         },
                         server = {
                             capabilities = capabilities,
-                            on_attach = on_attach
-                        }
+                            on_attach = on_attach,
+                        },
                     }
-                end
+                end,
             }
-        end
+        end,
     },
 
     -- Extra goodies for rust.
@@ -109,20 +106,20 @@ return {
         cmd = 'Lspsaga',
         dependencies = {
             { 'nvim-tree/nvim-web-devicons' },
-            { 'nvim-treesitter/nvim-treesitter' }
+            { 'nvim-treesitter/nvim-treesitter' },
         },
         opts = {
             ui = {
                 border = 'rounded',
-                code_action = ''
+                code_action = '',
             },
             outline = {
                 keys = {
-                    expand_or_jump = '<cr>'
+                    expand_or_jump = '<cr>',
                 },
-                auto_resize = true
-            }
-        }
+                auto_resize = true,
+            },
+        },
     },
 
     -- Use Neovim as a language server.
@@ -131,12 +128,13 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim' },
         event = 'VeryLazy',
         config = function()
-            local null_ls = require('null-ls')
+            local null_ls = require 'null-ls'
             null_ls.setup {
                 sources = {
-                    null_ls.builtins.code_actions.gitsigns
-                }
+                    null_ls.builtins.code_actions.gitsigns,
+                    null_ls.builtins.formatting.stylua,
+                },
             }
-        end
-    }
+        end,
+    },
 }

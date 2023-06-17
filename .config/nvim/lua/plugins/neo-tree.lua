@@ -21,11 +21,11 @@ return {
                     event = 'file_opened',
                     handler = function(_)
                         require('neo-tree').close_all()
-                    end
-                }
+                    end,
+                },
             },
             filesystem = {
-                follow_current_file = true
+                follow_current_file = true,
             },
             window = {
                 mappings = {
@@ -52,27 +52,27 @@ return {
                     end,
                     -- Mappings to toggle the explorer mode.
                     ['e'] = function()
-                        require('neo-tree.command').execute({ action = 'focus', source = 'filesystem', position = 'left' })
+                        require('neo-tree.command').execute { action = 'focus', source = 'filesystem', position = 'left' }
                     end,
                     ['b'] = function()
-                        require('neo-tree.command').execute({ action = 'focus', source = 'buffers', position = 'left' })
+                        require('neo-tree.command').execute { action = 'focus', source = 'buffers', position = 'left' }
                     end,
                     ['g'] = function()
-                        require('neo-tree.command').execute({ action = 'focus', source = 'git_status', position = 'left' })
+                        require('neo-tree.command').execute { action = 'focus', source = 'git_status', position = 'left' }
                     end,
                 },
             },
             default_component_configs = {
                 git_status = {
                     symbols = {
-                        deleted   = '',
-                        renamed   = '',
+                        deleted = '',
+                        renamed = '',
                         untracked = '',
-                        ignored   = '⊝',
-                        unstaged  = '',
-                        staged    = 'ﱣ',
-                        conflict  = '',
-                    }
+                        ignored = '⊝',
+                        unstaged = '',
+                        staged = 'ﱣ',
+                        conflict = '',
+                    },
                 },
             },
         },
@@ -80,10 +80,10 @@ return {
             {
                 '<leader>f',
                 function()
-                    require('neo-tree.command').execute({ toggle = true, dir = vim.loop.cwd() })
+                    require('neo-tree.command').execute { toggle = true, dir = vim.loop.cwd() }
                 end,
-                desc = 'Toggle NeoTree',
-            }
-        }
-    }
+                desc = 'Toggle file explorer',
+            },
+        },
+    },
 }

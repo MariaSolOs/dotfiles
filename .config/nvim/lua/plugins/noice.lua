@@ -19,31 +19,43 @@ return {
             messages = { view = 'mini' },
             routes = {
                 {
-                    -- Just show the final progress notifications.
                     filter = {
                         event = 'lsp',
                         kind = 'progress',
-                        find = '(%d%%)',
+                        any = {
+                            -- Just show the final progress notifications.
+                            { find = '(%d%%)' },
+                            {
+                                cond = function(message)
+                                    -- Don't show progress from the null-ls client.
+                                    local client = vim.tbl_get(message.opts, 'progress', 'client')
+                                    return client == 'null-ls'
+                                end,
+                            },
+                        },
                     },
-                    opts = { skip = true }
+                    opts = { skip = true },
                 },
                 {
                     -- Don't show written messages.
                     filter = {
                         event = 'msg_show',
-                        kind = ''
+                        kind = '',
                     },
-                    opts = { skip = true }
+                    opts = { skip = true },
                 },
                 {
                     -- Don't show Neo-tree's info notications.
                     filter = {
                         event = 'notify',
-                        find = 'Neo-tree',
-                        kind = 'info'
+                        find = 'Neo-tree INFO',
+                        cond = function(message)
+                            -- TODO: Filter out these.
+                            return true
+                        end,
                     },
-                    opts = { skip = true }
-                }
+                    opts = { skip = true },
+                },
             },
             -- Show a popup menu for completions when using the command line.
             views = {
@@ -72,7 +84,7 @@ return {
                         padding = { 0, 1 },
                     },
                     win_options = {
-                        winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' }
+                        winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
                     },
                 },
             },
@@ -82,7 +94,7 @@ return {
             'rcarriga/nvim-notify',
         },
         keys = {
-            { '<leader>sn', ':NoiceTelescope<cr>' }
+            { '<leader>sn', ':NoiceTelescope<cr>', desc = 'Search Noice' },
         },
         init = function()
             -- LSP hover doc scrolling.
@@ -98,5 +110,5 @@ return {
                 end
             end, { silent = true, expr = true })
         end,
-    }
+    },
 }

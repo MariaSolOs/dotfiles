@@ -8,10 +8,15 @@ return {
         -- When opening it with <Tab>, jump to it without closing the list.
         action_keys = {
             jump = '<tab>',
-            jump_close = '<cr>'
-        }
+            jump_close = '<cr>',
+        },
     },
     keys = {
-        { '<leader>xd', ':TroubleToggle workspace_diagnostics<cr>', { silent = true, noremap = true } }
-    }
+        {
+            '<leader>td',
+            ':TroubleToggle workspace_diagnostics<cr>',
+            desc = 'Toggle diagnostics',
+            { silent = true, noremap = true },
+        },
+    },
 }

@@ -22,26 +22,26 @@ return {
                     vim.keymap.set('n', l, r, opts)
                 end
 
-                nmap(']c', function()
-                    if vim.wo.diff then return ']c' end
+                nmap(']g', function()
+                    if vim.wo.diff then return ']g' end
                     vim.schedule(function() gs.next_hunk() end)
                     return '<Ignore>'
-                end, 'Go to next hunk', { expr = true })
-                nmap('[c', function()
-                    if vim.wo.diff then return '[c' end
+                end, 'Next hunk', { expr = true })
+                nmap('[g', function()
+                    if vim.wo.diff then return '[g' end
                     vim.schedule(function() gs.prev_hunk() end)
                     return '<Ignore>'
-                end, 'Go to previous hunk', { expr = true })
-                nmap('<leader>hs', gs.stage_hunk, 'Stage hunk')
-                nmap('<leader>hr', gs.reset_hunk, 'Reset hunk')
-                nmap('<leader>hS', gs.stage_buffer, 'Stage all hunks in buffer')
-                nmap('<leader>hu', gs.undo_stage_hunk, 'Undo stage hunk')
-                nmap('<leader>hR', gs.reset_buffer, 'Reset hunks in buffer')
-                nmap('<leader>hp', gs.preview_hunk, 'Preview hunk')
-                nmap('<leader>hb', gs.blame_line, 'Blame line')
-                nmap('<leader>hd', gs.diffthis, 'Diff against the index')
-                nmap('<leader>hD', function() gs.diffthis('~') end, 'Diff against the last commit')
-                nmap('<leader>hq', function() gs.setqflist('all') end, 'TroubleToggle quickfix list with hunks')
+                end, 'Previous hunk', { expr = true })
+                nmap('<leader>gs', gs.stage_hunk, 'Stage hunk')
+                nmap('<leader>gr', gs.reset_hunk, 'Reset hunk')
+                nmap('<leader>gS', gs.stage_buffer, 'Stage all hunks in buffer')
+                nmap('<leader>gu', gs.undo_stage_hunk, 'Undo stage hunk')
+                nmap('<leader>gR', gs.reset_buffer, 'Reset hunks in buffer')
+                nmap('<leader>gp', gs.preview_hunk, 'Preview hunk')
+                nmap('<leader>gb', gs.blame_line, 'Blame line')
+                nmap('<leader>gd', gs.diffthis, 'Diff against the index')
+                nmap('<leader>gD', function() gs.diffthis('~') end, 'Diff against the last commit')
+                nmap('<leader>th', function() gs.setqflist('all') end, 'Toggle hunks')
             end
         },
     }

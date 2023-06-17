@@ -1,5 +1,5 @@
 -- Set <space> as the leader key.
--- NOTE: Must happen before plugins are required (otherwise the wrong leader will be used).
+-- Must happen before plugins are required (otherwise the wrong leader will be used).
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -58,7 +58,7 @@ vim.o.timeout = true
 vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience.
-vim.o.completeopt = 'menuone,noselect'
+vim.o.completeopt = 'menuone,noselect,noinsert'
 
 -- For color themes to look pretty.
 vim.o.termguicolors = true
@@ -82,7 +82,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set({ 'n', 'v' }, ';', ':')
 
 -- Quit Neovim.
-vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = 'Quit Neovim' })
+vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = '[Q]uit Neovim' })
 
 -- Adding blank lines in normal mode.
 vim.keymap.set('n', '<Enter>', 'o<Esc>', { desc = 'Insert a line below' })
