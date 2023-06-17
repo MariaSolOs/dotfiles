@@ -6,9 +6,7 @@ return {
             { 's', mode = { 'n', 'x', 'o' }, desc = 'Leap forward to' },
             { 'S', mode = { 'n', 'x', 'o' }, desc = 'Leap backward to' },
         },
-        config = function(_, opts)
-            local leap = require 'leap'
-
+        config = function()
             vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap-forward-to)', { desc = 'Leap forward to' })
             vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap-backward-to)', { desc = 'Leap backward to' })
         end,
