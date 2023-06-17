@@ -5,11 +5,6 @@ return {
         branch = '0.1.x',
         dependencies = { 'nvim-lua/plenary.nvim' },
         cmd = 'Telescope',
-        opts = {
-            defaults = {
-                layout_strategy = 'vertical',
-            },
-        },
         init = function()
             local telescope_builtin = require 'telescope.builtin'
 
@@ -26,13 +21,33 @@ return {
             vim.keymap.set('n', '<leader>sg', telescope_builtin.live_grep, { desc = 'Search by grep' })
             vim.keymap.set('n', '<leader>sd', telescope_builtin.diagnostics, { desc = 'Search diagnostics' })
         end,
-        config = function(_, opts)
+        config = function()
             local telescope = require 'telescope'
+            local actions = require 'telescope.actions'
 
             -- Enable telescope fzf native, if installed
             pcall(telescope.load_extension, 'fzf')
 
-            telescope.setup(opts)
+            telescope.setup {
+                defaults = {
+                    mappings = {
+                        i = {
+                            -- Close with esc.
+                            ['<esc>'] = actions.close,
+                            -- Clear the search with ctrl-u.
+                            ['<C-u>'] = false,
+                        },
+                    },
+                    -- Use a vertical layout.
+                    layout_config = {
+                        vertical = {
+                            preview_height = 0.3,
+                            preview_cutoff = 0,
+                        },
+                    },
+                    layout_strategy = 'vertical',
+                },
+            }
         end,
     },
 
