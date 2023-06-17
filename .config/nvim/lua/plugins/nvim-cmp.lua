@@ -26,7 +26,7 @@ local cmp_kinds = {
     Event = '  ',
     Operator = '  ',
     TypeParameter = '  ',
-    Copilot = "  ",
+    Copilot = '  ',
 }
 
 -- Autocompletions.
@@ -39,7 +39,9 @@ return {
             'saadparwaiz1/cmp_luasnip',
             'hrsh7th/cmp-nvim-lsp',
             'rafamadriz/friendly-snippets',
+            'hrsh7th/cmp-buffer',
         },
+        version = false,
         event = 'InsertEnter',
         config = function()
             local cmp = require 'cmp'
@@ -54,7 +56,7 @@ return {
                     return false
                 end
                 local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match('^%s+$') == nil
+                return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match '^%s+$' == nil
             end
 
             cmp.setup {
@@ -62,7 +64,7 @@ return {
                     format = function(_, vim_item)
                         vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
                         return vim_item
-                    end
+                    end,
                 },
                 snippet = {
                     expand = function(args)
@@ -106,9 +108,10 @@ return {
                 sources = {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
-                    { name = 'copilot' }
+                    { name = 'copilot' },
+                    { name = 'buffer' },
                 },
             }
-        end
-    }
+        end,
+    },
 }
