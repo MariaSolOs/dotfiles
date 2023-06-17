@@ -19,7 +19,7 @@ return {
                 -- Auto-close when opening a file.
                 {
                     event = 'file_opened',
-                    handler = function(_)
+                    handler = function()
                         require('neo-tree').close_all()
                     end,
                 },

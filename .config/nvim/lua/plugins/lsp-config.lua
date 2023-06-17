@@ -15,14 +15,14 @@ local on_attach = function(_, bufnr)
         vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
     end
 
-    nmap('<leader>r', '<cmd>Lspsaga rename<cr>', 'Rename')
-    nmap('<leader>c', '<cmd>Lspsaga code_action<cr>', 'Code action')
-    nmap('<leader>o', '<cmd>Lspsaga outline<cr>', 'Toggle outline')
+    nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename')
+    nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action')
+    nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
 
     nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols')
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols')
 
-    nmap('gd', '<cmd>Lspsaga goto_definition<cr>', 'Go to definition')
+    nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
     nmap('gr', require('telescope.builtin').lsp_references, 'Go to references')
     nmap('gI', vim.lsp.buf.implementation, 'Go to implementation')
     nmap('gD', vim.lsp.buf.declaration, 'Go to declaration')
@@ -31,11 +31,11 @@ local on_attach = function(_, bufnr)
     -- noice deals with the UI.
     nmap('K', vim.lsp.buf.hover, 'Hover')
 
-    nmap('[d', '<cmd>Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
-    nmap(']d', '<cmd>Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
+    nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
+    nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
 
     -- Toggle the floating terminal.
-    vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
+    vim.keymap.set({ 'n', 't' }, '<M-t>', ':Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Create a command `:Fmt` local to the LSP buffer
     vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function(_)
@@ -51,7 +51,7 @@ return {
             {
                 'williamboman/mason.nvim',
                 cmd = { 'Mason', 'LspInstall', 'LspUnInstall' },
-                config = function(_, _)
+                config = function()
                     require('mason').setup()
                     -- Ensure the servers above are installed.
                     require('mason-lspconfig').setup {

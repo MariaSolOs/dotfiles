@@ -5,11 +5,11 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = 'kevinhwang91/promise-async',
         opts = {
-            provider_selector = function(_, _, _)
+            provider_selector = function()
                 return { 'treesitter', 'indent' }
-            end
+            end,
         },
-        init = function(_)
+        init = function()
             vim.o.foldcolumn = '1'
             vim.o.foldlevel = 99
             vim.o.foldlevelstart = 99
@@ -18,5 +18,5 @@ return {
             vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
             vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
         end,
-    }
+    },
 }
