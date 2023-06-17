@@ -32,6 +32,7 @@ return {
                     ['<space>'] = 'none',
                     ['l'] = 'none',
                     ['w'] = 'none',
+                    -- TODO: Find a way to make these mappings show up in the ? menu.
                     -- Go to the first child.
                     ['hh'] = function(state)
                         local node = state.tree:get_node()

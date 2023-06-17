@@ -18,6 +18,7 @@ local on_attach = function(_, bufnr)
     nmap('<leader>r', '<cmd>Lspsaga rename<cr>', 'Rename')
     nmap('<leader>c', '<cmd>Lspsaga code_action<cr>', 'Code action')
     nmap('<leader>o', '<cmd>Lspsaga outline<cr>', 'Toggle outline')
+
     nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols')
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols')
 
