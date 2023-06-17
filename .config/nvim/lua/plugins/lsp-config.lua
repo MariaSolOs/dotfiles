@@ -35,7 +35,8 @@ local on_attach = function(_, bufnr)
     nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
 
     -- Toggle the floating terminal.
-    vim.keymap.set({ 'n', 't' }, '<M-t>', ':Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
+    -- NOTE: The <cmd> below is needed to exit terminal mode.
+    vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Create a command `:Fmt` local to the LSP buffer
     vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function(_)
