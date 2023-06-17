@@ -82,7 +82,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set({ 'n', 'v' }, ';', ':')
 
 -- Quit Neovim.
-vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = '[Q]uit Neovim' })
+vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = 'Quit Neovim' })
 
 -- Adding blank lines in normal mode.
 vim.keymap.set('n', '<Enter>', 'o<Esc>', { desc = 'Insert a line below' })
@@ -104,7 +104,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank()
     end,
     group = highlight_group,
-    pattern = '*'
+    pattern = '*',
 })
 
 -- Format on save.
@@ -112,9 +112,9 @@ local format_sync_group = vim.api.nvim_create_augroup('Format', { clear = true }
 vim.api.nvim_create_autocmd('BufWritePre', {
     pattern = { '*.rs', '*.lua' },
     callback = function()
-        vim.lsp.buf.format({ timeout_ms = 200 })
+        vim.lsp.buf.format { timeout_ms = 200 }
     end,
-    group = format_sync_group
+    group = format_sync_group,
 })
 
 -- Add rounded borders to hovers.
@@ -126,4 +126,4 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
 end
 
 -- Configure plugins.
-require('lazy').setup('plugins')
+require('lazy').setup 'plugins'

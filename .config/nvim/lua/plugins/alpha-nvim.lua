@@ -5,7 +5,7 @@ return {
         event = 'VimEnter',
         dependencies = 'nvim-tree/nvim-web-devicons',
         opts = function()
-            local dashboard = require('alpha.themes.dashboard')
+            local dashboard = require 'alpha.themes.dashboard'
 
             local header = [[
 ██╗  ██╗███████╗██╗   ██╗    ██████╗ ██████╗ ███████╗████████╗████████╗██╗   ██╗     ██████╗ ██╗██████╗ ██╗
@@ -17,11 +17,11 @@ return {
             ]]
             dashboard.section.header.val = vim.split(header, '\n')
             dashboard.section.buttons.val = {
-                dashboard.button('f', ' ' .. ' Find file', ':Telescope find_files <cr>'),
-                dashboard.button('o', ' ' .. ' Recent files', ':Telescope oldfiles <cr>'),
-                dashboard.button('g', ' ' .. ' Find text', ':Telescope live_grep <cr>'),
+                dashboard.button('f', ' ' .. ' Find file', ':Telescope find_files<cr>'),
+                dashboard.button('o', ' ' .. ' Recent files', ':Telescope oldfiles<cr>'),
+                dashboard.button('g', ' ' .. ' Find text', ':Telescope live_grep<cr>'),
                 -- Open init.lua and cd into its containing directory.
-                dashboard.button('c', ' ' .. ' Config', ':e $MYVIMRC | :cd %:p:h <cr>'),
+                dashboard.button('c', ' ' .. ' Config', ':e $MYVIMRC | :cd %:p:h<cr>'),
                 dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<cr>'),
                 dashboard.button('q', ' ' .. ' Quit', ':qa<cr>'),
             }
@@ -40,6 +40,6 @@ return {
         end,
         config = function(_, dashboard)
             require('alpha').setup(dashboard.opts)
-        end
-    }
+        end,
+    },
 }
