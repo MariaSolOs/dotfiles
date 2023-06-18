@@ -79,7 +79,6 @@ return {
                         settings = servers[server_name],
                     }
                 end,
-                -- idk why but I need to configure rust-tools separately.
                 rust_analyzer = function()
                     require('rust-tools').setup {
                         tools = {

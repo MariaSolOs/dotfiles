@@ -7,6 +7,7 @@ return {
             presets = {
                 -- Have borders around hover and signature help.
                 lsp_doc_border = true,
+                command_palette = true,
                 long_message_to_split = true,
             },
             lsp = {
@@ -16,32 +17,29 @@ return {
                     ['cmp.entry.get_documentation'] = true,
                 },
             },
-            -- Use a simple UI for these.
-            messages = { view = 'mini' },
             routes = {
+                -- Send some written messages to the mini view.
+                {
+                    filter = {
+                        event = 'msg_show',
+                        any = {
+                            { find = '%d+L, %d+B' },
+                            { find = '; after #%d+' },
+                            { find = '; before #%d+' },
+                            { find = '%d fewer ' },
+                        },
+                    },
+                    view = 'mini',
+                },
+                -- Don't show progress from the null-ls client.
                 {
                     filter = {
                         event = 'lsp',
                         kind = 'progress',
-                        any = {
-                            -- Hack to only match messages with a progress that's a multiple of 5.
-                            { find = '[^05]/' },
-                            {
-                                cond = function(message)
-                                    -- Don't show progress from the null-ls client.
-                                    local client = vim.tbl_get(message.opts, 'progress', 'client')
-                                    return client == 'null-ls'
-                                end,
-                            },
-                        },
-                    },
-                    opts = { skip = true },
-                },
-                -- Don't show written messages.
-                {
-                    filter = {
-                        event = 'msg_show',
-                        kind = '',
+                        cond = function(message)
+                            local client = vim.tbl_get(message.opts, 'progress', 'client')
+                            return client == 'null-ls'
+                        end,
                     },
                     opts = { skip = true },
                 },
@@ -60,37 +58,6 @@ return {
                     opts = { skip = true },
                 },
             },
-            -- Show a popup menu for completions when using the command line.
-            views = {
-                cmdline_popup = {
-                    position = {
-                        row = 5,
-                        col = '50%',
-                    },
-                    size = {
-                        width = 60,
-                        height = 'auto',
-                    },
-                },
-                popupmenu = {
-                    relative = 'editor',
-                    position = {
-                        row = 8,
-                        col = '50%',
-                    },
-                    size = {
-                        width = 60,
-                        height = 10,
-                    },
-                    border = {
-                        style = 'rounded',
-                        padding = { 0, 1 },
-                    },
-                    win_options = {
-                        winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
-                    },
-                },
-            },
         },
         dependencies = {
             'MunifTanjim/nui.nvim',
@@ -106,12 +73,16 @@ return {
                     return '<C-f>'
                 end
             end, { silent = true, expr = true })
-
             vim.keymap.set({ 'n', 'i', 's' }, '<C-b>', function()
                 if not require('noice.lsp').scroll(-4) then
                     return '<C-b>'
                 end
             end, { silent = true, expr = true })
+
+            -- Highlights for the progress bar.
+            vim.api.nvim_set_hl(0, 'NoiceFormatProgressDone', { bg = '#27E1C1', fg = '#000000' })
+            vim.api.nvim_set_hl(0, 'NoiceLspProgressSpinner', { fg = '#27E1C1' })
+            vim.api.nvim_set_hl(0, 'NoiceFormatProgressTodo', { link = 'NonText' })
         end,
     },
 }
