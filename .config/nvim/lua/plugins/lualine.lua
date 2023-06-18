@@ -14,14 +14,24 @@ return {
                     'branch',
                     'diff',
                 },
+                lualine_c = {
+                    {
+                        function()
+                            return require('noice').api.status.mode.get()
+                        end,
+                        cond = function()
+                            return package.loaded['noice'] and require('noice').api.status.mode.has()
+                        end,
+                    },
+                },
                 lualine_x = {
                     {
                         'diagnostics',
                         sections = { 'error', 'warn', 'info', 'hint' },
-                    }
+                    },
                 },
-                lualine_y = { 'encoding', 'filetype' }
-            }
+                lualine_y = { 'encoding', 'filetype' },
+            },
         },
-    }
+    },
 }
