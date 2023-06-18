@@ -17,21 +17,9 @@ return {
                     ['cmp.entry.get_documentation'] = true,
                 },
             },
+            -- Send non-error/warnings to the mini view.
+            messages = { view = 'mini' },
             routes = {
-                -- Send some written messages to the mini view.
-                {
-                    filter = {
-                        event = 'msg_show',
-                        any = {
-                            { find = '%d+L, %d+B' },
-                            { find = '; after #%d+' },
-                            { find = '; before #%d+' },
-                            { find = '%d fewer ' },
-                            { find = '%d more ' },
-                        },
-                    },
-                    view = 'mini',
-                },
                 -- Don't show Neo-tree's info notications.
                 {
                     filter = {
