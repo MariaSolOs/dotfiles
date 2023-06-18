@@ -12,7 +12,7 @@ return {
 
             -- Configure bindings for the pickers.
             nmap('<leader>?', telescope_builtin.oldfiles, 'Search recently opened files')
-            namp('<leader>/', function()
+            nmap('<leader>/', function()
                 telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
                     winblend = 10,
                     previewer = false,
