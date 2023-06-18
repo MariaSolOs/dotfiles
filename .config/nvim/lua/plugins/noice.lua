@@ -7,6 +7,7 @@ return {
             presets = {
                 -- Have borders around hover and signature help.
                 lsp_doc_border = true,
+                long_message_to_split = true,
             },
             lsp = {
                 override = {
@@ -23,8 +24,8 @@ return {
                         event = 'lsp',
                         kind = 'progress',
                         any = {
-                            -- Just show the final progress notifications.
-                            { find = '(%d%%)' },
+                            -- Hack to only match messages with a progress that's a multiple of 5.
+                            { find = '[^05]/' },
                             {
                                 cond = function(message)
                                     -- Don't show progress from the null-ls client.
@@ -36,23 +37,24 @@ return {
                     },
                     opts = { skip = true },
                 },
+                -- Don't show written messages.
                 {
-                    -- Don't show written messages.
                     filter = {
                         event = 'msg_show',
                         kind = '',
                     },
                     opts = { skip = true },
                 },
+                -- Don't show Neo-tree's info notications.
                 {
-                    -- Don't show Neo-tree's info notications.
                     filter = {
                         event = 'notify',
                         kind = 'info',
                         cond = function(message)
-                            -- TODO: Filter out these.
-                            print(vim.inspect(message))
-                            return true
+                            if message.event == 'notify' and message.kind == 'info' then
+                                return message:content():find '[Neo-tree INFO]'
+                            end
+                            return false
                         end,
                     },
                     opts = { skip = true },
