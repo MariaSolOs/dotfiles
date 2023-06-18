@@ -48,9 +48,10 @@ return {
                     -- Don't show Neo-tree's info notications.
                     filter = {
                         event = 'notify',
-                        find = 'Neo-tree INFO',
+                        kind = 'info',
                         cond = function(message)
                             -- TODO: Filter out these.
+                            print(vim.inspect(message))
                             return true
                         end,
                     },
