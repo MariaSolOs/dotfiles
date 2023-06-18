@@ -1,9 +1,10 @@
--- Enable the following language servers.
 local servers = {
     lua_ls = {
-        Lua = {
-            workspace = { checkThirdParty = false },
-            telemetry = { enable = false },
+        settings = {
+            Lua = {
+                workspace = { checkThirdParty = false },
+                telemetry = { enable = false },
+            },
         },
     },
     jdtls = {},
@@ -62,6 +63,7 @@ return {
             },
             { 'williamboman/mason-lspconfig.nvim', lazy = true },
             { 'folke/neodev.nvim',                 lazy = true },
+            { 'b0o/SchemaStore.nvim',              version = false },
         },
         config = function()
             -- Setup neovim lua configuration.
@@ -72,11 +74,24 @@ return {
             capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
             require('mason-lspconfig').setup_handlers {
-                function(server_name)
-                    require('lspconfig')[server_name].setup {
-                        capabilities = capabilities,
+                function(server)
+                    local settings = vim.tbl_extend('force', {
+                        capabilities = vim.deepcopy(capabilities),
                         on_attach = on_attach,
-                        settings = servers[server_name],
+                    }, servers[server] or {})
+
+                    require('lspconfig')[server].setup(settings)
+                end,
+                jsonls = function()
+                    require('lspconfig').jsonls.setup {
+                        capabilities = vim.deepcopy(capabilities),
+                        on_attach = on_attach,
+                        settings = {
+                            json = {
+                                schemas = require('schemastore').json.schemas(),
+                                validate = { enable = true },
+                            },
+                        },
                     }
                 end,
                 rust_analyzer = function()

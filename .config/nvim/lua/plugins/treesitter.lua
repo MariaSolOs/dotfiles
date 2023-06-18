@@ -6,7 +6,18 @@ return {
         lazy = true,
         build = ':TSUpdate',
         opts = {
-            ensure_installed = { 'bash', 'lua', 'regex', 'rust', 'typescript', 'vim', 'vimdoc' },
+            ensure_installed = {
+                'bash',
+                'json',
+                'jsonc',
+                'json5',
+                'lua',
+                'regex',
+                'rust',
+                'typescript',
+                'vim',
+                'vimdoc',
+            },
             auto_install = false,
             highlight = { enable = true },
             indent = { enable = true },
@@ -23,29 +34,29 @@ return {
                     lookahead = true,
                     keymaps = {
                         ['af'] = '@function.outer',
-                        ['if'] = '@function.inner'
-                    }
+                        ['if'] = '@function.inner',
+                    },
                 },
                 move = {
                     enable = true,
                     set_jumps = true,
                     goto_next_start = {
-                        [']m'] = '@function.outer'
+                        [']m'] = '@function.outer',
                     },
                     goto_next_end = {
-                        [']M'] = '@function.outer'
+                        [']M'] = '@function.outer',
                     },
                     goto_previous_start = {
-                        ['[m'] = '@function.outer'
+                        ['[m'] = '@function.outer',
                     },
                     goto_previous_end = {
-                        ['[M'] = '@function.outer'
+                        ['[M'] = '@function.outer',
                     },
                 },
-            }
+            },
         },
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
-        end
-    }
+        end,
+    },
 }

@@ -27,6 +27,7 @@ return {
                             { find = '; after #%d+' },
                             { find = '; before #%d+' },
                             { find = '%d fewer ' },
+                            { find = '%d more ' },
                         },
                     },
                     view = 'mini',
