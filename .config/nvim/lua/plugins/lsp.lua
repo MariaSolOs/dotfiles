@@ -8,6 +8,7 @@ local servers = {
         },
     },
     jdtls = {},
+    marksman = {},
     tsserver = {},
 }
 
@@ -18,6 +19,9 @@ local on_attach = function(_, bufnr)
 
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action')
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
+    nmap('<leader>r', function()
+        return ':IncRename ' .. vim.fn.expand '<cword>'
+    end, 'Rename')
 
     nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols')
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols')
@@ -141,16 +145,7 @@ return {
     {
         'smjonas/inc-rename.nvim',
         config = true,
-        keys = {
-            {
-                '<leader>r',
-                function()
-                    return ':IncRename ' .. vim.fn.expand '<cword>'
-                end,
-                desc = 'Rename',
-                expr = true,
-            },
-        },
+        cmd = 'IncRename',
     },
 
     -- Use Neovim as a language server.

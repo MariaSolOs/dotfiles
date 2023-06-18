@@ -33,4 +33,19 @@ return {
 
     -- Toggle relative line numbers in normal mode.
     { 'sitiom/nvim-numbertoggle' },
+
+    -- Markdown previewer.
+    {
+        'iamcco/markdown-preview.nvim',
+        keys = {
+            {
+                '<leader>M',
+                ':MarkdownPreviewToggle<cr>',
+                desc = 'Toggle .md preview',
+            },
+        },
+        build = function()
+            vim.fn['mkdp#util#install']()
+        end,
+    },
 }
