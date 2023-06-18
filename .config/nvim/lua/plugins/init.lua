@@ -21,7 +21,15 @@ return {
     },
 
     -- Surround selections, add quotes, etc.
-    { 'kylechui/nvim-surround',      event = 'VeryLazy', config = true },
+    {
+        'kylechui/nvim-surround',
+        event = 'VeryLazy',
+        opts = {
+            keymaps = {
+                visual = 'Y',
+            },
+        },
+    },
 
     -- Toggle relative line numbers in normal mode.
     { 'sitiom/nvim-numbertoggle' },
