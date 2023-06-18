@@ -64,6 +64,9 @@ return {
                 },
             },
             default_component_configs = {
+                icon = {
+                    folder_empty = '',
+                },
                 git_status = {
                     symbols = {
                         deleted = '',
