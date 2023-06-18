@@ -16,7 +16,6 @@ local on_attach = function(_, bufnr)
         require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
-    nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename')
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action')
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
 
@@ -134,6 +133,22 @@ return {
                     expand_or_jump = '<cr>',
                 },
                 auto_resize = true,
+            },
+        },
+    },
+
+    -- Rename with preview spans.
+    {
+        'smjonas/inc-rename.nvim',
+        config = true,
+        keys = {
+            {
+                '<leader>r',
+                function()
+                    return ':IncRename ' .. vim.fn.expand '<cword>'
+                end,
+                desc = 'Rename',
+                expr = true,
             },
         },
     },
