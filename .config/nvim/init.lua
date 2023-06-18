@@ -120,4 +120,8 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 })
 
 -- Configure plugins.
-require('lazy').setup 'plugins'
+require('lazy').setup('plugins', {
+    ui = {
+        border = 'rounded',
+    },
+})
