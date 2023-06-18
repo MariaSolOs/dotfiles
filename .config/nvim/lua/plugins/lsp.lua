@@ -11,8 +11,8 @@ local servers = {
 }
 
 local on_attach = function(_, bufnr)
-    local nmap = function(keys, func, desc)
-        vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    local nmap = function(lhs, rhs, desc)
+        require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
     nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename')

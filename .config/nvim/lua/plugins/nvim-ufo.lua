@@ -1,3 +1,5 @@
+local nmap = require('helpers.keybindings').nmap
+
 -- Folding ranges.
 return {
     {
@@ -32,8 +34,8 @@ return {
             vim.o.foldenable = true
             vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
-            vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-            vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+            nmap('zR', require('ufo').openAllFolds)
+            nmap('zM', require('ufo').closeAllFolds)
         end,
     },
 }

@@ -1,3 +1,5 @@
+local nmap = require('helpers.keybindings').nmap
+
 -- Fuzzy finder (files, LSP, etc)
 return {
     {
@@ -9,17 +11,17 @@ return {
             local telescope_builtin = require 'telescope.builtin'
 
             -- Configure bindings for the pickers.
-            vim.keymap.set('n', '<leader>?', telescope_builtin.oldfiles, { desc = 'Search recently opened files' })
-            vim.keymap.set('n', '<leader>/', function()
+            nmap('<leader>?', telescope_builtin.oldfiles, 'Search recently opened files')
+            namp('<leader>/', function()
                 telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
                     winblend = 10,
                     previewer = false,
                 })
-            end, { desc = 'Search fuzzily in buffer' })
-            vim.keymap.set('n', '<leader>sf', telescope_builtin.find_files, { desc = 'Search files' })
-            vim.keymap.set('n', '<leader>sh', telescope_builtin.help_tags, { desc = 'Search help' })
-            vim.keymap.set('n', '<leader>sg', telescope_builtin.live_grep, { desc = 'Search by grep' })
-            vim.keymap.set('n', '<leader>sd', telescope_builtin.diagnostics, { desc = 'Search diagnostics' })
+            end, 'Search fuzzily in buffer')
+            nmap('<leader>sf', telescope_builtin.find_files, 'Search files')
+            nmap('<leader>sh', telescope_builtin.help_tags, 'Search help')
+            nmap('<leader>sg', telescope_builtin.live_grep, 'Search by grep')
+            nmap('<leader>sd', telescope_builtin.diagnostics, 'Search diagnostics')
         end,
         config = function()
             local telescope = require 'telescope'

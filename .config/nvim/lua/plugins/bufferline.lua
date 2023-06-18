@@ -1,3 +1,5 @@
+local nmap = require('helpers.keybindings').nmap
+
 -- Bufferline for pretty tabs.
 return {
     {
@@ -13,21 +15,19 @@ return {
                         filetype = 'neo-tree',
                         text = 'File Explorer',
                         highlight = 'Directory',
-                        separator = true
-                    }
+                        separator = true,
+                    },
                 },
-                diagnostics = 'nvim-lsp'
-            }
+                diagnostics = 'nvim-lsp',
+            },
         },
         init = function()
-            vim.keymap.set('n', '<leader>bo', ':BufferLinePick<cr>',
-                { desc = 'Select a buffer to open', silent = true })
-            vim.keymap.set('n', '<leader>bc', ':BufferLinePickClose<cr>',
-                { desc = 'Select a buffer to close', silent = true })
-            vim.keymap.set('n', '[b', ':BufferLineCyclePrev<cr>', { desc = 'Previous buffer' })
-            vim.keymap.set('n', ']b', ':BufferLineCycleNext<cr>', { desc = 'Next buffer' })
-            vim.keymap.set('n', '<leader>bl', ':BufferLineCloseLeft<cr>', { desc = 'Close buffers to the left' })
-            vim.keymap.set('n', '<leader>br', ':BufferLineCloseRight<cr>', { desc = 'Close buffers to the right' })
-        end
-    }
+            nmap('<leader>bo', ':BufferLinePick<cr>', { desc = 'Select a buffer to open', silent = true })
+            nmap('<leader>bc', ':BufferLinePickClose<cr>', { desc = 'Select a buffer to close', silent = true })
+            nmap('[b', ':BufferLineCyclePrev<cr>', 'Previous buffer')
+            nmap(']b', ':BufferLineCycleNext<cr>', 'Next buffer')
+            nmap('<leader>bl', ':BufferLineCloseLeft<cr>', 'Close buffers to the left')
+            nmap('<leader>br', ':BufferLineCloseRight<cr>', 'Close buffers to the right')
+        end,
+    },
 }
