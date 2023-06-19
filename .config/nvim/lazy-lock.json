@@ -40,6 +40,7 @@
   "nvim-ts-rainbow2": { "branch": "master", "commit": "09214437d00b2e6863f95578d72abe5bca2d0f6b" },
   "nvim-ufo": { "branch": "main", "commit": "45aede6f5c4981156df3ddeeae01c4290e43e104" },
   "nvim-web-devicons": { "branch": "master", "commit": "14b3a5ba63b82b60cde98d0a40319d80f25e8301" },
+  "nvim-window-picker": { "branch": "main", "commit": "643afc2a0209b5cbe7b8682f3399e9f8a38481a2" },
   "plenary.nvim": { "branch": "master", "commit": "36aaceb6e93addd20b1b18f94d86aecc552f30c4" },
   "promise-async": { "branch": "main", "commit": "e94f35161b8c5d4a4ca3b6ff93dd073eb9214c0e" },
   "rust-tools.nvim": { "branch": "master", "commit": "71d2cf67b5ed120a0e31b2c8adb210dd2834242f" },

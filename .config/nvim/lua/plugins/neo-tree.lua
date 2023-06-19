@@ -8,6 +8,20 @@ return {
             'nvim-lua/plenary.nvim',
             'nvim-tree/nvim-web-devicons',
             'MunifTanjim/nui.nvim',
+            {
+                's1n7ax/nvim-window-picker',
+                version = '2.*',
+                opts = {
+                    highlights = {
+                        statusline = {
+                            unfocused = {
+                                fg = '#0C134F',
+                                bg = '#9384D1',
+                            },
+                        },
+                    },
+                },
+            },
         },
         init = function()
             vim.g.neo_tree_remove_legacy_commands = 1
@@ -31,7 +45,6 @@ return {
                 mappings = {
                     ['<space>'] = 'none',
                     ['l'] = 'none',
-                    ['w'] = 'none',
                     -- TODO: Find a way to make these mappings show up in the ? menu.
                     -- Go to the first child.
                     ['hh'] = function(state)
