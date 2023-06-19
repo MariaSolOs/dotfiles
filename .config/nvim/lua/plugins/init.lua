@@ -37,15 +37,12 @@ return {
     -- Markdown previewer.
     {
         'iamcco/markdown-preview.nvim',
-        keys = {
-            {
-                '<leader>M',
-                ':MarkdownPreviewToggle<cr>',
-                desc = 'Toggle .md preview',
-            },
-        },
+        ft = 'markdown',
         build = function()
             vim.fn['mkdp#util#install']()
+        end,
+        config = function()
+            require('helpers.keybindings').nmap('<leader>M', ':MarkdownPreviewToggle<cr>', 'Toggle .md preview')
         end,
     },
 }
