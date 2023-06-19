@@ -123,9 +123,6 @@ return {
         end,
     },
 
-    -- Extra goodies for rust.
-    { 'simrat39/rust-tools.nvim' },
-
     -- Nicer UI.
     {
         'glepnir/lspsaga.nvim',
