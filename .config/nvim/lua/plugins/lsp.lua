@@ -27,10 +27,8 @@ local on_attach = function(_, bufnr)
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols')
 
     nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
+    nmap('gD', ':Lspsaga lsp_finder<cr>', 'Go to symbol definition')
     nmap('gr', require('telescope.builtin').lsp_references, 'Go to references')
-    nmap('gI', vim.lsp.buf.implementation, 'Go to implementation')
-    nmap('gD', vim.lsp.buf.declaration, 'Go to declaration')
-    nmap('gt', vim.lsp.buf.type_definition, 'Go to type definition')
 
     -- noice deals with the UI.
     nmap('K', vim.lsp.buf.hover, 'Hover')
@@ -85,6 +83,16 @@ return {
 
                     require('lspconfig')[server].setup(settings)
                 end,
+                clangd = function()
+                    capabilities = vim.deepcopy(capabilities)
+                    -- Fixes the 'warning: multiple different client offset' error.
+                    capabilities.offsetEncoding = 'utf-8'
+
+                    require('lspconfig').clangd.setup {
+                        capabilities = capabilities,
+                        on_attach = on_attach,
+                    }
+                end,
                 jsonls = function()
                     require('lspconfig').jsonls.setup {
                         capabilities = vim.deepcopy(capabilities),
@@ -137,6 +145,12 @@ return {
                     expand_or_jump = '<cr>',
                 },
                 auto_resize = true,
+            },
+            finder = {
+                keys = {
+                    jump_to = '<Tab>',
+                    expand_or_jump = '<cr>',
+                },
             },
         },
     },
