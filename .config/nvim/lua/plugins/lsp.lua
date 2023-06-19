@@ -11,29 +11,29 @@ local servers = {
     tsserver = {},
 }
 
-local on_attach = function(_, bufnr)
-    local nmap = function(lhs, rhs, desc)
-        require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
-    end
+local nmap = function(lhs, rhs, desc, bufnr)
+    require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
+end
 
-    nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action')
-    nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
+local on_attach = function(_, bufnr)
+    nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', bufnr)
+    nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline', bufnr)
     nmap('<leader>r', function()
         return ':IncRename ' .. vim.fn.expand '<cword>'
-    end, 'Rename')
+    end, 'Rename', bufnr)
 
-    nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols')
-    nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols')
+    nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols', bufnr)
+    nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
 
-    nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
-    nmap('gD', ':Lspsaga lsp_finder<cr>', 'Go to symbol definition')
-    nmap('gr', require('telescope.builtin').lsp_references, 'Go to references')
+    nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition', bufnr)
+    nmap('gD', ':Lspsaga lsp_finder<cr>', 'Go to symbol definition', bufnr)
+    nmap('gr', require('telescope.builtin').lsp_references, 'Go to references', bufnr)
 
     -- noice deals with the UI.
-    nmap('K', vim.lsp.buf.hover, 'Hover')
+    nmap('K', vim.lsp.buf.hover, 'Hover', bufnr)
 
-    nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
-    nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
+    nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic', bufnr)
+    nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic', bufnr)
 
     -- Toggle the floating terminal.
     -- NOTE: The <cmd> below is needed to exit terminal mode.
@@ -53,7 +53,7 @@ local on_attach = function(_, bufnr)
 
             -- When a null-ls formatter is available for the current filetype, only null-ls formatters are returned.
             local null_ls = package.loaded['null-ls']
-                and require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
+                    and require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
                 or {}
             local clients = vim.lsp.get_active_clients { bufnr = buf }
             local available = {}
@@ -99,8 +99,8 @@ return {
                 end,
             },
             { 'williamboman/mason-lspconfig.nvim', lazy = true },
-            { 'folke/neodev.nvim',                 lazy = true },
-            { 'b0o/SchemaStore.nvim',              version = false },
+            { 'folke/neodev.nvim', lazy = true },
+            { 'b0o/SchemaStore.nvim', version = false },
         },
         config = function()
             -- Setup neovim lua configuration.
@@ -142,7 +142,9 @@ return {
                     }
                 end,
                 rust_analyzer = function()
-                    require('rust-tools').setup {
+                    local rt = require 'rust-tools'
+
+                    rt.setup {
                         tools = {
                             inlay_hints = {
                                 other_hints_prefix = '',
@@ -152,7 +154,10 @@ return {
                         },
                         server = {
                             capabilities = capabilities,
-                            on_attach = on_attach,
+                            on_attach = function(_, bufnr)
+                                on_attach(_, bufnr)
+                                nmap('K', rt.hover_actions.hover_actions, 'Hover', bufnr)
+                            end,
                         },
                     }
                 end,
