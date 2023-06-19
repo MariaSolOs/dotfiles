@@ -43,6 +43,43 @@ local on_attach = function(_, bufnr)
     vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function(_)
         vim.lsp.buf.format()
     end, { desc = 'Format current buffer' })
+
+    -- Set up format on save.
+    vim.api.nvim_create_autocmd('BufWritePre', {
+        group = vim.api.nvim_create_augroup('FormatOnSave', {}),
+        callback = function()
+            local buf = vim.api.nvim_get_current_buf()
+            local ft = vim.bo[buf].filetype
+
+            -- When a null-ls formatter is available for the current filetype, only null-ls formatters are returned.
+            local null_ls = package.loaded['null-ls']
+                and require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
+                or {}
+            local clients = vim.lsp.get_active_clients { bufnr = buf }
+            local available = {}
+            for _, client in ipairs(clients) do
+                if
+                    client.supports_method 'textDocument/formatting'
+                    or client.supports_method 'textDocument/rangeFormatting'
+                then
+                    if (#null_ls > 0 and client.name == 'null-ls') or #null_ls == 0 then
+                        table.insert(available, client.id)
+                    end
+                end
+            end
+
+            if #available == 0 then
+                return
+            end
+
+            vim.lsp.buf.format {
+                bufnr = buf,
+                filter = function(client)
+                    return vim.tbl_contains(available, client.id)
+                end,
+            }
+        end,
+    })
 end
 
 return {
@@ -172,22 +209,8 @@ return {
                     null_ls.builtins.code_actions.gitsigns,
                     -- Formatters.
                     null_ls.builtins.formatting.clang_format,
-                    null_ls.builtins.formatting.rustfmt,
                     null_ls.builtins.formatting.stylua,
                 },
-                -- Enable formatting on save.
-                on_attach = function(client, bufnr)
-                    if client.supports_method 'textDocument/formatting' then
-                        vim.api.nvim_clear_autocmds { group = format_group, buffer = bufnr }
-                        vim.api.nvim_create_autocmd('BufWritePre', {
-                            group = format_group,
-                            buffer = bufnr,
-                            callback = function()
-                                vim.lsp.buf.format { async = false }
-                            end,
-                        })
-                    end
-                end,
             }
         end,
     },
