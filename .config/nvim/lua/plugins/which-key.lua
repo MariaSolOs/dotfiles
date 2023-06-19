@@ -2,8 +2,16 @@
 return {
     {
         'folke/which-key.nvim',
-        opts = function()
-            require('which-key').register {
+        opts = {
+            window = {
+                border = 'single',
+            },
+        },
+        config = function(_, opts)
+            local wk = require 'which-key'
+            wk.setup(opts)
+
+            wk.register {
                 ['<leader>b'] = { name = '+buffer' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>g'] = { name = '+git' },
