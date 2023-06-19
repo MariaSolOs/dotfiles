@@ -68,10 +68,6 @@ vim.o.termguicolors = true
 -- Disable some of those annoying hit-enter messages.
 vim.opt.shortmess:append 'IWs'
 
--- nvim-tree needs netrw to be disabled.
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- [[ Keymaps ]]
 -- Make the leader a noop when not followed by something.
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })

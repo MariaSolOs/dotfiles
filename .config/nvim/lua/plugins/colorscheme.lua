@@ -11,14 +11,14 @@ return {
             colors = {
                 bg = '#0E1419',
                 fg = '#FBEAFF',
-                orange = '#FFAACF'
+                orange = '#FFAACF',
             },
             italic_comment = true,
             overrides = {
                 -- Used in git blames by Gitsigns.
-                MoreMsg = { fg = '#DD58D6' }
-            }
-        }
+                MoreMsg = { fg = '#DD58D6' },
+            },
+        },
     },
 
     -- {
@@ -33,6 +33,7 @@ return {
     --         -- style = 'deep'
     --     }
     -- },
+
     -- {
     --     'catppuccin/nvim',
     --     lazy = false,
