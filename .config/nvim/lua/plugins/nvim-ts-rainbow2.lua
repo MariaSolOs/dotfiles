@@ -5,17 +5,17 @@ return {
         dependencies = 'nvim-treesitter/nvim-treesitter',
         config = function()
             -- Set up the colors to use.
-            vim.cmd('highlight TSRainbowRed guifg=#F266AB ctermfg=Red')
-            vim.cmd('highlight TSRainbowOrange guifg=#FFB84C ctermfg=White')
-            vim.cmd('highlight TSRainbowYellow guifg=#FFF56D ctermfg=Yellow')
-            vim.cmd('highlight TSRainbowGreen guifg=#87E58E ctermfg=Green')
-            vim.cmd('highlight TSRainbowCyan guifg=#A7DFEF ctermfg=Cyan')
-            vim.cmd('highlight TSRainbowBlue guifg=#0079FF ctermfg=Blue')
-            vim.cmd('highlight TSRainbowViolet guifg=#A459D1 ctermfg=Magenta')
+            vim.api.nvim_set_hl(0, 'TSRainbowRed', { fg = '#F266AB', ctermfg = 'Red' })
+            vim.api.nvim_set_hl(0, 'TSRainbowOrange', { fg = '#FFB84C', ctermfg = 'White' })
+            vim.api.nvim_set_hl(0, 'TSRainbowYellow', { fg = '#FFF56D', ctermfg = 'Yellow' })
+            vim.api.nvim_set_hl(0, 'TSRainbowGreen', { fg = '#87E58E', ctermfg = 'Green' })
+            vim.api.nvim_set_hl(0, 'TSRainbowCyan', { fg = '#A7DFEF', ctermfg = 'Cyan' })
+            vim.api.nvim_set_hl(0, 'TSRainbowBlue', { fg = '#0079FF', ctermfg = 'Blue' })
+            vim.api.nvim_set_hl(0, 'TSRainbowViolet', { fg = '#A459D1', ctermfg = 'Magenta' })
 
             require('nvim-treesitter.configs').setup {
-                rainbow = { enable = true }
+                rainbow = { enable = true },
             }
-        end
-    }
+        end,
+    },
 }
