@@ -19,6 +19,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Add binaries installed by mason.nvim to path.
+vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
+
 -- [[ Settings ]]
 -- Use an indentation of 4 spaces.
 vim.o.sw = 4
