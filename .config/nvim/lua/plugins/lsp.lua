@@ -168,11 +168,29 @@ return {
         event = 'VeryLazy',
         config = function()
             local null_ls = require 'null-ls'
+            local format_group = vim.api.nvim_create_augroup('LspFormatting', {})
+
             null_ls.setup {
                 sources = {
                     null_ls.builtins.code_actions.gitsigns,
+                    -- Formatters.
+                    null_ls.builtins.formatting.clang_format,
+                    null_ls.builtins.formatting.rustfmt,
                     null_ls.builtins.formatting.stylua,
                 },
+                -- Enable formatting on save.
+                on_attach = function(client, bufnr)
+                    if client.supports_method 'textDocument/formatting' then
+                        vim.api.nvim_clear_autocmds { group = format_group, buffer = bufnr }
+                        vim.api.nvim_create_autocmd('BufWritePre', {
+                            group = format_group,
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format { async = false }
+                            end,
+                        })
+                    end
+                end,
             }
         end,
     },

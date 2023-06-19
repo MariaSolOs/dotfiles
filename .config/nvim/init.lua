@@ -100,23 +100,12 @@ nmap('<C-l>', '<C-w>l', 'Move to the right window')
 vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- [[ Auto commands ]]
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
+    group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
     callback = function()
         vim.highlight.on_yank()
     end,
-    group = highlight_group,
     pattern = '*',
-})
-
--- Format on save.
-local format_sync_group = vim.api.nvim_create_augroup('Format', { clear = true })
-vim.api.nvim_create_autocmd('BufWritePre', {
-    pattern = { '*.rs', '*.lua' },
-    callback = function()
-        vim.lsp.buf.format { timeout_ms = 200 }
-    end,
-    group = format_sync_group,
 })
 
 -- Configure plugins.
