@@ -156,7 +156,14 @@ return {
                             capabilities = capabilities,
                             on_attach = function(_, bufnr)
                                 on_attach(_, bufnr)
+
+                                -- Set up extra Rust commands.
                                 nmap('K', rt.hover_actions.hover_actions, 'Hover', bufnr)
+                                nmap('<leader>Rm', rt.expand_macro.expand_macro, 'Expand macro', bufnr)
+                                nmap('<leader>Rr', rt.runnables.runnables, 'Runnables', bufnr)
+                                require('which-key').register {
+                                    ['<leader>R'] = { name = '+rust' },
+                                }
                             end,
                         },
                     }
