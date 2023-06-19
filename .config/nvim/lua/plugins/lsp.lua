@@ -7,7 +7,6 @@ local servers = {
             },
         },
     },
-    jdtls = {},
     marksman = {},
     tsserver = {},
 }
