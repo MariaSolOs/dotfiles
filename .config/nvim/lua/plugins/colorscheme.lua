@@ -22,19 +22,6 @@ return {
     },
 
     -- {
-    --     'folke/tokyonight.nvim',
-    --     lazy = false,
-    --     priority = 1000,
-    --     config = function(_, opts)
-    --         require('tokyonight').setup(opts)
-    --         vim.cmd.colorscheme 'tokyonight-night'
-    --     end,
-    --     opts = {
-    --         -- style = 'deep'
-    --     }
-    -- },
-
-    -- {
     --     'catppuccin/nvim',
     --     lazy = false,
     --     priority = 1000,
@@ -49,14 +36,14 @@ return {
     --                 -- I prefer a darker background :)
     --                 base = '#0E1419',
     --                 crust = '#7F7489',
-    --                 mantle = '#1D1A2D'
-    --             }
+    --                 mantle = '#1D1A2D',
+    --             },
     --         },
     --         custom_highlights = function(colors)
     --             return {
-    --                 DiagnosticUnnecessary = { fg = colors.subtext1, style = { 'italic' } }
+    --                 DiagnosticUnnecessary = { fg = colors.subtext1, style = { 'italic' } },
     --             }
-    --         end
-    --     }
-    -- }
+    --         end,
+    --     },
+    -- },
 }

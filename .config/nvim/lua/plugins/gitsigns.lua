@@ -47,14 +47,11 @@ return {
                 nmap('<leader>gR', gs.reset_buffer, 'Reset hunks in buffer')
                 nmap('<leader>gp', gs.preview_hunk, 'Preview hunk')
                 nmap('<leader>gb', gs.blame_line, 'Blame line')
-                nmap('<leader>gd', gs.diffthis, 'Diff against the index')
-                nmap('<leader>gD', function()
-                    gs.diffthis '~'
-                end, 'Diff against the last commit')
                 nmap('<leader>th', function()
                     gs.setqflist 'all'
                 end, 'Toggle hunks')
 
+                -- Add group prefix for which-key.
                 require('which-key').register {
                     ['<leader>g'] = { name = '+git' },
                 }
