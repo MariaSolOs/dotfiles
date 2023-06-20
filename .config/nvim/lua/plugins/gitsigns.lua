@@ -54,6 +54,10 @@ return {
                 nmap('<leader>th', function()
                     gs.setqflist 'all'
                 end, 'Toggle hunks')
+
+                require('which-key').register {
+                    ['<leader>g'] = { name = '+git' },
+                }
             end,
         },
     },
