@@ -40,6 +40,9 @@ return {
         end,
         config = function(_, dashboard)
             require('alpha').setup(dashboard.opts)
+
+            -- Keybinding for opening the dashboard.
+            require('helpers.keybindings').nmap('<leader>D', ':Alpha<cr>', 'Open dashboard')
         end,
     },
 }

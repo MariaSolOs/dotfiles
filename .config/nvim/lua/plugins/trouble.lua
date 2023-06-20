@@ -18,5 +18,11 @@ return {
             desc = 'Toggle diagnostics',
             { silent = true, noremap = true },
         },
+        {
+            '<leader>tq',
+            ':TroubleToggle quickfix<cr>',
+            desc = 'Toggle quickfix list',
+            { silent = true, noremap = true },
+        },
     },
 }
