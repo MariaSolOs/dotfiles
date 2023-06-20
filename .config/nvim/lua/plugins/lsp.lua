@@ -18,9 +18,9 @@ end
 local on_attach = function(_, bufnr)
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', bufnr)
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline', bufnr)
-    nmap('<leader>r', function()
+    vim.keymap.set('n', '<leader>r', function()
         return ':IncRename ' .. vim.fn.expand '<cword>'
-    end, 'Rename', bufnr)
+    end, { desc = 'Rename', buffer = bufnr, expr = true })
 
     nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols', bufnr)
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
