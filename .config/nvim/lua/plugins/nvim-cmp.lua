@@ -100,8 +100,11 @@ return {
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['/'] = cmp.mapping.abort(),
                     ['<Tab>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() and has_words_before() then
+                        local copilot = require 'copilot.suggestion'
+                        if cmp.visible() then
                             cmp.select_next_item()
+                        elseif copilot.is_visible() then
+                            copilot.accept()
                         elseif luasnip.expand_or_locally_jumpable() then
                             luasnip.expand_or_jump()
                         else
@@ -121,7 +124,6 @@ return {
                 sources = {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
-                    { name = 'copilot' },
                     { name = 'buffer' },
                 },
             }
