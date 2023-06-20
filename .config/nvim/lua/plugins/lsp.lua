@@ -101,6 +101,8 @@ return {
             { 'williamboman/mason-lspconfig.nvim', lazy = true },
             { 'folke/neodev.nvim', lazy = true },
             { 'b0o/SchemaStore.nvim', version = false },
+            -- Extra goodies for rust.
+            { 'simrat39/rust-tools.nvim' },
         },
         config = function()
             -- Setup neovim lua configuration.
@@ -121,7 +123,7 @@ return {
                 end,
                 clangd = function()
                     capabilities = vim.deepcopy(capabilities)
-                    -- Fixes the 'warning: multiple different client offset' error.
+                    -- Fixes 'warning: multiple different client offset'.
                     capabilities.offsetEncoding = 'utf-8'
 
                     require('lspconfig').clangd.setup {
@@ -214,7 +216,6 @@ return {
         event = 'VeryLazy',
         config = function()
             local null_ls = require 'null-ls'
-            local format_group = vim.api.nvim_create_augroup('LspFormatting', {})
 
             null_ls.setup {
                 sources = {

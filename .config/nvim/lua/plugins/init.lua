@@ -6,7 +6,4 @@ return {
 
     -- Toggle relative line numbers in normal mode.
     { 'sitiom/nvim-numbertoggle' },
-
-    -- Extra goodies for rust.
-    { 'simrat39/rust-tools.nvim' },
 }
