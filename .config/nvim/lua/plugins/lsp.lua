@@ -4,6 +4,7 @@ local servers = {
             Lua = {
                 workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
+                hint = { enable = true },
             },
         },
     },
@@ -15,7 +16,7 @@ local nmap = function(lhs, rhs, desc, bufnr)
     require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
 end
 
-local on_attach = function(_, bufnr)
+local on_attach = function(buf_client, bufnr)
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', bufnr)
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline', bufnr)
     vim.keymap.set('n', '<leader>r', function()
@@ -34,6 +35,12 @@ local on_attach = function(_, bufnr)
 
     nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic', bufnr)
     nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic', bufnr)
+
+    -- Enable inlay hints if the client supports it.
+    if buf_client.server_capabilities.inlayHintProvider then
+        vim.api.nvim_set_hl(0, 'LspInlayHint', { fg = '#6272A4', italic = true })
+        vim.lsp.buf.inlay_hint(bufnr, true)
+    end
 
     -- Toggle the floating terminal.
     -- NOTE: The <cmd> below is needed to exit terminal mode.
@@ -123,25 +130,25 @@ return {
             require('mason-lspconfig').setup_handlers {
                 function(server)
                     local settings = vim.tbl_extend('force', {
-                        capabilities = vim.deepcopy(capabilities),
+                        capabilities = capabilities,
                         on_attach = on_attach,
                     }, servers[server] or {})
 
                     require('lspconfig')[server].setup(settings)
                 end,
                 clangd = function()
-                    capabilities = vim.deepcopy(capabilities)
                     -- Fixes 'warning: multiple different client offset'.
-                    capabilities.offsetEncoding = 'utf-8'
+                    local clangd_capabilities = vim.deepcopy(capabilities)
+                    clangd_capabilities.offsetEncoding = 'utf-8'
 
                     require('lspconfig').clangd.setup {
-                        capabilities = capabilities,
+                        capabilities = clangd_capabilities,
                         on_attach = on_attach,
                     }
                 end,
                 jsonls = function()
                     require('lspconfig').jsonls.setup {
-                        capabilities = vim.deepcopy(capabilities),
+                        capabilities = capabilities,
                         on_attach = on_attach,
                         settings = {
                             json = {
@@ -156,16 +163,16 @@ return {
 
                     rt.setup {
                         tools = {
+                            -- Disable inlay hints since Neovim now supports them.
                             inlay_hints = {
-                                other_hints_prefix = '',
-                                parameter_hints_prefix = '',
+                                auto = false,
                                 show_parameter_hints = false,
                             },
                         },
                         server = {
                             capabilities = capabilities,
-                            on_attach = function(_, bufnr)
-                                on_attach(_, bufnr)
+                            on_attach = function(client, bufnr)
+                                on_attach(client, bufnr)
 
                                 -- Set up extra Rust commands.
                                 nmap('K', rt.hover_actions.hover_actions, 'Hover', bufnr)
