@@ -40,6 +40,7 @@ return {
             'hrsh7th/cmp-nvim-lsp',
             'rafamadriz/friendly-snippets',
             'hrsh7th/cmp-buffer',
+            'rcarriga/cmp-dap',
         },
         version = false,
         event = 'InsertEnter',
@@ -59,7 +60,18 @@ return {
                 return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match '^%s+$' == nil
             end
 
+            -- Set up completions for debugging REPL.
+            cmp.setup.filetype({ 'dap-repl', 'dapui_watches', 'dapui_hover' }, {
+                sources = {
+                    { name = 'dap' },
+                },
+            })
+
             cmp.setup {
+                enabled = function()
+                    return vim.api.nvim_get_option_value('buftype', { buf = 0 }) ~= 'prompt'
+                        or require('cmp_dap').is_dap_buffer()
+                end,
                 formatting = {
                     format = function(_, vim_item)
                         vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind

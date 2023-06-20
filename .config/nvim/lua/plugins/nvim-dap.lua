@@ -134,6 +134,13 @@ return {
                 desc = 'Up in current stacktrace',
             },
             {
+                '<leader>dr',
+                function()
+                    require('dap').repl.toggle()
+                end,
+                desc = 'Toggle REPL',
+            },
+            {
                 '<F5>',
                 function()
                     require('dap').continue()
@@ -172,6 +179,14 @@ return {
 
         config = function()
             vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
+
+            -- Omnifunc completion for REPL.
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'dap-repl',
+                callback = function()
+                    require('dap.ext.autocompl').attach()
+                end,
+            })
 
             -- Set up icons.
             local icons = {
