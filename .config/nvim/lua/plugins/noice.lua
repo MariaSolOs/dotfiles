@@ -35,7 +35,6 @@ return {
                     },
                     opts = { skip = true },
                 },
-                -- Ignore notications from the null-ls client.
                 {
                     filter = {
                         event = 'lsp',

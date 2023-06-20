@@ -99,7 +99,15 @@ return {
                 end,
             },
             { 'williamboman/mason-lspconfig.nvim', lazy = true },
-            { 'folke/neodev.nvim', lazy = true },
+            {
+                'folke/neodev.nvim',
+                lazy = true,
+                opts = {
+                    -- Types for DAP UI.
+                    library = { plugins = { 'nvim-dap-ui' }, types = true },
+                },
+            },
+            -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
             -- Extra goodies for rust.
             { 'simrat39/rust-tools.nvim' },
