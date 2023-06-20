@@ -5,12 +5,12 @@ return {
         priority = 1000,
         config = function(_, opts)
             require('dracula').setup(opts)
-            vim.cmd.colorscheme 'dracula'
+            vim.cmd.colorscheme 'dracula-soft'
         end,
         opts = {
             colors = {
                 bg = '#0E1419',
-                fg = '#FBEAFF',
+                comment = '#B08BBB',
                 orange = '#FFAACF',
             },
             italic_comment = true,
@@ -32,15 +32,16 @@ return {
     --     opts = {
     --         flavour = 'mocha',
     --         color_overrides = {
-    --             mocha = {
+    --             all = {
     --                 -- I prefer a darker background :)
     --                 base = '#0E1419',
-    --                 crust = '#7F7489',
-    --                 mantle = '#1D1A2D',
+    --                 mantle = '#0E1419',
+    --                 crust = '#2D323D',
     --             },
     --         },
     --         custom_highlights = function(colors)
     --             return {
+    --                 Comment = { fg = '#CDA6C3' },
     --                 DiagnosticUnnecessary = { fg = colors.subtext1, style = { 'italic' } },
     --             }
     --         end,
