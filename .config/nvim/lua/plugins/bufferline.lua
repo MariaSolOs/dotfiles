@@ -18,7 +18,19 @@ return {
                         separator = true,
                     },
                 },
-                diagnostics = 'nvim-lsp',
+                diagnostics = 'nvim_lsp',
+                diagnostics_update_in_insert = false,
+                diagnostics_indicator = function(_, _, diag)
+                    local icons = {
+                        Error = ' ',
+                        Warn = ' ',
+                        Hint = ' ',
+                        Info = ' ',
+                    }
+                    local ret = (diag.error and icons.Error .. diag.error .. ' ' or '')
+                        .. (diag.warning and icons.Warn .. diag.warning or '')
+                    return vim.trim(ret)
+                end,
             },
         },
         init = function()
