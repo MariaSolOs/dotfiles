@@ -19,7 +19,7 @@ return {
                     accept_word = '<M-Space>',
                     next = '<M-]>',
                     prev = '<M-[>',
-                    dismiss = '/',
+                    dismiss = '<M-/>',
                 },
             },
             filetypes = {
