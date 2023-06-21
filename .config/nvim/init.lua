@@ -99,12 +99,36 @@ nmap('<C-l>', '<C-w>l', 'Move to the right window')
 vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- [[ Auto commands ]]
+-- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
     callback = function()
         vim.highlight.on_yank()
     end,
     pattern = '*',
+})
+
+-- Resize splits if the window got resized.
+vim.api.nvim_create_autocmd({ 'VimResized' }, {
+    group = vim.api.nvim_create_augroup('ResizeSplits', { clear = true }),
+    callback = function()
+        vim.cmd 'tabdo wincmd ='
+    end,
+})
+
+-- Close some filetypes with <q>.
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
+    pattern = {
+        'help',
+        'man',
+        'qf',
+        'checkhealth',
+    },
+    callback = function(event)
+        vim.bo[event.buf].buflisted = false
+        nmap('q', '<cmd>close<cr>', { buffer = event.buf, silent = true, desc = 'Close the current buffer' })
+    end,
 })
 
 -- Configure plugins.
