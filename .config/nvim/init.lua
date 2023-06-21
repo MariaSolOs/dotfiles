@@ -104,13 +104,13 @@ vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode 
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = augroup 'YankHighlight',
     callback = function()
-        vim.highlight.on_yank()
+        vim.highlight.on_yank { higroup = 'Search' }
     end,
     pattern = '*',
 })
 
 -- Resize splits if the window got resized.
-vim.api.nvim_create_autocmd({ 'VimResized' }, {
+vim.api.nvim_create_autocmd({ 'VimResized', 'BufNew' }, {
     group = augroup 'ResizeSplits',
     callback = function()
         vim.cmd 'tabdo wincmd ='
