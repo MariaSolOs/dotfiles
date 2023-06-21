@@ -4,6 +4,9 @@ return {
         'folke/flash.nvim',
         event = 'VeryLazy',
         opts = {
+            jump = {
+                autojump = true,
+            },
             modes = {
                 char = {
                     enabled = false,
