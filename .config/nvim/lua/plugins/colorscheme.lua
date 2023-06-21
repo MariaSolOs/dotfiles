@@ -14,10 +14,13 @@ return {
                 orange = '#FFAACF',
             },
             italic_comment = true,
-            overrides = {
-                -- Used in git blames by Gitsigns.
-                MoreMsg = { fg = '#DD58D6' },
-            },
+            overrides = function(colors)
+                return {
+                    -- Used in git blames by Gitsigns.
+                    MoreMsg = { fg = '#DD58D6' },
+                    DiagnosticUnnecessary = { fg = colors.white, italic = true },
+                }
+            end,
         },
     },
 
