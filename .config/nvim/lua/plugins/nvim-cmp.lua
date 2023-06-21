@@ -47,18 +47,8 @@ return {
         config = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
-            require('luasnip.loaders.from_vscode').lazy_load()
             luasnip.config.setup {}
-
-            -- Utility function to only trigger completions when the line isn't
-            -- just prefixed with whitespace.
-            local has_words_before = function()
-                if vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt' then
-                    return false
-                end
-                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match '^%s+$' == nil
-            end
+            require('luasnip.loaders.from_vscode').lazy_load()
 
             -- Set up completions for debugging REPL.
             cmp.setup.filetype({ 'dap-repl', 'dapui_watches', 'dapui_hover' }, {
@@ -93,8 +83,7 @@ return {
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<CR>'] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
-                        -- Require an item to be explicitly selected.
-                        select = false,
+                        select = true,
                     },
                     -- Explicitly request completions.
                     ['<C-Space>'] = cmp.mapping.complete(),
