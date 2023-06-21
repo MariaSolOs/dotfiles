@@ -23,6 +23,24 @@ local servers = {
     },
 }
 
+-- Global diagnostic setup.
+-- Show a severity icon as the prefix for the virtual text and
+-- disable the signs in the gutter.
+vim.diagnostic.config {
+    virtual_text = {
+        source = 'if_many',
+        prefix = function(diagnostic)
+            local icons = require('helpers.icons').diagnostics
+            for d, icon in pairs(icons) do
+                if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+                    return icon
+                end
+            end
+        end,
+    },
+    signs = false,
+}
+
 local nmap = function(lhs, rhs, desc, bufnr)
     require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
 end
