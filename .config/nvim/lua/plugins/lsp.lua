@@ -64,7 +64,7 @@ local on_attach = function(buf_client, bufnr)
 
     -- Set up format on save.
     vim.api.nvim_create_autocmd('BufWritePre', {
-        group = vim.api.nvim_create_augroup('FormatOnSave', {}),
+        group = require('helpers.commands').augroup 'FormatOnSave',
         callback = function()
             local buf = vim.api.nvim_get_current_buf()
             local ft = vim.bo[buf].filetype

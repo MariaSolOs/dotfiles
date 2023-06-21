@@ -1,4 +1,5 @@
 local nmap = require('helpers.keybindings').nmap
+local augroup = require('helpers.commands').augroup
 
 -- Set <space> as the leader key.
 -- Must happen before plugins are required (otherwise the wrong leader will be used).
@@ -101,7 +102,7 @@ vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode 
 -- [[ Auto commands ]]
 -- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
-    group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
+    group = augroup 'YankHighlight',
     callback = function()
         vim.highlight.on_yank()
     end,
@@ -110,7 +111,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Resize splits if the window got resized.
 vim.api.nvim_create_autocmd({ 'VimResized' }, {
-    group = vim.api.nvim_create_augroup('ResizeSplits', { clear = true }),
+    group = augroup 'ResizeSplits',
     callback = function()
         vim.cmd 'tabdo wincmd ='
     end,
@@ -118,7 +119,7 @@ vim.api.nvim_create_autocmd({ 'VimResized' }, {
 
 -- Close some filetypes with <q>.
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
+    group = augroup 'CloseWithQ',
     pattern = {
         'help',
         'man',
