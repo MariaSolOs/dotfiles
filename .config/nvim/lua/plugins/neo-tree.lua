@@ -45,6 +45,8 @@ return {
                 mappings = {
                     ['<space>'] = 'none',
                     ['l'] = 'none',
+                    -- Disable the fuzzy sorter.
+                    ['#'] = 'none',
                     -- TODO: Find a way to make these mappings show up in the ? menu.
                     -- Go to the first child.
                     ['hh'] = function(state)
