@@ -9,7 +9,18 @@ local servers = {
         },
     },
     marksman = {},
-    tsserver = {},
+    tsserver = {
+        init_options = {
+            preferences = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                includeInlayFunctionLikeReturnTypeHints = true,
+            },
+        },
+    },
 }
 
 local nmap = function(lhs, rhs, desc, bufnr)
