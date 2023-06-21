@@ -22,7 +22,6 @@ return {
         },
         init = function()
             vim.api.nvim_set_hl(0, 'FlashBackdrop', { italic = true })
-            vim.api.nvim_set_hl(0, 'FlashCurrent', { fg = '#000000', bg = '#DD58DC' })
         end,
     },
 }

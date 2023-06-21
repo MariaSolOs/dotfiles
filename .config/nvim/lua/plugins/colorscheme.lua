@@ -17,8 +17,10 @@ return {
             overrides = function(colors)
                 return {
                     -- Used in git blames by Gitsigns.
-                    MoreMsg = { fg = '#DD58D6' },
+                    MoreMsg = { fg = '#E11299' },
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
+                    IncSearch = { fg = '#000000', bg = '#E11299' },
+                    Substitute = { fg = '#E11299', bg = colors.orange, bold = true },
                 }
             end,
         },
