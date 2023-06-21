@@ -193,6 +193,14 @@ return {
                                     ['<leader>R'] = { name = '+rust' },
                                 }
                             end,
+                            settings = {
+                                ['rust-analyzer'] = {
+                                    inlayHints = {
+                                        -- These are a bit too much.
+                                        chainingHints = { enable = false },
+                                    },
+                                },
+                            },
                         },
                     }
                 end,
