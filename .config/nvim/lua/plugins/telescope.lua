@@ -34,8 +34,11 @@ return {
                 defaults = {
                     mappings = {
                         i = {
-                            -- Close with esc.
-                            ['<esc>'] = actions.close,
+                            -- Close with esc, returning to normal mode.
+                            ['<esc>'] = function(bufnr)
+                                actions.close(bufnr)
+                                vim.cmd 'stopinsert'
+                            end,
                             -- Clear the search with ctrl-u.
                             ['<C-u>'] = false,
                         },
