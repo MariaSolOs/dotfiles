@@ -16,7 +16,8 @@ return {
                 keymap = {
                     -- Disable the built-in mapping, we'll configure it in nvim-cmp.
                     accept = false,
-                    accept_word = '<M-Space>',
+                    accept_word = '<M-w>',
+                    accept_line = '<M-l>',
                     next = '<M-]>',
                     prev = '<M-[>',
                     dismiss = '<M-/>',
