@@ -1,18 +1,13 @@
 return {
     {
-        'Mofiqul/dracula.nvim',
+        'MariaSolOs/miss-dracula.nvim',
         lazy = false,
         priority = 1000,
         config = function(_, opts)
-            require('dracula').setup(opts)
-            vim.cmd.colorscheme 'dracula-soft'
+            require('miss-dracula').setup(opts)
+            vim.cmd.colorscheme 'miss-dracula'
         end,
         opts = {
-            colors = {
-                bg = '#0E1419',
-                comment = '#B08BBB',
-                orange = '#FFAACF',
-            },
             italic_comment = true,
             overrides = function(colors)
                 return {
@@ -48,6 +43,8 @@ return {
                     DapUIBreakpointsCurrentLine = { fg = colors.bright_green, bold = true },
                     DapStoppedLine = { default = true, link = 'Visual' },
                     DapUIWinSelect = { fg = colors.bright_cyan, bold = true },
+                    -- Make the title of the focused window in the file explorer more visible.
+                    MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
                 }
             end,
         },

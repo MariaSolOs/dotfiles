@@ -6,4 +6,10 @@ return {
 
     -- Toggle relative line numbers in normal mode.
     { 'sitiom/nvim-numbertoggle' },
+
+    -- Rainbow brackets.
+    {
+        'HiPhish/nvim-ts-rainbow2',
+        dependencies = 'nvim-treesitter/nvim-treesitter',
+    },
 }
