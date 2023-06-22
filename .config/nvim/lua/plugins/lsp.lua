@@ -51,9 +51,7 @@ end
 local on_attach = function(buf_client, bufnr)
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', bufnr)
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline', bufnr)
-    vim.keymap.set('n', '<leader>r', function()
-        return ':IncRename ' .. vim.fn.expand '<cword>'
-    end, { desc = 'Rename', buffer = bufnr, expr = true })
+    nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename', bufnr)
 
     nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols', bufnr)
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
@@ -257,13 +255,6 @@ return {
                 },
             },
         },
-    },
-
-    -- Rename with preview spans.
-    {
-        'smjonas/inc-rename.nvim',
-        config = true,
-        cmd = 'IncRename',
     },
 
     -- Use Neovim as a language server.
