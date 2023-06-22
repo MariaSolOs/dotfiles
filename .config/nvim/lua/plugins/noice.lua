@@ -53,11 +53,6 @@ return {
                     return '<C-b>'
                 end
             end, { silent = true, expr = true })
-
-            -- Highlights for the progress bar.
-            vim.api.nvim_set_hl(0, 'NoiceFormatProgressDone', { bg = '#27E1C1', fg = '#000000' })
-            vim.api.nvim_set_hl(0, 'NoiceLspProgressSpinner', { fg = '#27E1C1' })
-            vim.api.nvim_set_hl(0, 'NoiceFormatProgressTodo', { link = 'NonText' })
         end,
     },
 }

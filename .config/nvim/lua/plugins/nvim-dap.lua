@@ -151,9 +151,6 @@ return {
         config = function()
             local dap = require 'dap'
 
-            -- Highlight when stopping on a breakpoint.
-            vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
-
             -- Omnifunc completion for REPL.
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'dap-repl',
