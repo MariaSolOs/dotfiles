@@ -14,6 +14,7 @@ return {
                 'lua',
                 'regex',
                 'rust',
+                'toml',
                 'typescript',
                 'vim',
                 'vimdoc',

@@ -8,6 +8,7 @@ local servers = {
             },
         },
     },
+    -- Markdown.
     marksman = {},
     tsserver = {
         init_options = {
@@ -21,6 +22,8 @@ local servers = {
             },
         },
     },
+    -- TOML (mostly used for rust).
+    taplo = {},
 }
 
 -- Global diagnostic setup.
@@ -83,6 +86,7 @@ local on_attach = function(buf_client, bufnr)
     -- Set up format on save.
     vim.api.nvim_create_autocmd('BufWritePre', {
         group = require('helpers.commands').augroup 'FormatOnSave',
+        pattern = { '*.lua', '*.rs' },
         callback = function()
             local buf = vim.api.nvim_get_current_buf()
             local ft = vim.bo[buf].filetype
@@ -207,6 +211,7 @@ return {
                                 nmap('K', rt.hover_actions.hover_actions, 'Hover', bufnr)
                                 nmap('<leader>Rm', rt.expand_macro.expand_macro, 'Expand macro', bufnr)
                                 nmap('<leader>Rr', rt.runnables.runnables, 'Runnables', bufnr)
+                                nmap('<leader>Rc', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml', bufnr)
                                 require('which-key').register {
                                     ['<leader>R'] = { name = '+rust' },
                                 }
