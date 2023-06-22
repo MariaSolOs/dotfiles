@@ -8,16 +8,6 @@ return {
         event = 'VeryLazy',
         opts = {
             options = {
-                offsets = {
-                    {
-                        -- When toggling the explorer, place a "File Explorer" title
-                        -- in the bufferline.
-                        filetype = 'neo-tree',
-                        text = 'File Explorer',
-                        highlight = 'Directory',
-                        separator = true,
-                    },
-                },
                 diagnostics = 'nvim_lsp',
                 diagnostics_update_in_insert = false,
                 diagnostics_indicator = function(_, _, diag)

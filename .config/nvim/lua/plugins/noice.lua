@@ -21,20 +21,6 @@ return {
             -- Send non-error/warnings to the mini view.
             messages = { view = 'mini' },
             routes = {
-                -- Don't show Neo-tree's info notications.
-                {
-                    filter = {
-                        event = 'notify',
-                        kind = 'info',
-                        cond = function(message)
-                            if message.event == 'notify' and message.kind == 'info' then
-                                return message:content():find '[Neo-tree INFO]'
-                            end
-                            return false
-                        end,
-                    },
-                    opts = { skip = true },
-                },
                 {
                     filter = {
                         event = 'lsp',
