@@ -86,6 +86,10 @@ vim.keymap.set({ 'n', 'v' }, ';', ':')
 -- Quit Neovim.
 nmap('<leader>q', ':qa<cr>', 'Quit Neovim')
 
+-- Command for opening this file and cd-ing into its containing directory.
+vim.api.nvim_create_user_command('OpenConfig', ':e $MYVIMRC | :cd %:p:h', {})
+nmap('<leader>C', ':OpenConfig<cr>', 'Open Neovim configuration')
+
 -- Adding blank lines in normal mode.
 nmap('<Enter>', 'o<Esc>', 'Insert a line below')
 nmap('<S-Enter>', 'O<Esc>', 'Insert a line above')

@@ -20,8 +20,7 @@ return {
                 dashboard.button('f', ' ' .. ' Find file', ':Telescope find_files<cr>'),
                 dashboard.button('o', ' ' .. ' Recent files', ':Telescope oldfiles<cr>'),
                 dashboard.button('g', ' ' .. ' Find text', ':Telescope live_grep<cr>'),
-                -- Open init.lua and cd into its containing directory.
-                dashboard.button('c', ' ' .. ' Config', ':e $MYVIMRC | :cd %:p:h<cr>'),
+                dashboard.button('c', ' ' .. ' Config', ':OpenConfig<cr>'),
                 dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<cr>'),
                 dashboard.button('q', ' ' .. ' Quit', ':qa<cr>'),
             }
@@ -40,9 +39,6 @@ return {
         end,
         config = function(_, dashboard)
             require('alpha').setup(dashboard.opts)
-
-            -- Keybinding for opening the dashboard.
-            require('helpers.keybindings').nmap('<leader>D', ':Alpha<cr>', 'Open dashboard')
         end,
     },
 }
