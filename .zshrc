@@ -117,5 +117,9 @@ export NVM_DIR="$HOME/.nvm"
 # Set up the starshipt prompt.
 eval "$(starship init zsh)"
 
-# Git alias for my dotfiles repo.
+# Git aliases for my dotfiles repo.
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+# Idk why but I couldn't use the config alias below.
+alias cs='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME status'
+alias ca='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME add'
+alias cc='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME commit -m'
