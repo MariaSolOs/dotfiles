@@ -50,10 +50,6 @@ return {
             require('luasnip.loaders.from_vscode').lazy_load()
 
             cmp.setup {
-                enabled = function()
-                    return vim.api.nvim_get_option_value('buftype', { buf = 0 }) ~= 'prompt'
-                        or require('cmp_dap').is_dap_buffer()
-                end,
                 formatting = {
                     format = function(_, vim_item)
                         vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
