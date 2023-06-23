@@ -41,6 +41,9 @@ return {
                             end,
                             -- Clear the search with ctrl-u.
                             ['<C-u>'] = false,
+                            -- Use <C-s> to open an horizontal split instead of <C-x>.
+                            ['<C-x>'] = false,
+                            ['<C-s>'] = require('telescope.actions').select_horizontal,
                         },
                     },
                     -- Use a vertical layout.
