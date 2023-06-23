@@ -136,6 +136,16 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
+-- Recognize some files known to have JSON with comments.
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+    group = augroup 'RecognizeJsonWithComments',
+    pattern = {
+        '.eslintrc.json',
+        'tsconfig*.json',
+    },
+    command = 'setlocal filetype=jsonc',
+})
+
 -- Configure plugins.
 require('lazy').setup('plugins', {
     ui = {
