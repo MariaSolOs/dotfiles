@@ -10,18 +10,6 @@ local servers = {
     },
     -- Markdown.
     marksman = {},
-    tsserver = {
-        init_options = {
-            preferences = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayFunctionLikeReturnTypeHints = true,
-            },
-        },
-    },
     -- TOML (mostly used for rust).
     taplo = {},
 }
@@ -281,5 +269,25 @@ return {
                 },
             }
         end,
+    },
+
+    -- "Native" TSServer client.
+    {
+        'pmizio/typescript-tools.nvim',
+        branch = 'feat-change-path-resolve-strategy',
+        dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+        opts = {
+            on_attach = on_attach,
+            settings = {
+                tsserver_file_preferences = {
+                    includeInlayParameterNameHints = 'all',
+                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                    includeInlayFunctionParameterTypeHints = true,
+                    includeInlayVariableTypeHints = true,
+                    includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                    includeInlayFunctionLikeReturnTypeHints = true,
+                },
+            },
+        },
     },
 }
