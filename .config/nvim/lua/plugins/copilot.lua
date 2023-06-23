@@ -34,6 +34,7 @@ return {
 
             -- Hide suggestions when the completion menu is open.
             cmp.event:on('menu_opened', function()
+                require('copilot.suggestion').dismiss()
                 vim.b.copilot_suggestion_hidden = true
             end)
             cmp.event:on('menu_closed', function()
