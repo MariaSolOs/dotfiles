@@ -57,8 +57,13 @@ local on_attach = function(buf_client, bufnr)
     nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
 
     nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition', bufnr)
-    nmap('gD', ':Lspsaga lsp_finder<cr>', 'Go to symbol definition', bufnr)
     nmap('gr', require('telescope.builtin').lsp_references, 'Go to references', bufnr)
+    if buf_client.server_capabilities.implementationProvider then
+        nmap('gI', require('telescope.builtin').lsp_implementations, 'Go to implementation(s)', bufnr)
+    end
+    if buf_client.server_capabilities.typeDefinitionProvider then
+        nmap('gt', require('telescope.builtin').lsp_type_definitions, 'Go to type definition(s)', bufnr)
+    end
 
     -- noice deals with the UI.
     nmap('K', vim.lsp.buf.hover, 'Hover', bufnr)
