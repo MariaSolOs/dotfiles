@@ -220,6 +220,13 @@ return {
                         },
                     }
                 end,
+                eslint = function()
+                    require('lspconfig').eslint.setup {
+                        settings = {
+                            format = false,
+                        },
+                    }
+                end,
             }
         end,
     },
