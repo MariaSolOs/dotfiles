@@ -18,6 +18,9 @@ return {
                 go_in_plus = '<cr>',
                 go_out_plus = '<tab>',
             },
+            windows = {
+                width_nofocus = 25,
+            },
         },
         init = function()
             -- Add rounded corners.
