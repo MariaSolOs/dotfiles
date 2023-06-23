@@ -40,7 +40,6 @@ return {
             'hrsh7th/cmp-nvim-lsp',
             'rafamadriz/friendly-snippets',
             'hrsh7th/cmp-buffer',
-            'rcarriga/cmp-dap',
         },
         version = false,
         event = 'InsertEnter',
@@ -49,13 +48,6 @@ return {
             local luasnip = require 'luasnip'
             luasnip.config.setup {}
             require('luasnip.loaders.from_vscode').lazy_load()
-
-            -- Set up completions for debugging REPL.
-            cmp.setup.filetype({ 'dap-repl', 'dapui_watches', 'dapui_hover' }, {
-                sources = {
-                    { name = 'dap' },
-                },
-            })
 
             cmp.setup {
                 enabled = function()
