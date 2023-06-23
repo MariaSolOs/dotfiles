@@ -8,6 +8,7 @@ return {
                 autojump = true,
             },
             modes = {
+                -- Disable ft motions.
                 char = {
                     enabled = false,
                 },

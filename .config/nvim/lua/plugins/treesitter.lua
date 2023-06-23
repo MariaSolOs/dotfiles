@@ -2,7 +2,7 @@
 return {
     {
         'nvim-treesitter/nvim-treesitter',
-        dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
+        dependencies = 'nvim-treesitter/nvim-treesitter-textobjects',
         lazy = true,
         build = ':TSUpdate',
         opts = {

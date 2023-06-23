@@ -128,18 +128,16 @@ return {
             {
                 'williamboman/mason.nvim',
                 cmd = { 'Mason', 'LspInstall', 'LspUnInstall' },
-                config = function()
-                    require('mason').setup()
-                    -- Ensure the servers above are installed.
-                    require('mason-lspconfig').setup {
-                        ensure_installed = vim.tbl_keys(servers),
-                    }
-                end,
+                config = true,
             },
-            { 'williamboman/mason-lspconfig.nvim', lazy = true },
+            {
+                'williamboman/mason-lspconfig.nvim',
+                opts = {
+                    ensure_installed = vim.tbl_keys(servers),
+                },
+            },
             {
                 'folke/neodev.nvim',
-                lazy = true,
                 opts = {
                     -- Types for DAP UI.
                     library = { plugins = { 'nvim-dap-ui' }, types = true },
@@ -151,9 +149,6 @@ return {
             { 'simrat39/rust-tools.nvim' },
         },
         config = function()
-            -- Setup neovim lua configuration.
-            require('neodev').setup()
-
             -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
@@ -234,8 +229,8 @@ return {
         'glepnir/lspsaga.nvim',
         cmd = 'Lspsaga',
         dependencies = {
-            { 'nvim-tree/nvim-web-devicons' },
-            { 'nvim-treesitter/nvim-treesitter' },
+            'nvim-tree/nvim-web-devicons',
+            'nvim-treesitter/nvim-treesitter',
         },
         opts = {
             ui = {
@@ -260,7 +255,7 @@ return {
     -- Use Neovim as a language server.
     {
         'jose-elias-alvarez/null-ls.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
+        dependencies = 'nvim-lua/plenary.nvim',
         event = 'VeryLazy',
         config = function()
             local null_ls = require 'null-ls'

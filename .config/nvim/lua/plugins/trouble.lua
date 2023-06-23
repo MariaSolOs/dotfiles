@@ -2,7 +2,7 @@
 return {
     'folke/trouble.nvim',
     cmd = { 'Trouble', 'TroubleToggle' },
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = 'nvim-tree/nvim-web-devicons',
     opts = {
         -- When opening a diagnostic with <Enter>, close the list.
         -- When opening it with <Tab>, jump to it without closing the list.
