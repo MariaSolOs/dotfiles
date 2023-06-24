@@ -62,9 +62,10 @@ return {
                     end,
                 },
                 window = {
-                    -- Make the completion menus bordered.
+                    -- Make the completion menu bordered.
                     completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
+                    -- Disable the documentation popup. It gets too cluttered.
+                    documentation = cmp.config.disable,
                 },
                 mapping = cmp.mapping.preset.insert {
                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
