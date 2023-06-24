@@ -20,7 +20,7 @@ return {
                     accept_line = '<M-l>',
                     next = '<M-]>',
                     prev = '<M-[>',
-                    dismiss = '<M-\\>',
+                    dismiss = '/',
                 },
             },
             filetypes = {
@@ -29,12 +29,13 @@ return {
         },
         config = function(_, opts)
             local cmp = require 'cmp'
+            local copilot = require 'copilot.suggestion'
 
             require('copilot').setup(opts)
 
             -- Hide suggestions when the completion menu is open.
             cmp.event:on('menu_opened', function()
-                require('copilot.suggestion').dismiss()
+                copilot.dismiss()
                 vim.b.copilot_suggestion_hidden = true
             end)
             cmp.event:on('menu_closed', function()
