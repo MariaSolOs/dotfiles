@@ -43,7 +43,18 @@ return {
                             ['<C-u>'] = false,
                             -- Use <C-s> to open an horizontal split instead of <C-x>.
                             ['<C-x>'] = false,
-                            ['<C-s>'] = require('telescope.actions').select_horizontal,
+                            -- Create splits, returning to normal mode.
+                            ['<C-s>'] = function()
+                                require('telescope.actions').select_horizontal()
+                                vim.cmd 'stopinsert'
+                            end,
+                            ['<C-v>'] = function()
+                                require('telescope.actions').select_vertical()
+                                vim.cmd 'stopinsert'
+                            end,
+                            -- Navigate through prompt history.
+                            ['<C-j>'] = require('telescope.actions').cycle_history_next,
+                            ['<C-k>'] = require('telescope.actions').cycle_history_prev,
                         },
                     },
                     -- Use a vertical layout.
