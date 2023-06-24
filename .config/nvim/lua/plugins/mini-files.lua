@@ -16,8 +16,13 @@ end
 
 -- Utilities for creating splits.
 local map_split = function(buf_id, lhs, direction)
+    local minifiles = require 'mini.files'
+
     local rhs = function()
-        local minifiles = require 'mini.files'
+        -- Noop if the cursor is on a directory.
+        if minifiles.get_fs_entry().fs_type == 'directory' then
+            return
+        end
 
         -- Make a new window and set it as target.
         local new_target_window
@@ -27,6 +32,9 @@ local map_split = function(buf_id, lhs, direction)
         end)
 
         minifiles.set_target_window(new_target_window)
+        -- Go in and close the explorer.
+        minifiles.go_in()
+        minifiles.close()
     end
 
     local desc = 'Split ' .. string.sub(direction, 12)
@@ -41,7 +49,7 @@ return {
             {
                 '<leader>f',
                 function()
-                    require('mini.files').open(vim.api.nvim_buf_get_name(0), false)
+                    require('mini.files').open(vim.api.nvim_buf_get_name(0))
                 end,
                 desc = 'Open file explorer',
             },
