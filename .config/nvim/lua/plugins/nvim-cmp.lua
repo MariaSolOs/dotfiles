@@ -75,7 +75,7 @@ return {
                     },
                     -- Explicitly request completions.
                     ['<C-Space>'] = cmp.mapping.complete(),
-                    ['/'] = cmp.mapping.abort(),
+                    ['\\'] = cmp.mapping.abort(),
                     ['<Tab>'] = cmp.mapping(function(fallback)
                         local copilot = require 'copilot.suggestion'
                         if cmp.visible() then

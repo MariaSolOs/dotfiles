@@ -20,7 +20,7 @@ return {
                     accept_line = '<M-l>',
                     next = '<M-]>',
                     prev = '<M-[>',
-                    dismiss = '<M-/>',
+                    dismiss = '<M-\\>',
                 },
             },
             filetypes = {

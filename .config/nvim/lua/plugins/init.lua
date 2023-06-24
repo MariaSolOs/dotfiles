@@ -6,4 +6,11 @@ return {
 
     -- Toggle relative line numbers in normal mode.
     { 'sitiom/nvim-numbertoggle' },
+
+    -- Autoclosing braces.
+    {
+        'windwp/nvim-autopairs',
+        event = 'InsertEnter',
+        config = true,
+    },
 }
