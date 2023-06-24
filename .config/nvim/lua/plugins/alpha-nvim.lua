@@ -24,7 +24,7 @@ return {
                 dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<cr>'),
                 dashboard.button('q', ' ' .. ' Quit', ':qa<cr>'),
             }
-            dashboard.section.footer.val = "It's not a bug, it's a feature. 🌟"
+            dashboard.section.footer.val = 'Current folder: ' .. vim.fn.getcwd()
 
             for _, button in ipairs(dashboard.section.buttons.val) do
                 button.opts.hl = 'AlphaButtons'
