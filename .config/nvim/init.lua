@@ -100,7 +100,7 @@ nmap('<C-j>', '<C-w>j', 'Move to the bottom window')
 nmap('<C-k>', '<C-w>k', 'Move to the top window')
 nmap('<C-l>', '<C-w>l', 'Move to the right window')
 
--- Exit insert mode and save the changes.
+-- Exit insert mode.
 vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- [[ Auto commands ]]

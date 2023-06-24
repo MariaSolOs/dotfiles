@@ -14,12 +14,12 @@ return {
                 override = {
                     ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
                     ['vim.lsp.util.stylize_markdown'] = true,
-                    ['cmp.entry.get_documentation'] = true,
                 },
             },
             -- Send non-error/warnings to the mini view.
             messages = { view = 'mini' },
             routes = {
+                -- This guy is way too noisy. Ignore it.
                 {
                     filter = {
                         event = 'lsp',
@@ -41,7 +41,7 @@ return {
             { '<leader>sn', ':NoiceTelescope<cr>', desc = 'Search Noice' },
         },
         init = function()
-            -- LSP hover doc scrolling.
+            -- Hover doc scrolling.
             vim.keymap.set({ 'n', 'i', 's' }, '<C-f>', function()
                 if not require('noice.lsp').scroll(4) then
                     return '<C-f>'

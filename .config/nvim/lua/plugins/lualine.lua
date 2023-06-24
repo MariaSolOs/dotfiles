@@ -17,7 +17,14 @@ return {
                 lualine_c = {
                     {
                         function()
-                            return require('noice').api.status.mode.get()
+                            local mode = require('noice').api.status.mode.get()
+
+                            -- Don't show --INSERT-- since there's already a section showing the mode.
+                            if string.match(mode, 'INSERT') then
+                                return ''
+                            else
+                                return mode
+                            end
                         end,
                         cond = function()
                             return package.loaded['noice'] and require('noice').api.status.mode.has()
