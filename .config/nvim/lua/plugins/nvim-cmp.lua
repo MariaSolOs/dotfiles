@@ -50,6 +50,9 @@ return {
             require('luasnip.loaders.from_vscode').lazy_load()
 
             cmp.setup {
+                -- Disable preselect. On enter, the first thing will be used if nothing
+                -- is selected.
+                preselect = cmp.PreselectMode.None,
                 formatting = {
                     format = function(_, vim_item)
                         vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
