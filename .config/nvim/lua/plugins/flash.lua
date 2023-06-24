@@ -21,10 +21,10 @@ return {
                 function()
                     require('flash').jump()
                 end,
-                desc = 'Flash Jump',
             },
         },
         init = function()
+            -- When triggered, make everything in the backdrop italic.
             vim.api.nvim_set_hl(0, 'FlashBackdrop', { italic = true })
         end,
     },

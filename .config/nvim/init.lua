@@ -91,8 +91,7 @@ vim.api.nvim_create_user_command('OpenConfig', ':e $MYVIMRC | :cd %:p:h', {})
 nmap('<leader>C', ':OpenConfig<cr>', 'Open Neovim configuration')
 
 -- Adding blank lines in normal mode.
-nmap('<Enter>', 'o<Esc>', 'Insert a line below')
-nmap('<S-Enter>', 'O<Esc>', 'Insert a line above')
+nmap('<S-Enter>', 'o<Esc>', 'Insert a line below')
 
 -- Switch between windows.
 nmap('<C-h>', '<C-w>h', 'Move to the left window')
@@ -101,7 +100,7 @@ nmap('<C-k>', '<C-w>k', 'Move to the top window')
 nmap('<C-l>', '<C-w>l', 'Move to the right window')
 
 -- Exit insert mode.
-vim.keymap.set({ 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
+vim.keymap.set({ 's', 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- [[ Auto commands ]]
 -- Highlight on yank.
@@ -114,7 +113,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Resize splits if the window got resized.
-vim.api.nvim_create_autocmd({ 'VimResized' }, {
+vim.api.nvim_create_autocmd('VimResized', {
     group = augroup 'ResizeSplits',
     callback = function()
         vim.cmd 'tabdo wincmd ='

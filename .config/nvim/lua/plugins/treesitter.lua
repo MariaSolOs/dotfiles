@@ -3,8 +3,13 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects', 'HiPhish/nvim-ts-rainbow2' },
-        lazy = true,
+        version = false,
+        event = { 'BufReadPost', 'BufNewFile' },
         build = ':TSUpdate',
+        keys = {
+            { '<cr>', desc = 'Increment selection' },
+            { '<bs>', desc = 'Decrement selection', mode = 'x' },
+        },
         opts = {
             ensure_installed = {
                 'bash',
@@ -26,8 +31,10 @@ return {
             incremental_selection = {
                 enable = true,
                 keymaps = {
-                    node_incremental = '<C-o>',
-                    node_decremental = '<C-i>',
+                    init_selection = '<cr>',
+                    node_incremental = '<cr>',
+                    scope_incremental = false,
+                    node_decremental = '<bs>',
                 },
             },
             textobjects = {

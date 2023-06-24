@@ -43,9 +43,14 @@ return {
         },
         version = false,
         event = 'InsertEnter',
+        init = function()
+            -- Inside a snippet, use backspace to remove the placeholder.
+            vim.keymap.set('s', '<BS>', '<C-O>s', { silent = true })
+        end,
         config = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
+
             luasnip.config.setup {}
             require('luasnip.loaders.from_vscode').lazy_load()
 

@@ -46,7 +46,6 @@ return {
                 nmap('<leader>gu', gs.undo_stage_hunk, 'Undo stage hunk')
                 nmap('<leader>gR', gs.reset_buffer, 'Reset hunks in buffer')
                 nmap('<leader>gp', gs.preview_hunk, 'Preview hunk')
-                nmap('<leader>gb', gs.blame_line, 'Blame line')
                 nmap('<leader>th', function()
                     gs.setqflist 'all'
                 end, 'Toggle hunks')

@@ -17,14 +17,9 @@ return {
                 lualine_c = {
                     {
                         function()
+                            -- HACK: Just show the mode if we're recording.
                             local mode = require('noice').api.status.mode.get()
-
-                            -- Don't show --INSERT-- since there's already a section showing the mode.
-                            if string.match(mode, 'INSERT') then
-                                return ''
-                            else
-                                return mode
-                            end
+                            return string.match(mode, '^recording @.*') or ''
                         end,
                         cond = function()
                             return package.loaded['noice'] and require('noice').api.status.mode.has()

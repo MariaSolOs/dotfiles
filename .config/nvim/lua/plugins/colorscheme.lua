@@ -13,13 +13,17 @@ return {
                 return {
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
+
                     -- Group used by Gitsigns and Noice. Make it stand out.
                     MoreMsg = { fg = '#E11299' },
+
                     -- Make search a bit more visible for flash.
                     IncSearch = { fg = '#000000', bg = '#E11299' },
                     Substitute = { fg = '#E11299', bg = colors.orange, bold = true },
+
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
+
                     -- Highlights for the progress bar.
                     NoiceFormatProgressDone = { bg = '#27E1C1', fg = '#000000' },
                     NoiceLspProgressSpinner = { fg = '#27E1C1' },
