@@ -36,7 +36,7 @@
   "nvim-notify": { "branch": "master", "commit": "ea9c8ce7a37f2238f934e087c255758659948e0f" },
   "nvim-numbertoggle": { "branch": "main", "commit": "1dcc1507578f6f216917065da9dac169670dbcd3" },
   "nvim-surround": { "branch": "main", "commit": "10b20ca7d9da1ac8df8339e140ffef94f9ab3b18" },
-  "nvim-treesitter": { "branch": "master", "commit": "f26596386f31d5bd74b85b7d1ab0fd90c5b98608" },
+  "nvim-treesitter": { "branch": "master", "commit": "18983e3a8266249e0a813c1056a2a51e07be3faa" },
   "nvim-treesitter-textobjects": { "branch": "master", "commit": "83c59ed1eeae70a55605990993cf4d208948fdf7" },
   "nvim-ts-rainbow2": { "branch": "master", "commit": "3edad7f978513499651d8b068880948f42c16d79" },
   "nvim-ufo": { "branch": "main", "commit": "43e39ec74cd57c45ca9d8229a796750f6083b850" },
@@ -50,7 +50,7 @@
   "telescope.nvim": { "branch": "0.1.x", "commit": "776b509f80dd49d8205b9b0d94485568236d1192" },
   "todo-comments.nvim": { "branch": "main", "commit": "09b0b17d824d2d56f02ff15967e8a2499a89c731" },
   "trouble.nvim": { "branch": "main", "commit": "a3372bd2ba3a91882a6e54ed35da13a441d7c167" },
-  "typescript-tools.nvim": { "branch": "feat-change-path-resolve-strategy", "commit": "29c0947bf64c0825b5941f30ea35bd5e9ee73241" },
+  "typescript-tools.nvim": { "branch": "fix-workspace-symbols", "commit": "cd3b81a727546f32599b587abb60a5b2e7681d5a" },
   "vim-illuminate": { "branch": "master", "commit": "a2907275a6899c570d16e95b9db5fd921c167502" },
   "vscode-js-debug": { "branch": "main", "commit": "5f238bdf4d48e3db45e0cb4d4e0f9e6e4ab9240e" },
   "which-key.nvim": { "branch": "main", "commit": "d871f2b664afd5aed3dc1d1573bef2fb24ce0484" }

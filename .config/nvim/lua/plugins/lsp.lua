@@ -12,18 +12,6 @@ local servers = {
     marksman = {},
     -- TOML (mostly used for rust).
     taplo = {},
-    tsserver = {
-        init_options = {
-            preferences = {
-                includeInlayParameterNameHints = 'all',
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-                includeInlayFunctionLikeReturnTypeHints = true,
-            },
-        },
-    },
 }
 
 -- Global diagnostic setup.
@@ -259,6 +247,25 @@ return {
                 keys = {
                     jump_to = '<Tab>',
                     expand_or_jump = '<cr>',
+                },
+            },
+        },
+    },
+
+    -- "Native" TSServer client.
+    {
+        'pmizio/typescript-tools.nvim',
+        dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+        opts = {
+            on_attach = on_attach,
+            settings = {
+                tsserver_file_preferences = {
+                    includeInlayParameterNameHints = 'all',
+                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                    includeInlayFunctionParameterTypeHints = true,
+                    includeInlayVariableTypeHints = true,
+                    includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                    includeInlayFunctionLikeReturnTypeHints = true,
                 },
             },
         },
