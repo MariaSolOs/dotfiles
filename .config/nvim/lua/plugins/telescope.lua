@@ -52,9 +52,6 @@ return {
                                 require('telescope.actions').select_vertical()
                                 vim.cmd 'stopinsert'
                             end,
-                            -- Navigate through prompt history.
-                            ['<C-j>'] = require('telescope.actions').cycle_history_next,
-                            ['<C-k>'] = require('telescope.actions').cycle_history_prev,
                         },
                     },
                     -- Use a vertical layout.
