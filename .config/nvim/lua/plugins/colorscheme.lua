@@ -28,6 +28,10 @@ return {
                     NoiceFormatProgressDone = { bg = '#27E1C1', fg = '#000000' },
                     NoiceLspProgressSpinner = { fg = '#27E1C1' },
                     NoiceFormatProgressTodo = { link = 'NonText' },
+
+                    -- Nicer highlights for the word under the cursor.
+                    IlluminatedWordRead = { bg = '#364852' },
+                    IlluminatedWordWrite = { bg = '#342231' },
                 }
             end,
         },
