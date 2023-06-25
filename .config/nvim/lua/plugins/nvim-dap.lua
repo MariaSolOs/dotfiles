@@ -17,6 +17,8 @@ return {
                     {
                         '<leader>de',
                         function()
+                            -- Calling this twice to open and jump into the window.
+                            require('dapui').eval()
                             require('dapui').eval()
                         end,
                         desc = 'Evaluate expression',
