@@ -43,6 +43,16 @@ return {
                 vim.b.copilot_suggestion_hidden = false
             end)
 
+            -- Always dismiss the suggestion when leaving insert mode.
+            vim.api.nvim_create_autocmd('InsertLeave', {
+                pattern = '*',
+                callback = function()
+                    if copilot.is_visible() then
+                        copilot.dismiss()
+                    end
+                end,
+            })
+
             -- HACK: Only enable the dismiss mapping if a suggestion is visible.
             vim.keymap.set('i', '/', function()
                 if copilot.is_visible() then
