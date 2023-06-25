@@ -42,6 +42,9 @@ vim.wo.number = true
 -- Enable mouse mode.
 vim.o.mouse = 'a'
 
+-- Disable this since the mode will be displayed by lualine.
+vim.o.showmode = false
+
 -- Sync clipboard between the OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
 
