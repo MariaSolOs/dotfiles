@@ -20,7 +20,8 @@ return {
                     accept_line = '<M-l>',
                     next = '<M-]>',
                     prev = '<M-[>',
-                    dismiss = '/',
+                    -- Disable this mapping since I enable it only if a suggestion is visible.
+                    dismiss = false,
                 },
             },
             filetypes = {
@@ -41,6 +42,16 @@ return {
             cmp.event:on('menu_closed', function()
                 vim.b.copilot_suggestion_hidden = false
             end)
+
+            -- HACK: Only enable the dismiss mapping if a suggestion is visible.
+            vim.keymap.set('i', '/', function()
+                if copilot.is_visible() then
+                    copilot.dismiss()
+                    return '<Ignore>'
+                else
+                    return '/'
+                end
+            end, { expr = true })
         end,
     },
 }
