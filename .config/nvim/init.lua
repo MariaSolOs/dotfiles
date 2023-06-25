@@ -75,6 +75,12 @@ vim.o.termguicolors = true
 -- Disable some of those annoying hit-enter messages.
 vim.opt.shortmess:append 'IWs'
 
+-- Disable checks for these providers.
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
+
 -- [[ Keymaps ]]
 -- Make the leader a noop when not followed by something.
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
