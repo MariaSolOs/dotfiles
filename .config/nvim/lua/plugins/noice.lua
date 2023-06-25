@@ -18,20 +18,6 @@ return {
             },
             -- Send non-error/warnings to the mini view.
             messages = { view = 'mini' },
-            routes = {
-                -- This guy is way too noisy. Ignore it.
-                {
-                    filter = {
-                        event = 'lsp',
-                        kind = 'progress',
-                        cond = function(message)
-                            local client = vim.tbl_get(message.opts, 'progress', 'client')
-                            return client == 'null-ls'
-                        end,
-                    },
-                    opts = { skip = true },
-                },
-            },
         },
         dependencies = {
             'MunifTanjim/nui.nvim',

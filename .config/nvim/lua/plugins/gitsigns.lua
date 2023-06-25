@@ -40,6 +40,7 @@ return {
                     end)
                     return '<Ignore>'
                 end, 'Previous hunk', { expr = true })
+                nmap('<leader>gb', gs.blame_line, 'Blame line')
                 nmap('<leader>gs', gs.stage_hunk, 'Stage hunk')
                 nmap('<leader>gr', gs.reset_hunk, 'Reset hunk')
                 nmap('<leader>gS', gs.stage_buffer, 'Stage all hunks in buffer')
