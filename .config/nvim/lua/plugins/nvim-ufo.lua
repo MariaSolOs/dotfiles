@@ -1,4 +1,6 @@
-local nmap = require('helpers.keybindings').nmap
+local nmap = function(lhs, rhs)
+    require('helpers.keybindings').nmap(lhs, rhs, { noremap = true, silent = true })
+end
 
 -- Folding ranges.
 return {
@@ -14,8 +16,8 @@ return {
                     local builtin = require 'statuscol.builtin'
                     require('statuscol').setup {
                         segments = {
-                            { text = { builtin.foldfunc },      click = 'v:lua.ScFa' },
-                            { text = { '%s' },                  click = 'v:lua.ScSa' },
+                            { text = { builtin.foldfunc }, click = 'v:lua.ScFa' },
+                            { text = { '%s' }, click = 'v:lua.ScSa' },
                             { text = { builtin.lnumfunc, ' ' }, click = 'v:lua.ScLa' },
                         },
                     }
@@ -34,8 +36,30 @@ return {
             vim.o.foldenable = true
             vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
-            nmap('zR', require('ufo').openAllFolds)
-            nmap('zM', require('ufo').closeAllFolds)
+            -- HACK: Refresh indent lines after folding/unfolding.
+            for _, keymap in pairs {
+                'zo',
+                'zO',
+                'zc',
+                'zC',
+                'za',
+                'zA',
+                'zv',
+                'zx',
+                'zX',
+                'zm',
+                'zr',
+            } do
+                nmap(keymap, keymap .. ':IndentBlanklineRefresh<cr>')
+            end
+            nmap('zR', function()
+                require('ufo').openAllFolds()
+                vim.cmd 'IndentBlanklineRefresh'
+            end)
+            nmap('zM', function()
+                require('ufo').closeAllFolds()
+                vim.cmd 'IndentBlanklineRefresh'
+            end)
         end,
     },
 }

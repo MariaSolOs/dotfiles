@@ -104,8 +104,7 @@ return {
                     -- Explicitly request completions.
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['/'] = cmp.mapping.abort(),
-                    -- Overload tab to accept Copilot suggestions, select
-                    -- completion items, or expand snippets.
+                    -- Overload tab to accept Copilot suggestions.
                     ['<Tab>'] = cmp.mapping(function(fallback)
                         local copilot = require 'copilot.suggestion'
                         if cmp.visible() then
