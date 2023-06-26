@@ -1,0 +1,18 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Maria José Solano
+	email = majosolano99@gmail.com
+
+[core]
+	editor = nvim
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[pull]
+	rebase = true
