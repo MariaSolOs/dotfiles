@@ -6,7 +6,7 @@ return {
     event = { 'BufReadPost', 'BufNewFile' },
     config = true,
     keys = {
-        { '<leader>tt', ':TodoTrouble<cr>', desc = 'Toggle TODOs' },
+        { '<leader>tt', ':TodoTrouble<cr>', desc = 'TODOs' },
         { '<leader>st', ':TodoTelescope<cr>', desc = 'Search TODOs' },
     },
 }

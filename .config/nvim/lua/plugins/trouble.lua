@@ -11,13 +11,13 @@ return {
         {
             '<leader>td',
             ':TroubleToggle workspace_diagnostics<cr>',
-            desc = 'Toggle diagnostics',
+            desc = 'Diagnostics',
             { silent = true, noremap = true },
         },
         {
             '<leader>tq',
             ':TroubleToggle quickfix<cr>',
-            desc = 'Toggle quickfix list',
+            desc = 'Quickfix list',
             { silent = true, noremap = true },
         },
     },

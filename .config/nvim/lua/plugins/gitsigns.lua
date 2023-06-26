@@ -49,7 +49,7 @@ return {
                 nmap('<leader>gp', gs.preview_hunk, 'Preview hunk')
                 nmap('<leader>th', function()
                     gs.setqflist 'all'
-                end, 'Toggle hunks')
+                end, 'Hunks')
 
                 -- Add group prefix for which-key.
                 require('which-key').register {
