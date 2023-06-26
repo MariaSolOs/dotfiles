@@ -111,8 +111,8 @@ nmap('<C-l>', '<C-w>l', 'Move to the right window')
 -- Exit insert mode.
 vim.keymap.set({ 's', 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
--- Continue insert mode on the next line.
-vim.keymap.set('i', '<C-a>', '<C-o>o', { silent = true })
+-- Continue insert mode at the end of the line.
+vim.keymap.set('i', '<C-a>', '<C-o>$', { silent = true })
 
 -- [[ Auto commands ]]
 -- Highlight on yank.

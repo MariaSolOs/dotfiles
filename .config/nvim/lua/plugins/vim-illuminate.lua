@@ -1,4 +1,4 @@
--- Highlight the current word under the cursor.
+-- Highlight references of the word under the cursor.
 return {
     'RRethy/vim-illuminate',
     event = { 'BufReadPost', 'BufNewFile' },
@@ -14,5 +14,8 @@ return {
 
         -- Remove these keymaps that illuminate creates and that I don't use.
         vim.keymap.del({ 'o', 'x' }, '<M-i>')
+
+        -- Remove underlines from references that have no read/write info.
+        vim.api.nvim_set_hl(0, 'IlluminatedWordText', { underline = false })
     end,
 }
