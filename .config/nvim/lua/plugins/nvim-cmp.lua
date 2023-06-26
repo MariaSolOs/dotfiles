@@ -35,7 +35,27 @@ return {
         -- Autocompletion.
         'hrsh7th/nvim-cmp',
         dependencies = {
-            'L3MON4D3/LuaSnip',
+            {
+                'L3MON4D3/LuaSnip',
+                config = function()
+                    local types = require 'luasnip.util.types'
+
+                    require('luasnip.loaders.from_vscode').lazy_load()
+
+                    require('luasnip').setup {
+                        history = true,
+                        delete_check_events = 'TextChanged',
+                        ext_opts = {
+                            [types.insertNode] = {
+                                unvisited = {
+                                    virt_text = { { '|', 'Conceal' } },
+                                    virt_text_pos = 'inline',
+                                },
+                            },
+                        },
+                    }
+                end,
+            },
             'saadparwaiz1/cmp_luasnip',
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-buffer',
@@ -49,9 +69,6 @@ return {
         config = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
-
-            luasnip.config.setup {}
-            require('luasnip.loaders.from_vscode').lazy_load()
 
             cmp.setup {
                 -- Disable preselect. On enter, the first thing will be used if nothing

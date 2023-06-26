@@ -75,7 +75,7 @@ vim.o.termguicolors = true
 -- Disable some of those annoying hit-enter messages.
 vim.opt.shortmess:append 'IWs'
 
--- Disable checks for these providers.
+-- Disable health checks for these providers.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
@@ -121,7 +121,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     pattern = '*',
 })
 
--- Resize splits if the window got resized.
+-- Resize splits if the window gets resized.
 vim.api.nvim_create_autocmd('VimResized', {
     group = augroup 'ResizeSplits',
     callback = function()

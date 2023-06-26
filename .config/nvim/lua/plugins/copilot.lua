@@ -31,29 +31,45 @@ return {
         config = function(_, opts)
             local cmp = require 'cmp'
             local copilot = require 'copilot.suggestion'
+            local luasnip = require 'luasnip'
 
             require('copilot').setup(opts)
 
+            local dismiss = function()
+                if copilot.is_visible() then
+                    copilot.dismiss()
+                end
+            end
+
+            local set_trigger = function(trigger)
+                vim.b.copilot_suggestion_auto_trigger = trigger
+                vim.b.copilot_suggestion_hidden = not trigger
+            end
+
             -- Hide suggestions when the completion menu is open.
             cmp.event:on('menu_opened', function()
-                copilot.dismiss()
-                vim.b.copilot_suggestion_hidden = true
+                dismiss()
+                set_trigger(false)
             end)
             cmp.event:on('menu_closed', function()
-                vim.b.copilot_suggestion_hidden = false
+                set_trigger(not luasnip.expand_or_jumpable())
             end)
+
+            -- Disable suggestions when inside a snippet.
+            vim.api.nvim_create_autocmd('User', {
+                pattern = { 'LuasnipInsertNodeEnter', 'LuasnipInsertNodeLeave' },
+                callback = function()
+                    set_trigger(not luasnip.expand_or_locally_jumpable())
+                end,
+            })
 
             -- Always dismiss the suggestion when leaving insert mode.
             vim.api.nvim_create_autocmd('InsertLeave', {
                 pattern = '*',
-                callback = function()
-                    if copilot.is_visible() then
-                        copilot.dismiss()
-                    end
-                end,
+                callback = dismiss,
             })
 
-            -- HACK: Only enable the dismiss mapping if a suggestion is visible.
+            -- Only enable the dismiss mapping if a suggestion is visible.
             vim.keymap.set('i', '/', function()
                 if copilot.is_visible() then
                     copilot.dismiss()
