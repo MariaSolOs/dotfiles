@@ -48,6 +48,8 @@ return {
         keys = {
             {
                 '<leader>f',
+                -- Open the explorer in the current directory, with focus on the current
+                -- file and in the last used state.
                 function()
                     require('mini.files').open(vim.api.nvim_buf_get_name(0))
                 end,

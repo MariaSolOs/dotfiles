@@ -45,6 +45,8 @@ return {
                     require('luasnip').setup {
                         history = true,
                         delete_check_events = 'TextChanged',
+                        -- Display a cursor-like placeholder in unvisited nodes
+                        -- of the snippet.
                         ext_opts = {
                             [types.insertNode] = {
                                 unvisited = {
@@ -74,6 +76,7 @@ return {
                 -- Disable preselect. On enter, the first thing will be used if nothing
                 -- is selected.
                 preselect = cmp.PreselectMode.None,
+                -- Add icons to the completion menu.
                 formatting = {
                     format = function(_, vim_item)
                         vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
@@ -101,6 +104,8 @@ return {
                     -- Explicitly request completions.
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['/'] = cmp.mapping.abort(),
+                    -- Overload tab to accept Copilot suggestions, select
+                    -- completion items, or expand snippets.
                     ['<Tab>'] = cmp.mapping(function(fallback)
                         local copilot = require 'copilot.suggestion'
                         if cmp.visible() then

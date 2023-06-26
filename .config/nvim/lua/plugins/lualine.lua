@@ -14,6 +14,7 @@ return {
                     'branch',
                     'diff',
                 },
+                -- Show macro recording messages.
                 lualine_c = {
                     {
                         function()

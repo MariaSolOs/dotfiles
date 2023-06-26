@@ -14,6 +14,9 @@ return {
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
+                    -- Use a different color for inlay hints to make them different from comments.
+                    LspInlayHint = { fg = '#6272A4', italic = true },
+
                     -- Group used by Gitsigns and Noice. Make it stand out.
                     MoreMsg = { fg = '#E11299' },
 

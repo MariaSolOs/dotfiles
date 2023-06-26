@@ -4,6 +4,7 @@ return {
     cmd = { 'Trouble', 'TroubleToggle' },
     dependencies = 'nvim-tree/nvim-web-devicons',
     opts = {
+        -- Don't add an extra newline above the list.
         padding = false,
     },
     keys = {

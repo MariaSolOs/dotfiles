@@ -37,20 +37,22 @@ local nmap = function(lhs, rhs, desc, bufnr)
 end
 
 local on_attach = function(buf_client, bufnr)
+    local telescope_builtin = require 'telescope.builtin'
+
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', bufnr)
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline', bufnr)
     nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename', bufnr)
 
-    nmap('<leader>ss', require('telescope.builtin').lsp_document_symbols, 'Search document symbols', bufnr)
-    nmap('<leader>sw', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
+    nmap('<leader>ss', telescope_builtin.lsp_document_symbols, 'Search document symbols', bufnr)
+    nmap('<leader>sw', telescope_builtin.lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
 
     nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition', bufnr)
-    nmap('gr', require('telescope.builtin').lsp_references, 'Go to references', bufnr)
+    nmap('gr', telescope_builtin.lsp_references, 'Go to references', bufnr)
     if buf_client.server_capabilities.implementationProvider then
-        nmap('gI', require('telescope.builtin').lsp_implementations, 'Go to implementation(s)', bufnr)
+        nmap('gI', telescope_builtin.lsp_implementations, 'Go to implementation(s)', bufnr)
     end
     if buf_client.server_capabilities.typeDefinitionProvider then
-        nmap('gt', require('telescope.builtin').lsp_type_definitions, 'Go to type definition(s)', bufnr)
+        nmap('gt', telescope_builtin.lsp_type_definitions, 'Go to type definition(s)', bufnr)
     end
 
     -- noice deals with the UI.
@@ -58,10 +60,10 @@ local on_attach = function(buf_client, bufnr)
 
     nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic', bufnr)
     nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic', bufnr)
+    nmap('<leader>sd', telescope_builtin.diagnostics, 'Search diagnostics')
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
-        vim.api.nvim_set_hl(0, 'LspInlayHint', { fg = '#6272A4', italic = true })
         vim.lsp.buf.inlay_hint(bufnr, true)
     end
 
@@ -70,7 +72,7 @@ local on_attach = function(buf_client, bufnr)
     vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Create a command `:Fmt` local to the LSP buffer
-    vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function(_)
+    vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function()
         vim.lsp.buf.format()
     end, { desc = 'Format current buffer' })
 

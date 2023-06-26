@@ -21,7 +21,6 @@ return {
             nmap('<leader>sf', telescope_builtin.find_files, 'Search files')
             nmap('<leader>sh', telescope_builtin.help_tags, 'Search help')
             nmap('<leader>sg', telescope_builtin.live_grep, 'Search by grep')
-            nmap('<leader>sd', telescope_builtin.diagnostics, 'Search diagnostics')
         end,
         config = function()
             local telescope = require 'telescope'
@@ -67,7 +66,7 @@ return {
         end,
     },
 
-    -- Fuzzy Finder Algorithm which requires local dependencies to be built.
+    -- Fuzzy finder algorithm which requires local dependencies to be built.
     {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make',
