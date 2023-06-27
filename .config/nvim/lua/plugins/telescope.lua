@@ -1,33 +1,49 @@
-local nmap = require('helpers.keybindings').nmap
-
 -- Fuzzy finder (files, LSP, etc)
 return {
     {
         'nvim-telescope/telescope.nvim',
-        branch = '0.1.x',
-        dependencies = 'nvim-lua/plenary.nvim',
+        dependencies = {
+            {
+                'nvim-telescope/telescope-fzf-native.nvim',
+                build = 'make',
+                config = function()
+                    require('telescope').load_extension 'fzf'
+                end,
+            },
+            'nvim-lua/plenary.nvim',
+        },
         cmd = 'Telescope',
-        init = function()
-            local telescope_builtin = require 'telescope.builtin'
-
-            -- Configure bindings for the pickers.
-            nmap('<leader>?', telescope_builtin.oldfiles, 'Search recently opened files')
-            nmap('<leader>/', function()
-                telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-                    winblend = 10,
-                    previewer = false,
-                })
-            end, 'Search fuzzily in buffer')
-            nmap('<leader>sf', telescope_builtin.find_files, 'Search files')
-            nmap('<leader>sh', telescope_builtin.help_tags, 'Search help')
-            nmap('<leader>sg', telescope_builtin.live_grep, 'Search by grep')
-        end,
+        keys = {
+            { '<leader>?', ':Telescope oldfiles<cr>', desc = 'Search recently opened files' },
+            { '<leader>sh', ':Telescope help_tags<cr>', desc = 'Search help' },
+            {
+                '<leader>/',
+                function()
+                    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+                        winblend = 10,
+                        previewer = false,
+                    })
+                end,
+                desc = 'Search fuzzily in buffer',
+            },
+            {
+                '<leader>sf',
+                function()
+                    require('telescope.builtin').find_files()
+                end,
+                desc = 'Search files',
+            },
+            {
+                '<leader>sg',
+                function()
+                    require('telescope.builtin').live_grep()
+                end,
+                desc = 'Search by grep',
+            },
+        },
         config = function()
             local telescope = require 'telescope'
             local actions = require 'telescope.actions'
-
-            -- Enable telescope fzf native, if installed
-            pcall(telescope.load_extension, 'fzf')
 
             telescope.setup {
                 defaults = {
@@ -44,11 +60,11 @@ return {
                             ['<C-x>'] = false,
                             -- Create splits, returning to normal mode.
                             ['<C-s>'] = function()
-                                require('telescope.actions').select_horizontal()
+                                actions.select_horizontal()
                                 vim.cmd 'stopinsert'
                             end,
                             ['<C-v>'] = function()
-                                require('telescope.actions').select_vertical()
+                                actions.select_vertical()
                                 vim.cmd 'stopinsert'
                             end,
                         },
@@ -63,15 +79,6 @@ return {
                     layout_strategy = 'vertical',
                 },
             }
-        end,
-    },
-
-    -- Fuzzy finder algorithm which requires local dependencies to be built.
-    {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'make',
-        cond = function()
-            return vim.fn.executable 'make' == 1
         end,
     },
 }

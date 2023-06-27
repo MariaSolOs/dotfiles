@@ -6,7 +6,7 @@ end
 return {
     {
         'kevinhwang91/nvim-ufo',
-        event = { 'BufReadPost', 'BufNewFile' },
+        event = 'BufReadPost',
         dependencies = {
             'kevinhwang91/promise-async',
             -- Get rid of the numbers in the folding column.

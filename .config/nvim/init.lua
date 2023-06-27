@@ -157,6 +157,17 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
     command = 'setlocal filetype=jsonc',
 })
 
+-- *.conf files don't have a filetype in Neovim, so we set it here
+-- so that we can colorize colors.
+vim.api.nvim_create_autocmd('BufReadPost', {
+    group = augroup 'SetConfFiletype',
+    pattern = '*.conf',
+    callback = function()
+        vim.cmd 'setlocal filetype=conf'
+        vim.cmd 'ColorizerAttachToBuffer'
+    end,
+})
+
 -- Configure plugins.
 require('lazy').setup('plugins', {
     ui = {

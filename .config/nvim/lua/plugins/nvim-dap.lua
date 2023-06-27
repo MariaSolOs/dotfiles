@@ -1,5 +1,35 @@
 -- Debugging.
 return {
+    -- Lua adapter.
+    {
+        'jbyuki/one-small-step-for-vimkind',
+        dependencies = 'mfussenegger/nvim-dap',
+        keys = {
+            {
+                '<leader>dal',
+                function()
+                    require('osv').launch { port = 8086 }
+                end,
+                desc = 'Lua',
+            },
+        },
+        config = function()
+            local dap = require 'dap'
+
+            dap.adapters.nlua = function(callback, config)
+                ---@diagnostic disable-next-line: undefined-field
+                callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
+            end
+            dap.configurations.lua = {
+                {
+                    type = 'nlua',
+                    request = 'attach',
+                    name = 'Attach to running Neovim instance',
+                },
+            }
+        end,
+    },
+
     {
         'mfussenegger/nvim-dap',
         dependencies = {
@@ -46,22 +76,24 @@ return {
                         },
                     },
                 },
-            },
+                config = function(_, opts)
+                    local dap = require 'dap'
+                    local dapui = require 'dapui'
 
-            -- Lua adapter.
-            {
-                'jbyuki/one-small-step-for-vimkind',
-                keys = {
-                    {
-                        '<leader>dal',
-                        function()
-                            require('osv').launch { port = 8086 }
-                        end,
-                        desc = 'Lua',
-                    },
-                },
-            },
+                    dapui.setup(opts)
 
+                    -- Automatically open the UI when a new debug session is created.
+                    dap.listeners.after.event_initialized['dapui_config'] = function()
+                        dapui.open {}
+                    end
+                    dap.listeners.before.event_terminated['dapui_config'] = function()
+                        dapui.close {}
+                    end
+                    dap.listeners.before.event_exited['dapui_config'] = function()
+                        dapui.close {}
+                    end
+                end,
+            },
             -- JS/TS debugging.
             {
                 'mxsdev/nvim-dap-vscode-js',
@@ -76,7 +108,6 @@ return {
                 build = 'npm i && npm run compile vsDebugServerBundle && mv dist out',
             },
         },
-
         keys = {
             {
                 '<leader>dB',
@@ -149,7 +180,6 @@ return {
                 desc = 'Terminate',
             },
         },
-
         config = function()
             local dap = require 'dap'
 
@@ -177,30 +207,7 @@ return {
                 )
             end
 
-            -- Automatically open the UI when a new debug session is created.
-            local dapui = require 'dapui'
-            dap.listeners.after.event_initialized['dapui_config'] = function()
-                dapui.open {}
-            end
-            dap.listeners.before.event_terminated['dapui_config'] = function()
-                dapui.close {}
-            end
-            dap.listeners.before.event_exited['dapui_config'] = function()
-                dapui.close {}
-            end
-
             -- Set up adapter configurations.
-            dap.adapters.nlua = function(callback, config)
-                ---@diagnostic disable-next-line: undefined-field
-                callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
-            end
-            dap.configurations.lua = {
-                {
-                    type = 'nlua',
-                    request = 'attach',
-                    name = 'Attach to running Neovim instance',
-                },
-            }
             for _, language in ipairs { 'typescript', 'javascript' } do
                 dap.configurations[language] = {
                     {

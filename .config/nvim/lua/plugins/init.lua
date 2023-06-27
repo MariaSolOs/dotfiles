@@ -13,8 +13,9 @@ return {
     -- Highlight colors.
     {
         'norcalli/nvim-colorizer.lua',
-        event = 'VeryLazy',
-        opts = { 'lua' },
+        ft = { 'lua', 'conf' },
+        -- stylua: ignore
+        opts = { 'lua'; 'conf' },
     },
 
     -- Surround selections, add quotes, etc.
@@ -25,6 +26,15 @@ return {
             keymaps = {
                 visual = 'Y',
             },
+        },
+    },
+
+    -- 'gc' to comment visual regions/lines.
+    {
+        'numToStr/Comment.nvim',
+        event = 'VeryLazy',
+        opts = {
+            extra = { above = 'gch', below = 'gcl' },
         },
     },
 }

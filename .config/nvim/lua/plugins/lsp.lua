@@ -1,4 +1,14 @@
 local servers = {
+    rust_analyzer = {
+        settings = {
+            ['rust-analyzer'] = {
+                inlayHints = {
+                    -- These are a bit too much.
+                    chainingHints = { enable = false },
+                },
+            },
+        },
+    },
     lua_ls = {
         settings = {
             Lua = {
@@ -37,22 +47,24 @@ local nmap = function(lhs, rhs, desc, bufnr)
 end
 
 local on_attach = function(buf_client, bufnr)
-    local telescope_builtin = require 'telescope.builtin'
-
     nmap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', bufnr)
     nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline', bufnr)
     nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename', bufnr)
 
-    nmap('<leader>ss', telescope_builtin.lsp_document_symbols, 'Search document symbols', bufnr)
-    nmap('<leader>sw', telescope_builtin.lsp_dynamic_workspace_symbols, 'Search workspace symbols', bufnr)
+    nmap('<leader>sd', function()
+        require('telescope.builtin').lsp_document_symbols()
+    end, 'Search document symbols', bufnr)
+    nmap('<leader>sw', function()
+        require('telescope.builtin').lsp_dynamic_workspace_symbols()
+    end, 'Search workspace symbols', bufnr)
 
     nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition', bufnr)
-    nmap('gr', telescope_builtin.lsp_references, 'Go to references', bufnr)
+    nmap('gr', ':Telescope lsp_references<cr>', 'Go to references', bufnr)
     if buf_client.server_capabilities.implementationProvider then
-        nmap('gI', telescope_builtin.lsp_implementations, 'Go to implementation(s)', bufnr)
+        nmap('gI', ':Telescope lsp_implementations<cr>', 'Go to implementation(s)', bufnr)
     end
     if buf_client.server_capabilities.typeDefinitionProvider then
-        nmap('gt', telescope_builtin.lsp_type_definitions, 'Go to type definition(s)', bufnr)
+        nmap('gt', ':Telescope lsp_type_definitions<cr>', 'Go to type definition(s)', bufnr)
     end
 
     -- noice deals with the UI.
@@ -60,7 +72,6 @@ local on_attach = function(buf_client, bufnr)
 
     nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic', bufnr)
     nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic', bufnr)
-    nmap('<leader>sd', telescope_builtin.diagnostics, 'Search diagnostics')
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
@@ -116,15 +127,18 @@ local on_attach = function(buf_client, bufnr)
 end
 
 return {
+    -- LSP server tools.
+    {
+        'williamboman/mason.nvim',
+        cmd = 'Mason',
+        config = true,
+    },
+
     {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            {
-                'williamboman/mason.nvim',
-                cmd = { 'Mason', 'LspInstall', 'LspUnInstall' },
-                config = true,
-            },
+            'mason.nvim',
             {
                 'williamboman/mason-lspconfig.nvim',
                 opts = {
@@ -133,15 +147,10 @@ return {
             },
             {
                 'folke/neodev.nvim',
-                opts = {
-                    -- Types for DAP UI.
-                    library = { plugins = { 'nvim-dap-ui' }, types = true },
-                },
+                config = true,
             },
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
-            -- Extra goodies for rust.
-            { 'simrat39/rust-tools.nvim' },
         },
         config = function()
             -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
@@ -179,42 +188,7 @@ return {
                         },
                     }
                 end,
-                rust_analyzer = function()
-                    local rt = require 'rust-tools'
-
-                    rt.setup {
-                        tools = {
-                            -- Disable inlay hints since Neovim now supports them.
-                            inlay_hints = {
-                                auto = false,
-                                show_parameter_hints = false,
-                            },
-                        },
-                        server = {
-                            capabilities = capabilities,
-                            on_attach = function(client, bufnr)
-                                on_attach(client, bufnr)
-
-                                -- Set up extra Rust commands.
-                                nmap('K', rt.hover_actions.hover_actions, 'Hover', bufnr)
-                                nmap('<leader>Rm', rt.expand_macro.expand_macro, 'Expand macro', bufnr)
-                                nmap('<leader>Rr', rt.runnables.runnables, 'Runnables', bufnr)
-                                nmap('<leader>Rc', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml', bufnr)
-                                require('which-key').register {
-                                    ['<leader>R'] = { name = '+rust' },
-                                }
-                            end,
-                            settings = {
-                                ['rust-analyzer'] = {
-                                    inlayHints = {
-                                        -- These are a bit too much.
-                                        chainingHints = { enable = false },
-                                    },
-                                },
-                            },
-                        },
-                    }
-                end,
+                -- Special handler for ESLint since I don't need capabilities or on_attach.
                 eslint = function()
                     require('lspconfig').eslint.setup {
                         settings = {
@@ -257,6 +231,7 @@ return {
     -- "Native" TSServer client.
     {
         'pmizio/typescript-tools.nvim',
+        event = { 'BufReadPre *.ts,*.tsx,*.js,*.jsx', 'BufNewFile *.ts,*.tsx,*.js,*.jsx' },
         dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
         opts = {
             on_attach = on_attach,
@@ -277,7 +252,7 @@ return {
     {
         'jose-elias-alvarez/null-ls.nvim',
         dependencies = 'nvim-lua/plenary.nvim',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         config = function()
             local null_ls = require 'null-ls'
 

@@ -19,14 +19,16 @@ local map_split = function(buf_id, lhs, direction)
     local minifiles = require 'mini.files'
 
     local rhs = function()
-        -- Noop if the cursor is on a directory.
-        if minifiles.get_fs_entry().fs_type == 'directory' then
+        local window = minifiles.get_target_window()
+
+        -- Noop if the explorer isn't open or the cursor is on a directory.
+        if window == nil or minifiles.get_fs_entry().fs_type == 'directory' then
             return
         end
 
         -- Make a new window and set it as target.
         local new_target_window
-        vim.api.nvim_win_call(minifiles.get_target_window(), function()
+        vim.api.nvim_win_call(window, function()
             vim.cmd(direction .. ' split')
             new_target_window = vim.api.nvim_get_current_win()
         end)
