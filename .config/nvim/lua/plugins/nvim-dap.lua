@@ -1,35 +1,5 @@
 -- Debugging.
 return {
-    -- Lua adapter.
-    {
-        'jbyuki/one-small-step-for-vimkind',
-        dependencies = 'mfussenegger/nvim-dap',
-        keys = {
-            {
-                '<leader>dal',
-                function()
-                    require('osv').launch { port = 8086 }
-                end,
-                desc = 'Lua',
-            },
-        },
-        config = function()
-            local dap = require 'dap'
-
-            dap.adapters.nlua = function(callback, config)
-                ---@diagnostic disable-next-line: undefined-field
-                callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
-            end
-            dap.configurations.lua = {
-                {
-                    type = 'nlua',
-                    request = 'attach',
-                    name = 'Attach to running Neovim instance',
-                },
-            }
-        end,
-    },
-
     {
         'mfussenegger/nvim-dap',
         dependencies = {
@@ -106,6 +76,35 @@ return {
                 'microsoft/vscode-js-debug',
                 version = '1.x',
                 build = 'npm i && npm run compile vsDebugServerBundle && mv dist out',
+            },
+            -- Lua adapter.
+            {
+                'jbyuki/one-small-step-for-vimkind',
+                dependencies = 'mfussenegger/nvim-dap',
+                keys = {
+                    {
+                        '<leader>dal',
+                        function()
+                            require('osv').launch { port = 8086 }
+                        end,
+                        desc = 'Lua',
+                    },
+                },
+                config = function()
+                    local dap = require 'dap'
+
+                    dap.adapters.nlua = function(callback, config)
+                        ---@diagnostic disable-next-line: undefined-field
+                        callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
+                    end
+                    dap.configurations.lua = {
+                        {
+                            type = 'nlua',
+                            request = 'attach',
+                            name = 'Attach to running Neovim instance',
+                        },
+                    }
+                end,
             },
         },
         keys = {
