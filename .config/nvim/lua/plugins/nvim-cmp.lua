@@ -30,7 +30,6 @@ local cmp_kinds = {
 }
 
 -- TODO: Add a custom comparator https://www.reddit.com/r/neovim/comments/14k7pbc/what_is_the_nvimcmp_comparatorsorting_you_are/
--- Autocompletions.
 return {
     {
         'hrsh7th/nvim-cmp',
@@ -64,13 +63,12 @@ return {
         },
         version = false,
         event = 'InsertEnter',
-        init = function()
-            -- Inside a snippet, use backspace to remove the placeholder.
-            vim.keymap.set('s', '<BS>', '<C-O>s', { silent = true })
-        end,
         config = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
+
+            -- Inside a snippet, use backspace to remove the placeholder.
+            vim.keymap.set('s', '<BS>', '<C-O>s', { silent = true })
 
             cmp.setup {
                 -- Disable preselect. On enter, the first thing will be used if nothing

@@ -24,7 +24,6 @@ return {
                 'vim',
                 'vimdoc',
             },
-            auto_install = false,
             highlight = { enable = true },
             indent = { enable = true },
             rainbow = { enable = true },

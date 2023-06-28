@@ -1,5 +1,3 @@
-local nmap = require('helpers.keybindings').nmap
-
 -- Bufferline for pretty tabs.
 return {
     {
@@ -23,6 +21,8 @@ return {
             },
         },
         init = function()
+            local nmap = require('helpers.keybindings').nmap
+
             nmap('<leader>bo', ':BufferLinePick<cr>', { desc = 'Select a buffer to open', silent = true })
             nmap('<leader>bc', ':BufferLinePickClose<cr>', { desc = 'Select a buffer to close', silent = true })
             nmap('[b', ':BufferLineCyclePrev<cr>', 'Previous buffer')

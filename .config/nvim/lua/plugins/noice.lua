@@ -25,19 +25,30 @@ return {
         },
         keys = {
             { '<leader>sn', ':NoiceTelescope<cr>', desc = 'Search Noice' },
+            {
+                '<C-f>',
+                function()
+                    if not require('noice.lsp').scroll(4) then
+                        return '<C-f>'
+                    end
+                end,
+                silent = true,
+                expr = true,
+                desc = 'Scroll forward',
+                mode = { 'i', 'n', 's' },
+            },
+            {
+                '<C-b>',
+                function()
+                    if not require('noice.lsp').scroll(-4) then
+                        return '<C-b>'
+                    end
+                end,
+                silent = true,
+                expr = true,
+                desc = 'Scroll backward',
+                mode = { 'i', 'n', 's' },
+            },
         },
-        init = function()
-            -- Hover doc scrolling.
-            vim.keymap.set({ 'n', 'i', 's' }, '<C-f>', function()
-                if not require('noice.lsp').scroll(4) then
-                    return '<C-f>'
-                end
-            end, { silent = true, expr = true })
-            vim.keymap.set({ 'n', 'i', 's' }, '<C-b>', function()
-                if not require('noice.lsp').scroll(-4) then
-                    return '<C-b>'
-                end
-            end, { silent = true, expr = true })
-        end,
     },
 }

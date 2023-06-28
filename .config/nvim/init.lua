@@ -1,6 +1,3 @@
-local nmap = require('helpers.keybindings').nmap
-local augroup = require('helpers.commands').augroup
-
 -- Set <space> as the leader key.
 -- Must happen before plugins are required (otherwise the wrong leader will be used).
 vim.g.mapleader = ' '
@@ -82,6 +79,8 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_node_provider = 0
 
 -- [[ Keymaps ]]
+local nmap = require('helpers.keybindings').nmap
+
 -- Make the leader a noop when not followed by something.
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
@@ -115,6 +114,8 @@ vim.keymap.set({ 's', 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert 
 vim.keymap.set('i', '<C-a>', '<C-o>$', { silent = true })
 
 -- [[ Auto commands ]]
+local augroup = require('helpers.commands').augroup
+
 -- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = augroup 'YankHighlight',
@@ -155,17 +156,6 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
         'tsconfig*.json',
     },
     command = 'setlocal filetype=jsonc',
-})
-
--- *.conf files don't have a filetype in Neovim, so we set it here
--- so that we can colorize colors.
-vim.api.nvim_create_autocmd('BufReadPost', {
-    group = augroup 'SetConfFiletype',
-    pattern = '*.conf',
-    callback = function()
-        vim.cmd 'setlocal filetype=conf'
-        vim.cmd 'ColorizerAttachToBuffer'
-    end,
 })
 
 -- Configure plugins.

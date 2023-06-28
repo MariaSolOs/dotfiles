@@ -4,7 +4,7 @@ return {
         'zbirenbaum/copilot.lua',
         cmd = 'Copilot',
         event = 'InsertEnter',
-        dependencies = 'hrsh7th/nvim-cmp',
+        dependencies = 'nvim-cmp',
         opts = {
             -- I don't find the panel useful.
             panel = {

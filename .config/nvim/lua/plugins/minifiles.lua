@@ -1,5 +1,3 @@
-local nmap = require('helpers.keybindings').nmap
-
 -- Utilities for hiding/showing dotfiles.
 local show_dotfiles = true
 local filter_show = function()
@@ -40,13 +38,12 @@ local map_split = function(buf_id, lhs, direction)
     end
 
     local desc = 'Split ' .. string.sub(direction, 12)
-    nmap(lhs, rhs, { buffer = buf_id, desc = desc })
+    require('helpers.keybindings').nmap(lhs, rhs, { buffer = buf_id, desc = desc })
 end
 
 return {
     {
         'echasnovski/mini.files',
-        version = false,
         keys = {
             {
                 '<leader>f',
@@ -68,7 +65,9 @@ return {
                 width_nofocus = 25,
             },
         },
-        init = function()
+        config = function(_, opts)
+            require('mini.files').setup(opts)
+
             -- Add rounded corners.
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'MiniFilesWindowOpen',
