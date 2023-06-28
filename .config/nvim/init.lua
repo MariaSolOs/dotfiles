@@ -110,7 +110,7 @@ nmap('<C-k>', '<C-w>k', 'Move to the top window')
 nmap('<C-l>', '<C-w>l', 'Move to the right window')
 
 -- Exit insert mode.
-vim.keymap.set({ 's', 'i', 'n' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
+vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
 -- Continue insert mode at the end of the line.
 vim.keymap.set('i', '<C-a>', '<C-o>$', { silent = true })
