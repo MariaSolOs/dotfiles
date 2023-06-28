@@ -40,6 +40,29 @@ M.on_attach = function(buf_client, bufnr)
     -- NOTE: The <cmd> below is needed to exit terminal mode.
     vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
+    -- Set up CodeLens refresh and running.
+    if buf_client.server_capabilities.codeLensProvider then
+        local codelens_group = 'RefreshCodeLens'
+        local codelens_events = { 'BufEnter', 'InsertLeave' }
+
+        local ok, codelens_autocmds = pcall(vim.api.nvim_get_autocmds, {
+            group = codelens_group,
+            buffer = bufnr,
+            event = codelens_events,
+        })
+
+        if not ok or #codelens_autocmds == 0 then
+            vim.api.nvim_create_augroup(codelens_group, { clear = false })
+            vim.api.nvim_create_autocmd(codelens_events, {
+                group = codelens_group,
+                buffer = bufnr,
+                callback = vim.lsp.codelens.refresh,
+            })
+
+            nmap('<leader>R', vim.lsp.codelens.run, 'Run CodeLens')
+        end
+    end
+
     -- Set up format command.
     vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function()
         vim.lsp.buf.format()

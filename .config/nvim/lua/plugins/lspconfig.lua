@@ -14,8 +14,10 @@ local servers = {
             Lua = {
                 workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
-                hint = { enable = true },
-                completion = { callSnippet = 'Replace' },
+                hint = { enable = true, arrayIndex = false },
+                -- Disabling this since otherwise there are A LOT
+                -- of progress notifications.
+                window = { progressBar = false },
             },
         },
     },

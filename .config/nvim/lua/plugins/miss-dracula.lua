@@ -14,8 +14,10 @@ return {
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
-                    -- Use a different color for inlay hints to make them different from comments.
+                    -- Make these virtual text thingies different from comments/regular code.
                     LspInlayHint = { fg = '#6272A4', italic = true },
+                    LspCodeLens = { fg = '#6272A4' },
+                    LspCodeLensSeparator = { fg = '#6272A4' },
 
                     -- Group used by Gitsigns and Noice. Make it stand out.
                     MoreMsg = { fg = '#E11299' },
