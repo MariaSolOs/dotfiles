@@ -16,24 +16,26 @@ return {
 ╚═╝  ╚═╝╚══════╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝      ╚═╝      ╚═╝        ╚═════╝ ╚═╝╚═╝  ╚═╝╚══════╝
             ]]
             dashboard.section.header.val = vim.split(header, '\n')
-            dashboard.section.buttons.val = {
-                dashboard.button('f', ' ' .. ' Find file', ':Telescope find_files<cr>'),
-                dashboard.button('o', ' ' .. ' Recent files', ':Telescope oldfiles<cr>'),
-                dashboard.button('g', ' ' .. ' Find text', ':Telescope live_grep<cr>'),
-                dashboard.button('c', ' ' .. ' Config', ':OpenConfig<cr>'),
-                dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<cr>'),
-                dashboard.button('q', ' ' .. ' Quit', ':qa<cr>'),
-            }
-            dashboard.section.footer.val = "It's not a bug, it's a feature. 🌟"
-
-            for _, button in ipairs(dashboard.section.buttons.val) do
-                button.opts.hl = 'AlphaButtons'
-                button.opts.hl_shortcut = 'AlphaShortcut'
-            end
             dashboard.section.header.opts.hl = 'AlphaHeader'
+
+            local dashboard_button = function(sc, txt, keybind)
+                local button = dashboard.button(sc, txt, keybind)
+                button.opts.hl_shortcut = 'AlphaShortcut'
+                button.opts.hl = 'AlphaButtons'
+                return button
+            end
+            dashboard.section.buttons.val = {
+                dashboard_button('f', '  ' .. 'Find file', ':Telescope find_files<cr>'),
+                dashboard_button('o', '  ' .. 'Recent files', ':Telescope oldfiles<cr>'),
+                dashboard_button('p', '  ' .. 'Projects', ':Telescope projects<cr>'),
+                dashboard_button('c', '  ' .. 'Config', ':OpenConfig<cr>'),
+                dashboard_button('q', '  ' .. 'Quit', ':qa<cr>'),
+            }
             dashboard.section.buttons.opts.hl = 'AlphaButtons'
-            dashboard.section.footer.opts.hl = 'AlphaFooter'
             dashboard.opts.layout[1].val = #dashboard.section.buttons.val
+
+            dashboard.section.footer.val = "It's not a bug, it's a feature. 🌟"
+            dashboard.section.footer.opts.hl = 'AlphaFooter'
 
             return dashboard
         end,

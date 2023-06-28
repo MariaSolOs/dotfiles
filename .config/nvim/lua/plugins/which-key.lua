@@ -7,6 +7,9 @@ return {
             window = {
                 border = 'single',
             },
+            disable = {
+                filetypes = { 'alpha' },
+            },
         },
         config = function(_, opts)
             local wk = require 'which-key'
