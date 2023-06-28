@@ -8,5 +8,7 @@ return {
         { '<leader>tt', ':TodoTrouble<cr>', desc = 'TODOs' },
         { '<leader>st', ':TodoTelescope<cr>', desc = 'Search TODOs' },
     },
-    config = true,
+    opts = {
+        signs = false,
+    },
 }

@@ -29,7 +29,6 @@ local cmp_kinds = {
     Copilot = '  ',
 }
 
--- TODO: Add a custom comparator https://www.reddit.com/r/neovim/comments/14k7pbc/what_is_the_nvimcmp_comparatorsorting_you_are/
 return {
     {
         'hrsh7th/nvim-cmp',
