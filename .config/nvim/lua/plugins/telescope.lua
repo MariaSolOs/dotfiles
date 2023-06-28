@@ -14,36 +14,28 @@ return {
         },
         cmd = 'Telescope',
         keys = {
-            { '<leader>?', ':Telescope oldfiles<cr>', desc = 'Search recently opened files' },
-            { '<leader>sh', ':Telescope help_tags<cr>', desc = 'Search help' },
-            {
-                '<leader>/',
-                function()
-                    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-                        winblend = 10,
-                        previewer = false,
-                    })
-                end,
-                desc = 'Search fuzzily in buffer',
-            },
-            {
-                '<leader>sf',
-                function()
-                    require('telescope.builtin').find_files()
-                end,
-                desc = 'Search files',
-            },
-            {
-                '<leader>sg',
-                function()
-                    require('telescope.builtin').live_grep()
-                end,
-                desc = 'Search by grep',
-            },
+            { '<leader>?', nil, desc = 'Search recently opened files' },
+            { '<leader>sf', nil, desc = 'Search files' },
+            { '<leader>sh', nil, desc = 'Search help' },
+            { '<leader>sg', nil, desc = 'Search by grep' },
+            { '<leader>/', nil, desc = 'Search fuzzily in buffer' },
         },
         config = function()
             local telescope = require 'telescope'
+            local telescope_builtin = require 'telescope.builtin'
             local actions = require 'telescope.actions'
+            local nmap = require('helpers.keybindings').nmap
+
+            nmap('<leader>?', telescope_builtin.oldfiles, 'Search recently opened files')
+            nmap('<leader>sf', telescope_builtin.find_files, 'Search files')
+            nmap('<leader>sh', telescope_builtin.help_tags, 'Search help')
+            nmap('<leader>sg', telescope_builtin.live_grep, 'Search by grep')
+            nmap('<leader>/', function()
+                telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+                    winblend = 10,
+                    previewer = false,
+                })
+            end, 'Search fuzzily in buffer')
 
             telescope.setup {
                 defaults = {

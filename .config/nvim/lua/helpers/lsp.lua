@@ -45,6 +45,8 @@ M.on_attach = function(buf_client, bufnr)
         local codelens_group = 'RefreshCodeLens'
         local codelens_events = { 'BufEnter', 'InsertLeave' }
 
+        -- TODO: Set up manually for the first time?
+
         local ok, codelens_autocmds = pcall(vim.api.nvim_get_autocmds, {
             group = codelens_group,
             buffer = bufnr,
