@@ -30,6 +30,7 @@ return {
                 dashboard_button('c', '  Config', ':OpenConfig<cr>'),
                 dashboard_button('q', '  Quit', ':qa<cr>'),
                 dashboard_button('s', '  Restore session', ':lua require("persistence").load()<cr>'),
+                { type = 'padding', val = 2 },
             }
             dashboard.section.buttons.opts.hl = 'AlphaButtons'
             dashboard.opts.layout[1].val = #dashboard.section.buttons.val
