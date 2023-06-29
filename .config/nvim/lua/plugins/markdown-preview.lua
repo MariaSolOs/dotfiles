@@ -1,4 +1,5 @@
 -- Markdown previewer.
+-- TODO: Use https://github.com/toppair/peek.nvim when they fix their bundle issues.
 return {
     {
         'iamcco/markdown-preview.nvim',

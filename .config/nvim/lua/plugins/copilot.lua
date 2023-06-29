@@ -71,17 +71,6 @@ return {
                 end
                 return '<C-c>'
             end, { expr = true })
-
-            -- TODO: Remove this when my PR gets merged.
-            -- Only enable the dismiss mapping if a suggestion is visible.
-            vim.keymap.set('i', '/', function()
-                if copilot.is_visible() then
-                    copilot.dismiss()
-                    return '<Ignore>'
-                else
-                    return '/'
-                end
-            end, { expr = true })
         end,
     },
 }
