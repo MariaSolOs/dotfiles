@@ -63,12 +63,16 @@ return {
                 end,
             })
 
-            -- Always dismiss the suggestion when leaving insert mode.
-            vim.api.nvim_create_autocmd('InsertLeave', {
-                pattern = '*',
-                callback = dismiss,
-            })
+            -- HACK: <C-c> doesn't trigger the InsertLeave event, so manually
+            -- dismiss Copilot when using it.
+            vim.keymap.set('i', '<C-c>', function()
+                if copilot.is_visible() then
+                    copilot.dismiss()
+                end
+                return '<C-c>'
+            end, { expr = true })
 
+            -- TODO: Remove this when my PR gets merged.
             -- Only enable the dismiss mapping if a suggestion is visible.
             vim.keymap.set('i', '/', function()
                 if copilot.is_visible() then
