@@ -25,11 +25,11 @@ return {
                 return button
             end
             dashboard.section.buttons.val = {
-                dashboard_button('f', '  ' .. 'Find file', ':Telescope find_files<cr>'),
-                dashboard_button('o', '  ' .. 'Recent files', ':Telescope oldfiles<cr>'),
-                dashboard_button('p', '  ' .. 'Projects', ':Telescope projects<cr>'),
-                dashboard_button('c', '  ' .. 'Config', ':OpenConfig<cr>'),
-                dashboard_button('q', '  ' .. 'Quit', ':qa<cr>'),
+                dashboard_button('f', '  Find file', ':Telescope find_files<cr>'),
+                dashboard_button('r', '  Recent files', ':Telescope oldfiles<cr>'),
+                dashboard_button('c', '  Config', ':OpenConfig<cr>'),
+                dashboard_button('q', '  Quit', ':qa<cr>'),
+                dashboard_button('s', '  Restore session', ':lua require("persistence").load()<cr>'),
             }
             dashboard.section.buttons.opts.hl = 'AlphaButtons'
             dashboard.opts.layout[1].val = #dashboard.section.buttons.val

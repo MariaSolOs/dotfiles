@@ -13,16 +13,19 @@ return {
                 code_action = '',
             },
             outline = {
+                win_width = 50,
                 keys = {
                     expand_or_jump = '<cr>',
                 },
-                auto_resize = true,
             },
             finder = {
                 keys = {
                     jump_to = '<Tab>',
                     expand_or_jump = '<cr>',
                 },
+            },
+            rename = {
+                quit = '<esc>',
             },
         },
     },
