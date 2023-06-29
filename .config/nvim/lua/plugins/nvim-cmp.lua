@@ -129,6 +129,16 @@ return {
                     { name = 'luasnip' },
                     { name = 'buffer' },
                 },
+                sorting = {
+                    comparators = {
+                        cmp.config.compare.offset,
+                        cmp.config.compare.exact,
+                        cmp.config.compare.score,
+                        ---@diagnostic disable-next-line: assign-type-mismatch
+                        cmp.config.compare.recently_used,
+                        cmp.config.compare.kind,
+                    },
+                },
             }
         end,
     },
