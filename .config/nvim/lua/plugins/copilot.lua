@@ -61,15 +61,6 @@ return {
                     set_trigger(not luasnip.expand_or_locally_jumpable())
                 end,
             })
-
-            -- HACK: <C-c> doesn't trigger the InsertLeave event, so manually
-            -- dismiss Copilot when using it.
-            vim.keymap.set('i', '<C-c>', function()
-                if copilot.is_visible() then
-                    copilot.dismiss()
-                end
-                return '<C-c>'
-            end, { expr = true })
         end,
     },
 }

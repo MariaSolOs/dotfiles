@@ -113,6 +113,9 @@ vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit in
 -- Continue insert mode at the end of the line.
 vim.keymap.set('i', '<C-a>', '<C-o>$', { silent = true })
 
+-- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
+vim.keymap.set('i', '<C-c>', '<Esc>', { silent = true })
+
 -- [[ Auto commands ]]
 local augroup = require('helpers.commands').augroup
 
