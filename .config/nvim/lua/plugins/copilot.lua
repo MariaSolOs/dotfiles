@@ -20,8 +20,7 @@ return {
                     accept_line = '<M-l>',
                     next = '<M-]>',
                     prev = '<M-[>',
-                    -- Disable this mapping since I enable it only if a suggestion is visible.
-                    dismiss = false,
+                    dismiss = '/',
                 },
             },
             filetypes = {
