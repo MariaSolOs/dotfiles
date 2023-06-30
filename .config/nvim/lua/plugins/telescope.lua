@@ -37,28 +37,23 @@ return {
                 })
             end)
 
+            -- Return to normal mode when closing Telescope.
+            vim.api.nvim_create_autocmd('User', {
+                group = vim.api.nvim_create_augroup('TelescopeEscapeInsert', {}),
+                pattern = 'TelescopeResumePost',
+                command = 'stopinsert',
+            })
+
             telescope.setup {
                 defaults = {
                     mappings = {
                         i = {
-                            -- Close with esc, returning to normal mode.
-                            ['<esc>'] = function(bufnr)
-                                actions.close(bufnr)
-                                vim.cmd 'stopinsert'
-                            end,
+                            ['<esc>'] = actions.close,
                             -- Clear the search with ctrl-u.
                             ['<C-u>'] = false,
                             -- Use <C-s> to open an horizontal split instead of <C-x>.
                             ['<C-x>'] = false,
-                            -- Create splits, returning to normal mode.
-                            ['<C-s>'] = function()
-                                actions.select_horizontal()
-                                vim.cmd 'stopinsert'
-                            end,
-                            ['<C-v>'] = function()
-                                actions.select_vertical()
-                                vim.cmd 'stopinsert'
-                            end,
+                            ['<C-s>'] = actions.select_horizontal,
                         },
                     },
                     -- Use a vertical layout.
