@@ -14,11 +14,11 @@ return {
         },
         cmd = 'Telescope',
         keys = {
-            { '<leader>?', nil },
-            { '<leader>sf', nil },
-            { '<leader>sh', nil },
-            { '<leader>sg', nil },
-            { '<leader>/', nil },
+            { '<leader>sr', nil, desc = 'Search recently opened files' },
+            { '<leader>sf', nil, desc = 'Search files' },
+            { '<leader>sh', nil, desc = 'Search help' },
+            { '<leader>sg', nil, desc = 'Search by grep' },
+            { '<leader>sb', nil, desc = 'Search fuzzily in buffer' },
         },
         config = function()
             local telescope = require 'telescope'
@@ -26,16 +26,16 @@ return {
             local actions = require 'telescope.actions'
             local nmap = require('helpers.keybindings').nmap
 
-            nmap('<leader>?', telescope_builtin.oldfiles, 'Search recently opened files')
-            nmap('<leader>sf', telescope_builtin.find_files, 'Search files')
-            nmap('<leader>sh', telescope_builtin.help_tags, 'Search help')
-            nmap('<leader>sg', telescope_builtin.live_grep, 'Search by grep')
-            nmap('<leader>/', function()
+            nmap('<leader>sr', telescope_builtin.oldfiles)
+            nmap('<leader>sf', telescope_builtin.find_files)
+            nmap('<leader>sh', telescope_builtin.help_tags)
+            nmap('<leader>sg', telescope_builtin.live_grep)
+            nmap('<leader>sb', function()
                 telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
                     winblend = 10,
                     previewer = false,
                 })
-            end, 'Search fuzzily in buffer')
+            end)
 
             telescope.setup {
                 defaults = {
