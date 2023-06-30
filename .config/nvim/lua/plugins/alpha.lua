@@ -27,7 +27,7 @@ return {
             dashboard.section.buttons.val = {
                 dashboard_button('f', '  Find file', ':Telescope find_files<cr>'),
                 dashboard_button('r', '  Recent files', ':Telescope oldfiles<cr>'),
-                dashboard_button('c', '  Config', ':OpenConfig<cr>'),
+                dashboard_button('c', '  Config', ':e $MYVIMRC | :cd %:p:h<cr>'),
                 dashboard_button('q', '  Quit', ':qa<cr>'),
                 dashboard_button('s', '  Load session', ':SessionManager load_session<cr>'),
                 { type = 'padding', val = 2 },
