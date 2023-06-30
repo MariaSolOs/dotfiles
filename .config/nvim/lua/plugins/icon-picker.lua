@@ -2,13 +2,13 @@
 return {
     {
         'ziontee113/icon-picker.nvim',
-        dependencies = 'stevearc/dressing.nvim',
+        dependencies = 'dressing.nvim',
         cmd = 'IconPickerNormal',
         opts = {
-            disable_legacy_commands = true
+            disable_legacy_commands = true,
         },
         keys = {
-            { '<leader>i', ':IconPickerNormal<cr>', desc = 'Pick an icon' }
-        }
-    }
+            { '<leader>i', ':IconPickerNormal<cr>', desc = 'Pick an icon' },
+        },
+    },
 }

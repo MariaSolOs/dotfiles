@@ -20,6 +20,7 @@ return {
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>da'] = { name = '+debug adapters' },
                 ['<leader>s'] = { name = '+search' },
+                ['<leader>ss'] = { name = '+sessions' },
                 ['<leader>t'] = { name = '+trouble' },
             }
         end,

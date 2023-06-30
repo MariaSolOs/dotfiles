@@ -14,11 +14,11 @@ return {
         },
         cmd = 'Telescope',
         keys = {
-            { '<leader>?', nil, desc = 'Search recently opened files' },
-            { '<leader>sf', nil, desc = 'Search files' },
-            { '<leader>sh', nil, desc = 'Search help' },
-            { '<leader>sg', nil, desc = 'Search by grep' },
-            { '<leader>/', nil, desc = 'Search fuzzily in buffer' },
+            { '<leader>?', nil },
+            { '<leader>sf', nil },
+            { '<leader>sh', nil },
+            { '<leader>sg', nil },
+            { '<leader>/', nil },
         },
         config = function()
             local telescope = require 'telescope'
