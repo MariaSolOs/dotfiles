@@ -27,6 +27,7 @@ return {
             nmap('<leader>bc', ':BufferLinePickClose<cr>', { desc = 'Select a buffer to close', silent = true })
             nmap('[b', ':BufferLineCyclePrev<cr>', 'Previous buffer')
             nmap(']b', ':BufferLineCycleNext<cr>', 'Next buffer')
+            nmap('<leader>bd', ':bwipeout!<cr>', 'Delete current buffer')
             nmap('<leader>bl', ':BufferLineCloseLeft<cr>', 'Close buffers to the left')
             nmap('<leader>br', ':BufferLineCloseRight<cr>', 'Close buffers to the right')
         end,
