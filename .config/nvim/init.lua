@@ -66,9 +66,6 @@ vim.o.timeoutlen = 300
 -- Set completeopt to have a better completion experience.
 vim.o.completeopt = 'menuone,noselect,noinsert'
 
--- For color themes to look pretty.
-vim.o.termguicolors = true
-
 -- Disable some of those annoying hit-enter messages.
 vim.opt.shortmess:append 'IWs'
 
@@ -117,11 +114,9 @@ vim.keymap.set('i', '<C-a>', '<C-o>$', { silent = true })
 vim.keymap.set('i', '<C-c>', '<Esc>', { silent = true })
 
 -- [[ Auto commands ]]
-local augroup = require('helpers.commands').augroup
-
 -- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
-    group = augroup 'YankHighlight',
+    group = vim.api.nvim_create_augroup('YankHighlight', {}),
     callback = function()
         vim.highlight.on_yank { higroup = 'Search' }
     end,
@@ -130,7 +125,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Resize splits if the window gets resized.
 vim.api.nvim_create_autocmd('VimResized', {
-    group = augroup 'ResizeSplits',
+    group = vim.api.nvim_create_augroup('ResizeSplits', {}),
     callback = function()
         vim.cmd 'tabdo wincmd ='
     end,
@@ -138,7 +133,7 @@ vim.api.nvim_create_autocmd('VimResized', {
 
 -- Close some filetypes with <q>.
 vim.api.nvim_create_autocmd('FileType', {
-    group = augroup 'CloseWithQ',
+    group = vim.api.nvim_create_augroup('CloseWithQ', {}),
     pattern = {
         'help',
         'man',
@@ -153,7 +148,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- Recognize some files known to have JSON with comments.
 vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
-    group = augroup 'RecognizeJsonWithComments',
+    group = vim.api.nvim_create_augroup('RecognizeJsonWithComments', {}),
     pattern = {
         '.eslintrc.json',
         'tsconfig*.json',
