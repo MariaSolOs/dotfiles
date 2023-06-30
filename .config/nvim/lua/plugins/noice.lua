@@ -1,3 +1,4 @@
+-- TODO: Make signature help triggerable.
 -- Nicer notications and command line UI.
 return {
     {
