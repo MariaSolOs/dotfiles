@@ -50,17 +50,18 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            'mason.nvim',
+            {
+                'williamboman/mason.nvim',
+                cmd = 'Mason',
+                config = true,
+            },
             {
                 'williamboman/mason-lspconfig.nvim',
                 opts = {
                     ensure_installed = vim.tbl_keys(servers),
                 },
             },
-            {
-                'folke/neodev.nvim',
-                config = true,
-            },
+            { 'folke/neodev.nvim', config = true },
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
         },
