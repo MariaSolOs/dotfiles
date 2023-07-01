@@ -56,6 +56,11 @@ return {
                     }
                 end,
             },
+            {
+                'Saecki/crates.nvim',
+                event = 'BufRead Cargo.toml',
+                config = true,
+            },
             'saadparwaiz1/cmp_luasnip',
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-buffer',
@@ -128,6 +133,7 @@ return {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
                     { name = 'buffer' },
+                    { name = 'crates' },
                 },
             }
         end,
