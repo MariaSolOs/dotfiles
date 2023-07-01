@@ -15,10 +15,30 @@ return {
                 override = {
                     ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
                     ['vim.lsp.util.stylize_markdown'] = true,
+                    ['cmp.entry.get_documentation'] = true,
+                },
+                signature = {
+                    auto_open = {
+                        enabled = false,
+                    },
+                },
+                message = {
+                    view = 'mini',
                 },
             },
-            -- Send non-error/warnings to the mini view.
-            messages = { view = 'mini' },
+            messages = {
+                view = 'mini',
+                view_warn = 'mini',
+            },
+            routes = {
+                {
+                    filter = {
+                        event = 'notify',
+                        find = 'No code actions available',
+                    },
+                    opts = { skip = true },
+                },
+            },
         },
         dependencies = {
             'MunifTanjim/nui.nvim',

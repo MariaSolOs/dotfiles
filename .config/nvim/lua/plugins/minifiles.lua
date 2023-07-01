@@ -64,7 +64,6 @@ return {
             windows = {
                 width_nofocus = 25,
             },
-            -- TODO: Sort like VS Code.
         },
         config = function(_, opts)
             require('mini.files').setup(opts)
