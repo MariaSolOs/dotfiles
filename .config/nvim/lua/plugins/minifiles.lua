@@ -55,38 +55,43 @@ return {
                     return entry.fs_type ~= 'file' or entry.name ~= '.DS_Store'
                 end,
                 sort = function(entries)
-                    -- idrk how this works, but it seems to sort stuff like VSCode
-                    -- so I'm happy.
-                    local function conv(s)
-                        local res, dot = '', ''
-                        for n, m, c in tostring(s):gmatch '(0*(%d*))(.?)' do
-                            if n == '' then
-                                dot, c = '', dot .. c
-                            else
-                                res = res .. (dot == '' and ('%03d%s'):format(#m, m) or '.' .. n)
-                                dot, c = c:match '(%.?)(.*)'
-                            end
-                            res = res .. c:gsub('.', '\0%0')
-                        end
-                        return res
-                    end
-
-                    table.sort(entries, function(e1, e2)
+                    local compare_alphanumerically = function(e1, e2)
                         -- Put directories first.
-                        local e1_isdir, e2_isdir = e1.fs_type == 'directory', e2.fs_type == 'directory'
-                        if e1_isdir and not e2_isdir then
+                        if e1.is_dir and not e2.is_dir then
                             return true
                         end
-                        if not e1_isdir and e2_isdir then
+                        if not e1.is_dir and e2.is_dir then
                             return false
                         end
+                        -- Order numerically based on digits if the text before them is equal.
+                        if e1.pre_digits == e2.pre_digits and e1.digits ~= nil and e2.digits ~= nil then
+                            return e1.digits < e2.digits
+                        end
+                        -- Otherwise order alphabetically ignoring case.
+                        return e1.lower_name < e2.lower_name
+                    end
 
-                        local p1, p2 = e1.path, e2.path
-                        local ca, cb = conv(p1), conv(p2)
-                        return ca < cb or ca == cb and p1 < p2
-                    end)
+                    local sorted = vim.tbl_map(function(entry)
+                        local pre_digits, digits = entry.name:match '^(%D*)(%d+)'
+                        if digits ~= nil then
+                            digits = tonumber(digits)
+                        end
 
-                    return entries
+                        return {
+                            fs_type = entry.fs_type,
+                            name = entry.name,
+                            path = entry.path,
+                            lower_name = entry.name:lower(),
+                            is_dir = entry.fs_type == 'directory',
+                            pre_digits = pre_digits,
+                            digits = digits,
+                        }
+                    end, entries)
+                    table.sort(sorted, compare_alphanumerically)
+                    -- Keep only the necessary fields.
+                    return vim.tbl_map(function(x)
+                        return { name = x.name, fs_type = x.fs_type, path = x.path }
+                    end, sorted)
                 end,
             },
         },
