@@ -76,32 +76,30 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_node_provider = 0
 
 -- [[ Keymaps ]]
-local nmap = require('helpers.keybindings').nmap
-
 -- Make the leader a noop when not followed by something.
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap.
-nmap('k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-nmap('j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Use ';' for opening the command line.
 vim.keymap.set({ 'n', 'v' }, ';', ':')
 
 -- Quit Neovim.
-nmap('<leader>q', ':qa<cr>', 'Quit Neovim')
+vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = 'Quit Neovim' })
 
 -- Command for opening this file.
-nmap('<leader>C', ':e $MYVIMRC<cr>', 'Open Neovim configuration')
+vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Open Neovim configuration' })
 
 -- Adding blank lines in normal mode.
-nmap('<S-Enter>', 'o<Esc>', 'Insert a line below')
+vim.keymap.set('n', '<S-Enter>', 'o<Esc>', { desc = 'Insert a line below' })
 
 -- Switch between windows.
-nmap('<C-h>', '<C-w>h', 'Move to the left window')
-nmap('<C-j>', '<C-w>j', 'Move to the bottom window')
-nmap('<C-k>', '<C-w>k', 'Move to the top window')
-nmap('<C-l>', '<C-w>l', 'Move to the right window')
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to the bottom window' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
 
 -- Exit insert mode.
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
@@ -138,7 +136,12 @@ vim.api.nvim_create_autocmd('FileType', {
     },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
-        nmap('q', '<cmd>close<cr>', { buffer = event.buf, silent = true, desc = 'Close the current buffer' })
+        vim.keymap.set(
+            'n',
+            'q',
+            '<cmd>close<cr>',
+            { buffer = event.buf, silent = true, desc = 'Close the current buffer' }
+        )
     end,
 })
 

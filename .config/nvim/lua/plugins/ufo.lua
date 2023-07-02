@@ -49,10 +49,10 @@ return {
             vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
             -- HACK: Refresh indent lines after folding/unfolding.
-            local nmap = function(lhs, rhs)
-                require('helpers.keybindings').nmap(lhs, rhs, { noremap = true, silent = true })
+            local keymap = function(lhs, rhs)
+                vim.keymap.set('n', lhs, rhs, { noremap = true, silent = true })
             end
-            for _, keymap in pairs {
+            for _, lhs in pairs {
                 'zo',
                 'zO',
                 'zc',
@@ -65,7 +65,7 @@ return {
                 'zm',
                 'zr',
             } do
-                nmap(keymap, keymap .. ':IndentBlanklineRefresh<cr>')
+                keymap(lhs, lhs .. ':IndentBlanklineRefresh<cr>')
             end
         end,
     },

@@ -8,7 +8,7 @@ return {
             vim.fn['mkdp#util#install']()
         end,
         config = function()
-            require('helpers.keybindings').nmap('<leader>M', ':MarkdownPreviewToggle<cr>', 'Toggle .md preview')
+            vim.keymap.set('n', '<leader>M', ':MarkdownPreviewToggle<cr>', { desc = 'Toggle .md preview' })
         end,
     },
 }

@@ -21,10 +21,12 @@ return {
             },
         },
         init = function()
-            local nmap = require('helpers.keybindings').nmap
+            local nmap = function(lhs, rhs, desc)
+                vim.keymap.set('n', lhs, rhs, { desc = desc, silent = true })
+            end
 
-            nmap('<leader>bo', ':BufferLinePick<cr>', { desc = 'Select a buffer to open', silent = true })
-            nmap('<leader>bc', ':BufferLinePickClose<cr>', { desc = 'Select a buffer to close', silent = true })
+            nmap('<leader>bo', ':BufferLinePick<cr>', 'Select a buffer to open')
+            nmap('<leader>bc', ':BufferLinePickClose<cr>', 'Select a buffer to close')
             nmap('[b', ':BufferLineCyclePrev<cr>', 'Previous buffer')
             nmap(']b', ':BufferLineCycleNext<cr>', 'Next buffer')
             nmap('<leader>bd', ':bwipeout!<cr>', 'Delete current buffer')

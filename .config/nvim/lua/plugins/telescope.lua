@@ -24,7 +24,9 @@ return {
             local telescope = require 'telescope'
             local telescope_builtin = require 'telescope.builtin'
             local actions = require 'telescope.actions'
-            local nmap = require('helpers.keybindings').nmap
+            local nmap = function(lhs, rhs)
+                vim.keymap.set('n', lhs, rhs)
+            end
 
             nmap('<leader>tr', telescope_builtin.oldfiles)
             nmap('<leader>tf', telescope_builtin.find_files)
