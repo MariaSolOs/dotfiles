@@ -54,7 +54,40 @@ return {
                 filter = function(entry)
                     return entry.fs_type ~= 'file' or entry.name ~= '.DS_Store'
                 end,
-                -- TODO: Sort like VS Code here.
+                sort = function(entries)
+                    -- idrk how this works, but it seems to sort stuff like VSCode
+                    -- so I'm happy.
+                    local function conv(s)
+                        local res, dot = '', ''
+                        for n, m, c in tostring(s):gmatch '(0*(%d*))(.?)' do
+                            if n == '' then
+                                dot, c = '', dot .. c
+                            else
+                                res = res .. (dot == '' and ('%03d%s'):format(#m, m) or '.' .. n)
+                                dot, c = c:match '(%.?)(.*)'
+                            end
+                            res = res .. c:gsub('.', '\0%0')
+                        end
+                        return res
+                    end
+
+                    table.sort(entries, function(e1, e2)
+                        -- Put directories first.
+                        local e1_isdir, e2_isdir = e1.fs_type == 'directory', e2.fs_type == 'directory'
+                        if e1_isdir and not e2_isdir then
+                            return true
+                        end
+                        if not e1_isdir and e2_isdir then
+                            return false
+                        end
+
+                        local p1, p2 = e1.path, e2.path
+                        local ca, cb = conv(p1), conv(p2)
+                        return ca < cb or ca == cb and p1 < p2
+                    end)
+
+                    return entries
+                end,
             },
         },
         config = function(_, opts)
