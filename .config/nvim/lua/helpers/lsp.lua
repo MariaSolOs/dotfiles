@@ -31,18 +31,18 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.workspaceSymbolProvider then
-        keymap('<leader>sw', function()
+        keymap('<leader>tw', function()
             require('telescope.builtin').lsp_dynamic_workspace_symbols()
-        end, 'Search workspace symbols')
+        end, 'Workspace symbols')
     end
 
     if buf_client.server_capabilities.referencesProvider then
         keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
     end
 
-    keymap('<leader>sd', function()
+    keymap('<leader>td', function()
         require('telescope.builtin').lsp_document_symbols()
-    end, 'Search document symbols')
+    end, 'Document symbols')
     keymap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
 
     -- noice deals with the UI.

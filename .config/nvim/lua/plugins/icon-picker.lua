@@ -8,7 +8,7 @@ return {
             disable_legacy_commands = true,
         },
         keys = {
-            { '<leader>i', ':IconPickerNormal<cr>', desc = 'Pick an icon' },
+            { '<leader>ti', ':IconPickerNormal<cr>', desc = 'Icon picker' },
         },
     },
 }

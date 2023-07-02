@@ -9,13 +9,19 @@ return {
     },
     keys = {
         {
-            '<leader>td',
-            ':TroubleToggle workspace_diagnostics<cr>',
-            desc = 'Diagnostics',
+            '<leader>xd',
+            ':TroubleToggle document_diagnostics<cr>',
+            desc = 'Document diagnostics',
             { silent = true, noremap = true },
         },
         {
-            '<leader>tq',
+            '<leader>xw',
+            ':TroubleToggle workspace_diagnostics<cr>',
+            desc = 'Workspace diagnostics',
+            { silent = true, noremap = true },
+        },
+        {
+            '<leader>xq',
             ':TroubleToggle quickfix<cr>',
             desc = 'Quickfix list',
             { silent = true, noremap = true },

@@ -45,7 +45,7 @@ return {
             'rcarriga/nvim-notify',
         },
         keys = {
-            { '<leader>sn', ':NoiceTelescope<cr>', desc = 'Search Noice' },
+            { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice' },
             {
                 '<C-f>',
                 function()

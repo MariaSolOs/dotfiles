@@ -19,8 +19,8 @@ return {
                 ['<leader>b'] = { name = '+buffer' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>da'] = { name = '+debug adapters' },
-                ['<leader>s'] = { name = '+search' },
-                ['<leader>t'] = { name = '+trouble' },
+                ['<leader>t'] = { name = '+telescope' },
+                ['<leader>x'] = { name = '+trouble' },
             }
         end,
     },
