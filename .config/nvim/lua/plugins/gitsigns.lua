@@ -47,7 +47,7 @@ return {
                 keymap('<leader>gu', gs.undo_stage_hunk, 'Undo stage hunk')
                 keymap('<leader>gR', gs.reset_buffer, 'Reset hunks in buffer')
                 keymap('<leader>gp', gs.preview_hunk, 'Preview hunk')
-                keymap('<leader>th', function()
+                keymap('<leader>xh', function()
                     gs.setqflist 'all'
                 end, 'Hunks')
 
