@@ -2,7 +2,7 @@
 return {
     {
         'pmizio/typescript-tools.nvim',
-        event = { 'BufReadPre *.ts,*.tsx,*.js,*.jsx', 'BufNewFile *.ts,*.tsx,*.js,*.jsx' },
+        event = { 'BufReadPost *.ts,*.tsx,*.js,*.jsx', 'BufNewFile *.ts,*.tsx,*.js,*.jsx' },
         dependencies = { 'nvim-lua/plenary.nvim', 'nvim-lspconfig' },
         opts = {
             on_attach = require('helpers.lsp').on_attach,

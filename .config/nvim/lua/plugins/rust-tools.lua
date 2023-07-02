@@ -3,7 +3,7 @@ return {
     {
         'simrat39/rust-tools.nvim',
         dependencies = 'nvim-lspconfig',
-        event = { 'BufReadPre *.rs', 'BufNewFile *.rs' },
+        event = { 'BufReadPost *.rs', 'BufNewFile *.rs' },
         config = function()
             local rt = require 'rust-tools'
 
