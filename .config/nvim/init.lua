@@ -106,9 +106,6 @@ nmap('<C-l>', '<C-w>l', 'Move to the right window')
 -- Exit insert mode.
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
--- Continue insert mode at the end of the line.
-vim.keymap.set('i', '<C-a>', '<C-o>$', { silent = true })
-
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<Esc>', { silent = true })
 

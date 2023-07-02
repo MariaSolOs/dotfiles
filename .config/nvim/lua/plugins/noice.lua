@@ -1,4 +1,3 @@
--- TODO: Make signature help triggerable.
 -- Nicer notications and command line UI.
 return {
     {
@@ -31,12 +30,13 @@ return {
                 view_warn = 'mini',
             },
             routes = {
+                -- Send all the messages about "X not available" to the mini view.
                 {
                     filter = {
                         event = 'notify',
-                        find = 'No code actions available',
+                        find = 'available',
                     },
-                    opts = { skip = true },
+                    view = 'mini',
                 },
             },
         },
