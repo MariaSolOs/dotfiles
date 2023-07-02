@@ -8,11 +8,8 @@ return {
             on_attach = require('helpers.lsp').on_attach,
             settings = {
                 tsserver_file_preferences = {
-                    includeInlayParameterNameHints = 'all',
-                    includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                    includeInlayFunctionParameterTypeHints = true,
+                    includeInlayParameterNameHints = 'literals',
                     includeInlayVariableTypeHints = true,
-                    includeInlayVariableTypeHintsWhenTypeMatchesName = false,
                     includeInlayFunctionLikeReturnTypeHints = true,
                 },
             },
