@@ -13,10 +13,13 @@ return {
         opts = {
             ensure_installed = {
                 'bash',
+                'javascript',
                 'json',
                 'jsonc',
                 'json5',
                 'lua',
+                'markdown',
+                'markdown_inline',
                 'regex',
                 'rust',
                 'toml',
