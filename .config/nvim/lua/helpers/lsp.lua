@@ -1,53 +1,59 @@
 local M = {}
 
 M.on_attach = function(buf_client, bufnr)
-    local nmap = function(lhs, rhs, desc)
-        require('helpers.keybindings').nmap(lhs, rhs, { buffer = bufnr, desc = desc })
+    local keymap = function(lhs, rhs, desc, mode)
+        mode = mode or 'n'
+        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
     if buf_client.server_capabilities.codeActionProvider then
-        vim.keymap.set({ 'n', 'v' }, '<leader>c', ':Lspsaga code_action<cr>', { desc = 'Code action' })
+        keymap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', { 'n', 'v' })
     end
 
     if buf_client.server_capabilities.renameProvider then
-        nmap('<leader>r', ':Lspsaga rename<cr>', 'Rename')
+        keymap('<leader>r', ':Lspsaga rename<cr>', 'Rename')
     end
 
     if buf_client.server_capabilities.implementationProvider then
-        nmap('gI', ':Telescope lsp_implementations<cr>', 'Go to implementation(s)')
+        keymap('gI', ':Telescope lsp_implementations<cr>', 'Go to implementation(s)')
     end
 
     if buf_client.server_capabilities.typeDefinitionProvider then
-        nmap('gt', ':Telescope lsp_type_definitions<cr>', 'Go to type definition(s)')
+        keymap('gt', ':Telescope lsp_type_definitions<cr>', 'Go to type definition(s)')
     end
 
     if buf_client.server_capabilities.definitionProvider then
-        nmap('gD', ':Telescope lsp_definitions<cr>', 'Go to definition(s)')
+        keymap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
     end
 
     if buf_client.server_capabilities.signatureHelpProvider then
-        vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature help' })
+        keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
     end
 
-    nmap('<leader>sd', function()
+    if buf_client.server_capabilities.workspaceSymbolProvider then
+        keymap('<leader>sw', function()
+            require('telescope.builtin').lsp_dynamic_workspace_symbols()
+        end, 'Search workspace symbols')
+    end
+
+    if buf_client.server_capabilities.referencesProvider then
+        keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
+    end
+
+    keymap('<leader>sd', function()
         require('telescope.builtin').lsp_document_symbols()
     end, 'Search document symbols')
-    nmap('<leader>sw', function()
-        require('telescope.builtin').lsp_dynamic_workspace_symbols()
-    end, 'Search workspace symbols')
-    nmap('gr', ':Telescope lsp_references<cr>', 'Go to references')
-    nmap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
-    nmap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
+    keymap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
 
     -- noice deals with the UI.
-    nmap('K', vim.lsp.buf.hover, 'Hover')
+    keymap('K', vim.lsp.buf.hover, 'Hover')
 
-    nmap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
-    nmap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
-    nmap('[e', function()
+    keymap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
+    keymap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
+    keymap('[e', function()
         require('lspsaga.diagnostic'):goto_prev { severity = vim.diagnostic.severity.ERROR }
     end, 'Previous error')
-    nmap(']e', function()
+    keymap(']e', function()
         require('lspsaga.diagnostic'):goto_next { severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
 
