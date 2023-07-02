@@ -1,17 +1,3 @@
--- Utilities for hiding/showing dotfiles.
-local show_dotfiles = true
-local filter_show = function()
-    return true
-end
-local filter_hide = function(file)
-    return not vim.startswith(file.name, '.')
-end
-local toggle_dotfiles = function()
-    show_dotfiles = not show_dotfiles
-    local new_filter = show_dotfiles and filter_show or filter_hide
-    require('mini.files').refresh { content = { filter = new_filter } }
-end
-
 -- Utilities for creating splits.
 local map_split = function(buf_id, lhs, direction)
     local minifiles = require 'mini.files'
@@ -64,7 +50,12 @@ return {
             windows = {
                 width_nofocus = 25,
             },
-            -- TODO: Sort like VS Code here.
+            content = {
+                filter = function(entry)
+                    return entry.fs_type ~= 'file' or entry.name ~= '.DS_Store'
+                end,
+                -- TODO: Sort like VS Code here.
+            },
         },
         config = function(_, opts)
             require('mini.files').setup(opts)
@@ -75,15 +66,6 @@ return {
                 callback = function(args)
                     local win_id = args.data.win_id
                     vim.api.nvim_win_set_config(win_id, { border = 'rounded' })
-                end,
-            })
-
-            -- Show/hide dotfiles.
-            vim.api.nvim_create_autocmd('User', {
-                pattern = 'MiniFilesBufferCreate',
-                callback = function(args)
-                    local buf_id = args.data.buf_id
-                    vim.keymap.set('n', 't.', toggle_dotfiles, { buffer = buf_id, desc = 'Toggle dotfiles' })
                 end,
             })
 
