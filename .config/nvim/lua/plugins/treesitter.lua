@@ -2,7 +2,7 @@
 return {
     {
         'nvim-treesitter/nvim-treesitter',
-        dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects', 'HiPhish/nvim-ts-rainbow2' },
+        dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects', 'HiPhish/rainbow-delimiters.nvim' },
         version = false,
         event = { 'BufReadPost', 'BufNewFile' },
         build = ':TSUpdate',

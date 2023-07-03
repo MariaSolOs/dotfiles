@@ -5,7 +5,7 @@ return {
         event = 'VeryLazy',
         opts = {
             options = {
-                theme = 'miss-dracula',
+                theme = 'dracula-nvim',
                 component_separators = '|',
                 section_separators = '',
             },

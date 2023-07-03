@@ -87,7 +87,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = 'Quit Neovim', silent = true })
 
 -- Command for opening this file.
-vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Open Neovim configuration' })
+vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Open Neovim configuration', silent = true })
 
 -- Switch between windows.
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
