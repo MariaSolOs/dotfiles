@@ -8,6 +8,7 @@ return {
 
             require('session_manager').setup {
                 autoload_mode = cfg.AutoloadMode.Disabled,
+                autosave_ignore_dirs = { '~/.config/nvim' },
             }
         end,
     },
