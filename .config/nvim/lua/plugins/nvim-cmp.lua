@@ -51,6 +51,9 @@ return {
                                     virt_text = { { '|', 'Conceal' } },
                                     virt_text_pos = 'inline',
                                 },
+                                snippet_passive = {
+                                    hl_group = 'None',
+                                },
                             },
                         },
                     }
@@ -94,6 +97,7 @@ return {
                     -- Make the completion menu bordered.
                     completion = cmp.config.window.bordered(),
                     -- Disable the documentation popup. It gets too cluttered.
+                    -- TODO: Make this toggleable.
                     documentation = cmp.config.disable,
                 },
                 mapping = cmp.mapping.preset.insert {
