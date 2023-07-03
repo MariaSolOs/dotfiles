@@ -3,14 +3,7 @@ return {
     {
         'folke/flash.nvim',
         event = 'VeryLazy',
-        opts = {
-            modes = {
-                -- Disable ft motions.
-                char = {
-                    enabled = false,
-                },
-            },
-        },
+        config = true,
         keys = {
             {
                 's',
