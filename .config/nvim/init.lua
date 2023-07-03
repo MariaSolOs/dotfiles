@@ -83,17 +83,11 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- Use ';' for opening the command line.
-vim.keymap.set({ 'n', 'v' }, ';', ':')
-
 -- Quit Neovim.
 vim.keymap.set('n', '<leader>q', ':qa<cr>', { desc = 'Quit Neovim', silent = true })
 
 -- Command for opening this file.
 vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Open Neovim configuration' })
-
--- Adding blank lines in normal mode.
-vim.keymap.set('n', '<S-Enter>', 'o<Esc>', { desc = 'Insert a line below' })
 
 -- Switch between windows.
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
@@ -102,7 +96,12 @@ vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
 
 -- Exit insert mode.
-vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<Esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
+vim.keymap.set(
+    { 's', 'i', 'n', 'v' },
+    '<C-s>',
+    '<Esc>:w<cr>',
+    { desc = 'Exit insert mode and save changes.', silent = true }
+)
 
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<Esc>', { silent = true })
