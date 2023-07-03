@@ -29,7 +29,7 @@ return {
                 dashboard_button('r', '  Recent files', ':Telescope oldfiles<cr>'),
                 dashboard_button('c', '  Config', ':e $MYVIMRC | :cd %:p:h<cr>'),
                 dashboard_button('q', '  Quit', ':qa<cr>'),
-                dashboard_button('s', '  Restore session', [[:lua require('persistence').load()<cr>]]),
+                dashboard_button('s', ' Load session', ':SessionManager load_session<cr>'),
                 { type = 'padding', val = 2 },
             }
             dashboard.section.buttons.opts.hl = 'AlphaButtons'
