@@ -27,7 +27,13 @@ return {
                 'vim',
                 'vimdoc',
             },
-            highlight = { enable = true },
+            highlight = {
+                enable = true,
+                disable = function(lang, buf)
+                    -- Looking at you checker.ts
+                    return lang == 'typescript' and vim.api.nvim_buf_line_count(buf) > 10000
+                end,
+            },
             rainbow = { enable = true },
             incremental_selection = {
                 enable = true,
