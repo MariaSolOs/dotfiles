@@ -33,7 +33,7 @@ return {
                     NoiceFormatProgressTodo = { link = 'NonText' },
 
                     -- Nicer highlights for the word under the cursor.
-                    IlluminatedWordRead = { bg = '#364852' },
+                    IlluminatedWordRead = { bg = '#19272C' },
                     IlluminatedWordWrite = { bg = '#342231' },
 
                     -- When triggering flash, make everything in the backdrop italic.
