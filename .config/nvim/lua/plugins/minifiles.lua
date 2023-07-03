@@ -116,6 +116,19 @@ return {
                     map_split(buf_id, '<C-v>', 'belowright vertical')
                 end,
             })
+
+            -- Close the explorer when losing focus.
+            vim.api.nvim_create_autocmd('BufEnter', {
+                callback = vim.schedule_wrap(function()
+                    local ft = vim.bo.filetype
+                    if ft == 'minifiles' or ft == 'minifiles-help' then
+                        return
+                    end
+                    local cur_win_id = vim.api.nvim_get_current_win()
+                    require('mini.files').close()
+                    pcall(vim.api.nvim_set_current_win, cur_win_id)
+                end),
+            })
         end,
     },
 }
