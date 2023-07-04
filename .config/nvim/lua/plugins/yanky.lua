@@ -22,5 +22,7 @@ return {
         { 'P', '<Plug>(YankyPutBefore)', mode = { 'n', 'x' }, desc = 'Put yanked text before cursor' },
         { '=p', '<Plug>(YankyPutAfterFilter)', desc = 'Put yanked text in line below' },
         { '=P', '<Plug>(YankyPutBeforeFilter)', desc = 'Put yanked text in line above' },
+        { '[y', '<Plug>(YankyCycleForward)', desc = 'Cycle forward through yank history' },
+        { ']y', '<Plug>(YankyCycleBackward)', desc = 'Cycle backward through yank history' },
     },
 }
