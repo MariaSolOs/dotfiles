@@ -21,29 +21,9 @@ return {
                         enabled = false,
                     },
                 },
-                message = {
-                    view = 'mini',
-                },
-            },
-            messages = {
-                view = 'mini',
-                view_warn = 'mini',
-            },
-            routes = {
-                -- Send all the messages about "X not available" to the mini view.
-                {
-                    filter = {
-                        event = 'notify',
-                        find = 'available',
-                    },
-                    view = 'mini',
-                },
             },
         },
-        dependencies = {
-            'MunifTanjim/nui.nvim',
-            'rcarriga/nvim-notify',
-        },
+        dependencies = 'MunifTanjim/nui.nvim',
         keys = {
             { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice' },
             {
