@@ -5,6 +5,7 @@ return {
     cmd = { 'TodoTrouble', 'TodoTelescope' },
     event = { 'BufReadPost', 'BufNewFile' },
     keys = {
+        { '<leader>xt', ':TodoTrouble<cr>', desc = 'TODOs' },
         { '<leader>tt', ':TodoTelescope<cr>', desc = 'TODOs' },
     },
     opts = {

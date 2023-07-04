@@ -44,10 +44,6 @@ M.on_attach = function(buf_client, bufnr)
         require('telescope.builtin').lsp_document_symbols()
     end, 'Document symbols')
     keymap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
-
-    -- noice deals with the UI.
-    keymap('K', vim.lsp.buf.hover, 'Hover')
-
     keymap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
     keymap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
     keymap('[e', function()
@@ -56,6 +52,13 @@ M.on_attach = function(buf_client, bufnr)
     keymap(']e', function()
         require('lspsaga.diagnostic'):goto_next { severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
+
+    -- noice deals with the UI.
+    keymap('K', vim.lsp.buf.hover, 'Hover')
+
+    -- Toggle the floating terminal.
+    -- NOTE: The <cmd> below is needed to exit terminal mode.
+    vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
@@ -85,10 +88,6 @@ M.on_attach = function(buf_client, bufnr)
     vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function()
         vim.lsp.buf.format()
     end, { desc = 'Format current buffer' })
-
-    -- Toggle the floating terminal.
-    -- NOTE: The <cmd> below is needed to exit terminal mode.
-    vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Set up format on save.
     vim.api.nvim_create_autocmd('BufWritePre', {
