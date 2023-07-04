@@ -96,13 +96,12 @@ return {
                 window = {
                     -- Make the completion menu bordered.
                     completion = cmp.config.window.bordered(),
-                    -- Disable the documentation popup. It gets too cluttered.
                     -- TODO: Make this toggleable.
-                    documentation = cmp.config.disable,
+                    documentation = cmp.config.window.bordered(),
                 },
                 mapping = cmp.mapping.preset.insert {
-                    -- ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                    -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+                    ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<CR>'] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
                         select = true,
