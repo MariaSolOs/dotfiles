@@ -40,6 +40,10 @@ M.on_attach = function(buf_client, bufnr)
         keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
     end
 
+    if buf_client.server_capabilities.documentSymbolProvider then
+        require('nvim-navic').attach(buf_client, bufnr)
+    end
+
     keymap('<leader>td', function()
         require('telescope.builtin').lsp_document_symbols()
     end, 'Document symbols')
