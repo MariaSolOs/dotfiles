@@ -1,6 +1,13 @@
 -- Extra rust goodies.
 return {
     {
+        'Saecki/crates.nvim',
+        event = 'BufRead Cargo.toml',
+        config = function(_, opts)
+            require('crates').setup(opts)
+        end,
+    },
+    {
         'simrat39/rust-tools.nvim',
         dependencies = 'nvim-lspconfig',
         event = { 'BufReadPost *.rs', 'BufNewFile *.rs' },
