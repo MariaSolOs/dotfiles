@@ -13,7 +13,10 @@ return {
             attach_navic = false,
             create_autocmd = false,
         },
-        config = function()
+        config = function(_, opts)
+            require('barbecue').setup(opts)
+
+            -- Better perf when moving the cursor.
             vim.api.nvim_create_autocmd({
                 'WinScrolled',
                 'BufWinEnter',
