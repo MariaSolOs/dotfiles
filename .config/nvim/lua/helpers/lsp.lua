@@ -11,9 +11,7 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.renameProvider then
-        vim.keymap.set('n', '<leader>r', function()
-            return ':IncRename ' .. vim.fn.expand '<cword>'
-        end, { desc = 'Rename', expr = true })
+        vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, { desc = 'Rename' })
     end
 
     if buf_client.server_capabilities.implementationProvider then
@@ -39,6 +37,7 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     -- HACK: Disable navic in markdown buffer thingies.
+    -- TODO: Remove this hack when the fix in navic is merged.
     if buf_client.server_capabilities.documentSymbolProvider and vim.api.nvim_buf_get_name(bufnr) ~= '' then
         require('nvim-navic').attach(buf_client, bufnr)
     end
