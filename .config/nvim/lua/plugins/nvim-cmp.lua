@@ -133,23 +133,6 @@ return {
                     { name = 'buffer' },
                     { name = 'crates' },
                 },
-                sorting = {
-                    comparators = {
-                        -- Use the LSP's sort text first.
-                        cmp.config.compare.sort_text,
-                        cmp.config.compare.offset,
-                        cmp.config.compare.exact,
-                        cmp.config.compare.score,
-                        ---@diagnostic disable-next-line: assign-type-mismatch
-                        cmp.config.compare.recently_used,
-                        ---@diagnostic disable-next-line: assign-type-mismatch
-                        cmp.config.compare.locality,
-                        cmp.config.compare.kind,
-                        cmp.config.compare.sort_text,
-                        cmp.config.compare.length,
-                        cmp.config.compare.order,
-                    },
-                },
             }
         end,
     },

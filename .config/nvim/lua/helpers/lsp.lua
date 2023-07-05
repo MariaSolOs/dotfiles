@@ -40,7 +40,8 @@ M.on_attach = function(buf_client, bufnr)
         keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
     end
 
-    if buf_client.server_capabilities.documentSymbolProvider then
+    -- HACK: Disable navic in markdown buffer thingies.
+    if buf_client.server_capabilities.documentSymbolProvider and vim.api.nvim_buf_get_name(bufnr) ~= '' then
         require('nvim-navic').attach(buf_client, bufnr)
     end
 

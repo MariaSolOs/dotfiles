@@ -2,8 +2,6 @@
 return {
     {
         'utilyre/barbecue.nvim',
-        name = 'barbecue',
-        version = '*',
         event = 'LspAttach',
         dependencies = {
             'SmiteshP/nvim-navic',
@@ -18,11 +16,10 @@ return {
 
             -- Better perf when moving the cursor.
             vim.api.nvim_create_autocmd({
-                'WinScrolled',
+                'WinResized',
                 'BufWinEnter',
                 'CursorHold',
                 'InsertLeave',
-                'BufModifiedSet',
             }, {
                 group = vim.api.nvim_create_augroup('BarbecueUpdater', {}),
                 callback = function()
