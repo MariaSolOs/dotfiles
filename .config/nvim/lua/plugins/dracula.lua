@@ -70,15 +70,6 @@ return {
                     DapUIBreakpointsCurrentLine = { fg = colors.bright_green, bold = true },
                     DapStoppedLine = { default = true, link = 'Visual' },
                     DapUIWinSelect = { fg = colors.bright_cyan, bold = true },
-
-                    -- Rainbow delimiter colors
-                    RainbowDelimiterRed = { fg = '#F266AB', ctermfg = 'Red' },
-                    RainbowDelimiterOrange = { fg = '#FFB84C', ctermfg = 'White' },
-                    RainbowDelimiterYellow = { fg = '#FFF56F', ctermfg = 'Yellow' },
-                    RainbowDelimiterGreen = { fg = '#87E58E', ctermfg = 'Green' },
-                    RainbowDelimiterCyan = { fg = '#A7DFEF', ctermfg = 'Cyan' },
-                    RainbowDelimiterBlue = { fg = '#0079FF', ctermfg = 'Blue' },
-                    RainbowDelimiterViolet = { fg = '#A459D1', ctermfg = 'Magenta' },
                 }
             end,
         },
