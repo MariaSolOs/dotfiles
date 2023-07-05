@@ -11,7 +11,9 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.renameProvider then
-        keymap('<leader>r', ':Lspsaga rename<cr>', 'Rename')
+        vim.keymap.set('n', '<leader>r', function()
+            return ':IncRename ' .. vim.fn.expand '<cword>'
+        end, { desc = 'Rename', expr = true })
     end
 
     if buf_client.server_capabilities.implementationProvider then
@@ -36,10 +38,6 @@ M.on_attach = function(buf_client, bufnr)
         end, 'Workspace symbols')
     end
 
-    if buf_client.server_capabilities.referencesProvider then
-        keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
-    end
-
     -- HACK: Disable navic in markdown buffer thingies.
     if buf_client.server_capabilities.documentSymbolProvider and vim.api.nvim_buf_get_name(bufnr) ~= '' then
         require('nvim-navic').attach(buf_client, bufnr)
@@ -48,6 +46,7 @@ M.on_attach = function(buf_client, bufnr)
     keymap('<leader>td', function()
         require('telescope.builtin').lsp_document_symbols()
     end, 'Document symbols')
+    keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
     keymap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
     keymap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
     keymap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')

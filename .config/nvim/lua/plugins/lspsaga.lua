@@ -2,7 +2,7 @@
 return {
     {
         'glepnir/lspsaga.nvim',
-        cmd = 'Lspsaga',
+        event = 'LspAttach',
         dependencies = {
             'nvim-tree/nvim-web-devicons',
             'nvim-treesitter',
@@ -24,8 +24,8 @@ return {
                     expand_or_jump = '<cr>',
                 },
             },
-            rename = {
-                quit = '<esc>',
+            lightbulb = {
+                sign = false,
             },
             -- Using barbecue instead.
             symbol_in_winbar = {
