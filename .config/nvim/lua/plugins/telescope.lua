@@ -70,10 +70,10 @@ return {
                         },
                     },
                     layout_strategy = 'vertical',
-                    pickers = {
-                        lsp_references = {
-                            fname_width = 50,
-                        },
+                },
+                pickers = {
+                    lsp_references = {
+                        fname_width = 50,
                     },
                 },
             }
