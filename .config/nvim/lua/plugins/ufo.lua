@@ -12,11 +12,10 @@ return {
                     local builtin = require 'statuscol.builtin'
                     require('statuscol').setup {
                         segments = {
-                            { text = { builtin.foldfunc }, click = 'v:lua.ScFa' },
-                            { text = { '%s' }, click = 'v:lua.ScSa' },
-                            { text = { builtin.lnumfunc, ' ' }, click = 'v:lua.ScLa' },
+                            { text = { builtin.foldfunc } },
+                            { text = { '%s' } },
+                            { text = { builtin.lnumfunc, ' ' } },
                         },
-                        ft_ignore = { 'trouble' },
                     }
                 end,
             },

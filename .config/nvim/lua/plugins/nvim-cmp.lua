@@ -107,7 +107,6 @@ return {
                 window = {
                     -- Make the completion menu bordered.
                     completion = cmp.config.window.bordered(),
-                    -- TODO: Make this toggleable.
                     documentation = cmp.config.window.bordered(),
                 },
                 mapping = cmp.mapping.preset.insert {
