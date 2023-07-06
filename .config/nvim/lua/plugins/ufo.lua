@@ -16,6 +16,7 @@ return {
                             { text = { '%s' }, click = 'v:lua.ScSa' },
                             { text = { builtin.lnumfunc, ' ' }, click = 'v:lua.ScLa' },
                         },
+                        ft_ignore = { 'trouble' },
                     }
                 end,
             },
