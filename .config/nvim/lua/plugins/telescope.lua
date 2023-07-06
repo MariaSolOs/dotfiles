@@ -18,8 +18,6 @@ return {
             { '<leader>tf', nil, desc = 'File search' },
             { '<leader>th', nil, desc = 'Help' },
             { '<leader>tg', nil, desc = 'Grep search' },
-            { '<leader>tsl', nil, desc = 'Load session' },
-            { '<leader>tsd', nil, desc = 'Delete session' },
             { '<leader>tb', nil, desc = 'Fuzzy buffer search' },
         },
         config = function()
@@ -34,8 +32,6 @@ return {
             nmap('<leader>tf', telescope_builtin.find_files)
             nmap('<leader>th', telescope_builtin.help_tags)
             nmap('<leader>tg', telescope_builtin.live_grep)
-            nmap('<leader>tsl', ':SessionManager load_session<cr>')
-            nmap('<leader>tsd', ':SessionManager delete_session<cr>')
             nmap('<leader>tb', function()
                 telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
                     winblend = 10,
