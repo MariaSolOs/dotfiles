@@ -36,9 +36,7 @@ M.on_attach = function(buf_client, bufnr)
         end, 'Workspace symbols')
     end
 
-    -- HACK: Disable navic in markdown buffer thingies.
-    -- TODO: Remove this hack when the fix in navic is merged.
-    if buf_client.server_capabilities.documentSymbolProvider and vim.api.nvim_buf_get_name(bufnr) ~= '' then
+    if buf_client.server_capabilities.documentSymbolProvider then
         require('nvim-navic').attach(buf_client, bufnr)
     end
 
