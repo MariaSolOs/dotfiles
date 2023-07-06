@@ -67,8 +67,11 @@ return {
                                     virt_text = { { '|', 'Conceal' } },
                                     virt_text_pos = 'inline',
                                 },
-                                snippet_passive = {
-                                    hl_group = 'None',
+                            },
+                            [types.exitNode] = {
+                                unvisited = {
+                                    virt_text = { { '|', 'Conceal' } },
+                                    virt_text_pos = 'inline',
                                 },
                             },
                         },
