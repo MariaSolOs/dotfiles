@@ -21,11 +21,7 @@ return {
                 end,
             },
         },
-        opts = {
-            provider_selector = function()
-                return { 'treesitter', 'indent' }
-            end,
-        },
+        config = true,
         keys = {
             {
                 'zR',

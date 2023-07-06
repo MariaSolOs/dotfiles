@@ -26,6 +26,7 @@ return {
             },
             lightbulb = {
                 sign = false,
+                enable_in_insert = false,
             },
             -- Using barbecue instead.
             symbol_in_winbar = {
