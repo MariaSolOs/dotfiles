@@ -43,14 +43,12 @@ return {
 
                     -- HACK: Cancel the snippet session when leaving insert mode.
                     vim.api.nvim_create_autocmd('ModeChanged', {
-                        pattern = '*',
-                        callback = function()
+                        group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', {}),
+                        pattern = { 's:n', 'i:*' },
+                        callback = function(event)
                             if
-                                (
-                                    (vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n')
-                                    or vim.v.event.old_mode == 'i'
-                                )
-                                and luasnip.session.current_nodes[vim.api.nvim_get_current_buf()]
+                                luasnip.session
+                                and luasnip.session.current_nodes[event.buf]
                                 and not luasnip.session.jump_active
                             then
                                 luasnip.unlink_current()
