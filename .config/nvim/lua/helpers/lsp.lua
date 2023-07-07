@@ -43,7 +43,10 @@ M.on_attach = function(buf_client, bufnr)
     keymap('<leader>td', function()
         require('telescope.builtin').lsp_document_symbols()
     end, 'Document symbols')
+
     keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
+
+    keymap('<leader>l', vim.diagnostic.open_float, 'Line diagnostics')
     keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
     keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
     keymap('[e', function()
