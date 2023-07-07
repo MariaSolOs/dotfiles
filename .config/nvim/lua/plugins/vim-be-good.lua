@@ -1,4 +1,4 @@
 -- Trying to get better at vim.
 return {
-    { 'ThePrimeagen/vim-be-good' },
+    { 'ThePrimeagen/vim-be-good', cmd = 'VimBeGood' },
 }
