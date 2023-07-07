@@ -63,7 +63,7 @@ M.on_attach = function(buf_client, bufnr)
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
-        local inlay_hints_group = vim.api.nvim_create_augroup('InlayHints', {})
+        local inlay_hints_group = vim.api.nvim_create_augroup('InlayHints', { clear = true })
 
         -- Initial inlay hint display.
         local mode = vim.api.nvim_get_mode().mode
@@ -92,7 +92,7 @@ M.on_attach = function(buf_client, bufnr)
 
     -- Set up format on save.
     vim.api.nvim_create_autocmd('BufWritePre', {
-        group = vim.api.nvim_create_augroup('FormatOnSave', {}),
+        group = vim.api.nvim_create_augroup('FormatOnSave', { clear = true }),
         pattern = { '*.lua', '*.rs' },
         callback = function()
             local buf = vim.api.nvim_get_current_buf()

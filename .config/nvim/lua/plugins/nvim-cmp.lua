@@ -43,7 +43,7 @@ return {
 
                     -- HACK: Cancel the snippet session when leaving insert mode.
                     vim.api.nvim_create_autocmd('ModeChanged', {
-                        group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', {}),
+                        group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', { clear = true }),
                         pattern = { 's:n', 'i:*' },
                         callback = function(event)
                             if

@@ -42,7 +42,7 @@ return {
 
             -- Return to normal mode when closing Telescope.
             vim.api.nvim_create_autocmd('User', {
-                group = vim.api.nvim_create_augroup('TelescopeEscapeInsert', {}),
+                group = vim.api.nvim_create_augroup('TelescopeEscapeInsert', { clear = true }),
                 pattern = 'TelescopeResumePost',
                 command = 'stopinsert',
             })

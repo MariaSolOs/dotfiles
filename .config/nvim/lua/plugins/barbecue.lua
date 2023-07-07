@@ -21,7 +21,7 @@ return {
                 'CursorHold',
                 'InsertLeave',
             }, {
-                group = vim.api.nvim_create_augroup('BarbecueUpdater', {}),
+                group = vim.api.nvim_create_augroup('BarbecueUpdater', { clear = true }),
                 callback = function()
                     require('barbecue.ui').update()
                 end,

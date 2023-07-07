@@ -113,7 +113,7 @@ vim.keymap.set('i', '<C-c>', '<Esc>', { silent = true })
 -- [[ Auto commands ]]
 -- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
-    group = vim.api.nvim_create_augroup('YankHighlight', {}),
+    group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
     callback = function()
         vim.highlight.on_yank { higroup = 'Search' }
     end,
@@ -122,7 +122,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Resize splits if the window gets resized.
 vim.api.nvim_create_autocmd('VimResized', {
-    group = vim.api.nvim_create_augroup('ResizeSplits', {}),
+    group = vim.api.nvim_create_augroup('ResizeSplits', { clear = true }),
     callback = function()
         vim.cmd 'tabdo wincmd ='
     end,
@@ -130,12 +130,13 @@ vim.api.nvim_create_autocmd('VimResized', {
 
 -- Close some filetypes with <q>.
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('CloseWithQ', {}),
+    group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
     pattern = {
         'help',
         'man',
         'qf',
         'checkhealth',
+        'spectre_panel',
     },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
@@ -150,7 +151,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- Recognize some files known to have JSON with comments.
 vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
-    group = vim.api.nvim_create_augroup('RecognizeJsonWithComments', {}),
+    group = vim.api.nvim_create_augroup('RecognizeJsonWithComments', { clear = true }),
     pattern = {
         '.eslintrc.json',
         'tsconfig*.json',
