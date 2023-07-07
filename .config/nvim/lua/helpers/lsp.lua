@@ -7,7 +7,7 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.codeActionProvider then
-        keymap('<leader>c', ':Lspsaga code_action<cr>', 'Code action', { 'n', 'v' })
+        keymap('<leader>c', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
     end
 
     if buf_client.server_capabilities.renameProvider then
@@ -23,7 +23,7 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.definitionProvider then
-        keymap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
+        keymap('gd', ':Telescope lsp_definitions<cr>', 'Go to definition')
     end
 
     if buf_client.server_capabilities.signatureHelpProvider then
@@ -44,22 +44,17 @@ M.on_attach = function(buf_client, bufnr)
         require('telescope.builtin').lsp_document_symbols()
     end, 'Document symbols')
     keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
-    keymap('<leader>o', ':Lspsaga outline<cr>', 'Toggle outline')
-    keymap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
-    keymap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
+    keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
+    keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
     keymap('[e', function()
-        require('lspsaga.diagnostic'):goto_prev { severity = vim.diagnostic.severity.ERROR }
+        vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
     end, 'Previous error')
     keymap(']e', function()
-        require('lspsaga.diagnostic'):goto_next { severity = vim.diagnostic.severity.ERROR }
+        vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
 
     -- noice deals with the UI.
     keymap('K', vim.lsp.buf.hover, 'Hover')
-
-    -- Toggle the floating terminal.
-    -- NOTE: The <cmd> below is needed to exit terminal mode.
-    vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
