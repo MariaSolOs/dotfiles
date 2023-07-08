@@ -6,6 +6,7 @@ return {
     opts = {
         -- Don't add an extra newline above the list.
         padding = false,
+        auto_close = true,
     },
     keys = {
         {
