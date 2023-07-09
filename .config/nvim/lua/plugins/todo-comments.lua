@@ -16,6 +16,7 @@ return {
             },
             highlight = {
                 pattern = [[.*<(KEYWORDS)\s*]],
+                after = '',
             },
         },
     },
