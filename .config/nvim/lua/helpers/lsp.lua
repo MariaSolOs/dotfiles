@@ -7,11 +7,11 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.codeActionProvider then
-        keymap('<leader>c', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
+        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
     end
 
     if buf_client.server_capabilities.renameProvider then
-        vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, { desc = 'Rename' })
+        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
     end
 
     if buf_client.server_capabilities.implementationProvider then
@@ -46,7 +46,7 @@ M.on_attach = function(buf_client, bufnr)
 
     keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
 
-    keymap('<leader>l', vim.diagnostic.open_float, 'Line diagnostics')
+    keymap('<leader>cl', vim.diagnostic.open_float, 'Line diagnostics')
     keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
     keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
     keymap('[e', function()

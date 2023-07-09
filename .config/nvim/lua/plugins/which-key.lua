@@ -17,6 +17,7 @@ return {
 
             wk.register {
                 ['<leader>b'] = { name = '+buffer' },
+                ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>da'] = { name = '+debug adapters' },
                 ['<leader>t'] = { name = '+telescope' },
