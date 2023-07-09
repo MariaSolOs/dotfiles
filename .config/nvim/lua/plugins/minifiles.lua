@@ -96,7 +96,20 @@ return {
             },
         },
         config = function(_, opts)
-            require('mini.files').setup(opts)
+            local minifiles = require 'mini.files'
+            minifiles.setup(opts)
+
+            -- HACK: Make sure files always appear in the buffer list.
+            local real_go_in = minifiles.go_in
+            ---@diagnostic disable-next-line: duplicate-set-field
+            function minifiles.go_in()
+                real_go_in()
+                if minifiles.get_fs_entry().fs_type == 'file' then
+                    vim.schedule(function()
+                        vim.api.nvim_set_option_value('buflisted', true, {})
+                    end)
+                end
+            end
 
             -- Add rounded corners.
             vim.api.nvim_create_autocmd('User', {

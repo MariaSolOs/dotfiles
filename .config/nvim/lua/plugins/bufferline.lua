@@ -14,10 +14,6 @@ return {
                         .. (diag.warning and icons.Warn .. diag.warning or '')
                     return vim.trim(ret)
                 end,
-                -- HACK: REALLY close buffers, not just unlist them. Else minifiles
-                -- won't correctly open buffers when they've been previously closed.
-                close_command = 'bwipeout! %d',
-                right_mouse_command = 'bwipeout! %d',
             },
         },
         init = function()
