@@ -53,6 +53,11 @@ return {
                                 -- These are a bit too much.
                                 chainingHints = { enable = false },
                             },
+                            completion = {
+                                callable = {
+                                    snippets = 'add_parentheses',
+                                },
+                            },
                         },
                     },
                 },
