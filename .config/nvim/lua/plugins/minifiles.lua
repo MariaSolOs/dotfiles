@@ -104,10 +104,9 @@ return {
             ---@diagnostic disable-next-line: duplicate-set-field
             function minifiles.go_in()
                 real_go_in()
-                if minifiles.get_fs_entry().fs_type == 'file' then
-                    vim.schedule(function()
-                        vim.api.nvim_set_option_value('buflisted', true, {})
-                    end)
+                local target = minifiles.get_target_window()
+                if minifiles.get_fs_entry().fs_type == 'file' and target ~= nil then
+                    vim.bo[vim.api.nvim_win_get_buf(target)].buflisted = true
                 end
             end
 
