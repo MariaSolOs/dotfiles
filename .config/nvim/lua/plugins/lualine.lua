@@ -34,5 +34,11 @@ return {
                 lualine_y = { 'encoding', 'filetype' },
             },
         },
+        config = function(_, opts)
+            require('lualine').setup(opts)
+
+            -- Disable this since the mode will be displayed by lualine.
+            vim.o.showmode = false
+        end,
     },
 }

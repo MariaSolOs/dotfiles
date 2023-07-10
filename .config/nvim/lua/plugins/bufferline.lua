@@ -16,10 +16,12 @@ return {
                 end,
             },
         },
-        init = function()
+        config = function(_, opts)
             local nmap = function(lhs, rhs, desc)
                 vim.keymap.set('n', lhs, rhs, { desc = desc, silent = true })
             end
+
+            require('bufferline').setup(opts)
 
             nmap('<leader>bo', ':BufferLinePick<cr>', 'Select a buffer to open')
             nmap('<leader>bc', ':BufferLinePickClose<cr>', 'Select a buffer to close')
