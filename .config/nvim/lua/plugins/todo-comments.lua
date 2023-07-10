@@ -1,4 +1,4 @@
--- TODO comments.
+-- Stuff I should do.
 return {
     {
         'folke/todo-comments.nvim',

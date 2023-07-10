@@ -57,7 +57,6 @@ return {
                 'zA',
                 'zv',
                 'zx',
-                'zX',
                 'zm',
                 'zr',
             } do
