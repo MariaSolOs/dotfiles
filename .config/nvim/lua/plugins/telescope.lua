@@ -19,6 +19,7 @@ return {
             { '<leader>tf', nil, desc = 'File search' },
             { '<leader>th', nil, desc = 'Help' },
             { '<leader>tg', nil, desc = 'Grep search' },
+            { '<leader>t:', nil, desc = 'Command history' },
             { '<leader>tb', nil, desc = 'Fuzzy buffer search' },
         },
         config = function()
@@ -34,6 +35,7 @@ return {
             nmap('<leader>tf', telescope_builtin.find_files)
             nmap('<leader>th', telescope_builtin.help_tags)
             nmap('<leader>tg', telescope_builtin.live_grep)
+            nmap('<leader>t:', telescope_builtin.command_history)
             nmap('<leader>tb', function()
                 telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
                     winblend = 10,
