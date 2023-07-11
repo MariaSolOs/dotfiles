@@ -61,7 +61,7 @@ M.on_attach = function(buf_client, bufnr)
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
-        local inlay_hints_group = vim.api.nvim_create_augroup('InlayHints', { clear = true })
+        local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
 
         -- Initial inlay hint display.
         local mode = vim.api.nvim_get_mode().mode
