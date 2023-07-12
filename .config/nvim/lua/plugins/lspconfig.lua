@@ -34,7 +34,6 @@ vim.diagnostic.config {
         end,
     },
     signs = false,
-    float = { border = 'rounded' },
 }
 
 return {
@@ -63,8 +62,7 @@ return {
             -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
-            -- Enable folding for ufo.
+            -- Enable folding.
             capabilities.textDocument.foldingRange = {
                 dynamicRegistration = false,
                 lineFoldingOnly = true,
@@ -78,16 +76,6 @@ return {
                     }, servers[server] or {})
 
                     require('lspconfig')[server].setup(settings)
-                end,
-                clangd = function()
-                    -- Fixes 'warning: multiple different client offset'.
-                    local clangd_capabilities = vim.deepcopy(capabilities)
-                    clangd_capabilities.offsetEncoding = 'utf-8'
-
-                    require('lspconfig').clangd.setup {
-                        capabilities = clangd_capabilities,
-                        on_attach = on_attach,
-                    }
                 end,
                 jsonls = function()
                     require('lspconfig').jsonls.setup {
