@@ -95,16 +95,19 @@ vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to the bottom window' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
 
--- Exit insert mode.
+-- Clear search with <esc>
+vim.keymap.set('n', '<esc>', ':noh<cr><esc>', { desc = 'Escape and clear hlsearch', silent = true })
+
+-- Exit insert mode and save changes.
 vim.keymap.set(
-    { 's', 'i', 'n', 'v' },
+    { 's', 'i', 'n' },
     '<C-s>',
-    '<Esc>:w<cr>',
+    '<esc>:w<cr>',
     { desc = 'Exit insert mode and save changes.', silent = true }
 )
 
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
-vim.keymap.set('i', '<C-c>', '<Esc>', { silent = true })
+vim.keymap.set('i', '<C-c>', '<esc>', { silent = true })
 
 -- [[ Auto commands ]]
 -- Highlight on yank.

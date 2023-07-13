@@ -2,7 +2,23 @@
 return {
     {
         'nvim-treesitter/nvim-treesitter',
-        dependencies = 'nvim-treesitter/nvim-treesitter-textobjects',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter-textobjects',
+            {
+                'nvim-treesitter/nvim-treesitter-context',
+                config = true,
+                keys = {
+                    {
+                        '[c',
+                        function()
+                            require('treesitter-context').go_to_context()
+                        end,
+                        desc = 'Jump to upper context',
+                        silent = true,
+                    },
+                },
+            },
+        },
         version = false,
         event = { 'BufReadPost', 'BufNewFile' },
         build = ':TSUpdate',

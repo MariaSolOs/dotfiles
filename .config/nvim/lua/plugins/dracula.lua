@@ -44,6 +44,9 @@ return {
 
                     -- When triggering flash, make everything in the backdrop italic.
                     FlashBackdrop = { italic = true },
+
+                    -- Highlight for the Treesitter sticky context.
+                    TreesitterContextBottom = { underline = true, sp = colors.comment },
                 }
             end,
         },
