@@ -10,6 +10,7 @@ return {
             null_ls.setup {
                 sources = {
                     -- Formatters.
+                    null_ls.builtins.formatting.black,
                     null_ls.builtins.formatting.stylua,
                 },
             }

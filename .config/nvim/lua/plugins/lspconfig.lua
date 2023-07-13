@@ -1,4 +1,5 @@
 local servers = {
+    jedi_language_server = {},
     lua_ls = {
         settings = {
             Lua = {
@@ -11,10 +12,9 @@ local servers = {
             },
         },
     },
-    -- Markdown.
     marksman = {},
+    ruff_lsp = {},
     rust_analyzer = {},
-    -- TOML (mostly used for rust).
     taplo = {},
 }
 
@@ -34,6 +34,9 @@ vim.diagnostic.config {
         end,
     },
     signs = false,
+    float = {
+        border = 'rounded',
+    },
 }
 
 return {
@@ -77,6 +80,14 @@ return {
 
                     require('lspconfig')[server].setup(settings)
                 end,
+                -- Special handler for ESLint since I don't need capabilities or on_attach.
+                eslint = function()
+                    require('lspconfig').eslint.setup {
+                        settings = {
+                            format = false,
+                        },
+                    }
+                end,
                 jsonls = function()
                     require('lspconfig').jsonls.setup {
                         capabilities = capabilities,
@@ -89,12 +100,14 @@ return {
                         },
                     }
                 end,
-                -- Special handler for ESLint since I don't need capabilities or on_attach.
-                eslint = function()
-                    require('lspconfig').eslint.setup {
-                        settings = {
-                            format = false,
-                        },
+                ruff_lsp = function()
+                    require('lspconfig').ruff_lsp.setup {
+                        on_attach = function(client, bufnr)
+                            -- Disable hover in favor of Jedi.
+                            client.server_capabilities.hoverProvider = false
+
+                            on_attach(client, bufnr)
+                        end,
                     }
                 end,
                 taplo = function()
