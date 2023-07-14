@@ -110,24 +110,6 @@ return {
                         end,
                     }
                 end,
-                taplo = function()
-                    require('lspconfig').taplo.setup {
-                        capabilities = capabilities,
-                        on_attach = function(client, bufnr)
-                            on_attach(client, bufnr)
-
-                            -- Special hover for seeing crate info.
-                            vim.keymap.set('n', 'K', function()
-                                local crates = require 'crates'
-                                if vim.fn.expand '%:t' == 'Cargo.toml' and crates.popup_available() then
-                                    crates.show_popup()
-                                else
-                                    vim.lsp.buf.hover()
-                                end
-                            end, { buffer = bufnr })
-                        end,
-                    }
-                end,
             }
         end,
     },

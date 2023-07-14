@@ -10,7 +10,6 @@ return {
         },
     },
     keys = {
-        { '=y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yanky yank' },
         { 'p', '<Plug>(YankyPutAfter)', mode = { 'n', 'x' }, desc = 'Put yanked text after cursor' },
         { 'P', '<Plug>(YankyPutBefore)', mode = { 'n', 'x' }, desc = 'Put yanked text before cursor' },
         { '=p', '<Plug>(YankyPutAfterFilter)', desc = 'Put yanked text in line below' },

@@ -1,4 +1,5 @@
 -- Adds git releated signs to the gutter, as well as utilities for managing changes.
+-- TODO: Try out https://github.com/NeogitOrg/neogit
 return {
     {
         'lewis6991/gitsigns.nvim',
