@@ -83,6 +83,10 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll upwards' })
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
+-- Indent while remaining in visual mode.
+vim.keymap.set('v', '<', '<gv', { silent = true })
+vim.keymap.set('v', '>', '>gv', { silent = true })
+
 -- Command for opening this file.
 vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Neovim configuration', silent = true })
 

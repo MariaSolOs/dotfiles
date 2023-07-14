@@ -103,7 +103,7 @@ return {
                 ruff_lsp = function()
                     require('lspconfig').ruff_lsp.setup {
                         on_attach = function(client, bufnr)
-                            -- Disable hover in favor of Jedi.
+                            -- Disable hover in favor of pyright.
                             client.server_capabilities.hoverProvider = false
 
                             on_attach(client, bufnr)

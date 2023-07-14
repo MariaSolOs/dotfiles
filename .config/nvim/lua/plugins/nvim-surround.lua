@@ -5,7 +5,14 @@ return {
         event = 'VeryLazy',
         opts = {
             keymaps = {
-                visual = 'Y',
+                insert = false,
+                insert_line = false,
+                visual_line = false,
+                normal = 'yz',
+                normal_cur = 'yzz',
+                normal_line = 'yZ',
+                normal_cur_line = 'yZZ',
+                visual = 'Z',
             },
         },
     },
