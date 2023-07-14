@@ -1,6 +1,7 @@
 # Make sure this stuff is in the path.
 export PATH="$HOME/.cargo/bin:$PATH" # cargo
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH" # neovim version manager
+export PATH="/usr/local/opt/tcl-tk/bin:$PATH" # tcl-tk
 
 # Path to oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -23,6 +24,11 @@ source $ZSH/oh-my-zsh.sh
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Python setup.
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 # Set up the starshipt prompt.
 eval "$(starship init zsh)"

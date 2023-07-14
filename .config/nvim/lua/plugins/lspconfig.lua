@@ -1,5 +1,4 @@
 local servers = {
-    jedi_language_server = {},
     lua_ls = {
         settings = {
             Lua = {
@@ -13,6 +12,7 @@ local servers = {
         },
     },
     marksman = {},
+    pyright = {},
     ruff_lsp = {},
     rust_analyzer = {},
     taplo = {},
