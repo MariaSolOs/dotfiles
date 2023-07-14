@@ -12,7 +12,7 @@ return {
             colors = {
                 bg = '#0E1419',
                 comment = '#B08BBB',
-                orange = '#FFAACF',
+                orange = '#FFBFA9',
             },
             italic_comment = true,
             overrides = function(colors)
@@ -30,6 +30,9 @@ return {
                     IncSearch = { fg = '#000000', bg = '#E11299' },
                     Substitute = { fg = '#E11299', bg = colors.orange, bold = true },
 
+                    -- When triggering flash, make everything in the backdrop italic.
+                    FlashBackdrop = { italic = true },
+
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
@@ -41,9 +44,6 @@ return {
                     -- Nicer highlights for the word under the cursor.
                     IlluminatedWordRead = { bg = '#19272C' },
                     IlluminatedWordWrite = { bg = '#342231' },
-
-                    -- When triggering flash, make everything in the backdrop italic.
-                    FlashBackdrop = { italic = true },
 
                     -- Highlight for the Treesitter sticky context.
                     TreesitterContextBottom = { underline = true, sp = colors.comment },

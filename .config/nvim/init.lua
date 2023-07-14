@@ -30,9 +30,6 @@ vim.o.et = true
 vim.opt.list = true
 vim.opt.listchars = { space = '⋅', trail = '⋅', tab = '  ' }
 
--- Don't show highlights from previous searches.
-vim.o.hlsearch = false
-
 -- Show line numbers.
 vim.wo.number = true
 
