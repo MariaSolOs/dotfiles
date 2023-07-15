@@ -12,11 +12,18 @@ return {
         opts = {
             signs = false,
             search = {
-                pattern = [[\b(KEYWORDS)\b]],
+                pattern = [[\b(KEYWORDS)(:|!\()]],
             },
             highlight = {
-                pattern = [[.*<(KEYWORDS)\s*]],
+                pattern = {
+                    [[.*<(KEYWORDS)\s*:]],
+                    [[.*<(KEYWORDS)!\(]],
+                },
                 after = '',
+                comments_only = false,
+            },
+            keywords = {
+                TODO = { alt = { 'todo' } },
             },
         },
     },
