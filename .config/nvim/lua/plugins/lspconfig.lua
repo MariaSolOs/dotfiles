@@ -14,7 +14,21 @@ local servers = {
     marksman = {},
     pyright = {},
     ruff_lsp = {},
-    rust_analyzer = {},
+    rust_analyzer = {
+        settings = {
+            ['rust-analyzer'] = {
+                inlayHints = {
+                    -- These are a bit too much.
+                    chainingHints = { enable = false },
+                },
+                completion = {
+                    callable = {
+                        snippets = 'add_parentheses',
+                    },
+                },
+            },
+        },
+    },
     taplo = {},
 }
 
