@@ -63,6 +63,10 @@ vim.o.completeopt = 'menuone,noselect,noinsert'
 -- Disable some of those annoying hit-enter messages.
 vim.opt.shortmess:append 'IWs'
 
+-- Use ripgrep for grepping.
+vim.o.grepprg = 'rg --vimgrep'
+vim.o.grepformat = '%f:%l:%c:%m'
+
 -- Disable health checks for these providers.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0

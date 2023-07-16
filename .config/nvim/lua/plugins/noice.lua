@@ -1,8 +1,9 @@
--- Nicer notications and command line UI.
+-- Nicer notifications and command line UI.
 return {
     {
         'folke/noice.nvim',
         event = 'VeryLazy',
+        dependencies = 'MunifTanjim/nui.nvim',
         opts = {
             presets = {
                 -- Have borders around hover and signature help.
@@ -39,7 +40,6 @@ return {
                 },
             },
         },
-        dependencies = 'MunifTanjim/nui.nvim',
         keys = {
             { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice' },
             {
