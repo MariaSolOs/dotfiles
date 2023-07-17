@@ -55,8 +55,6 @@ M.on_attach = function(buf_client, bufnr)
     -- noice deals with the UI.
     keymap('K', vim.lsp.buf.hover, 'Hover')
 
-    keymap('<leader>co', ':Lspsaga outline<cr>', 'Symbol outline')
-
     -- Toggle the floating terminal.
     -- NOTE: The <cmd> below is needed to exit terminal mode.
     vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })

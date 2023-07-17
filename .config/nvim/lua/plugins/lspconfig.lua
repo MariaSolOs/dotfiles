@@ -25,7 +25,7 @@ vim.diagnostic.config {
             local icons = require('helpers.icons').diagnostics
             for d, icon in pairs(icons) do
                 if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-                    return icon
+                    return icon .. ' '
                 end
             end
         end,

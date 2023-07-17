@@ -23,7 +23,7 @@ return {
                 },
             },
             ui = {
-                code_action = ' ',
+                code_action = ' ' .. require('helpers.icons').diagnostics.Hint,
                 border = 'rounded',
             },
         },
