@@ -36,10 +36,10 @@ return {
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
-                    -- Highlights for the progress bar.
-                    NoiceFormatProgressDone = { bg = '#27E1C1', fg = '#000000' },
-                    NoiceLspProgressSpinner = { fg = '#27E1C1' },
-                    NoiceFormatProgressTodo = { link = 'NonText' },
+                    -- Highlights for the LSP Lualine component.
+                    NoiceLspProgressSpinner = { fg = '#27E1C1', bg = colors.black },
+                    NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
+                    NoiceLspProgressClient = { fg = colors.cyan, bg = colors.black },
 
                     -- Nicer highlights for the word under the cursor.
                     IlluminatedWordRead = { bg = '#19272C' },

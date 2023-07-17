@@ -18,6 +18,14 @@ return {
                 lualine_c = {
                     {
                         function()
+                            return require('noice').api.status.lsp_progress.get_hl()
+                        end,
+                        cond = function()
+                            return package.loaded['noice'] and require('noice').api.status.lsp_progress.has()
+                        end,
+                    },
+                    {
+                        function()
                             return require('noice').api.status.mode.get()
                         end,
                         cond = function()
@@ -39,6 +47,12 @@ return {
 
             -- Disable this since the mode will be displayed by lualine.
             vim.o.showmode = false
+
+            -- Update the statusline with the latest LSP message.
+            vim.api.nvim_create_autocmd('LspProgress', {
+                pattern = '*',
+                command = 'redrawstatus',
+            })
         end,
     },
 }

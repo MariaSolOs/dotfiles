@@ -5,9 +5,6 @@ local servers = {
                 workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
                 hint = { enable = true, arrayIndex = 'Disable' },
-                -- Disabling this since otherwise there are A LOT
-                -- of progress notifications.
-                window = { progressBar = false },
             },
         },
     },

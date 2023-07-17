@@ -18,10 +18,12 @@ return {
                     ['cmp.entry.get_documentation'] = true,
                 },
                 signature = {
-                    auto_open = {
-                        enabled = false,
-                    },
+                    auto_open = { enabled = false },
                 },
+            },
+            status = {
+                -- Statusline component for LSP progress notifications.
+                lsp_progress = { event = 'lsp', kind = 'progress' },
             },
             routes = {
                 -- Ignore the typical vim change messages.
@@ -35,6 +37,14 @@ return {
                             { find = '%d fewer lines' },
                             { find = '%d more lines' },
                         },
+                    },
+                    opts = { skip = true },
+                },
+                -- Don't show these in the default view.
+                {
+                    filter = {
+                        event = 'lsp',
+                        kind = 'progress',
                     },
                     opts = { skip = true },
                 },
