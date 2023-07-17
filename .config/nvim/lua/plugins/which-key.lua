@@ -3,9 +3,11 @@ return {
     {
         'folke/which-key.nvim',
         event = 'VeryLazy',
+        -- TODO: Update to the latest version when the register bug gets fixed.
+        version = '1.4.3',
         opts = {
             window = {
-                border = 'single',
+                border = 'rounded',
             },
             disable = {
                 filetypes = { 'alpha' },

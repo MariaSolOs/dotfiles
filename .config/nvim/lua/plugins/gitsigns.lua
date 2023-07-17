@@ -41,20 +41,21 @@ return {
                     end)
                     return '<Ignore>'
                 end, 'Previous hunk', { expr = true })
-                keymap('<leader>gb', gs.blame_line, 'Blame line')
-                keymap('<leader>gs', gs.stage_hunk, 'Stage hunk')
-                keymap('<leader>gr', gs.reset_hunk, 'Reset hunk')
-                keymap('<leader>gS', gs.stage_buffer, 'Stage all hunks in buffer')
-                keymap('<leader>gu', gs.undo_stage_hunk, 'Undo stage hunk')
-                keymap('<leader>gR', gs.reset_buffer, 'Reset hunks in buffer')
-                keymap('<leader>gp', gs.preview_hunk, 'Preview hunk')
                 keymap('<leader>xh', function()
                     gs.setqflist 'all'
                 end, 'Hunks')
 
-                -- Add group prefix for which-key.
                 require('which-key').register {
-                    ['<leader>g'] = { name = '+git' },
+                    ['<leader>g'] = {
+                        name = '+git',
+                        b = { gs.blame_line, 'Blame line', buffer = bufnr },
+                        p = { gs.preview_hunk, 'Preview hunk', buffer = bufnr },
+                        r = { gs.reset_hunk, 'Reset hunk', buffer = bufnr },
+                        R = { gs.reset_buffer, 'Reset buffer', buffer = bufnr },
+                        s = { gs.stage_hunk, 'Stage hunk', buffer = bufnr },
+                        S = { gs.stage_buffer, 'Stage buffer', buffer = bufnr },
+                        u = { gs.undo_stage_hunk, 'Undo stage hunk', buffer = bufnr },
+                    },
                 }
             end,
         },
