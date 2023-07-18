@@ -19,11 +19,11 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.typeDefinitionProvider then
-        keymap('gt', ':Lspsaga goto_type_definition<cr>', 'Go to type definition(s)')
+        keymap('gt', ':Telescope lsp_type_definitions<cr>', 'Go to type definition(s)')
     end
 
     if buf_client.server_capabilities.definitionProvider then
-        keymap('gd', ':Lspsaga goto_definition<cr>', 'Go to definition')
+        keymap('gd', ':Telescope lsp_definitions<cr>', 'Go to definition')
     end
 
     if buf_client.server_capabilities.signatureHelpProvider then
@@ -100,7 +100,7 @@ M.on_attach = function(buf_client, bufnr)
             local null_ls = package.loaded['null-ls']
                     and require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
                 or {}
-            local clients = vim.lsp.get_active_clients { bufnr = buf }
+            local clients = vim.lsp.get_clients { bufnr = buf }
             local available = {}
             for _, client in ipairs(clients) do
                 if
