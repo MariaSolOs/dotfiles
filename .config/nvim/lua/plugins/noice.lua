@@ -40,11 +40,20 @@ return {
                     },
                     opts = { skip = true },
                 },
-                -- Don't show these in the default view.
+                -- Don't show these in the default view, use Lualine instead.
                 {
                     filter = {
                         event = 'lsp',
                         kind = 'progress',
+                    },
+                    opts = { skip = true },
+                },
+                -- Lspsaga requests code actions when showing diagnostics,
+                -- and sometimes there are no applicable code actions.
+                {
+                    filter = {
+                        event = 'notify',
+                        find = 'No code actions available',
                     },
                     opts = { skip = true },
                 },

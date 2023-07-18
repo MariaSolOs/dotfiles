@@ -8,10 +8,10 @@ return {
             options = {
                 diagnostics = 'nvim_lsp',
                 diagnostics_update_in_insert = false,
-                diagnostics_indicator = function(count, level)
+                diagnostics_indicator = function(_, _, diag)
                     local icons = require('helpers.icons').diagnostics
-                    local icon = level:match 'error' and icons.Error or icons.Warn
-                    return icon .. ' ' .. count
+                    local indicator = (diag.error and icons.Error .. ' ' or '') .. (diag.warning and icons.Warn or '')
+                    return vim.trim(indicator)
                 end,
             },
         },
