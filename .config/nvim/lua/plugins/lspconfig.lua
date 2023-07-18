@@ -15,12 +15,9 @@ local servers = {
     taplo = {},
 }
 
--- Global diagnostic setup.
--- Show a severity icon as the prefix for the virtual text and
--- disable the signs in the gutter.
 vim.diagnostic.config {
     virtual_text = {
-        source = 'if_many',
+        -- Show severity icons as prefixes.
         prefix = function(diagnostic)
             local icons = require('helpers.icons').diagnostics
             for d, icon in pairs(icons) do
@@ -29,11 +26,19 @@ vim.diagnostic.config {
                 end
             end
         end,
+        -- Show only the first line of the diagnostic message.
+        format = function(diagnostic)
+            local newline_idx = diagnostic.message:find '\n'
+            if newline_idx then
+                return string.sub(diagnostic.message, 1, newline_idx - 1)
+            else
+                return diagnostic.message
+            end
+        end,
     },
+    -- Disable signs in the gutter.
     signs = false,
-    float = {
-        border = 'rounded',
-    },
+    float = { border = 'rounded' },
 }
 
 return {

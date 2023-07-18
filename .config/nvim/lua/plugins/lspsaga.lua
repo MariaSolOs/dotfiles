@@ -1,3 +1,4 @@
+-- Nice LSP UI.
 return {
     {
         'nvimdev/lspsaga.nvim',
@@ -5,6 +6,7 @@ return {
         opts = {
             lightbulb = {
                 sign = false,
+                enable_in_insert = false,
             },
             code_action = {
                 keys = {
