@@ -48,15 +48,6 @@ return {
                     },
                     opts = { skip = true },
                 },
-                -- Lspsaga requests code actions when showing diagnostics,
-                -- and sometimes there are no applicable code actions.
-                {
-                    filter = {
-                        event = 'notify',
-                        find = 'No code actions available',
-                    },
-                    opts = { skip = true },
-                },
             },
         },
         keys = {

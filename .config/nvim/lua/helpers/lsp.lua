@@ -7,11 +7,11 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.codeActionProvider then
-        keymap('<leader>ca', ':Lspsaga code_action<cr>', 'Code action', { 'n', 'v' })
+        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
     end
 
     if buf_client.server_capabilities.renameProvider then
-        vim.keymap.set('n', '<leader>cr', ':Lspsaga rename<cr>', { desc = 'Rename' })
+        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
     end
 
     if buf_client.server_capabilities.implementationProvider then
@@ -42,22 +42,18 @@ M.on_attach = function(buf_client, bufnr)
 
     keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
 
-    keymap('<leader>cl', ':Lspsaga show_line_diagnostics<cr>', 'Line diagnostics')
-    keymap('[d', ':Lspsaga diagnostic_jump_prev<cr>', 'Previous diagnostic')
-    keymap(']d', ':Lspsaga diagnostic_jump_next<cr>', 'Next diagnostic')
+    keymap('<leader>cl', vim.diagnostic.open_float, 'Line diagnostics')
+    keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
+    keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
     keymap('[e', function()
-        require('lspsaga.diagnostic'):goto_prev { severity = vim.diagnostic.severity.ERROR }
+        vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
     end, 'Previous error')
     keymap(']e', function()
-        require('lspsaga.diagnostic'):goto_next { severity = vim.diagnostic.severity.ERROR }
+        vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
 
     -- noice deals with the UI.
     keymap('K', vim.lsp.buf.hover, 'Hover')
-
-    -- Toggle the floating terminal.
-    -- NOTE: The <cmd> below is needed to exit terminal mode.
-    vim.keymap.set({ 'n', 't' }, '<M-t>', '<cmd>Lspsaga term_toggle<cr>', { desc = 'Toggle floating terminal' })
 
     -- Enable inlay hints if the client supports it.
     if buf_client.server_capabilities.inlayHintProvider then
