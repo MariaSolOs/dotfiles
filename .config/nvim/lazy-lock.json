@@ -11,6 +11,7 @@
   "crates.nvim": { "branch": "main", "commit": "4ce7c51b881e58f1e2f8f437f30e4e583cbac319" },
   "dracula.nvim": { "branch": "main", "commit": "948d237241b91389c8c2f109885b91cd2574b8bb" },
   "dressing.nvim": { "branch": "master", "commit": "39611852fd7bbac117e939a26759bb37361f0c90" },
+  "dropbar.nvim": { "branch": "master", "commit": "cd26a934615addcf54e3c879751bca73f2d91b38" },
   "flash.nvim": { "branch": "main", "commit": "636bcf84af487d2b8c4a5351d1d123ae3cac2ffe" },
   "gitsigns.nvim": { "branch": "main", "commit": "adcf2c7f2f495f5df148683764bf7cba6a70f34c" },
   "icon-picker.nvim": { "branch": "master", "commit": "e6dca182518eeb7a51470c13605a5bce08a816e4" },

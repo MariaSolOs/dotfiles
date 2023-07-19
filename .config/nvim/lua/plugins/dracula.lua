@@ -51,6 +51,10 @@ return {
 
                     -- Highlight for the Treesitter sticky context.
                     TreesitterContextBottom = { underline = true, sp = colors.comment },
+
+                    -- Winbar styling.
+                    WinBar = { bold = false },
+                    DropBarMenuCurrentContext = { link = 'Normal' },
                 }
             end,
         },
