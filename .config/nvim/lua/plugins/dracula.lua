@@ -36,6 +36,10 @@ return {
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
+                    -- Smoother Bufferline tabs.
+                    BufferLineFill = { bg = colors.bg },
+                    BufferLineSeparator = { fg = colors.bg },
+
                     -- Highlights for the LSP Lualine component.
                     NoiceLspProgressSpinner = { fg = '#27E1C1', bg = colors.black },
                     NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
