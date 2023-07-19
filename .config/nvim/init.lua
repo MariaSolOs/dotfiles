@@ -168,4 +168,7 @@ require('lazy').setup('plugins', {
     ui = {
         border = 'rounded',
     },
+    dev = {
+        path = '~/Projects',
+    },
 })

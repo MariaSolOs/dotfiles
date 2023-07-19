@@ -30,32 +30,12 @@ return {
                             buffer = bufnr,
                             desc = 'Hover',
                         })
-                        require('which-key').register {
-                            ['<leader>R'] = {
-                                name = '+rust',
-                                m = {
-                                    function()
-                                        rt.expand_macro.expand_macro()
-                                    end,
-                                    'Expand macro',
-                                    buffer = bufnr,
-                                },
-                                r = {
-                                    function()
-                                        rt.runnables.runnables()
-                                    end,
-                                    'Runnables',
-                                    buffer = bufnr,
-                                },
-                                c = {
-                                    function()
-                                        rt.open_cargo_toml.open_cargo_toml()
-                                    end,
-                                    'Open Cargo.toml',
-                                    buffer = bufnr,
-                                },
-                            },
-                        }
+                        local keymap = function(key, rhs, desc)
+                            vim.keymap.set('n', '<leader>c' .. key, rhs, { desc = desc, buffer = bufnr })
+                        end
+                        keymap('c', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml')
+                        keymap('m', rt.expand_macro.expand_macro, 'Expand macro')
+                        keymap('r', rt.runnables.runnables, 'Runnables')
                     end,
                     settings = {
                         ['rust-analyzer'] = {
