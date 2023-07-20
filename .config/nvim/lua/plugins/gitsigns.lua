@@ -50,7 +50,7 @@ return {
                         b = { gs.blame_line, 'Blame line', buffer = bufnr },
                         l = {
                             function()
-                                require('helpers.float_term').float_term 'lazygit'
+                                require('helpers.float_term').float_term('lazygit', { width = 0.9, height = 0.9 })
                             end,
                             'Lazygit',
                         },

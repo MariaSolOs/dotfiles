@@ -1,8 +1,10 @@
 local M = {}
 local terminals = {}
 
--- Opens an interactive floating terminal.
-function M.float_term(cmd)
+--- Opens an interactive floating terminal.
+--- @param cmd? string
+--- @param opts {width?: number, height?: number}
+function M.float_term(cmd, opts)
     local termkey = vim.inspect { cmd = cmd or 'shell', count = vim.v.count1 }
 
     if terminals[termkey] and terminals[termkey]:buf_valid() then
@@ -10,7 +12,7 @@ function M.float_term(cmd)
     else
         terminals[termkey] = require('lazy.util').float_term(cmd, {
             ft = 'lazyterm',
-            size = { width = 0.7, height = 0.7 },
+            size = { width = opts.width or 0.7, height = opts.height or 0.7 },
             persistent = true,
         })
         local buf = terminals[termkey].buf
