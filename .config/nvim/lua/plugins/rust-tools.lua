@@ -20,6 +20,10 @@ return {
                         auto = false,
                         show_parameter_hints = false,
                     },
+                    hover_actions = {
+                        max_height = 20,
+                        max_width = 120,
+                    },
                 },
                 server = {
                     on_attach = function(client, bufnr)
