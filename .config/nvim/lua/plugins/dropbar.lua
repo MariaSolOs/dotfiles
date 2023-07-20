@@ -18,6 +18,16 @@ return {
             end
 
             require('dropbar').setup {
+                general = {
+                    enable = function(buf, win)
+                        local buf_name = vim.api.nvim_buf_get_name(buf)
+                        return not vim.api.nvim_win_get_config(win).zindex
+                            and vim.bo[buf].buftype == ''
+                            and buf_name ~= ''
+                            and not buf_name:match 'Trouble$'
+                            and not vim.wo[win].diff
+                    end,
+                },
                 menu = {
                     win_configs = {
                         border = 'rounded',
