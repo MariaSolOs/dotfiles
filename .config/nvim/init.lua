@@ -3,6 +3,8 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- TODO: Copy lazy's toggle terminal.
+
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -53,7 +55,7 @@ vim.o.smartcase = true
 vim.wo.signcolumn = 'yes'
 
 -- Decrease update times and timeouts.
-vim.o.updatetime = 250
+vim.o.updatetime = 200
 vim.o.timeout = true
 vim.o.timeoutlen = 300
 
@@ -82,10 +84,15 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Keeping the cursor centered.
-vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll downwards' })
-vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll upwards' })
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll downwards', silent = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll upwards', silent = true })
+vim.keymap.set('n', 'n', 'nzzzv', { silent = true })
+vim.keymap.set('n', 'N', 'Nzzzv', { silent = true })
+
+-- Add undo break-points.
+vim.keymap.set('i', ',', ',<c-g>u', { silent = true })
+vim.keymap.set('i', '.', '.<c-g>u', { silent = true })
+vim.keymap.set('i', ';', ';<c-g>u', { silent = true })
 
 -- Indent while remaining in visual mode.
 vim.keymap.set('v', '<', '<gv', { silent = true })
@@ -95,10 +102,10 @@ vim.keymap.set('v', '>', '>gv', { silent = true })
 vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Neovim configuration', silent = true })
 
 -- Switch between windows.
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to the bottom window' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window' })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window', silent = true, remap = true })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to the bottom window', silent = true, remap = true })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window', silent = true, remap = true })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window', silent = true, remap = true })
 
 -- Clear search with <esc>
 vim.keymap.set('n', '<esc>', ':noh<cr><esc>', { desc = 'Escape and clear hlsearch', silent = true })
@@ -119,9 +126,8 @@ vim.keymap.set('i', '<C-c>', '<esc>', { silent = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
     callback = function()
-        vim.highlight.on_yank { higroup = 'Search' }
+        vim.highlight.on_yank { higroup = 'Visual' }
     end,
-    pattern = '*',
 })
 
 -- Resize splits if the window gets resized.
@@ -132,24 +138,44 @@ vim.api.nvim_create_autocmd('VimResized', {
     end,
 })
 
+-- Go to the last location when opening a buffer.
+vim.api.nvim_create_autocmd('BufReadPost', {
+    group = vim.api.nvim_create_augroup('GoToLastLocation', { clear = true }),
+    callback = function()
+        local buf = vim.api.nvim_get_current_buf()
+        if vim.tbl_contains({ 'gitcommit' }, vim.bo[buf].filetype) then
+            return
+        end
+        local mark = vim.api.nvim_buf_get_mark(buf, '"')
+        local lcount = vim.api.nvim_buf_line_count(buf)
+        if mark[1] > 0 and mark[1] <= lcount then
+            pcall(vim.api.nvim_win_set_cursor, 0, mark)
+        end
+    end,
+})
+
 -- Close some filetypes with <q>.
 vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
     pattern = {
+        'checkhealth',
         'help',
         'man',
         'qf',
-        'checkhealth',
         'spectre_panel',
     },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
-        vim.keymap.set(
-            'n',
-            'q',
-            '<cmd>close<cr>',
-            { buffer = event.buf, silent = true, desc = 'Close the current buffer' }
-        )
+        vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = event.buf, silent = true })
+    end,
+})
+
+-- Check for spelling in text file types.
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('SpellingCheck', { clear = true }),
+    pattern = { 'gitcommit', 'markdown' },
+    callback = function()
+        vim.opt_local.spell = true
     end,
 })
 
