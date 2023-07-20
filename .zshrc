@@ -3,6 +3,9 @@ export PATH="$HOME/.cargo/bin:$PATH" # cargo
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH" # neovim version manager
 export PATH="/usr/local/opt/tcl-tk/bin:$PATH" # tcl-tk
 
+# Auto-cd if the command is a directory and can't be executed as a normal command.
+setopt auto_cd
+
 # Command history.
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
