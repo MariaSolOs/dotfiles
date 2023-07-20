@@ -1,0 +1,289 @@
+#compdef bob
+
+autoload -U is-at-least
+
+_bob() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C)
+    fi
+
+    local context curcontext="$curcontext" state line
+    _arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+'-V[Print version]' \
+'--version[Print version]' \
+":: :_bob_commands" \
+"*::: :->bob-nvim" \
+&& ret=0
+    case $state in
+    (bob-nvim)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:bob-command-$line[1]:"
+        case $line[1] in
+            (use)
+_arguments "${_arguments_options[@]}" \
+'-n[Whether not to auto-invoke install command]' \
+'--no-install[Whether not to auto-invoke install command]' \
+'-h[Print help]' \
+'--help[Print help]' \
+':version -- Version to switch to |nightly|stable|<version-string>|<commit-hash>|:' \
+&& ret=0
+;;
+(install)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+':version -- Version to be installed |nightly|stable|<version-string>|<commit-hash>|:' \
+&& ret=0
+;;
+(sync)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(uninstall)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+':version -- Version to be uninstalled |nightly|stable|<version-string>|<commit-hash>|:' \
+&& ret=0
+;;
+(rollback)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(erase)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(complete)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help]' \
+'--help[Print help]' \
+':shell -- Shell to generate completion for:(bash elvish fish powershell zsh)' \
+&& ret=0
+;;
+(update)
+_arguments "${_arguments_options[@]}" \
+'-a[Apply the update to all versions]' \
+'--all[Apply the update to all versions]' \
+'-h[Print help]' \
+'--help[Print help]' \
+'::version -- Update specified version |nightly|stable|:' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+":: :_bob__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:bob-help-command-$line[1]:"
+        case $line[1] in
+            (use)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(install)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(sync)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(uninstall)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(rollback)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(erase)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(complete)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(update)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+}
+
+(( $+functions[_bob_commands] )) ||
+_bob_commands() {
+    local commands; commands=(
+'use:Switch to the specified version, by default will auto-invoke install command if the version is not installed already' \
+'install:Install the specified version, can also be used to update out-of-date nightly version' \
+'sync:If Config\:\:version_sync_file_location is set, the version in that file will be parsed and installed' \
+'uninstall:Uninstall the specified version' \
+'rm:Uninstall the specified version' \
+'rollback:Rollback to an existing nightly rollback' \
+'erase:Erase any change bob ever made, including neovim installation, neovim version downloads and registry changes' \
+'list:List all installed and used versions' \
+'ls:List all installed and used versions' \
+'complete:Generate shell completion' \
+'update:Update existing version' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'bob commands' commands "$@"
+}
+(( $+functions[_bob__complete_commands] )) ||
+_bob__complete_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob complete commands' commands "$@"
+}
+(( $+functions[_bob__help__complete_commands] )) ||
+_bob__help__complete_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help complete commands' commands "$@"
+}
+(( $+functions[_bob__erase_commands] )) ||
+_bob__erase_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob erase commands' commands "$@"
+}
+(( $+functions[_bob__help__erase_commands] )) ||
+_bob__help__erase_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help erase commands' commands "$@"
+}
+(( $+functions[_bob__help_commands] )) ||
+_bob__help_commands() {
+    local commands; commands=(
+'use:Switch to the specified version, by default will auto-invoke install command if the version is not installed already' \
+'install:Install the specified version, can also be used to update out-of-date nightly version' \
+'sync:If Config\:\:version_sync_file_location is set, the version in that file will be parsed and installed' \
+'uninstall:Uninstall the specified version' \
+'rollback:Rollback to an existing nightly rollback' \
+'erase:Erase any change bob ever made, including neovim installation, neovim version downloads and registry changes' \
+'list:List all installed and used versions' \
+'complete:Generate shell completion' \
+'update:Update existing version' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'bob help commands' commands "$@"
+}
+(( $+functions[_bob__help__help_commands] )) ||
+_bob__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help help commands' commands "$@"
+}
+(( $+functions[_bob__help__install_commands] )) ||
+_bob__help__install_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help install commands' commands "$@"
+}
+(( $+functions[_bob__install_commands] )) ||
+_bob__install_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob install commands' commands "$@"
+}
+(( $+functions[_bob__help__list_commands] )) ||
+_bob__help__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help list commands' commands "$@"
+}
+(( $+functions[_bob__list_commands] )) ||
+_bob__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob list commands' commands "$@"
+}
+(( $+functions[_bob__help__rollback_commands] )) ||
+_bob__help__rollback_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help rollback commands' commands "$@"
+}
+(( $+functions[_bob__rollback_commands] )) ||
+_bob__rollback_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob rollback commands' commands "$@"
+}
+(( $+functions[_bob__help__sync_commands] )) ||
+_bob__help__sync_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help sync commands' commands "$@"
+}
+(( $+functions[_bob__sync_commands] )) ||
+_bob__sync_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob sync commands' commands "$@"
+}
+(( $+functions[_bob__help__uninstall_commands] )) ||
+_bob__help__uninstall_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help uninstall commands' commands "$@"
+}
+(( $+functions[_bob__uninstall_commands] )) ||
+_bob__uninstall_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob uninstall commands' commands "$@"
+}
+(( $+functions[_bob__help__update_commands] )) ||
+_bob__help__update_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help update commands' commands "$@"
+}
+(( $+functions[_bob__update_commands] )) ||
+_bob__update_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob update commands' commands "$@"
+}
+(( $+functions[_bob__help__use_commands] )) ||
+_bob__help__use_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob help use commands' commands "$@"
+}
+(( $+functions[_bob__use_commands] )) ||
+_bob__use_commands() {
+    local commands; commands=()
+    _describe -t commands 'bob use commands' commands "$@"
+}
+
+if [ "$funcstack[1]" = "_bob" ]; then
+    _bob "$@"
+else
+    compdef _bob bob
+fi
