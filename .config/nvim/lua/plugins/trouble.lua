@@ -1,7 +1,6 @@
 -- Pretty list for diagnostics, references, etc.
 return {
     'folke/trouble.nvim',
-    dev = true,
     cmd = { 'Trouble', 'TroubleToggle' },
     dependencies = 'nvim-tree/nvim-web-devicons',
     opts = {

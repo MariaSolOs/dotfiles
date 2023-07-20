@@ -15,15 +15,21 @@ M.on_attach = function(buf_client, bufnr)
     end
 
     if buf_client.server_capabilities.implementationProvider then
-        keymap('gI', ':Telescope lsp_implementations<cr>', 'Go to implementation(s)')
+        keymap('gI', function()
+            require('telescope.builtin').lsp_implementations { reuse_win = true }
+        end, 'Go to implementation(s)')
     end
 
     if buf_client.server_capabilities.typeDefinitionProvider then
-        keymap('gt', ':Telescope lsp_type_definitions<cr>', 'Go to type definition(s)')
+        keymap('gt', function()
+            require('telescope.builtin').lsp_type_definitions { reuse_win = true }
+        end, 'Go to type definition(s)')
     end
 
     if buf_client.server_capabilities.definitionProvider then
-        keymap('gd', ':Telescope lsp_definitions<cr>', 'Go to definition')
+        keymap('gd', function()
+            require('telescope.builtin').lsp_definitions { reuse_win = true }
+        end, 'Go to definition')
     end
 
     if buf_client.server_capabilities.signatureHelpProvider then
