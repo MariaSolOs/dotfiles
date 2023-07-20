@@ -39,7 +39,7 @@ return {
                         end
                         keymap('c', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml')
                         keymap('m', rt.expand_macro.expand_macro, 'Expand macro')
-                        keymap('r', rt.runnables.runnables, 'Runnables')
+                        keymap('R', rt.runnables.runnables, 'Runnables')
                     end,
                     settings = {
                         ['rust-analyzer'] = {
