@@ -48,6 +48,12 @@ return {
                     ['<leader>g'] = {
                         name = '+git',
                         b = { gs.blame_line, 'Blame line', buffer = bufnr },
+                        l = {
+                            function()
+                                require('helpers.float_term').float_term 'lazygit'
+                            end,
+                            'Lazygit',
+                        },
                         p = { gs.preview_hunk, 'Preview hunk', buffer = bufnr },
                         r = { gs.reset_hunk, 'Reset hunk', buffer = bufnr },
                         R = { gs.reset_buffer, 'Reset buffer', buffer = bufnr },

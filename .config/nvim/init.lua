@@ -3,8 +3,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- TODO: Copy lazy's toggle terminal.
-
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -120,6 +118,12 @@ vim.keymap.set(
 
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>', { silent = true })
+
+-- Floating terminal.
+vim.keymap.set('n', '<M-t>', function()
+    require('helpers.float_term').float_term()
+end, { desc = 'Open terminal', silent = true })
+vim.keymap.set('t', '<M-t>', '<cmd>close<cr>', { desc = 'Close terminal', silent = true })
 
 -- [[ Auto commands ]]
 -- Highlight on yank.
