@@ -23,8 +23,14 @@ return {
                 comments_only = false,
             },
             keywords = {
-                TODO = { alt = { 'todo' } },
+                FIX = { icon = ' ', color = 'error', alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' } },
+                TODO = { icon = ' ', color = 'info', alt = { 'todo' } },
+                WARN = { icon = ' ', color = 'warning', alt = { 'WARNING', 'XXX' } },
+                PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
+                NOTE = { icon = ' ', color = 'hint', alt = { 'INFO' } },
             },
+            -- Just use the keywords defined above.
+            merge_keywords = false,
         },
     },
 }
