@@ -6,8 +6,12 @@ return {
             'nvim-treesitter/nvim-treesitter-textobjects',
             {
                 'nvim-treesitter/nvim-treesitter-context',
-                -- Avoid the sticky context from growing a lot.
-                opts = { max_lines = 3 },
+                opts = {
+                    -- Avoid the sticky context from growing a lot.
+                    max_lines = 3,
+                    -- Match the context lines to the source code.
+                    multiline_threshold = 1,
+                },
                 keys = {
                     {
                         '[c',
