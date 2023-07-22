@@ -6,47 +6,38 @@ M.on_attach = function(buf_client, bufnr)
         vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc, silent = true })
     end
 
-    if buf_client.server_capabilities.codeActionProvider then
+    if buf_client.supports_method 'textDocument/codeAction' then
         keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
     end
 
-    if buf_client.server_capabilities.renameProvider then
+    if buf_client.supports_method 'textDocument/rename' then
         vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
     end
 
-    if buf_client.server_capabilities.implementationProvider then
-        keymap('gI', function()
-            require('telescope.builtin').lsp_implementations { reuse_win = true }
-        end, 'Go to implementation(s)')
-    end
-
-    if buf_client.server_capabilities.typeDefinitionProvider then
-        keymap('gt', function()
-            require('telescope.builtin').lsp_type_definitions { reuse_win = true }
-        end, 'Go to type definition(s)')
-    end
-
-    if buf_client.server_capabilities.definitionProvider then
+    if buf_client.supports_method 'textDocument/definition' then
         keymap('gd', function()
             require('telescope.builtin').lsp_definitions { reuse_win = true }
         end, 'Go to definition')
     end
 
-    if buf_client.server_capabilities.signatureHelpProvider then
+    if buf_client.supports_method 'textDocument/signatureHelp' then
         keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
     end
 
-    if buf_client.server_capabilities.workspaceSymbolProvider then
-        keymap('<leader>tw', function()
-            require('telescope.builtin').lsp_dynamic_workspace_symbols()
-        end, 'Workspace symbols')
-    end
+    keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
+    keymap('gI', function()
+        require('telescope.builtin').lsp_implementations { reuse_win = true }
+    end, 'Go to implementation(s)')
+    keymap('gt', function()
+        require('telescope.builtin').lsp_type_definitions { reuse_win = true }
+    end, 'Go to type definition(s)')
 
     keymap('<leader>td', function()
         require('telescope.builtin').lsp_document_symbols()
     end, 'Document symbols')
-
-    keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
+    keymap('<leader>tw', function()
+        require('telescope.builtin').lsp_dynamic_workspace_symbols()
+    end, 'Workspace symbols')
 
     keymap('<leader>cl', vim.diagnostic.open_float, 'Line diagnostics')
     keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
@@ -62,7 +53,7 @@ M.on_attach = function(buf_client, bufnr)
     keymap('K', vim.lsp.buf.hover, 'Hover')
 
     -- Enable inlay hints if the client supports it.
-    if buf_client.server_capabilities.inlayHintProvider then
+    if buf_client.supports_method 'textDocument/inlayHint' then
         local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
 
         -- Initial inlay hint display.
