@@ -1,3 +1,5 @@
+local icons = require('helpers.icons').diagnostics
+
 -- Pretty list for diagnostics, references, etc.
 return {
     'folke/trouble.nvim',
@@ -5,7 +7,12 @@ return {
     dependencies = 'nvim-tree/nvim-web-devicons',
     opts = {
         auto_close = true,
-        use_diagnostic_signs = true,
+        signs = {
+            error = icons.Error,
+            warning = icons.Warn,
+            hint = icons.Hint,
+            information = icons.Info,
+        },
     },
     keys = {
         {
