@@ -2,12 +2,8 @@
 return {
     'gbprod/yanky.nvim',
     opts = {
-        ring = {
-            history_length = 20,
-        },
-        highlight = {
-            timer = 250,
-        },
+        ring = { history_length = 20 },
+        highlight = { timer = 250 },
     },
     keys = {
         { 'p', '<Plug>(YankyPutAfter)', mode = { 'n', 'x' }, desc = 'Put yanked text after cursor' },

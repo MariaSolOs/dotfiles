@@ -28,18 +28,9 @@ return {
                     layouts = {
                         {
                             elements = {
-                                {
-                                    id = 'scopes',
-                                    size = 0.33,
-                                },
-                                {
-                                    id = 'breakpoints',
-                                    size = 0.33,
-                                },
-                                {
-                                    id = 'stacks',
-                                    size = 0.33,
-                                },
+                                { id = 'scopes', size = 0.33 },
+                                { id = 'breakpoints', size = 0.33 },
+                                { id = 'stacks', size = 0.33 },
                             },
                             position = 'left',
                             size = 40,
@@ -94,7 +85,8 @@ return {
                     local dap = require 'dap'
 
                     dap.adapters.nlua = function(callback, config)
-                        ---@diagnostic disable-next-line: undefined-field
+                        -- TODO: Understand if it's fine to ignore these errors.
+                        ---@diagnostic disable-next-line: undefined-field, missing-fields
                         callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
                     end
                     dap.configurations.lua = {

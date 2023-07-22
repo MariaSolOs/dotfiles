@@ -2,7 +2,6 @@
 return {
     {
         'simrat39/rust-tools.nvim',
-        dependencies = 'nvim-lspconfig',
         event = { 'BufReadPost *.rs', 'BufNewFile *.rs' },
         config = function()
             local rt = require 'rust-tools'
@@ -35,7 +34,7 @@ return {
                             desc = 'Hover',
                         })
                         local keymap = function(key, rhs, desc)
-                            vim.keymap.set('n', '<leader>c' .. key, rhs, { desc = desc, buffer = bufnr })
+                            vim.keymap.set('n', '<leader>c' .. key, rhs, { desc = desc, buffer = bufnr, silent = true })
                         end
                         keymap('c', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml')
                         keymap('m', rt.expand_macro.expand_macro, 'Expand macro')
@@ -48,16 +47,13 @@ return {
                                 chainingHints = { enable = false },
                             },
                             completion = {
-                                callable = {
-                                    snippets = 'add_parentheses',
-                                },
+                                -- Do not fill in parameters.
+                                callable = { snippets = 'add_parentheses' },
                             },
                         },
                     },
                 },
-                dap = {
-                    adapter = adapter,
-                },
+                dap = { adapter = adapter },
             }
         end,
     },

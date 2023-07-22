@@ -36,9 +36,9 @@ vim.diagnostic.config {
             end
         end,
     },
+    float = { border = 'rounded' },
     -- Disable signs in the gutter.
     signs = false,
-    float = { border = 'rounded' },
 }
 
 return {

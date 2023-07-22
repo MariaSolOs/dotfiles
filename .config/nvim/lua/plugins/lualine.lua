@@ -10,12 +10,9 @@ return {
                 section_separators = '',
             },
             sections = {
-                lualine_b = {
-                    'branch',
-                    'diff',
-                },
-                -- Show macro recording messages.
+                lualine_b = { 'branch', 'diff' },
                 lualine_c = {
+                    -- Show LSP progress.
                     {
                         function()
                             return require('noice').api.status.lsp_progress.get_hl()
@@ -24,6 +21,7 @@ return {
                             return package.loaded['noice'] and require('noice').api.status.lsp_progress.has()
                         end,
                     },
+                    -- Show macro recording messages.
                     {
                         function()
                             return require('noice').api.status.mode.get()

@@ -17,6 +17,7 @@ return {
                     ['vim.lsp.util.stylize_markdown'] = true,
                     ['cmp.entry.get_documentation'] = true,
                 },
+                -- I use a keymap for opening this when needed.
                 signature = {
                     auto_open = { enabled = false },
                 },
@@ -51,7 +52,7 @@ return {
             },
         },
         keys = {
-            { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice' },
+            { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice', silent = true },
             {
                 '<C-f>',
                 function()

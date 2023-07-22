@@ -6,9 +6,7 @@ return {
         event = 'InsertEnter',
         opts = {
             -- I don't find the panel useful.
-            panel = {
-                enabled = false,
-            },
+            panel = { enabled = false },
             suggestion = {
                 auto_trigger = true,
                 -- Use alt to interact with Copilot.
@@ -22,9 +20,7 @@ return {
                     dismiss = '/',
                 },
             },
-            filetypes = {
-                markdown = true,
-            },
+            filetypes = { markdown = true },
         },
         config = function(_, opts)
             local cmp = require 'cmp'
@@ -49,11 +45,11 @@ return {
                 dismiss()
                 set_trigger(false)
             end)
+
+            -- Disable suggestions when inside a snippet.
             cmp.event:on('menu_closed', function()
                 set_trigger(not luasnip.expand_or_jumpable())
             end)
-
-            -- Disable suggestions when inside a snippet.
             vim.api.nvim_create_autocmd('User', {
                 pattern = { 'LuasnipInsertNodeEnter', 'LuasnipInsertNodeLeave' },
                 callback = function()

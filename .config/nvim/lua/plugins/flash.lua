@@ -4,9 +4,7 @@ return {
         'folke/flash.nvim',
         event = 'VeryLazy',
         opts = {
-            jump = {
-                nohlsearch = true,
-            },
+            jump = { nohlsearch = true },
         },
         keys = {
             {

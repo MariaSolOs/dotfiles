@@ -19,6 +19,7 @@ return {
 
             require('dropbar').setup {
                 general = {
+                    -- Disable the winbar in trouble.
                     enable = function(buf, win)
                         local buf_name = vim.api.nvim_buf_get_name(buf)
                         return not vim.api.nvim_win_get_config(win).zindex
@@ -29,9 +30,7 @@ return {
                     end,
                 },
                 menu = {
-                    win_configs = {
-                        border = 'rounded',
-                    },
+                    win_configs = { border = 'rounded' },
                     keymaps = {
                         ['h'] = '<C-w>c',
                         ['l'] = function()

@@ -11,6 +11,7 @@ return {
                     require('spectre').open()
                 end,
                 desc = 'Search and replace',
+                silent = true,
             },
         },
     },

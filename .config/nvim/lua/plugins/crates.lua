@@ -4,9 +4,7 @@ return {
         'Saecki/crates.nvim',
         event = 'BufRead Cargo.toml',
         opts = {
-            popup = {
-                border = 'rounded',
-            },
+            popup = { border = 'rounded' },
         },
         config = function(_, opts)
             local crates = require 'crates'

@@ -48,14 +48,14 @@ return {
                     mappings = {
                         i = {
                             ['<esc>'] = actions.close,
+                            ['<C-t>'] = function(...)
+                                return require('trouble.providers.telescope').open_with_trouble(...)
+                            end,
                             -- Clear the search with ctrl-u.
                             ['<C-u>'] = false,
                             -- Use <C-s> to open an horizontal split instead of <C-x>.
                             ['<C-x>'] = false,
                             ['<C-s>'] = actions.select_horizontal,
-                            ['<C-t>'] = function(...)
-                                return require('trouble.providers.telescope').open_with_trouble(...)
-                            end,
                         },
                     },
                     -- Use a vertical layout.
@@ -68,9 +68,7 @@ return {
                     layout_strategy = 'vertical',
                 },
                 pickers = {
-                    lsp_references = {
-                        fname_width = 50,
-                    },
+                    lsp_references = { fname_width = 50 },
                 },
             }
         end,

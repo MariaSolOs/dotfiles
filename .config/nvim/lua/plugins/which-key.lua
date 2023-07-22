@@ -6,9 +6,7 @@ return {
         -- TODO: Update to the latest version when the register bug gets fixed.
         version = '1.4.3',
         opts = {
-            window = {
-                border = 'rounded',
-            },
+            window = { border = 'rounded' },
             disable = {
                 filetypes = { 'alpha' },
             },

@@ -24,7 +24,7 @@ local map_split = function(buf_id, lhs, direction)
     end
 
     local desc = 'Split ' .. string.sub(direction, 12)
-    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc })
+    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc, silent = true })
 end
 
 return {
@@ -47,9 +47,7 @@ return {
                 go_in_plus = '<cr>',
                 go_out_plus = '<tab>',
             },
-            windows = {
-                width_nofocus = 25,
-            },
+            windows = { width_nofocus = 25 },
             content = {
                 filter = function(entry)
                     return entry.fs_type ~= 'file' or entry.name ~= '.DS_Store'
@@ -115,8 +113,7 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'MiniFilesWindowOpen',
                 callback = function(args)
-                    local win_id = args.data.win_id
-                    vim.api.nvim_win_set_config(win_id, { border = 'rounded' })
+                    vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' })
                 end,
             })
 
@@ -137,9 +134,8 @@ return {
                     if ft == 'minifiles' or ft == 'minifiles-help' then
                         return
                     end
-                    local cur_win_id = vim.api.nvim_get_current_win()
                     minifiles.close()
-                    pcall(vim.api.nvim_set_current_win, cur_win_id)
+                    pcall(vim.api.nvim_set_current_win, vim.api.nvim_get_current_win())
                 end),
             })
         end,
