@@ -15,7 +15,7 @@ return {
                 vim.keymap.set('n', '<leader>c' .. key, function()
                     rhs()
                     crates.focus_popup()
-                end, { desc = desc, silent = true })
+                end, { desc = desc })
             end
             keymap('c', crates.show_crate_popup, 'Show crate popup')
             keymap('f', crates.show_features_popup, 'Show features popup')

@@ -24,7 +24,7 @@ local map_split = function(buf_id, lhs, direction)
     end
 
     local desc = 'Split ' .. string.sub(direction, 12)
-    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc, silent = true })
+    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc })
 end
 
 return {

@@ -52,7 +52,7 @@ return {
             },
         },
         keys = {
-            { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice', silent = true },
+            { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice' },
             {
                 '<C-f>',
                 function()
@@ -60,7 +60,6 @@ return {
                         return '<C-f>'
                     end
                 end,
-                silent = true,
                 expr = true,
                 desc = 'Scroll forward',
                 mode = { 'i', 'n', 's' },
@@ -72,7 +71,6 @@ return {
                         return '<C-b>'
                     end
                 end,
-                silent = true,
                 expr = true,
                 desc = 'Scroll backward',
                 mode = { 'i', 'n', 's' },

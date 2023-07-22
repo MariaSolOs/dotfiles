@@ -19,7 +19,6 @@ return {
                             require('treesitter-context').go_to_context()
                         end,
                         desc = 'Jump to upper context',
-                        silent = true,
                     },
                 },
             },

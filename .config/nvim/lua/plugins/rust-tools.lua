@@ -34,7 +34,7 @@ return {
                             desc = 'Hover',
                         })
                         local keymap = function(key, rhs, desc)
-                            vim.keymap.set('n', '<leader>c' .. key, rhs, { desc = desc, buffer = bufnr, silent = true })
+                            vim.keymap.set('n', '<leader>c' .. key, rhs, { desc = desc, buffer = bufnr })
                         end
                         keymap('c', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml')
                         keymap('m', rt.expand_macro.expand_macro, 'Expand macro')

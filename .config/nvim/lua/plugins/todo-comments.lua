@@ -20,6 +20,7 @@ return {
                     [[.*<(KEYWORDS)!\(]],
                 },
                 after = '',
+                -- For also highlighting Rust todo macros.
                 comments_only = false,
             },
             keywords = {

@@ -50,7 +50,7 @@ return {
                 },
             }
 
-            vim.keymap.set('n', '<leader>w', api.pick, { desc = 'Winbar pick', silent = true })
+            vim.keymap.set('n', '<leader>w', api.pick, { desc = 'Winbar pick' })
         end,
     },
 }

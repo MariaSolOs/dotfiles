@@ -46,7 +46,7 @@ return {
 
             -- HACK: Refresh indent lines after folding/unfolding.
             local keymap = function(lhs, rhs)
-                vim.keymap.set('n', lhs, rhs, { noremap = true, silent = true })
+                vim.keymap.set('n', lhs, rhs, { noremap = true })
             end
             for _, lhs in pairs {
                 'zo',

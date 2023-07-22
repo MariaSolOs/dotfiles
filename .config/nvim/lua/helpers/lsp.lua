@@ -3,7 +3,7 @@ local M = {}
 M.on_attach = function(buf_client, bufnr)
     local keymap = function(lhs, rhs, desc, mode)
         mode = mode or 'n'
-        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc, silent = true })
+        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
     if buf_client.supports_method 'textDocument/codeAction' then

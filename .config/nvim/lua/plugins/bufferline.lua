@@ -16,7 +16,7 @@ return {
         },
         config = function(_, opts)
             local nmap = function(lhs, rhs, desc)
-                vim.keymap.set('n', lhs, rhs, { desc = desc, silent = true })
+                vim.keymap.set('n', lhs, rhs, { desc = desc })
             end
 
             require('bufferline').setup(opts)
