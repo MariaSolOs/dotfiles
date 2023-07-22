@@ -138,7 +138,7 @@ return {
                         return
                     end
                     local cur_win_id = vim.api.nvim_get_current_win()
-                    require('mini.files').close()
+                    minifiles.close()
                     pcall(vim.api.nvim_set_current_win, cur_win_id)
                 end),
             })
