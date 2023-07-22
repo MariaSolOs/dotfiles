@@ -5,12 +5,15 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             signs = {
-                add = { text = '+' },
-                untracked = { text = '+' },
-                change = { text = '~' },
-                delete = { text = '_' },
-                topdelete = { text = '‾' },
-                changedelete = { text = '~' },
+                add = { text = '│' },
+                untracked = { text = '│' },
+                change = { text = '│' },
+                delete = { text = '│' },
+                topdelete = { text = '│' },
+                changedelete = { text = '│' },
+            },
+            preview_config = {
+                border = 'rounded',
             },
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns
