@@ -3,8 +3,12 @@ return {
     {
         'akinsho/bufferline.nvim',
         event = 'VeryLazy',
+        dependencies = 'echasnovski/mini.bufremove',
         opts = {
             options = {
+                close_command = function(bufnr)
+                    require('mini.bufremove').delete(bufnr, false)
+                end,
                 diagnostics = 'nvim_lsp',
                 diagnostics_update_in_insert = false,
                 diagnostics_indicator = function(_, _, diag)
@@ -27,8 +31,7 @@ return {
             nmap(']b', ':BufferLineCycleNext<cr>', 'Next buffer')
             -- TODO: Delete the hack below when https://github.com/neovim/neovim/issues/24456 gets fixed.
             nmap('<leader>bd', function()
-                pcall(vim.lsp.inlay_hint, 0, false)
-                vim.cmd 'bwipeout!'
+                require('mini.bufremove').delete(0, true)
             end, 'Delete current buffer')
             nmap('<leader>bl', ':BufferLineCloseLeft<cr>', 'Close buffers to the left')
             nmap('<leader>br', ':BufferLineCloseRight<cr>', 'Close buffers to the right')
