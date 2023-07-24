@@ -25,7 +25,11 @@ return {
             nmap('<leader>bc', ':BufferLinePickClose<cr>', 'Select a buffer to close')
             nmap('[b', ':BufferLineCyclePrev<cr>', 'Previous buffer')
             nmap(']b', ':BufferLineCycleNext<cr>', 'Next buffer')
-            nmap('<leader>bd', ':bwipeout!<cr>', 'Delete current buffer')
+            -- TODO: Delete the hack below when https://github.com/neovim/neovim/issues/24456 gets fixed.
+            nmap('<leader>bd', function()
+                pcall(vim.lsp.inlay_hint, 0, false)
+                vim.cmd 'bwipeout!'
+            end, 'Delete current buffer')
             nmap('<leader>bl', ':BufferLineCloseLeft<cr>', 'Close buffers to the left')
             nmap('<leader>br', ':BufferLineCloseRight<cr>', 'Close buffers to the right')
         end,
