@@ -2,6 +2,8 @@
 return {
     {
         'lukas-reineke/indent-blankline.nvim',
+        -- For setting shiftwidth and tabstop automatically.
+        dependencies = 'tpope/vim-sleuth',
         event = { 'BufReadPost', 'BufNewFile' },
         opts = {
             show_trailing_blankline_indent = false,
