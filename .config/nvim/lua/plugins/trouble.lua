@@ -6,13 +6,13 @@ return {
     cmd = { 'Trouble', 'TroubleToggle' },
     dependencies = 'nvim-tree/nvim-web-devicons',
     opts = {
-        auto_close = true,
         signs = {
             error = icons.Error,
             warning = icons.Warn,
             hint = icons.Hint,
             information = icons.Info,
         },
+        win_border = 'rounded',
     },
     keys = {
         {
