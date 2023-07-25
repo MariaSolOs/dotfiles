@@ -4,6 +4,8 @@ return {
         'abecodes/tabout.nvim',
         event = 'InsertEnter',
         dependencies = { 'nvim-treesitter', 'nvim-cmp' },
-        config = true,
+        opts = {
+            ignore_beginning = false,
+        },
     },
 }
