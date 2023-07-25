@@ -71,7 +71,6 @@ return {
             -- Lua adapter.
             {
                 'jbyuki/one-small-step-for-vimkind',
-                dependencies = 'mfussenegger/nvim-dap',
                 keys = {
                     {
                         '<leader>dal',
