@@ -15,33 +15,63 @@ return {
         },
         cmd = 'Telescope',
         keys = {
-            { '<leader>tr', nil, desc = 'Recently opened files' },
-            { '<leader>tf', nil, desc = 'File search' },
-            { '<leader>th', nil, desc = 'Help' },
-            { '<leader>tg', nil, desc = 'Grep search' },
-            { '<leader>t:', nil, desc = 'Command history' },
-            { '<leader>tb', nil, desc = 'Fuzzy buffer search' },
+            {
+                '<leader>tr',
+                function()
+                    require('telescope.builtin').oldfiles()
+                end,
+                desc = 'Recently opened files',
+            },
+            {
+                '<leader>tf',
+                function()
+                    require('telescope.builtin').find_files()
+                end,
+                desc = 'File search',
+            },
+            {
+                '<leader>t?',
+                function()
+                    require('telescope.builtin').help_tags()
+                end,
+                desc = 'Help',
+            },
+            {
+                '<leader>tg',
+                function()
+                    require('telescope.builtin').live_grep()
+                end,
+                desc = 'Grep search',
+            },
+            {
+                '<leader>t:',
+                function()
+                    require('telescope.builtin').command_history()
+                end,
+                desc = 'Command history',
+            },
+            { '<leader>th', ':Telescope harpoon marks<cr>', desc = 'Harpoon' },
+            {
+                '<leader>tb',
+                function()
+                    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+                        winblend = 10,
+                        previewer = false,
+                    })
+                end,
+                desc = 'Fuzzy buffer search',
+            },
         },
         config = function()
             local telescope = require 'telescope'
-            local telescope_builtin = require 'telescope.builtin'
+            local builtins = require 'telescope.builtin'
             local actions = require 'telescope.actions'
 
-            local nmap = function(lhs, rhs)
-                vim.keymap.set('n', lhs, rhs)
+            -- HACK: Set a default fname_width for the LSP pickers.
+            local picker_config = {}
+            for builtin, _ in pairs(builtins) do
+                picker_config[builtin] = { fname_width = 45 }
             end
-
-            nmap('<leader>tr', telescope_builtin.oldfiles)
-            nmap('<leader>tf', telescope_builtin.find_files)
-            nmap('<leader>th', telescope_builtin.help_tags)
-            nmap('<leader>tg', telescope_builtin.live_grep)
-            nmap('<leader>t:', telescope_builtin.command_history)
-            nmap('<leader>tb', function()
-                telescope_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-                    winblend = 10,
-                    previewer = false,
-                })
-            end)
 
             telescope.setup {
                 defaults = {
@@ -67,9 +97,7 @@ return {
                     },
                     layout_strategy = 'vertical',
                 },
-                pickers = {
-                    lsp_references = { fname_width = 50 },
-                },
+                pickers = picker_config,
             }
         end,
     },
