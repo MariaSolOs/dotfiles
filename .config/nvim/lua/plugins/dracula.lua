@@ -17,9 +17,6 @@ return {
             italic_comment = true,
             overrides = function(colors)
                 return {
-                    -- Don't make whitespace super visible.
-                    Whitespace = { fg = '#282B31' },
-
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
