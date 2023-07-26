@@ -29,8 +29,11 @@ vim.keymap.set('i', ';', ';<c-g>u')
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 
--- Command for opening this file.
+-- Forever tweaking my Neovim configuration.
 vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Neovim configuration' })
+
+-- Open the package manager.
+vim.keymap.set('n', '<leader>L', ':Lazy<cr>', { desc = 'Lazy' })
 
 -- Switch between windows.
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window', remap = true })

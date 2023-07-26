@@ -30,7 +30,7 @@ return {
                 desc = 'File search',
             },
             {
-                '<leader>t?',
+                '<leader>th',
                 function()
                     require('telescope.builtin').help_tags()
                 end,
@@ -43,14 +43,6 @@ return {
                 end,
                 desc = 'Grep search',
             },
-            {
-                '<leader>t:',
-                function()
-                    require('telescope.builtin').command_history()
-                end,
-                desc = 'Command history',
-            },
-            { '<leader>th', ':Telescope harpoon marks<cr>', desc = 'Harpoon' },
             {
                 '<leader>tb',
                 function()
