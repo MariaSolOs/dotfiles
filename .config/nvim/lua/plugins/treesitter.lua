@@ -25,7 +25,7 @@ return {
         },
         version = false,
         event = { 'BufReadPost', 'BufNewFile' },
-        build = ':TSUpdate',
+        build = '<cmd>TSUpdate',
         keys = {
             { '<cr>', desc = 'Increment selection' },
             { '<bs>', desc = 'Decrement selection', mode = 'x' },

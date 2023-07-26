@@ -15,34 +15,10 @@ return {
         },
         cmd = 'Telescope',
         keys = {
-            {
-                '<leader>tr',
-                function()
-                    require('telescope.builtin').oldfiles()
-                end,
-                desc = 'Recently opened files',
-            },
-            {
-                '<leader>tf',
-                function()
-                    require('telescope.builtin').find_files()
-                end,
-                desc = 'File search',
-            },
-            {
-                '<leader>th',
-                function()
-                    require('telescope.builtin').help_tags()
-                end,
-                desc = 'Help',
-            },
-            {
-                '<leader>tg',
-                function()
-                    require('telescope.builtin').live_grep()
-                end,
-                desc = 'Grep search',
-            },
+            { '<leader>tr', '<cmd>Telescope oldfiles<cr>', desc = 'Recently opened files' },
+            { '<leader>tf', '<cmd>Telescope find_files<cr>', desc = 'File search' },
+            { '<leader>th', '<cmd>Telescope help_tags<cr>', desc = 'Help' },
+            { '<leader>tg', '<cmd>Telescope live_grep<cr>', desc = 'Grep search' },
             {
                 '<leader>tb',
                 function()

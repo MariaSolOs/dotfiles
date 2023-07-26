@@ -6,7 +6,7 @@ return {
         cmd = 'IconPickerNormal',
         opts = { disable_legacy_commands = true },
         keys = {
-            { '<leader>ti', ':IconPickerNormal<cr>', desc = 'Icon picker' },
+            { '<leader>ti', '<cmd>IconPickerNormal<cr>', desc = 'Icon picker' },
         },
     },
 }

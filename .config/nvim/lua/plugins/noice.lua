@@ -61,7 +61,7 @@ return {
             },
         },
         keys = {
-            { '<leader>tn', ':NoiceTelescope<cr>', desc = 'Noice' },
+            { '<leader>tn', '<cmd>NoiceTelescope<cr>', desc = 'Noice' },
             {
                 '<C-f>',
                 scroll('<C-f>', true),

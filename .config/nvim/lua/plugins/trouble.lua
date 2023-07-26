@@ -17,17 +17,17 @@ return {
     keys = {
         {
             '<leader>xd',
-            ':TroubleToggle document_diagnostics<cr>',
+            '<cmd>TroubleToggle document_diagnostics<cr>',
             desc = 'Document diagnostics',
         },
         {
             '<leader>xw',
-            ':TroubleToggle workspace_diagnostics<cr>',
+            '<cmd>TroubleToggle workspace_diagnostics<cr>',
             desc = 'Workspace diagnostics',
         },
         {
             '<leader>xq',
-            ':TroubleToggle quickfix<cr>',
+            '<cmd>TroubleToggle quickfix<cr>',
             desc = 'Quickfix list',
         },
     },

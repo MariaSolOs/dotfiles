@@ -25,16 +25,16 @@ return {
 
             require('bufferline').setup(opts)
 
-            nmap('<leader>bo', ':BufferLinePick<cr>', 'Select a buffer to open')
-            nmap('<leader>bc', ':BufferLinePickClose<cr>', 'Select a buffer to close')
-            nmap('[b', ':BufferLineCyclePrev<cr>', 'Previous buffer')
-            nmap(']b', ':BufferLineCycleNext<cr>', 'Next buffer')
+            nmap('<leader>bo', '<cmd>BufferLinePick<cr>', 'Select a buffer to open')
+            nmap('<leader>bc', '<cmd>BufferLinePickClose<cr>', 'Select a buffer to close')
+            nmap('[b', '<cmd>BufferLineCyclePrev<cr>', 'Previous buffer')
+            nmap(']b', '<cmd>BufferLineCycleNext<cr>', 'Next buffer')
             -- TODO: Delete the hack below when https://github.com/neovim/neovim/issues/24456 gets fixed.
             nmap('<leader>bd', function()
                 require('mini.bufremove').delete(0, true)
             end, 'Delete current buffer')
-            nmap('<leader>bl', ':BufferLineCloseLeft<cr>', 'Close buffers to the left')
-            nmap('<leader>br', ':BufferLineCloseRight<cr>', 'Close buffers to the right')
+            nmap('<leader>bl', '<cmd>BufferLineCloseLeft<cr>', 'Close buffers to the left')
+            nmap('<leader>br', '<cmd>BufferLineCloseRight<cr>', 'Close buffers to the right')
         end,
     },
 }

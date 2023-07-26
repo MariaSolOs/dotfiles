@@ -24,10 +24,10 @@ return {
                 return button
             end
             dashboard.section.buttons.val = {
-                dashboard_button('f', '  Find file', ':Telescope find_files<cr>'),
-                dashboard_button('r', '  Recent files', ':Telescope oldfiles<cr>'),
-                dashboard_button('c', '  Config', ':e $MYVIMRC | :cd %:p:h<cr>'),
-                dashboard_button('q', '  Quit', ':qa<cr>'),
+                dashboard_button('f', '  Find file', '<cmd>Telescope find_files<cr>'),
+                dashboard_button('r', '  Recent files', '<cmd>Telescope oldfiles<cr>'),
+                dashboard_button('c', '  Config', '<cmd>e $MYVIMRC | :cd %:p:h<cr>'),
+                dashboard_button('q', '  Quit', '<cmd>qa<cr>'),
                 { type = 'padding', val = 2 },
             }
             dashboard.section.buttons.opts.hl = 'AlphaButtons'

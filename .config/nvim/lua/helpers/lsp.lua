@@ -24,7 +24,7 @@ M.on_attach = function(buf_client, bufnr)
         keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
     end
 
-    keymap('gr', ':Telescope lsp_references<cr>', 'Go to references')
+    keymap('gr', '<cmd>Telescope lsp_references<cr>', 'Go to references')
     keymap('gI', function()
         require('telescope.builtin').lsp_implementations { reuse_win = true }
     end, 'Go to implementation(s)')

@@ -30,10 +30,10 @@ vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 
 -- Forever tweaking my Neovim configuration.
-vim.keymap.set('n', '<leader>C', ':e $MYVIMRC<cr>', { desc = 'Neovim configuration' })
+vim.keymap.set('n', '<leader>C', '<cmd>e $MYVIMRC<cr>', { desc = 'Neovim configuration' })
 
 -- Open the package manager.
-vim.keymap.set('n', '<leader>L', ':Lazy<cr>', { desc = 'Lazy' })
+vim.keymap.set('n', '<leader>L', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
 -- Switch between windows.
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window', remap = true })
@@ -42,7 +42,7 @@ vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the top window', remap 
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window', remap = true })
 
 -- Clear search with <esc>
-vim.keymap.set('n', '<esc>', ':noh<cr><esc>', { desc = 'Escape and clear hlsearch' })
+vim.keymap.set('n', '<esc>', '<cmd>noh<cr><esc>', { desc = 'Escape and clear hlsearch' })
 
 -- Escape and save changes.
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })

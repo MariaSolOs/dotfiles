@@ -60,7 +60,7 @@ return {
                 'zm',
                 'zr',
             } do
-                keymap(lhs, lhs .. ':IndentBlanklineRefresh<cr>')
+                keymap(lhs, lhs .. '<cmd>IndentBlanklineRefresh<cr>')
             end
         end,
     },

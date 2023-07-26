@@ -7,7 +7,7 @@ return {
             vim.fn['mkdp#util#install']()
         end,
         config = function()
-            vim.keymap.set('n', '<leader>M', ':MarkdownPreviewToggle<cr>', { desc = 'Toggle .md preview' })
+            vim.keymap.set('n', '<leader>M', '<cmd>MarkdownPreviewToggle<cr>', { desc = 'Toggle .md preview' })
         end,
     },
 }
