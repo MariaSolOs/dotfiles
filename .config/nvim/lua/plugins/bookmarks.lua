@@ -20,7 +20,7 @@ return {
                 function()
                     require('bookmarks').toggle_bookmarks()
                 end,
-                desc = 'Toggle bookmark',
+                desc = 'Toggle bookmarks window',
             },
             {
                 '<leader>ma',
