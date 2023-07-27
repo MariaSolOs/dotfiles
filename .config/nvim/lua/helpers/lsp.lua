@@ -1,4 +1,11 @@
-local M = {}
+local M = {
+    -- Used to toggle format on save.
+    autoformat = true,
+}
+
+vim.api.nvim_create_user_command('ToggleAutoFormat', function()
+    M.autoformat = not M.autoformat
+end, {})
 
 M.on_attach = function(buf_client, bufnr)
     local keymap = function(lhs, rhs, desc, mode)
@@ -76,16 +83,15 @@ M.on_attach = function(buf_client, bufnr)
         })
     end
 
-    -- Set up format command.
-    vim.api.nvim_buf_create_user_command(bufnr, 'Fmt', function()
-        vim.lsp.buf.format()
-    end, { desc = 'Format current buffer' })
-
     -- Set up format on save.
     vim.api.nvim_create_autocmd('BufWritePre', {
         group = vim.api.nvim_create_augroup('FormatOnSave', { clear = true }),
         pattern = { '*.lua', '*.py', '*.rs' },
         callback = function()
+            if not M.autoformat then
+                return
+            end
+
             local buf = vim.api.nvim_get_current_buf()
             local ft = vim.bo[buf].filetype
 

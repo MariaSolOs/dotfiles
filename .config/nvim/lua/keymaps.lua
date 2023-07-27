@@ -29,9 +29,6 @@ vim.keymap.set('i', ';', ';<c-g>u')
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 
--- Forever tweaking my Neovim configuration.
-vim.keymap.set('n', '<leader>C', '<cmd>e $MYVIMRC<cr>', { desc = 'Neovim configuration' })
-
 -- Open the package manager.
 vim.keymap.set('n', '<leader>L', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
