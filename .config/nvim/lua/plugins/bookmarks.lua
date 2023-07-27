@@ -1,3 +1,4 @@
+-- Bookmark important code.
 return {
     {
         'crusj/bookmarks.nvim',

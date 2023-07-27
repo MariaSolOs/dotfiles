@@ -3,7 +3,7 @@ return {
     {
         'folke/which-key.nvim',
         event = 'VeryLazy',
-        -- TODO: Update to the latest version when the register bug gets fixed.
+        -- TODO: Update to the latest version when https://github.com/folke/which-key.nvim/issues/482 gets fixed.
         version = '1.4.3',
         opts = {
             window = { border = 'rounded' },
