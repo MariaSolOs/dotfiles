@@ -1,13 +1,4 @@
--- Nicer notifications and command line UI.
-local function scroll(key, forward)
-    local delta = forward and 4 or -4
-    return function()
-        if not require('noice.lsp').scroll(delta) then
-            return key
-        end
-    end
-end
-
+-- Nice notifications, command line UI, and more.
 return {
     {
         'folke/noice.nvim',
@@ -64,25 +55,21 @@ return {
             { '<leader>tn', '<cmd>NoiceTelescope<cr>', desc = 'Noice' },
             {
                 '<C-f>',
-                scroll('<C-f>', true),
-                expr = true,
-                mode = { 'i', 'n', 's' },
-            },
-            {
-                '<C-d>',
-                scroll('<C-d>', true),
+                function()
+                    if not require('noice.lsp').scroll(4) then
+                        return '<C-f>'
+                    end
+                end,
                 expr = true,
                 mode = { 'i', 'n', 's' },
             },
             {
                 '<C-b>',
-                scroll('<C-b>', false),
-                expr = true,
-                mode = { 'i', 'n', 's' },
-            },
-            {
-                '<C-u>',
-                scroll('<C-u>', false),
+                function()
+                    if not require('noice.lsp').scroll(-4) then
+                        return '<C-b>'
+                    end
+                end,
                 expr = true,
                 mode = { 'i', 'n', 's' },
             },
