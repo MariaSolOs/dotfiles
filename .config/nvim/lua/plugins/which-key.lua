@@ -22,6 +22,7 @@ return {
                 ['<leader>da'] = { name = '+debug adapters' },
                 ['<leader>t'] = { name = '+telescope' },
                 ['<leader>x'] = { name = '+trouble' },
+                ['<leader>m'] = { name = '+marks' },
             }
         end,
     },
