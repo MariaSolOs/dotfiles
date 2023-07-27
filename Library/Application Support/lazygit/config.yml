@@ -1,0 +1,20 @@
+notARepository: 'quit'
+os:
+  editPreset: nvim
+gui:
+  theme:
+    activeBorderColor:
+      - magenta
+      - bold
+    inactiveBorderColor:
+      - white
+    optionsTextColor:
+      - blue
+    selectedLineBgColor:
+      - reverse
+    selectedRangeBgColor:
+      - reverse
+    unstagedChangesColor:
+      - yellow
+  border: rounded
+  showIcons: true
