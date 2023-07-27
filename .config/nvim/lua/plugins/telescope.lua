@@ -65,7 +65,10 @@ return {
                     },
                     layout_strategy = 'vertical',
                 },
-                pickers = picker_config,
+                pickers = vim.tbl_extend('force', picker_config, {
+                    -- Open Telescope even if there's only one result.
+                    lsp_references = { jump_type = 'never' },
+                }),
             }
         end,
     },
