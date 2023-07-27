@@ -2,8 +2,6 @@
 return {
     {
         'mfussenegger/nvim-dap',
-        -- TODO: Unpin this when https://github.com/mfussenegger/nvim-dap/issues/993 gets fixed.
-        commit = 'd17d1bba23ec72a157bd183c57840c39e323f515',
         dependencies = {
             -- Fancy UI for the debugger
             {
