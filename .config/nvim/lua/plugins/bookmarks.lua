@@ -11,6 +11,7 @@ return {
             virt_pattern = { '*.ts', '*.lua', '*.rs' },
             virt_text = '',
             border_style = 'rounded',
+            preview_ratio = 0.6,
         },
         keys = {
             {
