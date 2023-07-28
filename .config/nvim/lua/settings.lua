@@ -21,6 +21,9 @@ vim.wo.number = true
 -- Enable mouse mode.
 vim.o.mouse = 'a'
 
+-- Disable horizontal scrolling.
+vim.o.mousescroll = 'ver:3,hor:0'
+
 -- Sync clipboard between the OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
 
