@@ -9,6 +9,9 @@ setopt auto_cd
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
 
+# Set up neovim as the default editor.
+EDITOR="$(which nvim)"
+
 # Command history.
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
