@@ -12,7 +12,7 @@ return {
             hint = icons.Hint,
             information = icons.Info,
         },
-        win_border = 'rounded',
+        win_config = { border = 'rounded' },
     },
     keys = {
         {
