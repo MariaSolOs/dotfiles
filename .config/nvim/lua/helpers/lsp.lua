@@ -46,7 +46,7 @@ M.on_attach = function(buf_client, bufnr)
         require('telescope.builtin').lsp_dynamic_workspace_symbols()
     end, 'Workspace symbols')
 
-    keymap('<leader>cl', vim.diagnostic.open_float, 'Line diagnostics')
+    keymap('<leader>cd', vim.diagnostic.open_float, 'Line diagnostics')
     keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
     keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
     keymap('[e', function()
