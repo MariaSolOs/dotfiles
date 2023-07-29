@@ -26,7 +26,6 @@ local cmp_kinds = {
     Event = '  ',
     Operator = '  ',
     TypeParameter = '  ',
-    Copilot = '  ',
 }
 
 return {
@@ -144,7 +143,7 @@ return {
                         end
                     end, { 'i', 's' }),
                 },
-                sources = {
+                sources = cmp.config.sources {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
                     { name = 'buffer' },
