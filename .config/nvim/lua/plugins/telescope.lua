@@ -34,11 +34,24 @@ return {
             local telescope = require 'telescope'
             local builtins = require 'telescope.builtin'
             local actions = require 'telescope.actions'
+            local action_set = require 'telescope.actions.set'
 
-            -- HACK: Set a default fname_width for the LSP pickers.
+            -- HACK: Set defaults for all pickers.
             local picker_config = {}
             for builtin, _ in pairs(builtins) do
-                picker_config[builtin] = { fname_width = 45 }
+                picker_config[builtin] = {
+                    fname_width = 45,
+                    attach_mappings = function(prompt_bufnr, _)
+                        action_set.select:enhance {
+                            post = function()
+                                vim.cmd ':normal! zv'
+                            end,
+                        }
+                        actions.center(prompt_bufnr)
+
+                        return true
+                    end,
+                }
             end
 
             telescope.setup {
