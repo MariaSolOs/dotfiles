@@ -10,7 +10,6 @@ return {
                     require('mini.bufremove').delete(bufnr, false)
                 end,
                 diagnostics = 'nvim_lsp',
-                diagnostics_update_in_insert = false,
                 diagnostics_indicator = function(_, _, diag)
                     local icons = require('helpers.icons').diagnostics
                     local indicator = (diag.error and icons.Error .. ' ' or '') .. (diag.warning and icons.Warn or '')
