@@ -1,20 +1,3 @@
-local servers = {
-    lua_ls = {
-        settings = {
-            Lua = {
-                workspace = { checkThirdParty = false },
-                telemetry = { enable = false },
-                hint = { enable = true, arrayIndex = 'Disable' },
-            },
-        },
-    },
-    marksman = {},
-    pyright = {},
-    ruff_lsp = {},
-    rust_analyzer = {},
-    taplo = {},
-}
-
 vim.diagnostic.config {
     virtual_text = {
         -- Show severity icons as prefixes.
@@ -50,12 +33,33 @@ return {
                 'williamboman/mason.nvim',
                 cmd = 'Mason',
                 build = ':MasonUpdate',
-                config = true,
+                opts = {
+                    ensure_installed = {
+                        'black',
+                        'codelldb',
+                        'selene',
+                        'stylua',
+                    },
+                    ui = {
+                        border = 'rounded',
+                        width = 0.7,
+                        height = 0.8,
+                    },
+                },
             },
             {
                 'williamboman/mason-lspconfig.nvim',
                 opts = {
-                    ensure_installed = vim.tbl_keys(servers),
+                    ensure_installed = {
+                        'eslint',
+                        'jsonls',
+                        'lua_ls',
+                        'marksman',
+                        'pyright',
+                        'ruff_lsp',
+                        'rust_analyzer',
+                        'taplo',
+                    },
                 },
             },
             { 'folke/neodev.nvim', config = true },
@@ -76,19 +80,14 @@ return {
 
             require('mason-lspconfig').setup_handlers {
                 function(server)
-                    local settings = vim.tbl_extend('force', {
+                    require('lspconfig')[server].setup {
                         capabilities = capabilities,
                         on_attach = on_attach,
-                    }, servers[server] or {})
-
-                    require('lspconfig')[server].setup(settings)
+                    }
                 end,
-                -- Special handler for ESLint since I don't need capabilities or on_attach.
                 eslint = function()
                     require('lspconfig').eslint.setup {
-                        settings = {
-                            format = false,
-                        },
+                        settings = { format = false },
                     }
                 end,
                 jsonls = function()
@@ -99,6 +98,19 @@ return {
                             json = {
                                 schemas = require('schemastore').json.schemas(),
                                 validate = { enable = true },
+                            },
+                        },
+                    }
+                end,
+                lua_ls = function()
+                    require('lspconfig').lua_ls.setup {
+                        capabilities = capabilities,
+                        on_attach = on_attach,
+                        settings = {
+                            Lua = {
+                                workspace = { checkThirdParty = false },
+                                telemetry = { enable = false },
+                                hint = { enable = true, arrayIndex = 'Disable' },
                             },
                         },
                     }
