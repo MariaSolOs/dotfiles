@@ -3,6 +3,7 @@ return {
     {
         'nvim-telescope/telescope.nvim',
         version = false,
+        cmd = 'Telescope',
         dependencies = {
             {
                 'nvim-telescope/telescope-fzf-native.nvim',
@@ -13,7 +14,6 @@ return {
             },
             'nvim-lua/plenary.nvim',
         },
-        cmd = 'Telescope',
         keys = {
             { '<leader>tr', '<cmd>Telescope oldfiles<cr>', desc = 'Recently opened files' },
             { '<leader>tf', '<cmd>Telescope find_files<cr>', desc = 'File search' },

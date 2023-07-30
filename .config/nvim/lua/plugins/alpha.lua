@@ -3,7 +3,7 @@ return {
     {
         'goolord/alpha-nvim',
         event = 'VimEnter',
-        opts = function()
+        config = function()
             local dashboard = require 'alpha.themes.dashboard'
 
             local header = [[
@@ -36,9 +36,6 @@ return {
             dashboard.section.footer.val = "It's not a bug, it's a feature. 🌟"
             dashboard.section.footer.opts.hl = 'AlphaFooter'
 
-            return dashboard
-        end,
-        config = function(_, dashboard)
             require('alpha').setup(dashboard.opts)
         end,
     },

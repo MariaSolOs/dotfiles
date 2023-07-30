@@ -9,6 +9,14 @@ return {
             show_trailing_blankline_indent = false,
             char_priority = 12,
             show_foldtext = false,
+            filetype_exclude = {
+                'help',
+                'alpha',
+                'Trouble',
+                'lazy',
+                'mason',
+                'lazyterm',
+            },
         },
     },
 }
