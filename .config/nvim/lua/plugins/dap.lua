@@ -173,14 +173,6 @@ return {
         config = function()
             local dap = require 'dap'
 
-            -- Omnifunc completion for REPL.
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = 'dap-repl',
-                callback = function()
-                    require('dap.ext.autocompl').attach()
-                end,
-            })
-
             -- Set up icons.
             local icons = {
                 Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },

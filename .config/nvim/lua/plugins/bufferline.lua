@@ -1,3 +1,5 @@
+local diagnostic_icons = require('helpers.icons').diagnostics
+
 -- Bufferline for pretty tabs.
 return {
     {
@@ -9,10 +11,13 @@ return {
                 close_command = function(bufnr)
                     require('mini.bufremove').delete(bufnr, false)
                 end,
+                right_mouse_command = function(bufnr)
+                    require('mini.bufremove').delete(bufnr, false)
+                end,
                 diagnostics = 'nvim_lsp',
                 diagnostics_indicator = function(_, _, diag)
-                    local icons = require('helpers.icons').diagnostics
-                    local indicator = (diag.error and icons.Error .. ' ' or '') .. (diag.warning and icons.Warn or '')
+                    local indicator = (diag.error and diagnostic_icons.Error .. ' ' or '')
+                        .. (diag.warning and diagnostic_icons.Warn or '')
                     return vim.trim(indicator)
                 end,
             },

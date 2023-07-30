@@ -1,47 +1,12 @@
+local diagnostic_icons = require('helpers.icons').diagnostics
+
 -- Statusline.
 return {
     {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
-        opts = {
-            options = {
-                theme = 'dracula-nvim',
-                component_separators = '|',
-                section_separators = '',
-            },
-            sections = {
-                lualine_b = { 'branch', 'diff' },
-                lualine_c = {
-                    -- Show LSP progress.
-                    {
-                        function()
-                            return require('noice').api.status.lsp_progress.get_hl()
-                        end,
-                        cond = function()
-                            return package.loaded['noice'] and require('noice').api.status.lsp_progress.has()
-                        end,
-                    },
-                    -- Show macro recording messages.
-                    {
-                        function()
-                            return require('noice').api.status.mode.get()
-                        end,
-                        cond = function()
-                            return package.loaded['noice'] and require('noice').api.status.mode.has()
-                        end,
-                    },
-                },
-                lualine_x = {
-                    {
-                        'diagnostics',
-                        sections = { 'error', 'warn', 'info', 'hint' },
-                    },
-                },
-                lualine_y = { 'encoding', 'filetype' },
-            },
-        },
-        config = function(_, opts)
-            require('lualine').setup(opts)
+        config = function()
+            local colors = require 'dracula.palette-soft'
 
             -- Disable this since the mode will be displayed by lualine.
             vim.o.showmode = false
@@ -51,6 +16,62 @@ return {
                 pattern = '*',
                 command = 'redrawstatus',
             })
+
+            require('lualine').setup {
+                options = {
+                    theme = 'dracula-nvim',
+                    component_separators = '|',
+                    section_separators = '',
+                    globalstatus = true,
+                    disabled_filetypes = { statusline = { 'alpha' } },
+                },
+                sections = {
+                    lualine_b = { 'branch' },
+                    lualine_c = {
+                        -- Show LSP progress.
+                        {
+                            function()
+                                local lsp_progress = require('noice').api.status.lsp_progress.get_hl()
+                                return vim.trim(lsp_progress)
+                            end,
+                            cond = function()
+                                return package.loaded['noice'] and require('noice').api.status.lsp_progress.has()
+                            end,
+                        },
+                        -- Show macro recording messages.
+                        {
+                            function()
+                                return require('noice').api.status.mode.get()
+                            end,
+                            cond = function()
+                                return package.loaded['noice'] and require('noice').api.status.mode.has()
+                            end,
+                            color = { fg = colors.yellow },
+                        },
+                        {
+                            function()
+                                return '  ' .. require('dap').status()
+                            end,
+                            cond = function()
+                                return package.loaded['dap'] and require('dap').status() ~= ''
+                            end,
+                            color = { fg = colors.green },
+                        },
+                    },
+                    lualine_x = {
+                        {
+                            'diagnostics',
+                            symbols = {
+                                error = diagnostic_icons.Error .. ' ',
+                                warn = diagnostic_icons.Warn .. ' ',
+                                info = diagnostic_icons.Info .. ' ',
+                                hint = diagnostic_icons.Hint .. ' ',
+                            },
+                        },
+                    },
+                    lualine_y = { 'encoding', 'filetype' },
+                },
+            }
         end,
     },
 }

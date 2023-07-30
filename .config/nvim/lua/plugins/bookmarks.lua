@@ -2,13 +2,13 @@
 return {
     {
         'crusj/bookmarks.nvim',
-        dependencies = 'nvim-web-devicons',
         opts = {
             keymap = {
                 toggle = '<leader>mt',
                 add = '<leader>ma',
                 delete_on_virt = '<leader>md',
             },
+            -- TODO: Don't hardcode this if https://github.com/crusj/bookmarks.nvim/issues/24 gets addressed.
             virt_pattern = { '*.ts', '*.lua', '*.rs' },
             virt_text = '',
             border_style = 'rounded',
