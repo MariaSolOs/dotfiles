@@ -2,6 +2,7 @@
 return {
     {
         'crusj/bookmarks.nvim',
+        event = 'BufReadPost',
         opts = {
             keymap = {
                 toggle = '<leader>mt',
@@ -16,11 +17,11 @@ return {
         },
         keys = {
             {
-                '<leader>mt',
+                '<leader>mo',
                 function()
-                    require('bookmarks').toggle_bookmarks()
+                    require('bookmarks').open_bookmarks()
                 end,
-                desc = 'Toggle bookmarks window',
+                desc = 'Open bookmarks window',
             },
             {
                 '<leader>ma',
