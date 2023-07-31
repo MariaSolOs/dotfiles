@@ -12,6 +12,7 @@ return {
             hint = icons.Hint,
             information = icons.Info,
         },
+        auto_close = true,
         win_config = { border = 'rounded' },
     },
     keys = {
