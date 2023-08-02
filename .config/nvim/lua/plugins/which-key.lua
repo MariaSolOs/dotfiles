@@ -14,13 +14,10 @@ return {
         init = function()
             -- Utility commands.
             vim.api.nvim_create_user_command('ClearRegisters', function()
-                vim.cmd [[
-                    let regs = split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '\zs')
-                    for r in regs
-                        call setreg(r, [])
-                    endfor
-                    wshada!
-                ]]
+                for r in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):gmatch '%a' do
+                    vim.fn.setreg(r, '')
+                end
+                vim.cmd 'wshada'
             end, { desc = 'Clear registers' })
         end,
         config = function(_, opts)
