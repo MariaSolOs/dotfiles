@@ -18,7 +18,6 @@ vim.api.nvim_create_autocmd('VimResized', {
 vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
     pattern = {
-        'bookmarks',
         'checkhealth',
         'help',
         'man',

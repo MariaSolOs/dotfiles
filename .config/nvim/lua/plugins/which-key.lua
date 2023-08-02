@@ -29,7 +29,6 @@ return {
                 ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>da'] = { name = '+debug adapters' },
-                ['<leader>p'] = { name = '+bookmarks' },
                 ['<leader>t'] = { name = '+telescope' },
                 ['<leader>x'] = { name = '+trouble' },
             }
