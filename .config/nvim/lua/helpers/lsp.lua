@@ -35,7 +35,7 @@ M.on_attach = function(buf_client, bufnr)
     keymap('gI', function()
         require('telescope.builtin').lsp_implementations { reuse_win = true }
     end, 'Go to implementation(s)')
-    keymap('gt', function()
+    keymap('gD', function()
         require('telescope.builtin').lsp_type_definitions { reuse_win = true }
     end, 'Go to type definition(s)')
 
