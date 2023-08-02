@@ -55,6 +55,9 @@ return {
                     -- Winbar styling.
                     WinBar = { bold = false },
                     DropBarMenuCurrentContext = { link = 'Normal' },
+
+                    -- Virtual text for DAP.
+                    NvimDapVirtualText = { fg = '#6272A4', underline = true },
                 }
             end,
         },

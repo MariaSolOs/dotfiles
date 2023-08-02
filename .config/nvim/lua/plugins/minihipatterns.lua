@@ -6,7 +6,7 @@ return {
         config = function()
             local hi = require 'mini.hipatterns'
 
-            return {
+            require('mini.hipatterns').setup {
                 highlighters = {
                     hex_color = hi.gen_highlighter.hex_color { priority = 2000 },
                 },
