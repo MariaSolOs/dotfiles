@@ -36,11 +36,12 @@ return {
             local actions = require 'telescope.actions'
             local action_set = require 'telescope.actions.set'
 
-            -- HACK: Set defaults for all pickers.
             local picker_config = {}
             for builtin, _ in pairs(builtins) do
                 picker_config[builtin] = {
-                    fname_width = 45,
+                    -- Don't show the matched line since it is already in the preview.
+                    show_line = false,
+                    -- Center and unfold when selecting a result.
                     attach_mappings = function(prompt_bufnr, _)
                         action_set.select:enhance {
                             post = function()
@@ -78,7 +79,7 @@ return {
                     },
                     layout_strategy = 'vertical',
                 },
-                pickers = vim.tbl_extend('force', picker_config, {
+                pickers = vim.tbl_deep_extend('force', picker_config, {
                     -- Open Telescope even if there's only one result.
                     lsp_references = { jump_type = 'never' },
                 }),
