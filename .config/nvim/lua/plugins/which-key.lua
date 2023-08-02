@@ -11,6 +11,18 @@ return {
                 filetypes = { 'alpha' },
             },
         },
+        init = function()
+            -- Utility commands.
+            vim.api.nvim_create_user_command('ClearRegisters', function()
+                vim.cmd [[
+                    let regs = split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '\zs')
+                    for r in regs
+                        call setreg(r, [])
+                    endfor
+                    wshada!
+                ]]
+            end, { desc = 'Clear registers' })
+        end,
         config = function(_, opts)
             local wk = require 'which-key'
             wk.setup(opts)
@@ -25,7 +37,7 @@ return {
                 ['<leader>x'] = { name = '+trouble' },
             }
 
-            -- register all text objects.
+            -- Register all text objects.
             local i = {
                 [' '] = 'Whitespace',
                 ['"'] = 'Balanced "',
