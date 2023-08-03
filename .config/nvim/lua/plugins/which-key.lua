@@ -12,7 +12,7 @@ return {
             },
         },
         config = function(_, opts)
-            -- Utility commands.
+            -- Utility command for clearing macros, etc.
             vim.api.nvim_create_user_command('ClearRegisters', function()
                 for r in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):gmatch '%a' do
                     vim.fn.setreg(r, '')
@@ -24,7 +24,6 @@ return {
             wk.setup(opts)
 
             wk.register {
-                ['<leader>b'] = { name = '+buffer' },
                 ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>da'] = { name = '+debug adapters' },
