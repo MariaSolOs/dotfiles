@@ -20,7 +20,6 @@ return {
                 end,
             },
         },
-        config = true,
         keys = {
             {
                 'zR',
@@ -35,6 +34,21 @@ return {
                     require('ufo').closeAllFolds()
                     vim.cmd 'IndentBlanklineRefresh'
                 end,
+            },
+            {
+                'zp',
+                function()
+                    require('ufo').peekFoldedLinesUnderCursor()
+                end,
+                desc = 'Peek folded lines under cursor',
+            },
+        },
+        opts = {
+            preview = {
+                win_config = {
+                    winblend = 10,
+                    maxheight = 10,
+                },
             },
         },
         init = function()
