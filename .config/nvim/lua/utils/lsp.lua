@@ -1,3 +1,5 @@
+local methods = vim.lsp.protocol.Methods
+
 local M = {
     -- Used to toggle format on save.
     autoformat = true,
@@ -13,21 +15,21 @@ M.on_attach = function(buf_client, bufnr)
         vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
-    if buf_client.supports_method 'textDocument/codeAction' then
+    if buf_client.supports_method(methods.textDocument_codeAction) then
         keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
     end
 
-    if buf_client.supports_method 'textDocument/rename' then
+    if buf_client.supports_method(methods.textDocument_rename) then
         vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
     end
 
-    if buf_client.supports_method 'textDocument/definition' then
+    if buf_client.supports_method(methods.textDocument_definition) then
         keymap('gd', function()
             require('telescope.builtin').lsp_definitions { reuse_win = true }
         end, 'Go to definition')
     end
 
-    if buf_client.supports_method 'textDocument/signatureHelp' then
+    if buf_client.supports_method(methods.textDocument_signatureHelp) then
         keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
     end
 
@@ -60,7 +62,7 @@ M.on_attach = function(buf_client, bufnr)
     keymap('K', vim.lsp.buf.hover, 'Hover')
 
     -- Enable inlay hints if the client supports it.
-    if buf_client.supports_method 'textDocument/inlayHint' then
+    if buf_client.supports_method(methods.textDocument_inlayHint) then
         local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
 
         -- Initial inlay hint display.
@@ -103,8 +105,8 @@ M.on_attach = function(buf_client, bufnr)
             local available = {}
             for _, client in ipairs(clients) do
                 if
-                    client.supports_method 'textDocument/formatting'
-                    or client.supports_method 'textDocument/rangeFormatting'
+                    client.supports_method(methods.textDocument_formatting)
+                    or client.supports_method(methods.textDocument_rangeFormatting)
                 then
                     if (#null_ls > 0 and client.name == 'null-ls') or #null_ls == 0 then
                         table.insert(available, client.id)
