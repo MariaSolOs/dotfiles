@@ -33,6 +33,9 @@ return {
                     -- When triggering flash, make everything in the backdrop italic.
                     FlashBackdrop = { italic = true },
 
+                    -- Previewing Trouble matches.
+                    TroublePreview = { link = 'IlluminatedWordWrite' },
+
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 

@@ -34,10 +34,10 @@ M.on_attach = function(buf_client, bufnr)
     keymap('gr', '<cmd>Telescope lsp_references<cr>', 'Go to references')
     keymap('gI', function()
         require('telescope.builtin').lsp_implementations { reuse_win = true }
-    end, 'Go to implementation(s)')
+    end, 'Go to implementation')
     keymap('gD', function()
         require('telescope.builtin').lsp_type_definitions { reuse_win = true }
-    end, 'Go to type definition(s)')
+    end, 'Go to type definition')
 
     keymap('<leader>td', function()
         require('telescope.builtin').lsp_document_symbols()
