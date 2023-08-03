@@ -10,7 +10,20 @@ return {
         },
     },
     config = function(_, opts)
-        require('illuminate').configure(opts)
+        local illuminate = require 'illuminate'
+
+        illuminate.configure(opts)
+
+        -- Clear highlights when leaving a buffer.
+        local illuminate_group = vim.api.nvim_create_augroup('IlluminateBufUpdate', { clear = true })
+        vim.api.nvim_create_autocmd('BufEnter', {
+            group = illuminate_group,
+            callback = illuminate.resume_buf,
+        })
+        vim.api.nvim_create_autocmd('BufLeave', {
+            group = illuminate_group,
+            callback = illuminate.pause_buf,
+        })
 
         -- Remove these keymaps that illuminate creates and that I don't use.
         vim.keymap.del({ 'o', 'x' }, '<M-i>')
