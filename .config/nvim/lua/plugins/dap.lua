@@ -28,9 +28,9 @@ return {
                     layouts = {
                         {
                             elements = {
-                                { id = 'scopes', size = 0.33 },
-                                { id = 'breakpoints', size = 0.33 },
-                                { id = 'stacks', size = 0.33 },
+                                { id = 'stacks', size = 0.30 },
+                                { id = 'breakpoints', size = 0.20 },
+                                { id = 'scopes', size = 0.50 },
                             },
                             position = 'left',
                             size = 40,
