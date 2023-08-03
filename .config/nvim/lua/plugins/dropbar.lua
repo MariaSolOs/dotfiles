@@ -33,6 +33,7 @@ return {
                     win_configs = { border = 'rounded' },
                     keymaps = {
                         ['h'] = '<C-w>c',
+                        -- Expands the entry if possible.
                         ['l'] = function()
                             local menu = api.get_current_dropbar_menu()
                             if not menu then
@@ -40,6 +41,19 @@ return {
                             end
                             local cursor = vim.api.nvim_win_get_cursor(menu.win)
                             local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
+                            if component then
+                                menu:click_on(component, nil, 1, 'l')
+                            end
+                        end,
+                        -- "Jump and close".
+                        -- TODO: Better way to do this? https://github.com/Bekaboo/dropbar.nvim/issues/66
+                        ['o'] = function()
+                            local menu = api.get_current_dropbar_menu()
+                            if not menu then
+                                return
+                            end
+                            local cursor = vim.api.nvim_win_get_cursor(menu.win)
+                            local component = menu.entries[cursor[1]]:first_clickable(5)
                             if component then
                                 menu:click_on(component, nil, 1, 'l')
                             end

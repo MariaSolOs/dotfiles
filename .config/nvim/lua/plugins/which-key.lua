@@ -11,7 +11,7 @@ return {
                 filetypes = { 'alpha' },
             },
         },
-        init = function()
+        config = function(_, opts)
             -- Utility commands.
             vim.api.nvim_create_user_command('ClearRegisters', function()
                 for r in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):gmatch '%a' do
@@ -19,8 +19,7 @@ return {
                 end
                 vim.cmd 'wshada'
             end, { desc = 'Clear registers' })
-        end,
-        config = function(_, opts)
+
             local wk = require 'which-key'
             wk.setup(opts)
 
