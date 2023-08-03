@@ -6,7 +6,7 @@ return {
         config = function()
             local api = require 'dropbar.api'
 
-            -- Closes all the windows in the current dropbar menu.
+            -- Closes all the windows in the current dropbar.
             local close = function()
                 local menu = api.get_current_dropbar_menu()
                 while menu and menu.prev_menu do
@@ -32,6 +32,7 @@ return {
                 menu = {
                     win_configs = { border = 'rounded' },
                     keymaps = {
+                        -- Navigate back to the parent menu.
                         ['h'] = '<C-w>c',
                         -- Expands the entry if possible.
                         ['l'] = function()
@@ -46,18 +47,20 @@ return {
                             end
                         end,
                         -- "Jump and close".
-                        -- TODO: Better way to do this? https://github.com/Bekaboo/dropbar.nvim/issues/66
                         ['o'] = function()
                             local menu = api.get_current_dropbar_menu()
                             if not menu then
                                 return
                             end
                             local cursor = vim.api.nvim_win_get_cursor(menu.win)
-                            local component = menu.entries[cursor[1]]:first_clickable(5)
+                            local entry = menu.entries[cursor[1]]
+                            local component =
+                                entry:first_clickable(entry.padding.left + entry.components[1]:bytewidth())
                             if component then
                                 menu:click_on(component, nil, 1, 'l')
                             end
                         end,
+                        -- Close the dropbar entirely with <esc> and q.
                         ['q'] = close,
                         ['<esc>'] = close,
                     },
