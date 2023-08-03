@@ -1,4 +1,5 @@
 -- Stuff I should do.
+-- TODO: Highlight TODO(alias) comments.
 return {
     {
         'folke/todo-comments.nvim',

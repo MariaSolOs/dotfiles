@@ -3,8 +3,6 @@ return {
     {
         'numToStr/Comment.nvim',
         event = 'VeryLazy',
-        opts = {
-            extra = { above = 'gch', below = 'gcl' },
-        },
+        config = true,
     },
 }
