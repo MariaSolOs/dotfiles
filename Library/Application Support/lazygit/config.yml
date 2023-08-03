@@ -17,4 +17,4 @@ gui:
     unstagedChangesColor:
       - yellow
   border: rounded
-  showIcons: true
+  nerdFontsVersion: '3'
