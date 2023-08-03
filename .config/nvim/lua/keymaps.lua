@@ -52,6 +52,6 @@ vim.keymap.set('i', '<C-c>', '<esc>')
 
 -- Floating terminal.
 vim.keymap.set('n', '<M-t>', function()
-    require('helpers.float_term').float_term(nil, {})
+    require('utils.float_term').float_term(nil, {})
 end, { desc = 'Open terminal' })
 vim.keymap.set('t', '<M-t>', '<cmd>close<cr>', { desc = 'Close terminal' })

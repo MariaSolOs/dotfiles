@@ -2,7 +2,7 @@ vim.diagnostic.config {
     virtual_text = {
         -- Show severity icons as prefixes.
         prefix = function(diagnostic)
-            local icons = require('helpers.icons').diagnostics
+            local icons = require('utils.icons').diagnostics
             for d, icon in pairs(icons) do
                 if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
                     return icon .. ' '
@@ -67,7 +67,7 @@ return {
             { 'b0o/SchemaStore.nvim', version = false },
         },
         config = function()
-            local on_attach = require('helpers.lsp').on_attach
+            local on_attach = require('utils.lsp').on_attach
 
             -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
             local capabilities = vim.lsp.protocol.make_client_capabilities()

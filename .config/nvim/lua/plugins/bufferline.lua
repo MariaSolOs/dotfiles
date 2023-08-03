@@ -1,4 +1,4 @@
-local diagnostic_icons = require('helpers.icons').diagnostics
+local diagnostic_icons = require('utils.icons').diagnostics
 
 -- Bufferline for pretty tabs.
 return {

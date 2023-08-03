@@ -1,4 +1,4 @@
-local icons = require('helpers.icons').diagnostics
+local icons = require('utils.icons').diagnostics
 
 -- Pretty list for diagnostics, references, etc.
 return {
