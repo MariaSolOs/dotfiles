@@ -26,7 +26,7 @@ return {
                 },
                 server = {
                     on_attach = function(client, bufnr)
-                        require('utils.lsp').on_attach(client, bufnr)
+                        require 'utils.lsp_on_attach'(client, bufnr)
 
                         -- Set up extra Rust commands.
                         vim.keymap.set('n', 'K', rt.hover_actions.hover_actions, {

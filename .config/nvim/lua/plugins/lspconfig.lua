@@ -67,7 +67,7 @@ return {
             { 'b0o/SchemaStore.nvim', version = false },
         },
         config = function()
-            local on_attach = require('utils.lsp').on_attach
+            local on_attach = require 'utils.lsp_on_attach'
 
             -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
             local capabilities = vim.lsp.protocol.make_client_capabilities()
