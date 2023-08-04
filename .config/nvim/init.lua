@@ -1,6 +1,8 @@
+-- Setup all my goodies.
 require 'settings'
 require 'keymaps'
 require 'autocommands'
+require 'utils.lightbulb'
 
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
