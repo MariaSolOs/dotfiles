@@ -53,7 +53,6 @@ return {
                 go_in_plus = '<cr>',
                 go_out_plus = '<tab>',
             },
-            windows = { width_nofocus = 25 },
             content = {
                 filter = function(entry)
                     return entry.fs_type ~= 'file' or entry.name ~= '.DS_Store'
@@ -98,6 +97,9 @@ return {
                     end, sorted)
                 end,
             },
+            windows = { width_nofocus = 25 },
+            -- Move stuff to the minifiles trash instead of it being gone forever.
+            options = { permanent_delete = false },
         },
         config = function(_, opts)
             local minifiles = require 'mini.files'
