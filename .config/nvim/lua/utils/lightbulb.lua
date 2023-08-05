@@ -31,10 +31,19 @@ end
 
 ---@param bufnr number
 local function render(bufnr)
+    local diagnostics = vim.diagnostic.get(bufnr)
+
+    -- If there are diagnostics in the current line, don't show the lightbulb since there will
+    -- be other icons anyway.
+    if #diagnostics > 0 then
+        update_extmark(bufnr, nil)
+        return
+    end
+
     local row = vim.api.nvim_win_get_cursor(0)[1] - 1
     local params = vim.lsp.util.make_range_params()
     params.context = {
-        diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr),
+        diagnostics = diagnostics,
         triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Automatic,
     }
 

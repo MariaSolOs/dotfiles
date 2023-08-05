@@ -84,6 +84,10 @@ return {
                     -- Use the default formats, but don't conceal the prefixes.
                     format = cmdline_formats,
                 },
+                format = {
+                    -- Looks better for Lualine.
+                    progress = { align = 'left' },
+                },
             }
         end,
     },
