@@ -11,7 +11,7 @@ local updated_bufnr = nil
 
 ---@param bufnr number?
 ---@param row number?
-local function update_lightbulb(bufnr, row)
+local function update_extmark(bufnr, row)
     if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
         return
     end
@@ -35,6 +35,7 @@ local function render(bufnr)
     local params = vim.lsp.util.make_range_params()
     params.context = {
         diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr),
+        triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Automatic,
     }
 
     vim.lsp.buf_request(bufnr, code_action_method, params, function(_, res, _)
@@ -43,9 +44,9 @@ local function render(bufnr)
         end
 
         if res and #res > 0 then
-            update_lightbulb(bufnr, row)
+            update_extmark(bufnr, row)
         else
-            update_lightbulb(bufnr, nil)
+            update_extmark(bufnr, nil)
         end
     end)
 end
@@ -53,7 +54,7 @@ end
 ---@param bufnr number
 local function update(bufnr)
     timer:stop()
-    update_lightbulb(updated_bufnr)
+    update_extmark(updated_bufnr)
     timer:start(100, 0, function()
         timer:stop()
         vim.schedule(function()
@@ -93,7 +94,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             group = lb_buf_group,
             buffer = ev.buf,
             callback = function(args)
-                update_lightbulb(args.buf, nil)
+                update_extmark(args.buf, nil)
             end,
         })
     end,
