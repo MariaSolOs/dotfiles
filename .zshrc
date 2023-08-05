@@ -34,6 +34,7 @@ eval "$(starship init zsh)"
 
 # Functions for completion sources.
 fpath+=~/.zsh/func
+fpath+="$(brew --prefix)/share/zsh/site-functions"
 autoload -Uz compinit
 compinit
 
