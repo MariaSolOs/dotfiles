@@ -2,7 +2,7 @@
 return {
     {
         'Bekaboo/dropbar.nvim',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         config = function()
             local api = require 'dropbar.api'
 

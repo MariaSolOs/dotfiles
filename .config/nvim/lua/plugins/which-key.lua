@@ -12,14 +12,6 @@ return {
             },
         },
         config = function(_, opts)
-            -- Utility command for clearing macros, etc.
-            vim.api.nvim_create_user_command('ClearRegisters', function()
-                for r in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):gmatch '%a' do
-                    vim.fn.setreg(r, '')
-                end
-                vim.cmd 'wshada'
-            end, { desc = 'Clear registers' })
-
             local wk = require 'which-key'
             wk.setup(opts)
 

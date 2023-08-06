@@ -2,7 +2,7 @@
 return {
     {
         'echasnovski/mini.ai',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         dependencies = 'nvim-treesitter-textobjects',
         config = function()
             local miniai = require 'mini.ai'

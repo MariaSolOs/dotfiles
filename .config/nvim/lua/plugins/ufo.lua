@@ -2,7 +2,7 @@
 return {
     {
         'kevinhwang91/nvim-ufo',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
             'kevinhwang91/promise-async',
             -- Get rid of the numbers in the folding column.

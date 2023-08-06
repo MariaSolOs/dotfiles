@@ -1,7 +1,7 @@
 -- Setup all my goodies.
 require 'settings'
 require 'keymaps'
-require 'autocommands'
+require 'commands'
 require 'utils.lightbulb'
 
 -- Install package manager.

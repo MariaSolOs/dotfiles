@@ -2,7 +2,7 @@
 return {
     {
         'kylechui/nvim-surround',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             keymaps = {
                 insert = false,

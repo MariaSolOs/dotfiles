@@ -4,7 +4,7 @@ local diagnostic_icons = require('utils.icons').diagnostics
 return {
     {
         'akinsho/bufferline.nvim',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         dependencies = 'echasnovski/mini.bufremove',
         opts = {
             options = {
