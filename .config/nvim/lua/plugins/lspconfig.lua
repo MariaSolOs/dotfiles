@@ -62,7 +62,7 @@ return {
                     },
                 },
             },
-            { 'folke/neodev.nvim', config = true },
+            { 'folke/neodev.nvim', ft = 'lua', config = true },
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
         },
