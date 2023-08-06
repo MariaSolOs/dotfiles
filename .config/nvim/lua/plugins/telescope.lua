@@ -1,4 +1,4 @@
--- Fuzzy finder (files, LSP, etc)
+-- Fuzzy finder (files, LSP, etc).
 return {
     {
         'nvim-telescope/telescope.nvim',
@@ -55,14 +55,19 @@ return {
                 }
             end
 
+            -- Create a named function here instead of an anonymous function in the setup
+            -- so that the name appears in Telescope's which-key.
+            local open_with_trouble = function(...)
+                return require('trouble.providers.telescope').open_with_trouble(...)
+            end
+
             telescope.setup {
                 defaults = {
                     mappings = {
                         i = {
+                            ['<C-t>'] = open_with_trouble,
+                            -- Avoid having to first return to normal mode before closing.
                             ['<esc>'] = actions.close,
-                            ['<C-t>'] = function(...)
-                                return require('trouble.providers.telescope').open_with_trouble(...)
-                            end,
                             -- Clear the search with ctrl-u.
                             ['<C-u>'] = false,
                             -- Use <C-s> to open an horizontal split instead of <C-x>.
