@@ -44,7 +44,7 @@ return {
                     BufferLineSeparator = { fg = colors.bg },
 
                     -- Highlights for the LSP Lualine component.
-                    NoiceLspProgressSpinner = { fg = '#27E1C1', bg = colors.black },
+                    NoiceLspProgressSpinner = { fg = '#E11299', bg = colors.black },
                     NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
                     NoiceLspProgressClient = { fg = colors.cyan, bg = colors.black },
 

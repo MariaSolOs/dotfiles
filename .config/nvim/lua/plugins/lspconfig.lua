@@ -78,6 +78,9 @@ return {
                 lineFoldingOnly = true,
             }
 
+            -- I like rounded borders ok??
+            require('lspconfig.ui.windows').default_options.border = 'rounded'
+
             require('mason-lspconfig').setup_handlers {
                 function(server)
                     require('lspconfig')[server].setup {
