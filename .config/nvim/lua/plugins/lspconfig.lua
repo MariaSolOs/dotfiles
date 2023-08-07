@@ -113,7 +113,17 @@ return {
                             Lua = {
                                 workspace = { checkThirdParty = false },
                                 telemetry = { enable = false },
-                                hint = { enable = true, arrayIndex = 'Disable' },
+                                hint = {
+                                    enable = true,
+                                    arrayIndex = 'Disable',
+                                },
+                                format = {
+                                    enable = true,
+                                    defaultConfig = {
+                                        indent_style = 'space',
+                                        indent_size = '4',
+                                    },
+                                },
                             },
                         },
                     }
