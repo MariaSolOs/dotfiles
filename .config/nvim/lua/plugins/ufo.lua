@@ -2,7 +2,7 @@
 return {
     {
         'kevinhwang91/nvim-ufo',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = 'VeryLazy',
         dependencies = {
             'kevinhwang91/promise-async',
             -- Get rid of the numbers in the folding column.
@@ -51,12 +51,8 @@ return {
                 },
             },
         },
-        init = function()
-            vim.o.foldcolumn = '1'
-            vim.o.foldlevel = 99
-            vim.o.foldlevelstart = 99
-            vim.o.foldenable = true
-            vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+        config = function(_, opts)
+            require('ufo').setup(opts)
 
             -- HACK: Refresh indent lines after folding/unfolding.
             local keymap = function(lhs, rhs)
@@ -76,6 +72,11 @@ return {
             } do
                 keymap(lhs, lhs .. '<cmd>IndentBlanklineRefresh<cr>')
             end
+
+            -- Add a label to which-key for all these mappings.
+            require('which-key').register {
+                ['z'] = { name = '+fold/scroll' },
+            }
         end,
     },
 }

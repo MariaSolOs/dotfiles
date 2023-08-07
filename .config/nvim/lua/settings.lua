@@ -24,6 +24,13 @@ vim.o.mouse = 'a'
 -- Disable horizontal scrolling.
 vim.o.mousescroll = 'ver:3,hor:0'
 
+-- Folding.
+vim.o.foldcolumn = '1'
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+
 -- Sync clipboard between the OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
 

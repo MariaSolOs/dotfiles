@@ -15,6 +15,7 @@ return {
             local wk = require 'which-key'
             wk.setup(opts)
 
+            -- Register leader groups.
             wk.register {
                 ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },

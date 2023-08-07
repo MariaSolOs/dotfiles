@@ -28,6 +28,7 @@ return {
             vim.keymap.set('n', '[b', '<cmd>BufferLineCyclePrev<cr>', { desc = 'Previous buffer' })
             vim.keymap.set('n', ']b', '<cmd>BufferLineCycleNext<cr>', { desc = 'Next buffer' })
             require('which-key').register {
+                -- Buffer navigation.
                 ['<leader>b'] = {
                     name = '+buffer',
                     o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
@@ -40,7 +41,13 @@ return {
                     },
                     l = { '<cmd>BufferLineCloseLeft<cr>', 'Close buffers to the left' },
                     r = { '<cmd>BufferLineCloseRight<cr>', 'Close buffers to the right' },
-                    t = { '<cmd>tab split<cr>', 'New tab page' },
+                },
+                -- Tab navigation.
+                ['<leader>p'] = {
+                    name = '+tabs',
+                    n = { '<cmd>tab split<cr>', 'New tab page' },
+                    c = { '<cmd>tabclose<cr>', 'Close tab page' },
+                    o = { '<cmd>tabonly<cr>', 'Close other tab pages' },
                 },
             }
         end,

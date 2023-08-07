@@ -47,6 +47,11 @@ vim.keymap.set('n', '<esc>', '<cmd>noh<cr><esc>', { desc = 'Escape and clear hls
 -- Escape and save changes.
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 
+-- Execute macro over visual region.
+vim.keymap.set('x', '@', function()
+    return ':norm @' .. vim.fn.getcharstr() .. '<cr>'
+end, { expr = true })
+
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>')
 

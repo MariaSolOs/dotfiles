@@ -13,6 +13,7 @@ return {
                         return '<C-f>'
                     end
                 end,
+                desc = 'Scroll forward',
                 expr = true,
                 mode = { 'i', 'n', 's' },
             },
@@ -23,6 +24,7 @@ return {
                         return '<C-b>'
                     end
                 end,
+                desc = 'Scroll backward',
                 expr = true,
                 mode = { 'i', 'n', 's' },
             },
