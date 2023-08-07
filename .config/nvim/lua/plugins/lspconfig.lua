@@ -62,7 +62,14 @@ return {
                     },
                 },
             },
-            { 'folke/neodev.nvim', ft = 'lua', config = true },
+            {
+                'folke/neodev.nvim',
+                opts = {
+                    -- I don't know why but without this neodev generates duplicate
+                    -- definitions for vim types.
+                    library = { types = false },
+                },
+            },
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
         },
