@@ -31,14 +31,15 @@ end
 
 ---@param bufnr number
 local function render(bufnr)
-    local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-    local diagnostics = vim.diagnostic.get(bufnr)
+    local line = vim.api.nvim_win_get_cursor(0)[1] - 1
+    local diagnostics = vim.diagnostic.get(bufnr, { lnum = line })
 
-    -- If there are diagnostics in the current line, don't show the lightbulb since there will
-    -- be other icons anyway.
-    if #vim.tbl_filter(function(diag)
-        return diag.lnum == row
-    end, diagnostics) > 0 then
+    -- If there are hints in the current line, don't show yet another lightbulb.
+    if
+        #vim.tbl_filter(function(diag)
+            return diag.severity == vim.diagnostic.severity.HINT
+        end, diagnostics) > 0
+    then
         update_extmark(bufnr, nil)
         return
     end
@@ -55,7 +56,7 @@ local function render(bufnr)
         end
 
         if res and #res > 0 then
-            update_extmark(bufnr, row)
+            update_extmark(bufnr, line)
         else
             update_extmark(bufnr, nil)
         end
