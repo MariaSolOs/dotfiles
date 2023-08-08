@@ -25,10 +25,10 @@ return {
         config = function(_, opts)
             require('bufferline').setup(opts)
 
+            -- Buffer navigation.
             vim.keymap.set('n', '[b', '<cmd>BufferLineCyclePrev<cr>', { desc = 'Previous buffer' })
             vim.keymap.set('n', ']b', '<cmd>BufferLineCycleNext<cr>', { desc = 'Next buffer' })
             require('which-key').register {
-                -- Buffer navigation.
                 ['<leader>b'] = {
                     name = '+buffer',
                     o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },

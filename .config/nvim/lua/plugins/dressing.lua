@@ -15,5 +15,18 @@ return {
                 return vim.ui.input(...)
             end
         end,
+        config = function()
+            require('dressing').setup {
+                input = {
+                    win_options = {
+                        -- Use a purple-ish border.
+                        winhighlight = 'FloatBorder:LspFloatWinBorder',
+                    },
+                },
+                select = {
+                    telescope = require('telescope.themes').get_cursor(),
+                },
+            }
+        end,
     },
 }

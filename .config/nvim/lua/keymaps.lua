@@ -33,7 +33,7 @@ vim.keymap.set('v', '>', '>gv')
 vim.keymap.set('n', '<leader>L', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
 -- Quitting.
-vim.keymap.set('n', 'ZQ', '<cmd>qa<cr>', { desc = 'Quit all' })
+vim.keymap.set('n', '<leader>Q', '<cmd>qa<cr>', { desc = 'Quit all' })
 
 -- Switch between windows.
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window', remap = true })

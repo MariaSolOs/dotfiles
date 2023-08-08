@@ -15,13 +15,17 @@ return {
             local wk = require 'which-key'
             wk.setup(opts)
 
-            -- Register leader groups.
             wk.register {
+                -- Register leader groups.
                 ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>da'] = { name = '+debug adapters' },
                 ['<leader>t'] = { name = '+telescope' },
                 ['<leader>x'] = { name = '+trouble' },
+                -- Other builtin prefixes.
+                ['['] = { name = '+previous' },
+                [']'] = { name = '+next' },
+                ['='] = { name = '+put' },
             }
 
             -- Register all text objects.

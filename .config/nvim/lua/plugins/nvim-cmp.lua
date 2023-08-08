@@ -1,31 +1,30 @@
 -- Icons to use in the completion menu.
--- These are the ones that VSCode uses.
-local cmp_kinds = {
-    Class = '  ',
-    Color = '  ',
-    Constant = '  ',
-    Constructor = '  ',
-    Enum = '  ',
-    EnumMember = '  ',
-    Event = '  ',
-    Field = '  ',
-    File = '  ',
-    Folder = '  ',
-    Function = '  ',
-    Interface = '  ',
-    Keyword = '  ',
-    Method = '  ',
-    Module = '  ',
-    Operator = '  ',
-    Property = '  ',
-    Reference = '  ',
-    Snippet = '  ',
-    Struct = '  ',
-    Text = '  ',
-    TypeParameter = '  ',
-    Unit = '  ',
-    Value = '  ',
-    Variable = '  ',
+local symbol_kinds = {
+    Class = '',
+    Color = '',
+    Constant = '',
+    Constructor = '',
+    Enum = '',
+    EnumMember = '',
+    Event = '',
+    Field = '',
+    File = '',
+    Folder = '',
+    Function = '',
+    Interface = '',
+    Keyword = '',
+    Method = '',
+    Module = '',
+    Operator = '',
+    Property = '',
+    Reference = '',
+    Snippet = '',
+    Struct = '',
+    Text = '',
+    TypeParameter = '',
+    Unit = '',
+    Value = '',
+    Variable = '',
 }
 
 return {
@@ -96,7 +95,7 @@ return {
                 -- Add icons to the completion menu.
                 formatting = {
                     format = function(_, vim_item)
-                        vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
+                        vim_item.kind = (symbol_kinds[vim_item.kind] or '') .. '  ' .. vim_item.kind
                         return vim_item
                     end,
                 },
