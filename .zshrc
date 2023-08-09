@@ -1,16 +1,8 @@
-# Make sure this stuff is in the path.
-export PATH="$HOME/.cargo/bin:$PATH" # cargo
-export PATH="$HOME/.local/share/bob/nvim-bin:$PATH" # neovim version manager
-export PATH="/usr/local/opt/tcl-tk/bin:$PATH" # tcl-tk
-
 # Auto-cd if the command is a directory and can't be executed as a normal command.
 setopt auto_cd
 
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
-
-# Set up neovim as the default editor.
-EDITOR="$(which nvim)"
 
 # Command history.
 HISTFILE="$HOME/.zsh_history"
@@ -18,6 +10,9 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
 setopt hist_ignore_dups # ignore duplicated commands history list
+
+# Set up neovim as the default editor.
+export EDITOR="$(which nvim)"
 
 # Load nvm and set up bash completions.
 export NVM_DIR="$HOME/.nvm"
