@@ -24,8 +24,14 @@ return {
                     },
                 },
                 select = {
-                    -- TODO: Only use this for code actions.
-                    telescope = require('telescope.themes').get_cursor(),
+                    -- Use a relative window with code actions.
+                    get_config = function(opts)
+                        if opts.kind == 'codeaction' then
+                            return {
+                                telescope = require('telescope.themes').get_cursor(),
+                            }
+                        end
+                    end,
                 },
             }
         end,
