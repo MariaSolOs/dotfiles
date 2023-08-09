@@ -30,7 +30,7 @@ return {
             vim.keymap.set('n', ']b', '<cmd>BufferLineCycleNext<cr>', { desc = 'Next buffer' })
             require('which-key').register {
                 ['<leader>b'] = {
-                    name = '+buffer',
+                    name = '+buffers',
                     o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
                     c = { '<cmd>BufferLinePickClose<cr>', 'Select a buffer to close' },
                     d = {
