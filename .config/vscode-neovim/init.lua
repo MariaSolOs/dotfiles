@@ -33,7 +33,7 @@ vim.keymap.set('n', '[t', ":call VSCodeNotify('workbench.action.previousEditorIn
 vim.keymap.set('n', ']t', ":call VSCodeNotify('workbench.action.nextEditorInGroup')<cr>")
 
 -- Extra language service mappings.
-vim.keymap.set('n', 'gt', ":call VSCodeNotify('editor.action.goToTypeDefinition')<cr>")
+vim.keymap.set('n', 'gD', ":call VSCodeNotify('editor.action.goToTypeDefinition')<cr>")
 vim.keymap.set('n', 'gr', ":call VSCodeNotify('references-view.findReferences')<cr>")
 
 -- [[ Autocommands ]]
@@ -49,20 +49,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Configure plugins.
 require('lazy').setup (
     {
-        {
-            'folke/flash.nvim',
-            event = 'VeryLazy',
-            config = true,
-            keys = {
-                {
-                    's',
-                    mode = { 'n', 'x', 'o' },
-                    function()
-                        require('flash').jump()
-                    end,
-                },
-            },
-        },
         {
             'nvim-treesitter/nvim-treesitter',
             dependencies = 'nvim-treesitter/nvim-treesitter-textobjects',
@@ -85,7 +71,7 @@ require('lazy').setup (
                 require('nvim-treesitter.configs').setup(opts)
             end
         },
-    }, 
+    },
     {
         checker = {
             enabled = false
