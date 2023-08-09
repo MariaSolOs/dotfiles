@@ -107,7 +107,6 @@ return {
 
             -- HACK: Make sure files always appear in the buffer list.
             local real_go_in = minifiles.go_in
-            ---@diagnostic disable-next-line: duplicate-set-field
             function minifiles.go_in()
                 real_go_in()
                 local target = minifiles.get_target_window()

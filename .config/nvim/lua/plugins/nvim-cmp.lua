@@ -87,7 +87,6 @@ return {
             -- Inside a snippet, use backspace to remove the placeholder.
             vim.keymap.set('s', '<BS>', '<C-O>s')
 
-            ---@diagnostic disable: missing-fields
             cmp.setup {
                 -- Disable preselect. On enter, the first thing will be used if nothing
                 -- is selected.
@@ -151,7 +150,6 @@ return {
                     { name = 'buffer' },
                 }),
             }
-            ---@diagnostic enable: missing-fields
         end,
     },
 }

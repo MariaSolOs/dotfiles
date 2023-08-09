@@ -24,6 +24,7 @@ return {
                     },
                 },
                 select = {
+                    -- TODO: Only use this for code actions.
                     telescope = require('telescope.themes').get_cursor(),
                 },
             }
