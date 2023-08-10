@@ -65,6 +65,8 @@ end
 
 ---@param bufnr number
 local function update(bufnr)
+    assert(timer, 'Timer is not initialized')
+
     timer:stop()
     update_extmark(updated_bufnr)
     timer:start(100, 0, function()

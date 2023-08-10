@@ -89,6 +89,8 @@ return {
                     local dap = require 'dap'
 
                     dap.adapters.nlua = function(callback, config)
+                        -- TODO: Is it fine to ignore this error?
+                        ---@diagnostic disable-next-line: undefined-field
                         callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
                     end
                     dap.configurations.lua = {

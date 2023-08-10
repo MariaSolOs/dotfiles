@@ -1,14 +1,46 @@
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
   "runtime": {
-    "version": "LuaJIT"
+    "version": "LuaJIT",
+    "path": [
+      "?.lua",
+      "?/init.lua"
+    ],
+    "pathStrict": true
   },
   "workspace": {
     "library": [
-      "$VIMRUNTIME",
+      // Runtime and builtin libraries.
+      "$VIMRUNTIME/lua",
       "${3rd}/luv/library",
       // Extra configuration helpers.
-      "lua/utils"
+      "lua/utils",
+      // Include some plugins for API completion.
+      "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",
+      "$XDG_DATA_HOME/nvim/lazy/alpha-nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/bufferline.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
+      "$XDG_DATA_HOME/nvim/lazy/crates.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/dial.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/dracula.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/dressing.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/dropbar.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/lazy.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.bufremove/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
+      "$XDG_DATA_HOME/nvim/lazy/noice.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/null-ls.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-autopairs/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-cmp/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-dap-ui/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-ufo/lua",
+      "$XDG_DATA_HOME/nvim/lazy/rust-tools.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/telescope.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/vim-illuminate/lua",
+      "$XDG_DATA_HOME/nvim/lazy/which-key.nvim/lua"
     ],
     "checkThirdParty": false
   }

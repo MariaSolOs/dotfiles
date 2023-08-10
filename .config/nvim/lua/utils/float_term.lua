@@ -1,5 +1,5 @@
 local M = {}
-local terminals = {}
+local terminals = {} ---@type LazyFloat[]
 
 --- Opens an interactive floating terminal.
 --- @param cmd? string
