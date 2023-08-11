@@ -20,6 +20,11 @@ return {
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
+                    -- Smoother backgrounds in the completion menu.
+                    CmpItemKind = { fg = colors.white, bg = 'NONE' },
+                    CmpItemAbbr = { fg = colors.white, bg = 'NONE' },
+                    CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
+
                     -- Make these virtual text thingies different from comments/regular code.
                     LspInlayHint = { fg = '#6272A4', italic = true },
 
