@@ -31,6 +31,9 @@ return {
     {
         'echasnovski/mini.files',
         keys = {
+            -- Do not open netrw with "go to file". Load minifiles instead.
+            { '<C-w><C-f>', nil, desc = 'which_key_ignore' },
+            { 'gf', nil, desc = 'Go to file under cursor' },
             {
                 '<leader>f',
                 -- Open the explorer in the current directory, with focus on the current
