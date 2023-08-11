@@ -78,11 +78,11 @@ return {
                 'jbyuki/one-small-step-for-vimkind',
                 keys = {
                     {
-                        '<leader>dal',
+                        '<leader>dl',
                         function()
                             require('osv').launch { port = 8086 }
                         end,
-                        desc = 'Lua',
+                        desc = 'Launch Lua adapter',
                     },
                 },
                 config = function()
@@ -109,14 +109,14 @@ return {
                 function()
                     require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
                 end,
-                desc = 'Breakpoint Condition',
+                desc = 'Breakpoint condition',
             },
             {
                 '<leader>db',
                 function()
                     require('dap').toggle_breakpoint()
                 end,
-                desc = 'Toggle Breakpoint',
+                desc = 'Toggle breakpoint',
             },
             {
                 '<leader>dj',
@@ -133,13 +133,6 @@ return {
                 desc = 'Up in current stacktrace',
             },
             {
-                '<leader>dr',
-                function()
-                    require('dap').repl.toggle()
-                end,
-                desc = 'Toggle REPL',
-            },
-            {
                 '<F5>',
                 function()
                     require('dap').continue()
@@ -151,14 +144,14 @@ return {
                 function()
                     require('dap').step_over()
                 end,
-                desc = 'Step Over',
+                desc = 'Step over',
             },
             {
                 '<F11>',
                 function()
                     require('dap').step_into()
                 end,
-                desc = 'Step Into',
+                desc = 'Step into',
             },
             {
                 '<F12>',

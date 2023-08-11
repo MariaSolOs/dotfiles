@@ -19,7 +19,6 @@ return {
                 -- Register leader groups.
                 ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },
-                ['<leader>da'] = { name = '+debug adapters' },
                 ['<leader>t'] = { name = '+telescope' },
                 ['<leader>x'] = { name = '+trouble' },
                 -- Other builtin prefixes.

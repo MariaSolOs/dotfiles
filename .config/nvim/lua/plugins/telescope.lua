@@ -15,10 +15,6 @@ return {
             'nvim-lua/plenary.nvim',
         },
         keys = {
-            { '<leader>tr', '<cmd>Telescope oldfiles<cr>', desc = 'Recently opened files' },
-            { '<leader>tf', '<cmd>Telescope find_files<cr>', desc = 'File search' },
-            { '<leader>th', '<cmd>Telescope help_tags<cr>', desc = 'Help' },
-            { '<leader>tg', '<cmd>Telescope live_grep<cr>', desc = 'Grep search' },
             {
                 '<leader>tb',
                 function()
@@ -29,6 +25,10 @@ return {
                 end,
                 desc = 'Fuzzy buffer search',
             },
+            { '<leader>tf', '<cmd>Telescope find_files<cr>', desc = 'File search' },
+            { '<leader>tg', '<cmd>Telescope live_grep<cr>', desc = 'Grep search' },
+            { '<leader>th', '<cmd>Telescope help_tags<cr>', desc = 'Help' },
+            { '<leader>tr', '<cmd>Telescope oldfiles<cr>', desc = 'Recently opened files' },
         },
         config = function()
             local telescope = require 'telescope'

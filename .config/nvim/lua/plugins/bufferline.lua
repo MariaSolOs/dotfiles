@@ -31,7 +31,6 @@ return {
             require('which-key').register {
                 ['<leader>b'] = {
                     name = '+buffers',
-                    o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
                     c = { '<cmd>BufferLinePickClose<cr>', 'Select a buffer to close' },
                     d = {
                         function()
@@ -40,13 +39,14 @@ return {
                         'Delete current buffer',
                     },
                     l = { '<cmd>BufferLineCloseLeft<cr>', 'Close buffers to the left' },
+                    o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
                     r = { '<cmd>BufferLineCloseRight<cr>', 'Close buffers to the right' },
                 },
                 -- Tab navigation.
                 ['<leader>p'] = {
                     name = '+tabs',
-                    n = { '<cmd>tab split<cr>', 'New tab page' },
                     c = { '<cmd>tabclose<cr>', 'Close tab page' },
+                    n = { '<cmd>tab split<cr>', 'New tab page' },
                     o = { '<cmd>tabonly<cr>', 'Close other tab pages' },
                 },
             }
