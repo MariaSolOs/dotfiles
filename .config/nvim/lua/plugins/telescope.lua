@@ -62,7 +62,7 @@ return {
 
             -- Create a named function here instead of an anonymous function in the setup
             -- so that the name appears in Telescope's which-key.
-            local open_with_trouble = function(...)
+            local function open_with_trouble(...)
                 return require('trouble.providers.telescope').open_with_trouble(...)
             end
 

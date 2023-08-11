@@ -17,7 +17,7 @@ return {
             dashboard.section.header.val = vim.split(header, '\n')
             dashboard.section.header.opts.hl = 'AlphaHeader'
 
-            local dashboard_button = function(sc, txt, keybind)
+            local function dashboard_button(sc, txt, keybind)
                 local button = dashboard.button(sc, txt, keybind)
                 button.opts.hl_shortcut = 'AlphaShortcut'
                 button.opts.hl = 'AlphaButtons'

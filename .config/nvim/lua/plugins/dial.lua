@@ -1,4 +1,4 @@
-local dial_manipulate = function(dir, mode)
+local function dial_manipulate(dir, mode)
     return function()
         require('dial.map').manipulate(dir, mode)
     end
@@ -52,7 +52,7 @@ return {
             dial_config.augends:register_group { default = default_group }
 
             -- Extra augends for specific filetypes.
-            local filetype_group = function(extra)
+            local function filetype_group(extra)
                 local group = vim.deepcopy(default_group)
                 for _, augend in ipairs(extra) do
                     table.insert(group, augend)

@@ -16,7 +16,7 @@ return {
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns
 
-                local keymap = function(lhs, rhs, desc, opts)
+                local function keymap(lhs, rhs, desc, opts)
                     opts = opts or {}
                     opts.desc = desc
                     opts.buffer = bufnr

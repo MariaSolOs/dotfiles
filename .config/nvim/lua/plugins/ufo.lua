@@ -55,7 +55,7 @@ return {
             require('ufo').setup(opts)
 
             -- HACK: Refresh indent lines after folding/unfolding.
-            local keymap = function(lhs, rhs)
+            local function keymap(lhs, rhs)
                 vim.keymap.set('n', lhs, rhs, { noremap = true })
             end
             for _, lhs in pairs {

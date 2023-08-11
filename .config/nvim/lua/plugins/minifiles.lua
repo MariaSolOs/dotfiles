@@ -1,8 +1,8 @@
 -- Utilities for creating splits.
-local map_split = function(buf_id, lhs, direction)
+local function map_split(buf_id, lhs, direction)
     local minifiles = require 'mini.files'
 
-    local rhs = function()
+    local function rhs()
         local window = minifiles.get_target_window()
 
         -- Noop if the explorer isn't open or the cursor is on a directory.
@@ -61,7 +61,7 @@ return {
                     return entry.fs_type ~= 'file' or entry.name ~= '.DS_Store'
                 end,
                 sort = function(entries)
-                    local compare_alphanumerically = function(e1, e2)
+                    local function compare_alphanumerically(e1, e2)
                         -- Put directories first.
                         if e1.is_dir and not e2.is_dir then
                             return true

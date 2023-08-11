@@ -7,7 +7,7 @@ return {
             local api = require 'dropbar.api'
 
             -- Closes all the windows in the current dropbar.
-            local close = function()
+            local function close()
                 local menu = api.get_current_dropbar_menu()
                 while menu and menu.prev_menu do
                     menu = menu.prev_menu

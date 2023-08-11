@@ -8,7 +8,7 @@ end, {})
 
 ---Formats the current buffer using the assigned formatter.
 ---@param explicit boolean?
-local format = function(explicit)
+local function format(explicit)
     if not autoformat and not explicit then
         return
     end
@@ -45,7 +45,7 @@ local format = function(explicit)
 end
 
 ---@param bufnr number
-local setup_inlay_hints = function(bufnr)
+local function setup_inlay_hints(bufnr)
     local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
 
     -- Initial inlay hint display.
@@ -69,8 +69,8 @@ local setup_inlay_hints = function(bufnr)
 end
 
 ---Sets up LSP keymaps and autocommands for the given buffer.
-local on_attach = function(buf_client, bufnr)
-    local keymap = function(lhs, rhs, desc, mode)
+local function on_attach(buf_client, bufnr)
+    local function keymap(lhs, rhs, desc, mode)
         mode = mode or 'n'
         vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end

@@ -29,7 +29,7 @@ return {
 
             require('copilot').setup(opts)
 
-            local set_trigger = function(trigger)
+            local function set_trigger(trigger)
                 vim.b.copilot_suggestion_auto_trigger = trigger
                 vim.b.copilot_suggestion_hidden = not trigger
             end

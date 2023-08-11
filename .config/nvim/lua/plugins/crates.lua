@@ -11,7 +11,7 @@ return {
 
             crates.setup(opts)
 
-            local keymap = function(key, rhs, desc)
+            local function keymap(key, rhs, desc)
                 vim.keymap.set('n', '<leader>c' .. key, function()
                     rhs()
                     crates.focus_popup()

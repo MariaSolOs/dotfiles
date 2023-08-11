@@ -33,7 +33,7 @@ return {
                             buffer = bufnr,
                             desc = 'Hover',
                         })
-                        local keymap = function(key, rhs, desc)
+                        local function keymap(key, rhs, desc)
                             vim.keymap.set('n', '<leader>c' .. key, rhs, { desc = desc, buffer = bufnr })
                         end
                         keymap('c', rt.open_cargo_toml.open_cargo_toml, 'Open Cargo.toml')
