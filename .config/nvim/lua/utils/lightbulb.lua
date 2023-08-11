@@ -9,19 +9,22 @@ local code_action_method = vim.lsp.protocol.Methods.textDocument_codeAction
 local timer = vim.uv.new_timer()
 local updated_bufnr = nil
 
+---Updates the current lightbulb.
 ---@param bufnr number?
----@param row number?
-local function update_extmark(bufnr, row)
+---@param line number?
+local function update_extmark(bufnr, line)
     if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
         return
     end
     vim.api.nvim_buf_clear_namespace(bufnr, lb_namespace, 0, -1)
 
-    if not row then
+    -- Extra check for not being in insert mode here because sometimes the autocommand
+    -- fails with motions from Comment.nvim.
+    if not line or vim.api.nvim_get_mode().mode == 'i' then
         return
     end
 
-    vim.api.nvim_buf_set_extmark(bufnr, lb_namespace, row, -1, {
+    vim.api.nvim_buf_set_extmark(bufnr, lb_namespace, line, -1, {
         virt_text = { { ' ' .. lb_icon, 'DiagnosticSignHint' } },
         hl_mode = 'combine',
     })
@@ -29,6 +32,8 @@ local function update_extmark(bufnr, row)
     updated_bufnr = bufnr
 end
 
+---Queries the LSP servers for code actions and updates the lightbulb
+---accordingly.
 ---@param bufnr number
 local function render(bufnr)
     local line = vim.api.nvim_win_get_cursor(0)[1] - 1
@@ -64,6 +69,8 @@ local function render(bufnr)
 end
 
 ---@param bufnr number
+-- I don't fully understand how this works, kind of just copy-pasted it
+-- from lspsaga.
 local function update(bufnr)
     assert(timer, 'Timer is not initialized')
 
@@ -96,6 +103,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end
 
         local lb_buf_group = vim.api.nvim_create_augroup(buf_group_name, { clear = true })
+        -- Update the lightbulb when moving the cursor in normal/visual mode.
         vim.api.nvim_create_autocmd('CursorMoved', {
             group = lb_buf_group,
             buffer = ev.buf,
@@ -104,6 +112,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             end,
         })
 
+        -- Update the lightbulb when entering insert mode or leaving the buffer.
         vim.api.nvim_create_autocmd({ 'InsertEnter', 'BufLeave' }, {
             group = lb_buf_group,
             buffer = ev.buf,
