@@ -16,6 +16,11 @@ return {
         },
         keys = {
             {
+                '<leader>tF',
+                '<cmd>Telescope find_files no_ignore=true hidden=true<cr>',
+                desc = 'File search (with hidden and .gitignored)',
+            },
+            {
                 '<leader>tb',
                 function()
                     require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -73,6 +78,9 @@ return {
                             -- Use <C-s> to open an horizontal split instead of <C-x>.
                             ['<C-x>'] = false,
                             ['<C-s>'] = actions.select_horizontal,
+                            -- Scroll the preview window.
+                            ['<C-f>'] = actions.preview_scrolling_down,
+                            ['<C-b>'] = actions.preview_scrolling_up,
                         },
                     },
                     -- Use a vertical layout.
