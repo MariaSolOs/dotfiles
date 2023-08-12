@@ -87,7 +87,6 @@ return {
             -- Inside a snippet, use backspace to remove the placeholder.
             vim.keymap.set('s', '<BS>', '<C-O>s')
 
-            -- TODO: Add toggle doc functionality when https://github.com/hrsh7th/nvim-cmp/pull/1647 gets merged.
             ---@diagnostic disable: missing-fields
             cmp.setup {
                 -- Disable preselect. On enter, the first thing will be used if nothing
@@ -109,6 +108,10 @@ return {
                     -- Make the completion menu bordered.
                     completion = cmp.config.window.bordered(),
                     documentation = cmp.config.window.bordered(),
+                },
+                view = {
+                    -- Explicitly request documentation.
+                    docs = { auto_open = false },
                 },
                 mapping = cmp.mapping.preset.insert {
                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -143,6 +146,13 @@ return {
                             fallback()
                         end
                     end, { 'i', 's' }),
+                    ['<C-d>'] = function()
+                        if cmp.visible_docs() then
+                            cmp.close_docs()
+                        else
+                            cmp.open_docs()
+                        end
+                    end,
                 },
                 sources = cmp.config.sources({
                     { name = 'nvim_lsp' },
