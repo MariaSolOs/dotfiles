@@ -21,7 +21,6 @@
       "$XDG_DATA_HOME/nvim/lazy/bufferline.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
       "$XDG_DATA_HOME/nvim/lazy/crates.nvim/lua",
-      "$XDG_DATA_HOME/nvim/lazy/dial.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/dracula.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/dressing.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/dropbar.nvim/lua",

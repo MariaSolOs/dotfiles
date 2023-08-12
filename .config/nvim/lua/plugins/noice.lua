@@ -90,6 +90,12 @@ return {
                     -- Looks better for Lualine.
                     progress = { align = 'left' },
                 },
+                views = {
+                    mini = {
+                        -- Hide mini messages after 5 seconds.
+                        timeout = 5000,
+                    },
+                },
             }
         end,
     },
