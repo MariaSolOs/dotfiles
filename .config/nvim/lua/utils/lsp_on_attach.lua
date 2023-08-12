@@ -1,49 +1,5 @@
 local methods = vim.lsp.protocol.Methods
 
--- Toggle format on save.
-local autoformat = true
-vim.api.nvim_create_user_command('ToggleAutoFormat', function()
-    autoformat = not autoformat
-end, {})
-
----Formats the current buffer using the assigned formatter.
----@param explicit boolean?
-local function format(explicit)
-    if not autoformat and not explicit then
-        return
-    end
-
-    local buf = vim.api.nvim_get_current_buf()
-    local ft = vim.bo[buf].filetype
-
-    -- When a null-ls formatter is available for the current filetype, only null-ls formatters are returned.
-    local null_ls = package.loaded['null-ls'] and require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
-        or {}
-    local clients = vim.lsp.get_clients { bufnr = buf }
-    local available = {}
-    for _, client in ipairs(clients) do
-        if
-            client.supports_method(methods.textDocument_formatting)
-            or client.supports_method(methods.textDocument_rangeFormatting)
-        then
-            if (#null_ls > 0 and client.name == 'null-ls') or #null_ls == 0 then
-                table.insert(available, client.id)
-            end
-        end
-    end
-
-    if #available == 0 then
-        return
-    end
-
-    vim.lsp.buf.format {
-        bufnr = buf,
-        filter = function(client)
-            return vim.tbl_contains(available, client.id)
-        end,
-    }
-end
-
 ---@param bufnr number
 local function setup_inlay_hints(bufnr)
     local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
@@ -125,24 +81,6 @@ local function on_attach(buf_client, bufnr)
     if buf_client.supports_method(methods.textDocument_inlayHint) then
         setup_inlay_hints(bufnr)
     end
-
-    -- Formatting setup.
-    if buf_client.supports_method(methods.textDocument_formatting) then
-        keymap('<leader>cf', function()
-            format(true)
-        end, 'Format buffer')
-    end
-    if buf_client.supports_method(methods.textDocument_rangeFormatting) then
-        keymap('<leader>cf', function()
-            format(true)
-        end, 'Format selection', 'v')
-    end
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group = vim.api.nvim_create_augroup('FormatOnSave', { clear = true }),
-        callback = function()
-            format(false)
-        end,
-    })
 end
 
 return on_attach

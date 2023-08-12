@@ -35,7 +35,6 @@ return {
                 build = ':MasonUpdate',
                 opts = {
                     ensure_installed = {
-                        'black',
                         'codelldb',
                         'selene',
                         'stylua',
