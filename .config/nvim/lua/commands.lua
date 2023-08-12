@@ -31,18 +31,10 @@ vim.api.nvim_create_autocmd('FileType', {
         'man',
         'qf',
         'spectre_panel',
+        'tsplayground',
     },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
         vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = event.buf })
-    end,
-})
-
--- Check for spelling in text file types.
-vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('SpellingCheck', { clear = true }),
-    pattern = { 'gitcommit', 'markdown' },
-    callback = function()
-        vim.opt_local.spell = true
     end,
 })
