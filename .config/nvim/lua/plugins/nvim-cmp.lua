@@ -87,6 +87,7 @@ return {
             -- Inside a snippet, use backspace to remove the placeholder.
             vim.keymap.set('s', '<BS>', '<C-O>s')
 
+            -- TODO: Add toggle doc functionality when https://github.com/hrsh7th/nvim-cmp/pull/1647 gets merged.
             ---@diagnostic disable: missing-fields
             cmp.setup {
                 -- Disable preselect. On enter, the first thing will be used if nothing
