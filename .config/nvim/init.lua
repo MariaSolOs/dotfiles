@@ -22,4 +22,8 @@ vim.opt.rtp = vim.opt.rtp ^ lazypath
 require('lazy').setup('plugins', {
     ui = { border = 'rounded' },
     dev = { path = '~/Code' },
+    install = {
+        -- Load colorschemes during startup installations.
+        colorscheme = { 'dracula-soft', 'habamax' },
+    },
 })
