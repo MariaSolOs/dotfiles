@@ -18,8 +18,11 @@ local function setup_inlay_hints(bufnr)
     local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
 
     -- Initial inlay hint display.
-    local mode = vim.api.nvim_get_mode().mode
-    vim.lsp.inlay_hint(bufnr, mode == 'n' or mode == 'v')
+    -- Idk why but without the delay inlay hints aren't displayed at the very start.
+    vim.defer_fn(function()
+        local mode = vim.api.nvim_get_mode().mode
+        vim.lsp.inlay_hint(bufnr, mode == 'n' or mode == 'v')
+    end, 500)
 
     vim.api.nvim_create_autocmd('InsertEnter', {
         group = inlay_hints_group,
