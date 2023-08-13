@@ -1,5 +1,18 @@
 local methods = vim.lsp.protocol.Methods
 
+-- Map filetypes to formatters.
+-- The default is to just use the one from the language server.
+local formatters = {
+    lua = 'efm', -- stylua
+    rust = 'rust_analyzer',
+}
+
+-- Toggle format on save.
+local autoformat = true
+vim.api.nvim_create_user_command('ToggleAutoFormat', function()
+    autoformat = not autoformat
+end, {})
+
 ---@param bufnr number
 local function setup_inlay_hints(bufnr)
     local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
@@ -81,6 +94,20 @@ local function on_attach(buf_client, bufnr)
     if buf_client.supports_method(methods.textDocument_inlayHint) then
         setup_inlay_hints(bufnr)
     end
+
+    -- Set up format on save.
+    local ft = vim.bo[bufnr].filetype
+    vim.api.nvim_create_autocmd('BufWritePre', {
+        buffer = bufnr,
+        group = vim.api.nvim_create_augroup('FormatOnSave', { clear = true }),
+        callback = function()
+            if not autoformat then
+                return
+            end
+
+            vim.lsp.buf.format { name = formatters[ft] }
+        end,
+    })
 end
 
 return on_attach

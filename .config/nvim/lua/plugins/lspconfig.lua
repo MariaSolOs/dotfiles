@@ -9,6 +9,7 @@ vim.diagnostic.config {
                 end
             end
         end,
+        -- TODO: Format for multiple diagnostics if support is added upstream.
         -- Show only the first line of the diagnostic message.
         format = function(diagnostic)
             local newline_idx = diagnostic.message:find '\n'
@@ -36,7 +37,6 @@ return {
                 opts = {
                     ensure_installed = {
                         'codelldb',
-                        'selene',
                         'stylua',
                     },
                     ui = {
@@ -65,11 +65,13 @@ return {
             { 'b0o/SchemaStore.nvim', version = false },
         },
         config = function()
+            local lspconfig = require 'lspconfig'
             local on_attach = require 'utils.lsp_on_attach'
 
             -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
             -- Enable folding.
             capabilities.textDocument.foldingRange = {
                 dynamicRegistration = false,
@@ -81,18 +83,18 @@ return {
 
             require('mason-lspconfig').setup_handlers {
                 function(server)
-                    require('lspconfig')[server].setup {
+                    lspconfig[server].setup {
                         capabilities = capabilities,
                         on_attach = on_attach,
                     }
                 end,
                 eslint = function()
-                    require('lspconfig').eslint.setup {
+                    lspconfig.eslint.setup {
                         settings = { format = false },
                     }
                 end,
                 jsonls = function()
-                    require('lspconfig').jsonls.setup {
+                    lspconfig.jsonls.setup {
                         capabilities = capabilities,
                         on_attach = on_attach,
                         settings = {
@@ -104,7 +106,7 @@ return {
                     }
                 end,
                 lua_ls = function()
-                    require('lspconfig').lua_ls.setup {
+                    lspconfig.lua_ls.setup {
                         capabilities = capabilities,
                         on_attach = on_attach,
                         on_init = function(client)
@@ -138,19 +140,12 @@ return {
                                     enable = true,
                                     arrayIndex = 'Disable',
                                 },
-                                format = {
-                                    enable = true,
-                                    defaultConfig = {
-                                        indent_style = 'space',
-                                        indent_size = '4',
-                                    },
-                                },
                             },
                         },
                     }
                 end,
                 ruff_lsp = function()
-                    require('lspconfig').ruff_lsp.setup {
+                    lspconfig.ruff_lsp.setup {
                         on_attach = function(client, bufnr)
                             -- Disable hover in favor of pyright.
                             client.server_capabilities.hoverProvider = false

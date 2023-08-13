@@ -17,6 +17,9 @@ return {
             italic_comment = true,
             overrides = function(colors)
                 return {
+                    -- Make the separations between windows more visible.
+                    VertSplit = { fg = colors.white },
+
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
