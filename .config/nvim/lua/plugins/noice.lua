@@ -81,6 +81,15 @@ return {
                         },
                         opts = { skip = true },
                     },
+                    -- Redirect to the messages view when running :Inspect.
+                    {
+                        filter = {
+                            event = 'msg_show',
+                            kind = 'echo',
+                            find = 'Treesitter',
+                        },
+                        view = 'messages',
+                    },
                 },
                 cmdline = {
                     -- Use the default formats, but don't conceal the prefixes.

@@ -1,7 +1,5 @@
 -- Highlight, edit, and navigate code.
 return {
-    -- Play around with treesitter.
-    { 'nvim-treesitter/playground', cmd = 'TSPlaygroundToggle' },
     {
         'nvim-treesitter/nvim-treesitter',
         dependencies = {
@@ -74,8 +72,6 @@ return {
                     goto_previous_start = { ['[f'] = '@function.outer' },
                 },
             },
-            playground = { enable = true },
-            query_linter = { enable = true },
         },
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
