@@ -102,13 +102,13 @@ local function on_attach(buf_client, bufnr)
     local ft = vim.bo[bufnr].filetype
     vim.api.nvim_create_autocmd('BufWritePre', {
         buffer = bufnr,
-        group = vim.api.nvim_create_augroup('FormatOnSave', { clear = true }),
+        group = vim.api.nvim_create_augroup('FormatOnSave', { clear = false }),
         callback = function()
             if not autoformat then
                 return
             end
 
-            vim.lsp.buf.format { name = formatters[ft] }
+            vim.lsp.buf.format { bufnr = bufnr, name = formatters[ft] }
         end,
     })
 end
