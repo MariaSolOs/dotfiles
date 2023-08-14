@@ -23,24 +23,8 @@ return {
                     vim.keymap.set('n', lhs, rhs, opts)
                 end
 
-                keymap(']g', function()
-                    if vim.wo.diff then
-                        return ']g'
-                    end
-                    vim.schedule(function()
-                        gs.next_hunk()
-                    end)
-                    return '<Ignore>'
-                end, 'Next hunk', { expr = true })
-                keymap('[g', function()
-                    if vim.wo.diff then
-                        return '[g'
-                    end
-                    vim.schedule(function()
-                        gs.prev_hunk()
-                    end)
-                    return '<Ignore>'
-                end, 'Previous hunk', { expr = true })
+                keymap(']g', gs.next_hunk, 'Next hunk')
+                keymap('[g', gs.prev_hunk, 'Previous hunk')
                 keymap('<leader>xh', function()
                     gs.setqflist 'all'
                 end, 'Hunks')

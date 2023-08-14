@@ -1,5 +1,4 @@
 -- Markdown previewer.
--- TODO: Try toppair/peek.nvim
 return {
     {
         'iamcco/markdown-preview.nvim',

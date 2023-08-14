@@ -56,6 +56,12 @@ return {
                     NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
                     NoiceLspProgressClient = { fg = colors.cyan, bg = colors.black },
 
+                    -- Diff highlights.
+                    DiffAdd = { fg = colors.bright_green, bold = true },
+                    DiffChange = { fg = colors.orange, bold = true },
+                    DiffDelete = { fg = colors.bright_red, bold = true },
+                    DiffText = { fg = colors.bright_white, bold = true },
+
                     -- Nicer highlights for the word under the cursor.
                     IlluminatedWordRead = { bg = '#19272C' },
                     IlluminatedWordWrite = { bg = '#342231' },
