@@ -1,4 +1,5 @@
 -- General purpose language server for linting and formatting.
+-- TODO: Make sure :checkhealth doesn't crash once v1 is released.
 return {
     {
         'creativenull/efmls-configs-nvim',
