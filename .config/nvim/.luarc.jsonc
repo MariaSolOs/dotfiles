@@ -30,6 +30,7 @@
       "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.bufremove/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.operators/lua",
       "$XDG_DATA_HOME/nvim/lazy/noice.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-autopairs/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-cmp/lua",
