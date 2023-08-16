@@ -91,6 +91,15 @@ return {
                         },
                         view = 'messages',
                     },
+                    -- Ignore debug messages from indent-blankline.
+                    {
+                        filter = {
+                            event = 'notify',
+                            kind = 'debug',
+                            find = 'indent%-blankline',
+                        },
+                        opts = { skip = true },
+                    },
                 },
                 cmdline = {
                     -- Use the default formats, but don't conceal the prefixes.

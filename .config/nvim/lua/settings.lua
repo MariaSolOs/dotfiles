@@ -6,7 +6,8 @@ vim.g.maplocalleader = ' '
 -- Add binaries installed by mason.nvim to path.
 vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
 
--- A lot of plugins break when enabling modelines.
+-- Some weird shit happens when enabling modelines.
+-- TODO: Follow up with https://github.com/folke/noice.nvim/issues/572.
 vim.o.modeline = false
 
 -- Use an indentation of 4 spaces.
@@ -57,6 +58,12 @@ vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience.
 vim.o.completeopt = 'menuone,noselect,noinsert'
+
+-- Cap the number of displayed completions.
+vim.o.pumheight = 15
+
+-- Diff mode settings.
+vim.opt.diffopt:append 'vertical,foldcolumn:0'
 
 -- Disable some of those annoying hit-enter messages.
 vim.opt.shortmess:append 'IWs'

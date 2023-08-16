@@ -13,7 +13,6 @@ return {
 
             -- Update the statusline with the latest LSP message.
             vim.api.nvim_create_autocmd('LspProgress', {
-                pattern = '*',
                 command = 'redrawstatus',
             })
 

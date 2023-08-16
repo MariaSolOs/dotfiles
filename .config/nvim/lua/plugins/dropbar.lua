@@ -2,7 +2,7 @@
 return {
     {
         'Bekaboo/dropbar.nvim',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = 'VeryLazy',
         config = function()
             local api = require 'dropbar.api'
 
@@ -19,14 +19,13 @@ return {
 
             require('dropbar').setup {
                 general = {
-                    -- Disable the winbar in trouble.
-                    enable = function(buf, win)
-                        local buf_name = vim.api.nvim_buf_get_name(buf)
-                        return not vim.api.nvim_win_get_config(win).zindex
-                            and vim.bo[buf].buftype == ''
-                            and buf_name ~= ''
-                            and not buf_name:match 'Trouble$'
-                            and not vim.wo[win].diff
+                    enable = function(bufnr, winnr)
+                        -- default enable function
+                        return not vim.api.nvim_win_get_config(winnr).zindex
+                            and vim.bo[bufnr].buftype == ''
+                            and vim.bo[bufnr].filetype ~= ''
+                            and vim.api.nvim_buf_get_name(bufnr) ~= ''
+                            and not vim.wo[winnr].diff
                     end,
                 },
                 menu = {

@@ -4,6 +4,8 @@ require 'keymaps'
 require 'commands'
 require 'utils.lightbulb'
 
+-- TODO: Try out mini.operators https://www.reddit.com/r/neovim/comments/15rv9gn/minioperators_text_edit_operators_replace/
+
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then

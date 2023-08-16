@@ -40,6 +40,7 @@ return {
             local builtins = require 'telescope.builtin'
             local actions = require 'telescope.actions'
             local action_set = require 'telescope.actions.set'
+            local transform_mod = require('telescope.actions.mt').transform_mod
 
             local picker_config = {}
             for builtin, _ in pairs(builtins) do
@@ -51,26 +52,32 @@ return {
                         action_set.select:enhance {
                             post = function()
                                 vim.cmd ':normal! zv'
+                                actions.center(prompt_bufnr)
                             end,
                         }
-                        actions.center(prompt_bufnr)
 
                         return true
                     end,
                 }
             end
 
-            -- Create a named function here instead of an anonymous function in the setup
-            -- so that the name appears in Telescope's which-key.
-            local function open_with_trouble(...)
+            -- Extra actions for Trouble interop.
+            local extras = {}
+            extras.open_with_trouble = function(...)
                 return require('trouble.providers.telescope').open_with_trouble(...)
             end
+            extras.open_qflist = function()
+                require('trouble').open 'quickfix'
+            end
+            extras = transform_mod(extras)
 
             telescope.setup {
                 defaults = {
                     mappings = {
                         i = {
-                            ['<C-t>'] = open_with_trouble,
+                            -- Trouble mappings.
+                            ['<C-t>'] = extras.open_with_trouble,
+                            ['<C-q>'] = actions.smart_send_to_qflist + extras.open_qflist,
                             -- Avoid having to first return to normal mode before closing.
                             ['<esc>'] = actions.close,
                             -- Clear the search with ctrl-u.
@@ -81,6 +88,13 @@ return {
                             -- Scroll the preview window.
                             ['<C-f>'] = actions.preview_scrolling_down,
                             ['<C-b>'] = actions.preview_scrolling_up,
+                            -- Disable stuff I don't use.
+                            ['<C-c>'] = false,
+                            ['<M-f>'] = false,
+                            ['<M-k>'] = false,
+                            ['<M-q>'] = false,
+                            ['<PageUp>'] = false,
+                            ['<PageDown>'] = false,
                         },
                     },
                     -- Use a vertical layout.
