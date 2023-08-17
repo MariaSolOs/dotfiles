@@ -1,12 +1,5 @@
 local methods = vim.lsp.protocol.Methods
 
--- Map filetypes to formatters.
--- The default is to just use the one from the language server.
-local formatters = {
-    lua = 'efm', -- stylua
-    rust = 'rust_analyzer',
-}
-
 -- Toggle format on save.
 local autoformat = true
 vim.api.nvim_create_user_command('ToggleAutoFormat', function()
@@ -99,16 +92,43 @@ local function on_attach(buf_client, bufnr)
     end
 
     -- Set up format on save.
-    local ft = vim.bo[bufnr].filetype
     vim.api.nvim_create_autocmd('BufWritePre', {
         buffer = bufnr,
         group = vim.api.nvim_create_augroup('FormatOnSave', { clear = false }),
-        callback = function()
+        callback = function(args)
             if not autoformat then
                 return
             end
 
-            vim.lsp.buf.format { bufnr = bufnr, name = formatters[ft] }
+            local buf = args.buf
+            local clients = vim.lsp.get_clients { bufnr = buf }
+            local available = {}
+
+            for _, client in ipairs(clients) do
+                if
+                    client.supports_method(methods.textDocument_formatting)
+                    or client.supports_method(methods.textDocument_rangeFormatting)
+                then
+                    -- If there's an efm formatter, use that one.
+                    if client.name == 'efm' then
+                        available = { client.id }
+                        break
+                    else
+                        table.insert(available, client.id)
+                    end
+                end
+            end
+
+            if #available == 0 then
+                return
+            end
+
+            vim.lsp.buf.format {
+                bufnr = buf,
+                filter = function(client)
+                    return vim.tbl_contains(available, client.id)
+                end,
+            }
         end,
     })
 end

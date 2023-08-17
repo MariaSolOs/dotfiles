@@ -112,6 +112,15 @@ return {
                         },
                         opts = { skip = true },
                     },
+                    -- Ignore format request failures.
+                    {
+                        filter = {
+                            event = 'notify',
+                            kind = 'info',
+                            find = '%[LSP%] Format request failed',
+                        },
+                        opts = { skip = true },
+                    },
                 },
                 cmdline = {
                     -- Use the default formats, but don't conceal the prefixes.
