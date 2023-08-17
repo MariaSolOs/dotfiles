@@ -2,12 +2,12 @@
 return {
     {
         'uga-rosa/ccc.nvim',
-        ft = { 'lua', 'conf' },
+        ft = { 'conf', 'lua', 'zsh' },
         cmd = 'CccPick',
         opts = {
             highlighter = {
                 auto_enable = true,
-                filetypes = { 'lua', 'conf' },
+                filetypes = { 'conf', 'lua', 'zsh' },
             },
         },
     },
