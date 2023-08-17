@@ -1,6 +1,7 @@
 local icons = require('utils.icons').diagnostics
 
 -- Pretty list for diagnostics, references, etc.
+-- TODO: Replace this by quickfix plugins?
 return {
     {
         'folke/trouble.nvim',

@@ -42,7 +42,6 @@ return {
                     -- Have borders around hover and signature help.
                     lsp_doc_border = true,
                     command_palette = true,
-                    long_message_to_split = true,
                 },
                 lsp = {
                     override = {
@@ -60,6 +59,19 @@ return {
                     lsp_progress = { event = 'lsp', kind = 'progress' },
                 },
                 routes = {
+                    -- Redirect long messages to the split view, except for
+                    -- confirmation messages from minifiles.
+                    {
+                        filter = {
+                            event = 'msg_show',
+                            min_height = 20,
+                            cond = function()
+                                local bufr = vim.api.nvim_get_current_buf()
+                                return vim.bo[bufr].filetype ~= 'minifiles'
+                            end,
+                        },
+                        view = 'cmdline_output',
+                    },
                     -- Ignore the typical vim change messages.
                     {
                         filter = {
