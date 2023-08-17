@@ -1,5 +1,6 @@
 -- Fuzzy finder (files, LSP, etc).
 return {
+    { 'nvim-telescope/telescope-symbols.nvim', lazy = true },
     {
         'nvim-telescope/telescope.nvim',
         version = false,
@@ -33,6 +34,14 @@ return {
             { '<leader>tf', '<cmd>Telescope find_files<cr>', desc = 'File search' },
             { '<leader>tg', '<cmd>Telescope live_grep<cr>', desc = 'Grep search' },
             { '<leader>th', '<cmd>Telescope help_tags<cr>', desc = 'Help' },
+            {
+                '<leader>ti',
+                function()
+                    require('lazy').load { plugins = { 'telescope-symbols.nvim' } }
+                    require('telescope.builtin').symbols()
+                end,
+                desc = 'Icon picker',
+            },
             { '<leader>tr', '<cmd>Telescope oldfiles<cr>', desc = 'Recently opened files' },
         },
         config = function()
@@ -47,6 +56,8 @@ return {
                 picker_config[builtin] = {
                     -- Don't show the matched line since it is already in the preview.
                     show_line = false,
+                    -- Give more space to show the filename.
+                    fname_width = 50,
                     -- Center and unfold when selecting a result.
                     attach_mappings = function(prompt_bufnr, _)
                         action_set.select:enhance {
