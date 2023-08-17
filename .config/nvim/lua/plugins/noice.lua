@@ -29,6 +29,14 @@ return {
                 expr = true,
                 mode = { 'i', 'n', 's' },
             },
+            {
+                '<S-Enter>',
+                function()
+                    require('noice').redirect(vim.fn.getcmdline())
+                end,
+                desc = 'Redirect command',
+                mode = 'c',
+            },
         },
         config = function()
             local cmdline_formats = require('noice.config').defaults().cmdline.format
@@ -58,6 +66,8 @@ return {
                     -- Statusline component for LSP progress notifications.
                     lsp_progress = { event = 'lsp', kind = 'progress' },
                 },
+                -- Send redirected messages to the messages view.
+                redirect = { view = 'messages' },
                 routes = {
                     -- Redirect long messages to the split view, except for
                     -- confirmation messages from minifiles.
@@ -93,15 +103,6 @@ return {
                             kind = 'progress',
                         },
                         opts = { skip = true },
-                    },
-                    -- Redirect to the messages view when running :Inspect.
-                    {
-                        filter = {
-                            event = 'msg_show',
-                            kind = 'echo',
-                            find = 'Treesitter',
-                        },
-                        view = 'messages',
                     },
                     -- Ignore debug messages from indent-blankline.
                     {
