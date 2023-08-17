@@ -75,9 +75,6 @@ return {
 
                     -- Virtual text for DAP.
                     NvimDapVirtualText = { fg = '#6272A4', underline = true },
-
-                    -- When performing an exchange operator, make the first argument italic.
-                    MiniOperatorsExchangeFrom = { underline = true, bold = true },
                 }
             end,
         },
