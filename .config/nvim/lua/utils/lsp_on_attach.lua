@@ -29,11 +29,7 @@ local function format(bufnr)
         return
     end
 
-    vim.lsp.buf.format {
-        bufnr = bufnr,
-        name = name,
-        async = #clients == 1,
-    }
+    vim.lsp.buf.format { bufnr = bufnr, name = name }
 end
 
 ---@param bufnr number
@@ -121,16 +117,7 @@ local function on_attach(buf_client, bufnr)
         setup_inlay_hints(bufnr)
     end
 
-    -- Set up format on save for some file types and specific projects.
-    local local_fmt_command = vim.g.format_command
-    if local_fmt_command then
-        vim.keymap.set('n', '<leader>cf', function()
-            local cursor = vim.api.nvim_win_get_cursor(0)
-            vim.cmd(local_fmt_command)
-            cursor[1] = math.min(cursor[1], vim.api.nvim_buf_line_count(0))
-            vim.api.nvim_win_set_cursor(0, cursor)
-        end, { desc = 'Format buffer' })
-    end
+    -- Set up format on save for some file types.
     if vim.tbl_contains({ 'lua', 'rust' }, vim.bo[bufnr].filetype) then
         vim.api.nvim_create_autocmd('BufWritePre', {
             buffer = bufnr,

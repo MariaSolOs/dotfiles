@@ -91,6 +91,7 @@ return {
                 },
             }
             lspconfig.efm.setup {
+                capabilities = capabilities,
                 init_options = { documentFormatting = true },
                 filetypes = vim.tbl_keys(languages),
                 settings = {
