@@ -75,6 +75,9 @@ return {
 
                     -- Virtual text for DAP.
                     NvimDapVirtualText = { fg = '#6272A4', underline = true },
+
+                    -- Mason window.
+                    MasonMuted = { fg = colors.bright_cyan },
                 }
             end,
         },

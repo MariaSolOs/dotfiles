@@ -9,15 +9,10 @@ vim.diagnostic.config {
                 end
             end
         end,
-        -- TODO: Format for multiple diagnostics if support is added upstream.
-        -- Show only the first line of the diagnostic message.
+        -- Show only the first line of each diagnostic.
         format = function(diagnostic)
-            local newline_idx = diagnostic.message:find '\n'
-            if newline_idx then
-                return string.sub(diagnostic.message, 1, newline_idx - 1)
-            else
-                return diagnostic.message
-            end
+            local lines = vim.split(diagnostic.message, '\n')
+            return lines[1]
         end,
     },
     float = { border = 'rounded' },
@@ -80,6 +75,29 @@ return {
 
             -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'
+
+            -- Set up EFM for general formatters.
+            local languages = {
+                lua = {
+                    {
+                        formatCommand = string.format(
+                            '%s ${--range-start:charStart} ${--range-end:charEnd} --color Never -',
+                            vim.fn.exepath 'stylua'
+                        ),
+                        formatStdin = true,
+                        formatCanRange = true,
+                        rootMarkers = { 'stylua.toml', '.stylua.toml' },
+                    },
+                },
+            }
+            lspconfig.efm.setup {
+                init_options = { documentFormatting = true },
+                filetypes = vim.tbl_keys(languages),
+                settings = {
+                    rootMarkers = { '.git' },
+                    languages = languages,
+                },
+            }
 
             require('mason-lspconfig').setup_handlers {
                 function(server)
