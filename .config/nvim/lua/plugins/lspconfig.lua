@@ -20,6 +20,31 @@ vim.diagnostic.config {
     signs = false,
 }
 
+-- Neovim does not currently correctly report the related locations for diagnostics.
+-- TODO: Remove this hack if https://github.com/neovim/neovim/issues/19649 gets fixed.
+local publish_diagnostic = vim.lsp.protocol.Methods.textDocument_publishDiagnostics
+local original_handler = vim.lsp.handlers[publish_diagnostic]
+vim.lsp.handlers[publish_diagnostic] = function(err, result, ctx, config)
+    result.diagnostics = vim.tbl_map(function(diag)
+        if not diag.relatedInformation or diag.relatedInformation == 0 then
+            return diag
+        end
+
+        for _, info in ipairs(diag.relatedInformation) do
+            diag.message = ('%s\n- %s(%d:%d): %s'):format(
+                diag.message,
+                vim.fn.fnamemodify(vim.uri_to_fname(info.location.uri), ':p:.'),
+                info.location.range.start.line + 1,
+                info.location.range.start.character + 1,
+                info.message
+            )
+        end
+
+        return diag
+    end, result.diagnostics)
+    original_handler(err, result, ctx, config)
+end
+
 return {
     {
         'neovim/nvim-lspconfig',
