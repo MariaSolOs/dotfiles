@@ -58,6 +58,8 @@ return {
             },
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
+            -- Formatting on save.
+            { 'lukas-reineke/lsp-format.nvim', config = true },
         },
         config = function()
             local lspconfig = require 'lspconfig'
@@ -80,18 +82,16 @@ return {
             local languages = {
                 lua = {
                     {
-                        formatCommand = string.format(
-                            '%s ${--range-start:charStart} ${--range-end:charEnd} --color Never -',
-                            vim.fn.exepath 'stylua'
-                        ),
+                        formatCommand = string.format('%s --color Never -', vim.fn.exepath 'stylua'),
                         formatStdin = true,
-                        formatCanRange = true,
                         rootMarkers = { 'stylua.toml', '.stylua.toml' },
                     },
                 },
             }
+
             lspconfig.efm.setup {
                 capabilities = capabilities,
+                on_attach = require('lsp-format').on_attach,
                 init_options = { documentFormatting = true },
                 filetypes = vim.tbl_keys(languages),
                 settings = {
@@ -104,7 +104,7 @@ return {
                 function(server)
                     lspconfig[server].setup {
                         capabilities = capabilities,
-                        on_attach = on_attach,
+                        on_attach = on_attach(false),
                     }
                 end,
                 eslint = function()
@@ -115,7 +115,7 @@ return {
                 jsonls = function()
                     lspconfig.jsonls.setup {
                         capabilities = capabilities,
-                        on_attach = on_attach,
+                        on_attach = on_attach(true),
                         settings = {
                             json = {
                                 schemas = require('schemastore').json.schemas(),
@@ -127,7 +127,7 @@ return {
                 lua_ls = function()
                     lspconfig.lua_ls.setup {
                         capabilities = capabilities,
-                        on_attach = on_attach,
+                        on_attach = on_attach(false),
                         on_init = function(client)
                             local path = client.workspace_folders[1].name
                             if
@@ -155,6 +155,8 @@ return {
                         settings = {
                             Lua = {
                                 telemetry = { enable = false },
+                                -- Using stylua for formatting.
+                                format = { enable = false },
                                 hint = {
                                     enable = true,
                                     arrayIndex = 'Disable',
@@ -169,7 +171,7 @@ return {
                             -- Disable hover in favor of pyright.
                             client.server_capabilities.hoverProvider = false
 
-                            on_attach(client, bufnr)
+                            on_attach(false)(client, bufnr)
                         end,
                     }
                 end,

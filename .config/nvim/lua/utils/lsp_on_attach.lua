@@ -1,37 +1,5 @@
 local methods = vim.lsp.protocol.Methods
 
--- Toggle format on save.
-local autoformat = true
-vim.api.nvim_create_user_command('ToggleAutoFormat', function()
-    autoformat = not autoformat
-end, {})
-
----@param bufnr integer
-local function format(bufnr)
-    if not autoformat then
-        return
-    end
-
-    local clients = vim.lsp.get_clients {
-        bufnr = bufnr,
-        method = methods.textDocument_formatting or methods.textDocument_rangeFormatting,
-    }
-
-    -- Prioritize formatting with EFM.
-    local name = nil
-    if vim.tbl_contains(clients, function(client)
-            return client.name == 'efm'
-        end) then
-        name = 'efm'
-    end
-
-    if #clients == 0 then
-        return
-    end
-
-    vim.lsp.buf.format { bufnr = bufnr, name = name }
-end
-
 ---@param bufnr number
 local function setup_inlay_hints(bufnr)
     local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
@@ -60,72 +28,69 @@ local function setup_inlay_hints(bufnr)
 end
 
 ---Sets up LSP keymaps and autocommands for the given buffer.
-local function on_attach(buf_client, bufnr)
-    local function keymap(lhs, rhs, desc, mode)
-        mode = mode or 'n'
-        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
-    end
+---@param format_on_save boolean
+local function on_attach(format_on_save)
+    return function(buf_client, bufnr)
+        local function keymap(lhs, rhs, desc, mode)
+            mode = mode or 'n'
+            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+        end
 
-    if buf_client.supports_method(methods.textDocument_codeAction) then
-        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
-    end
+        -- Set up formatter if applicable.
+        if format_on_save then
+            require('lsp-format').on_attach(buf_client)
+        end
 
-    if buf_client.supports_method(methods.textDocument_rename) then
-        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
-    end
+        if buf_client.supports_method(methods.textDocument_codeAction) then
+            keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
+        end
 
-    if buf_client.supports_method(methods.textDocument_definition) then
-        keymap('gd', function()
-            require('telescope.builtin').lsp_definitions { reuse_win = true }
-        end, 'Go to definition')
-    end
+        if buf_client.supports_method(methods.textDocument_rename) then
+            vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
+        end
 
-    if buf_client.supports_method(methods.textDocument_signatureHelp) then
-        keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
-    end
+        if buf_client.supports_method(methods.textDocument_definition) then
+            keymap('gd', function()
+                require('telescope.builtin').lsp_definitions { reuse_win = true }
+            end, 'Go to definition')
+        end
 
-    keymap('gr', '<cmd>Telescope lsp_references<cr>', 'Go to references')
-    keymap('gI', function()
-        require('telescope.builtin').lsp_implementations { reuse_win = true }
-    end, 'Go to implementation')
-    keymap('gD', function()
-        require('telescope.builtin').lsp_type_definitions { reuse_win = true }
-    end, 'Go to type definition')
+        if buf_client.supports_method(methods.textDocument_signatureHelp) then
+            keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
+        end
 
-    keymap('<leader>td', function()
-        require('telescope.builtin').lsp_document_symbols()
-    end, 'Document symbols')
-    keymap('<leader>tw', function()
-        require('telescope.builtin').lsp_dynamic_workspace_symbols()
-    end, 'Workspace symbols')
+        keymap('gr', '<cmd>Telescope lsp_references<cr>', 'Go to references')
+        keymap('gI', function()
+            require('telescope.builtin').lsp_implementations { reuse_win = true }
+        end, 'Go to implementation')
+        keymap('gD', function()
+            require('telescope.builtin').lsp_type_definitions { reuse_win = true }
+        end, 'Go to type definition')
 
-    keymap('<leader>cd', vim.diagnostic.open_float, 'Line diagnostics')
-    keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
-    keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
-    keymap('[e', function()
-        vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
-    end, 'Previous error')
-    keymap(']e', function()
-        vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
-    end, 'Next error')
+        keymap('<leader>td', function()
+            require('telescope.builtin').lsp_document_symbols()
+        end, 'Document symbols')
+        keymap('<leader>tw', function()
+            require('telescope.builtin').lsp_dynamic_workspace_symbols()
+        end, 'Workspace symbols')
 
-    -- noice deals with the UI.
-    keymap('K', vim.lsp.buf.hover, 'Hover')
+        keymap('<leader>cd', vim.diagnostic.open_float, 'Line diagnostics')
+        keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
+        keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
+        keymap('[e', function()
+            vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
+        end, 'Previous error')
+        keymap(']e', function()
+            vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
+        end, 'Next error')
 
-    -- Enable inlay hints if the client supports it.
-    if buf_client.supports_method(methods.textDocument_inlayHint) then
-        setup_inlay_hints(bufnr)
-    end
+        -- noice deals with the UI.
+        keymap('K', vim.lsp.buf.hover, 'Hover')
 
-    -- Set up format on save for some file types.
-    if vim.tbl_contains({ 'lua', 'rust' }, vim.bo[bufnr].filetype) then
-        vim.api.nvim_create_autocmd('BufWritePre', {
-            buffer = bufnr,
-            group = vim.api.nvim_create_augroup('FormatOnSave', { clear = false }),
-            callback = function()
-                format(bufnr)
-            end,
-        })
+        -- Enable inlay hints if the client supports it.
+        if buf_client.supports_method(methods.textDocument_inlayHint) then
+            setup_inlay_hints(bufnr)
+        end
     end
 end
 
