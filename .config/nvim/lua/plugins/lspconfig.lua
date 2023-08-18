@@ -1,13 +1,10 @@
+local diagnostic_icons = require('utils.icons').diagnostics
+
 vim.diagnostic.config {
     virtual_text = {
         -- Show severity icons as prefixes.
         prefix = function(diagnostic)
-            local icons = require('utils.icons').diagnostics
-            for d, icon in pairs(icons) do
-                if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-                    return icon .. ' '
-                end
-            end
+            return diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]] .. ' '
         end,
         -- Show only the first line of each diagnostic.
         format = function(diagnostic)
@@ -15,7 +12,16 @@ vim.diagnostic.config {
             return lines[1]
         end,
     },
-    float = { border = 'rounded' },
+    float = {
+        border = 'rounded',
+        source = 'if_many',
+        -- Show severity icons as prefixes.
+        prefix = function(diag)
+            local level = vim.diagnostic.severity[diag.severity]
+            local prefix = string.format(' %s ', diagnostic_icons[level])
+            return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
+        end,
+    },
     -- Disable signs in the gutter.
     signs = false,
 }

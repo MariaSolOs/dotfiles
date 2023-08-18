@@ -2,10 +2,10 @@ local M = {}
 
 -- Icons used for virtual text, the bufferline, etc.
 M.diagnostics = {
-    Error = '',
-    Warn = '',
-    Hint = '',
-    Info = '',
+    ERROR = '',
+    WARN = '',
+    HINT = '',
+    INFO = '',
 }
 
 return M

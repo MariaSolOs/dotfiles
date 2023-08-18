@@ -61,10 +61,10 @@ return {
                         {
                             'diagnostics',
                             symbols = {
-                                error = diagnostic_icons.Error .. ' ',
-                                warn = diagnostic_icons.Warn .. ' ',
-                                info = diagnostic_icons.Info .. ' ',
-                                hint = diagnostic_icons.Hint .. ' ',
+                                error = diagnostic_icons.ERROR .. ' ',
+                                warn = diagnostic_icons.WARN .. ' ',
+                                info = diagnostic_icons.INFO .. ' ',
+                                hint = diagnostic_icons.HINT .. ' ',
                             },
                         },
                     },

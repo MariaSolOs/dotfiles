@@ -9,10 +9,10 @@ return {
         dependencies = 'nvim-tree/nvim-web-devicons',
         opts = {
             signs = {
-                error = icons.Error,
-                warning = icons.Warn,
-                hint = icons.Hint,
-                information = icons.Info,
+                error = icons.ERROR,
+                warning = icons.WARN,
+                hint = icons.HINT,
+                information = icons.INFO,
             },
             auto_close = true,
             win_config = { border = 'rounded' },

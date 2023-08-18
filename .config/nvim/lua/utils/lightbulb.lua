@@ -3,7 +3,7 @@
 
 local lb_name = 'CodeActionLightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
-local lb_icon = require('utils.icons').diagnostics.Hint
+local lb_icon = require('utils.icons').diagnostics.HINT
 local lb_group = vim.api.nvim_create_augroup(lb_name, { clear = true })
 local code_action_method = vim.lsp.protocol.Methods.textDocument_codeAction
 local timer = vim.uv.new_timer()
