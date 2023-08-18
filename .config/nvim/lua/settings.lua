@@ -72,6 +72,9 @@ vim.opt.shortmess:append 'IWs'
 vim.o.grepprg = 'rg --vimgrep'
 vim.o.grepformat = '%f:%l:%c:%m'
 
+-- Enable local configurations.
+vim.o.exrc = true
+
 -- Disable health checks for these providers.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0

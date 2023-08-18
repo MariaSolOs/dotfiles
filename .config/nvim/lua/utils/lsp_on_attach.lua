@@ -6,40 +6,33 @@ vim.api.nvim_create_user_command('ToggleAutoFormat', function()
     autoformat = not autoformat
 end, {})
 
----@param explicit boolean
 ---@param bufnr integer
-local function format(explicit, bufnr)
-    if not autoformat and not explicit then
+local function format(bufnr)
+    if not autoformat then
         return
     end
 
-    local clients = vim.lsp.get_clients { bufnr = bufnr }
-    local available = {}
+    local clients = vim.lsp.get_clients {
+        bufnr = bufnr,
+        method = methods.textDocument_formatting or methods.textDocument_rangeFormatting,
+    }
 
-    for _, client in ipairs(clients) do
-        if
-            client.supports_method(methods.textDocument_formatting)
-            or client.supports_method(methods.textDocument_rangeFormatting)
-        then
-            -- If there's an efm formatter, use that one.
-            if client.name == 'efm' then
-                available = { client.id }
-                break
-            else
-                table.insert(available, client.id)
-            end
-        end
+    -- Prioritize formatting with EFM.
+    local name = nil
+    if vim.tbl_contains(clients, function(client)
+            return client.name == 'efm'
+        end) then
+        name = 'efm'
     end
 
-    if #available == 0 then
+    if #clients == 0 then
         return
     end
 
     vim.lsp.buf.format {
         bufnr = bufnr,
-        filter = function(client)
-            return vim.tbl_contains(available, client.id)
-        end,
+        name = name,
+        async = #clients == 1,
     }
 end
 
@@ -128,18 +121,22 @@ local function on_attach(buf_client, bufnr)
         setup_inlay_hints(bufnr)
     end
 
-    -- Set up format on save for some file types, and a simple keymap for the rest.
-    if buf_client.supports_method(methods.textDocument_formatting) then
-        keymap('<leader>cf', function()
-            format(true, bufnr)
-        end, 'Format buffer')
+    -- Set up format on save for some file types and specific projects.
+    local local_fmt_command = vim.g.format_command
+    if local_fmt_command then
+        vim.keymap.set('n', '<leader>cf', function()
+            local cursor = vim.api.nvim_win_get_cursor(0)
+            vim.cmd(local_fmt_command)
+            cursor[1] = math.min(cursor[1], vim.api.nvim_buf_line_count(0))
+            vim.api.nvim_win_set_cursor(0, cursor)
+        end, { desc = 'Format buffer' })
     end
     if vim.tbl_contains({ 'lua', 'rust' }, vim.bo[bufnr].filetype) then
         vim.api.nvim_create_autocmd('BufWritePre', {
             buffer = bufnr,
             group = vim.api.nvim_create_augroup('FormatOnSave', { clear = false }),
             callback = function()
-                format(false, bufnr)
+                format(bufnr)
             end,
         })
     end
