@@ -63,6 +63,8 @@ return {
                 opts = {
                     ensure_installed = {
                         'codelldb',
+                        'shellcheck',
+                        'shfmt',
                         'stylua',
                     },
                     ui = {
@@ -76,6 +78,7 @@ return {
                 'williamboman/mason-lspconfig.nvim',
                 opts = {
                     ensure_installed = {
+                        'bashls',
                         'eslint',
                         'jsonls',
                         'lua_ls',
@@ -117,6 +120,9 @@ return {
                         formatStdin = true,
                         rootMarkers = { 'stylua.toml', '.stylua.toml' },
                     },
+                },
+                sh = {
+                    { formatCommand = 'shfmt -i 2 -ci -bn' },
                 },
             }
 
