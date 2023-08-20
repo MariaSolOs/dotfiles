@@ -1,3 +1,5 @@
+local symbol_kinds = require('utils.icons').symbol_kinds
+
 -- Winbar with breadcrumbs.
 return {
     {
@@ -20,7 +22,6 @@ return {
             require('dropbar').setup {
                 general = {
                     enable = function(bufnr, winnr)
-                        -- default enable function
                         return not vim.api.nvim_win_get_config(winnr).zindex
                             and vim.bo[bufnr].buftype == ''
                             and vim.bo[bufnr].filetype ~= ''
@@ -62,6 +63,13 @@ return {
                         -- Close the dropbar entirely with <esc> and q.
                         ['q'] = close,
                         ['<esc>'] = close,
+                    },
+                },
+                icons = {
+                    kinds = {
+                        symbols = vim.tbl_map(function(symbol)
+                            return symbol .. ' '
+                        end, symbol_kinds),
                     },
                 },
             }

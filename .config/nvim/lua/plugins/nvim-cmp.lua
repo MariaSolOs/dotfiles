@@ -1,32 +1,6 @@
--- Icons to use in the completion menu.
-local symbol_kinds = {
-    Class = '',
-    Color = '',
-    Constant = '',
-    Constructor = '',
-    Enum = '',
-    EnumMember = '',
-    Event = '',
-    Field = '',
-    File = '',
-    Folder = '',
-    Function = '',
-    Interface = '',
-    Keyword = '',
-    Method = '',
-    Module = '',
-    Operator = '',
-    Property = '',
-    Reference = '',
-    Snippet = '',
-    Struct = '',
-    Text = '',
-    TypeParameter = '',
-    Unit = '',
-    Value = '',
-    Variable = '',
-}
+local symbol_kinds = require('utils.icons').symbol_kinds
 
+-- Completion.
 return {
     {
         'hrsh7th/nvim-cmp',
