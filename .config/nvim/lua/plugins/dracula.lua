@@ -20,6 +20,9 @@ return {
                     -- Make the separations between windows more visible.
                     VertSplit = { fg = colors.white },
 
+                    -- Make whitespace less prominent.
+                    Whitespace = { fg = '#292d32' },
+
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
