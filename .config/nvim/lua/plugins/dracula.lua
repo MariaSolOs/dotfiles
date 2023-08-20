@@ -76,6 +76,13 @@ return {
                     -- Virtual text for DAP.
                     NvimDapVirtualText = { fg = '#6272A4', underline = true },
 
+                    -- Fzf overrides.
+                    FzfLuaBorder = { fg = colors.comment },
+                    FzfLuaSearch = { link = 'IlluminatedWordWrite' },
+                    FzfLuaHeaderText = { fg = colors.pink },
+                    FzfLuaPreviewTitle = { fg = colors.fg },
+                    FzfLuaHeaderBind = { fg = '#6272A4' },
+
                     -- Mason window.
                     MasonMuted = { fg = colors.bright_cyan },
                 }

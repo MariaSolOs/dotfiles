@@ -35,7 +35,7 @@ return {
             { '<C-w><C-f>', nil, desc = 'which_key_ignore' },
             { 'gf', nil, desc = 'Go to file under cursor' },
             {
-                '<leader>f',
+                '<leader>e',
                 -- Open the explorer in the current directory, with focus on the current
                 -- file and in the last used state.
                 function()
