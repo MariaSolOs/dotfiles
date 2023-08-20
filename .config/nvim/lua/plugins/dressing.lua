@@ -15,25 +15,38 @@ return {
                 return vim.ui.input(...)
             end
         end,
-        config = function()
-            require('dressing').setup {
-                input = {
-                    win_options = {
-                        -- Use a purple-ish border.
-                        winhighlight = 'FloatBorder:LspFloatWinBorder',
+        opts = {
+            input = {
+                win_options = {
+                    -- Use a purple-ish border.
+                    winhighlight = 'FloatBorder:LspFloatWinBorder',
+                },
+            },
+            select = {
+                backend = 'fzf_lua',
+                trim_prompt = false,
+                fzf_lua = {
+                    winopts = {
+                        height = 0.6,
+                        width = 0.5,
                     },
                 },
-                select = {
-                    -- Use a relative window with code actions.
-                    get_config = function(opts)
-                        if opts.kind == 'codeaction' then
-                            return {
-                                telescope = require('telescope.themes').get_cursor(),
-                            }
-                        end
-                    end,
-                },
-            }
-        end,
+                get_config = function(opts)
+                    if opts.kind == 'codeaction' then
+                        return {
+                            -- Cute and compact code action menu.
+                            fzf_lua = {
+                                winopts = {
+                                    relative = 'cursor',
+                                    row = 1,
+                                    height = 0.33,
+                                    width = 0.40,
+                                },
+                            },
+                        }
+                    end
+                end,
+            },
+        },
     },
 }

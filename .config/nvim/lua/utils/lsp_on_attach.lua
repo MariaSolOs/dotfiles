@@ -51,7 +51,7 @@ local function on_attach(format_on_save)
 
         if buf_client.supports_method(methods.textDocument_definition) then
             keymap('gd', function()
-                require('telescope.builtin').lsp_definitions { reuse_win = true }
+                require('fzf-lua').lsp_definitions { jump_to_single_result = true }
             end, 'Go to definition')
         end
 
@@ -59,19 +59,14 @@ local function on_attach(format_on_save)
             keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
         end
 
-        keymap('gr', '<cmd>Telescope lsp_references<cr>', 'Go to references')
-        keymap('gI', function()
-            require('telescope.builtin').lsp_implementations { reuse_win = true }
-        end, 'Go to implementation')
-        keymap('gD', function()
-            require('telescope.builtin').lsp_type_definitions { reuse_win = true }
-        end, 'Go to type definition')
+        keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
+        keymap('gI', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
+        keymap('gD', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
-        keymap('<leader>td', function()
-            require('telescope.builtin').lsp_document_symbols()
-        end, 'Document symbols')
-        keymap('<leader>tw', function()
-            require('telescope.builtin').lsp_dynamic_workspace_symbols()
+        keymap('<leader>fd', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
+        keymap('<leader>fw', function()
+            -- Disable the grep switch header.
+            require('fzf-lua').lsp_live_workspace_symbols { no_header_i = true }
         end, 'Workspace symbols')
 
         keymap('<leader>cd', vim.diagnostic.open_float, 'Line diagnostics')

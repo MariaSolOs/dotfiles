@@ -1,3 +1,6 @@
+local symbol_icons = require('utils.icons').symbol_kinds
+
+-- TODO: Add quickfix/trouble interop.
 -- Picker, finder, etc.
 return {
     {
@@ -31,6 +34,7 @@ return {
             { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
         },
         opts = {
+            -- Make stuff better combine with the editor.
             fzf_colors = {
                 bg = { 'bg', 'Normal' },
                 gutter = { 'bg', 'Normal' },
@@ -53,13 +57,12 @@ return {
             winopts = {
                 preview = { scrollbar = false },
             },
-            grep = {
-                header_prefix = ' ',
-                fzf_opts = {
-                    ['--keep-right'] = '',
+            grep = { header_prefix = ' ' },
+            lsp = {
+                symbols = {
+                    symbol_icons = symbol_icons,
                 },
             },
-            oldfiles = { cwd_only = true },
         },
     },
 }

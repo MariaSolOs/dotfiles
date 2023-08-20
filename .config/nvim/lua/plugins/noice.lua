@@ -6,7 +6,6 @@ return {
         event = 'VeryLazy',
         dependencies = 'MunifTanjim/nui.nvim',
         keys = {
-            { '<leader>tn', '<cmd>NoiceTelescope<cr>', desc = 'Noice' },
             {
                 '<C-f>',
                 function()
@@ -114,12 +113,11 @@ return {
                         },
                         opts = { skip = true },
                     },
-                    -- Ignore format request failures.
+                    -- Ignore fzf's message when previewing huge files.
                     {
                         filter = {
-                            event = 'notify',
-                            kind = 'info',
-                            find = '%[LSP%] Format request failed',
+                            event = 'msg_show',
+                            find = "consider increasing 'syntax_limit_b",
                         },
                         opts = { skip = true },
                     },

@@ -3,11 +3,10 @@ return {
     {
         'folke/todo-comments.nvim',
         dependencies = 'nvim-lua/plenary.nvim',
-        cmd = { 'TodoTrouble', 'TodoTelescope' },
+        cmd = 'TodoTrouble',
         event = { 'BufReadPost', 'BufNewFile' },
         keys = {
             { '<leader>xt', '<cmd>TodoTrouble<cr>', desc = 'TODOs' },
-            { '<leader>tt', '<cmd>TodoTelescope<cr>', desc = 'TODOs' },
         },
         opts = {
             signs = false,

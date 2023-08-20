@@ -20,7 +20,6 @@ return {
                 ['<leader>c'] = { name = '+code' },
                 ['<leader>d'] = { name = '+debug' },
                 ['<leader>f'] = { name = '+finder' },
-                ['<leader>t'] = { name = '+telescope' },
                 ['<leader>x'] = { name = '+trouble' },
                 -- Other builtin prefixes.
                 ['g'] = { name = '+goto' },
