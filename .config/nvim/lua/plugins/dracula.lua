@@ -88,6 +88,10 @@ return {
 
                     -- Mason window.
                     MasonMuted = { fg = colors.bright_cyan },
+
+                    -- TODOs and notes.
+                    MiniHipatternsTodo = { fg = colors.bg, bg = colors.cyan, bold = true },
+                    MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
                 }
             end,
         },
