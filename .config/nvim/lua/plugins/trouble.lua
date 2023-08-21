@@ -1,4 +1,4 @@
-local icons = require('utils.icons').diagnostics
+local icons = require('icons').diagnostics
 
 -- Pretty list for diagnostics, references, etc.
 -- TODO: Replace this by quickfix plugins?

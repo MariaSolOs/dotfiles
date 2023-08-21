@@ -1,4 +1,4 @@
-local symbol_icons = require('utils.icons').symbol_kinds
+local symbol_icons = require('icons').symbol_kinds
 
 -- TODO: Add quickfix/trouble interop.
 -- Picker, finder, etc.
@@ -57,7 +57,12 @@ return {
             winopts = {
                 preview = { scrollbar = false },
             },
-            grep = { header_prefix = ' ' },
+            -- Configuration for specific commands.
+            files = { git_icons = false },
+            grep = {
+                git_icons = false,
+                header_prefix = ' ',
+            },
             lsp = {
                 symbols = {
                     symbol_icons = symbol_icons,

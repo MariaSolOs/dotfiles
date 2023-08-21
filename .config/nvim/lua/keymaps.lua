@@ -55,8 +55,12 @@ end, { expr = true })
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>')
 
+-- Quickfix list navigation.
+vim.keymap.set('n', '[q', '<cmd>cprev<cr>zz', { desc = 'Previous quickfix item' })
+vim.keymap.set('n', ']q', '<cmd>cnext<cr>zz', { desc = 'Next quickfix item' })
+
 -- Floating terminal.
 vim.keymap.set('n', '<M-t>', function()
-    require('utils.float_term').float_term(nil, {})
+    require('float_term').float_term(nil, {})
 end, { desc = 'Open terminal' })
 vim.keymap.set('t', '<M-t>', '<cmd>close<cr>', { desc = 'Close terminal' })

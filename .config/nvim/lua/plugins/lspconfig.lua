@@ -1,4 +1,6 @@
-local diagnostic_icons = require('utils.icons').diagnostics
+local capabilities = require('lsp').client_capabilities
+local on_attach = require('lsp').on_attach
+local diagnostic_icons = require('icons').diagnostics
 
 vim.diagnostic.config {
     virtual_text = {
@@ -26,34 +28,20 @@ vim.diagnostic.config {
     signs = false,
 }
 
--- Neovim does not currently correctly report the related locations for diagnostics.
--- TODO: Remove this hack if https://github.com/neovim/neovim/issues/19649 gets fixed.
-local publish_diagnostic = vim.lsp.protocol.Methods.textDocument_publishDiagnostics
-local original_handler = vim.lsp.handlers[publish_diagnostic]
-vim.lsp.handlers[publish_diagnostic] = function(err, result, ctx, config)
-    result.diagnostics = vim.tbl_map(function(diag)
-        if not diag.relatedInformation or diag.relatedInformation == 0 then
-            return diag
-        end
+-- Update mappings when registering dynamic capabilities.
+local register_method = vim.lsp.protocol.Methods.client_registerCapability
+local register_capability = vim.lsp.handlers[register_method]
+vim.lsp.handlers[register_method] = function(err, res, ctx)
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+    local bufnr = vim.api.nvim_get_current_buf()
+    on_attach(client, bufnr)
 
-        for _, info in ipairs(diag.relatedInformation) do
-            diag.message = ('%s\n- %s(%d:%d): %s'):format(
-                diag.message,
-                vim.fn.fnamemodify(vim.uri_to_fname(info.location.uri), ':p:.'),
-                info.location.range.start.line + 1,
-                info.location.range.start.character + 1,
-                info.message
-            )
-        end
-
-        return diag
-    end, result.diagnostics)
-    original_handler(err, result, ctx, config)
+    return register_capability(err, res, ctx)
 end
 
 return {
     {
-        'neovim/nvim-lspconfig',
+        'williamboman/mason-lspconfig.nvim',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
             {
@@ -74,22 +62,7 @@ return {
                     },
                 },
             },
-            {
-                'williamboman/mason-lspconfig.nvim',
-                opts = {
-                    ensure_installed = {
-                        'bashls',
-                        'eslint',
-                        'jsonls',
-                        'lua_ls',
-                        'marksman',
-                        'pyright',
-                        'ruff_lsp',
-                        'rust_analyzer',
-                        'taplo',
-                    },
-                },
-            },
+            'neovim/nvim-lspconfig',
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
             -- Formatting on save.
@@ -97,22 +70,12 @@ return {
         },
         config = function()
             local lspconfig = require 'lspconfig'
-            local on_attach = require 'utils.lsp_on_attach'
-
-            -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
-            -- Enable folding.
-            capabilities.textDocument.foldingRange = {
-                dynamicRegistration = false,
-                lineFoldingOnly = true,
-            }
 
             -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'
 
             -- Set up EFM for general formatters.
+            -- Configuring this separately since I don't install EFM with mason.
             local languages = {
                 lua = {
                     {
@@ -125,9 +88,8 @@ return {
                     { formatCommand = 'shfmt -i 2 -ci -bn' },
                 },
             }
-
             lspconfig.efm.setup {
-                capabilities = capabilities,
+                capabilities = capabilities(),
                 on_attach = require('lsp-format').on_attach,
                 init_options = { documentFormatting = true },
                 filetypes = vim.tbl_keys(languages),
@@ -137,81 +99,96 @@ return {
                 },
             }
 
-            require('mason-lspconfig').setup_handlers {
-                function(server)
-                    lspconfig[server].setup {
-                        capabilities = capabilities,
-                        on_attach = on_attach(false),
-                    }
-                end,
-                eslint = function()
-                    lspconfig.eslint.setup {
-                        settings = { format = false },
-                    }
-                end,
-                jsonls = function()
-                    lspconfig.jsonls.setup {
-                        capabilities = capabilities,
-                        on_attach = on_attach(true),
-                        settings = {
-                            json = {
-                                schemas = require('schemastore').json.schemas(),
-                                validate = { enable = true },
-                            },
-                        },
-                    }
-                end,
-                lua_ls = function()
-                    lspconfig.lua_ls.setup {
-                        capabilities = capabilities,
-                        on_attach = on_attach(false),
-                        on_init = function(client)
-                            local path = client.workspace_folders[1].name
-                            if
-                                not vim.uv.fs_stat(path .. '/.luarc.json')
-                                and not vim.uv.fs_stat(path .. '/.luarc.jsonc')
-                            then
-                                -- Make the server aware of Neovim runtime files
-                                client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-                                    Lua = {
-                                        runtime = { version = 'LuaJIT' },
-                                        workspace = {
-                                            checkThirdParty = false,
-                                            library = {
-                                                vim.env.VIMRUNTIME,
-                                                '${3rd}/luv/library',
-                                            },
-                                        },
-                                    },
-                                })
-                                client.notify(vim.lsp.protocol.Methods.workspace_didChangeConfiguration, {
-                                    settings = client.config.settings,
-                                })
-                            end
-                        end,
-                        settings = {
-                            Lua = {
-                                telemetry = { enable = false },
-                                -- Using stylua for formatting.
-                                format = { enable = false },
-                                hint = {
-                                    enable = true,
-                                    arrayIndex = 'Disable',
+            require('mason-lspconfig').setup {
+                ensure_installed = {
+                    'bashls',
+                    'eslint',
+                    'jsonls',
+                    'lua_ls',
+                    'marksman',
+                    'pyright',
+                    'ruff_lsp',
+                    'taplo',
+                },
+                handlers = {
+                    function(server)
+                        lspconfig[server].setup {
+                            capabilities = capabilities(),
+                            on_attach = on_attach,
+                        }
+                    end,
+                    eslint = function()
+                        lspconfig.eslint.setup {
+                            capabilities = capabilities(),
+                            on_attach = on_attach,
+                            settings = { format = false },
+                        }
+                    end,
+                    jsonls = function()
+                        lspconfig.jsonls.setup {
+                            capabilities = capabilities(),
+                            on_attach = on_attach,
+                            settings = {
+                                json = {
+                                    schemas = require('schemastore').json.schemas(),
+                                    validate = { enable = true },
                                 },
                             },
-                        },
-                    }
-                end,
-                ruff_lsp = function()
-                    lspconfig.ruff_lsp.setup {
-                        on_attach = function(client, bufnr)
-                            -- Disable hover in favor of pyright.
-                            client.server_capabilities.hoverProvider = false
+                        }
+                    end,
+                    lua_ls = function()
+                        lspconfig.lua_ls.setup {
+                            capabilities = capabilities(),
+                            on_attach = on_attach,
+                            on_init = function(client)
+                                local path = client.workspace_folders[1].name
+                                if
+                                    not vim.uv.fs_stat(path .. '/.luarc.json')
+                                    and not vim.uv.fs_stat(path .. '/.luarc.jsonc')
+                                then
+                                    -- Make the server aware of Neovim runtime files
+                                    client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+                                        Lua = {
+                                            runtime = { version = 'LuaJIT' },
+                                            workspace = {
+                                                checkThirdParty = false,
+                                                library = {
+                                                    vim.env.VIMRUNTIME,
+                                                    '${3rd}/luv/library',
+                                                },
+                                            },
+                                        },
+                                    })
+                                    client.notify(vim.lsp.protocol.Methods.workspace_didChangeConfiguration, {
+                                        settings = client.config.settings,
+                                    })
+                                end
+                            end,
+                            settings = {
+                                Lua = {
+                                    telemetry = { enable = false },
+                                    -- Using stylua for formatting.
+                                    format = { enable = false },
+                                    hint = {
+                                        enable = true,
+                                        arrayIndex = 'Disable',
+                                    },
+                                },
+                            },
+                        }
+                    end,
+                    ruff_lsp = function()
+                        lspconfig.ruff_lsp.setup {
+                            capabilities = capabilities(),
+                            on_attach = function(client, bufnr)
+                                -- Disable hover in favor of pyright.
+                                client.server_capabilities.hoverProvider = false
 
-                            on_attach(false)(client, bufnr)
-                        end,
-                    }
-                end,
+                                on_attach(client, bufnr)
+                            end,
+                        }
+                    end,
+                },
             }
         end,
     },

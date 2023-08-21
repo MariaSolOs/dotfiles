@@ -2,7 +2,7 @@
 require 'settings'
 require 'keymaps'
 require 'commands'
-require 'utils.lightbulb'
+require 'lightbulb'
 
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -25,5 +25,18 @@ require('lazy').setup('plugins', {
     install = {
         -- Load colorschemes during startup installations.
         colorscheme = { 'dracula-soft', 'habamax' },
+    },
+    -- Don't bother me when tweaking plugins.
+    change_detection = { notify = false },
+    performance = {
+        rtp = {
+            -- Stuff I don't use.
+            disabled_plugins = {
+                'gzip',
+                'netrwPlugin',
+                'rplugin',
+                'tarPlugin',
+            },
+        },
     },
 })

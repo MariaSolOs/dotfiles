@@ -1,4 +1,4 @@
-local symbol_kinds = require('utils.icons').symbol_kinds
+local symbol_kinds = require('icons').symbol_kinds
 
 -- Completion.
 return {

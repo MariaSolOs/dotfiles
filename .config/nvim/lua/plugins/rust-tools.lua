@@ -25,8 +25,12 @@ return {
                     },
                 },
                 server = {
+                    capabilities = require('lsp').client_capabilities(),
                     on_attach = function(client, bufnr)
-                        require 'utils.lsp_on_attach'(true)(client, bufnr)
+                        require('lsp').on_attach(client, bufnr)
+
+                        -- Format on save.
+                        require('lsp-format').on_attach(client)
 
                         -- Set up extra Rust commands.
                         vim.keymap.set('n', 'K', rt.hover_actions.hover_actions, {
