@@ -55,9 +55,36 @@ end, { expr = true })
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>')
 
--- Quickfix list navigation.
+-- Quickfix and location list.
+-- When toggling these, ignore error messages and restore the cursor
+-- to the original window when opening the list.
+local silent_mods = { mods = { silent = true, emsg_silent = true } }
+vim.keymap.set('n', '<leader>xq', function()
+    if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+        vim.cmd.cclose(silent_mods)
+    elseif #vim.fn.getqflist() > 0 then
+        local win = vim.api.nvim_get_current_win()
+        vim.cmd.copen(silent_mods)
+        if win ~= vim.api.nvim_get_current_win() then
+            vim.cmd.wincmd 'p'
+        end
+    end
+end, { desc = 'Open quickfix list' })
+vim.keymap.set('n', '<leader>xl', function()
+    if vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then
+        vim.cmd.lclose(silent_mods)
+    elseif #vim.fn.getloclist(0) > 0 then
+        local win = vim.api.nvim_get_current_win()
+        vim.cmd.lopen(silent_mods)
+        if win ~= vim.api.nvim_get_current_win() then
+            vim.cmd.wincmd 'p'
+        end
+    end
+end, { desc = 'Toggle location list' })
 vim.keymap.set('n', '[q', '<cmd>cprev<cr>zz', { desc = 'Previous quickfix item' })
 vim.keymap.set('n', ']q', '<cmd>cnext<cr>zz', { desc = 'Next quickfix item' })
+vim.keymap.set('n', '[l', '<cmd>lprev<cr>zz', { desc = 'Previous location list item' })
+vim.keymap.set('n', ']l', '<cmd>lnext<cr>zz', { desc = 'Next location list item' })
 
 -- Floating terminal.
 vim.keymap.set('n', '<M-t>', function()

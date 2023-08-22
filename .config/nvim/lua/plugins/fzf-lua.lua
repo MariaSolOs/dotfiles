@@ -1,6 +1,5 @@
 local symbol_icons = require('icons').symbol_kinds
 
--- TODO: Add quickfix/trouble interop.
 -- Picker, finder, etc.
 return {
     {
@@ -28,6 +27,7 @@ return {
                 desc = 'Grep current buffer',
             },
             { '<leader>fc', '<cmd>FzfLua highlights<cr>', desc = 'Highlights' },
+            { '<leader>fd', '<cmd>FzfLua lsp_workspace_diagnostics<cr>', desc = 'Diagnostics' },
             { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'Find files' },
             { '<leader>fg', '<cmd>FzfLua live_grep<cr>', desc = 'Grep' },
             { '<leader>fh', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
@@ -53,12 +53,17 @@ return {
                     ['<C-f>'] = 'preview-page-down',
                     ['<C-b>'] = 'preview-page-up',
                 },
+                fzf = {
+                    ['alt-s'] = 'toggle',
+                    ['alt-a'] = 'toggle-all',
+                },
             },
             winopts = {
                 preview = { scrollbar = false },
             },
             -- Configuration for specific commands.
             files = { git_icons = false },
+            oldfiles = { include_current_session = true },
             grep = {
                 git_icons = false,
                 header_prefix = ' ',

@@ -6,6 +6,10 @@ vim.api.nvim_create_user_command('ClearRegisters', function()
     vim.cmd 'wshada'
 end, { desc = 'Clear registers' })
 
+vim.api.nvim_create_user_command('Todos', function()
+    require('fzf-lua').grep { search = 'TODO|todo!', no_esc = true }
+end, { desc = 'TODOs' })
+
 -- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),

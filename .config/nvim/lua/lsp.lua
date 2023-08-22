@@ -2,6 +2,25 @@ local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
+-- Configure the diagnostic signs.
+local diagnostic_icons = require('icons').diagnostics
+for severity, icon in pairs(diagnostic_icons) do
+    local hl = 'DiagnosticSign' .. severity:sub(1, 1) .. severity:sub(2):lower()
+    vim.fn.sign_define(hl, { text = icon, texthl = hl })
+end
+
+-- Update diagnostic locations.
+local diagnostic_group = vim.api.nvim_create_augroup('DiagnosticsToQf', { clear = true })
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+    group = diagnostic_group,
+    callback = function(args)
+        vim.diagnostic.setqflist { open = false }
+        if #args.data.diagnostics == 0 then
+            vim.cmd.cclose { mods = { silent = true } }
+        end
+    end,
+})
+
 ---Returns the editor's capabilities + some overrides.
 M.client_capabilities = function()
     return vim.tbl_deep_extend(

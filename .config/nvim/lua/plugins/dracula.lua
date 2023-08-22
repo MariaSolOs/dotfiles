@@ -44,9 +44,6 @@ return {
                     -- When triggering flash, make everything in the backdrop italic.
                     FlashBackdrop = { italic = true },
 
-                    -- Previewing Trouble matches.
-                    TroublePreview = { link = 'IlluminatedWordWrite' },
-
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
@@ -92,6 +89,12 @@ return {
                     -- TODOs and notes.
                     MiniHipatternsTodo = { fg = colors.bg, bg = colors.cyan, bold = true },
                     MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
+
+                    -- Quickfix window.
+                    qfPath = { fg = colors.bright_blue },
+                    qfPosition = { fg = colors.pink, underline = true },
+                    QuickFixLine = { italic = true, bg = '#342231' },
+                    BqfPreviewRange = { link = 'Search' },
                 }
             end,
         },
