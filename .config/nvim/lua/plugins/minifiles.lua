@@ -108,18 +108,6 @@ return {
             local minifiles = require 'mini.files'
             minifiles.setup(opts)
 
-            -- HACK: Make sure files always appear in the buffer list.
-            local real_go_in = minifiles.go_in
-            ---@diagnostic disable-next-line: duplicate-set-field
-            function minifiles.go_in()
-                real_go_in()
-                local target = minifiles.get_target_window()
-                local entry = minifiles.get_fs_entry()
-                if entry ~= nil and entry.fs_type == 'file' and target ~= nil then
-                    vim.bo[vim.api.nvim_win_get_buf(target)].buflisted = true
-                end
-            end
-
             -- Add rounded corners.
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'MiniFilesWindowOpen',
@@ -136,18 +124,6 @@ return {
                     map_split(buf_id, '<C-s>', 'belowright horizontal')
                     map_split(buf_id, '<C-v>', 'belowright vertical')
                 end,
-            })
-
-            -- Close the explorer when losing focus.
-            vim.api.nvim_create_autocmd('BufEnter', {
-                callback = vim.schedule_wrap(function()
-                    local ft = vim.bo.filetype
-                    if ft == 'minifiles' or ft == 'minifiles-help' then
-                        return
-                    end
-                    minifiles.close()
-                    pcall(vim.api.nvim_set_current_win, vim.api.nvim_get_current_win())
-                end),
             })
         end,
     },
