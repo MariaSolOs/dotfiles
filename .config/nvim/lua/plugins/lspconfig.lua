@@ -70,6 +70,7 @@ return {
         },
         config = function()
             local lspconfig = require 'lspconfig'
+            local format_attach = require('lsp-format').on_attach
 
             -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'
@@ -90,7 +91,7 @@ return {
             }
             lspconfig.efm.setup {
                 capabilities = capabilities(),
-                on_attach = require('lsp-format').on_attach,
+                on_attach = format_attach,
                 init_options = { documentFormatting = true },
                 filetypes = vim.tbl_keys(languages),
                 settings = {
@@ -127,7 +128,10 @@ return {
                     jsonls = function()
                         lspconfig.jsonls.setup {
                             capabilities = capabilities(),
-                            on_attach = on_attach,
+                            on_attach = function(client, bufnr)
+                                on_attach(client, bufnr)
+                                format_attach(client)
+                            end,
                             settings = {
                                 json = {
                                     schemas = require('schemastore').json.schemas(),
