@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd('DiagnosticChanged', {
     callback = function(args)
         vim.diagnostic.setqflist { open = false }
         if #args.data.diagnostics == 0 then
-            vim.cmd.cclose { mods = { silent = true } }
+            vim.cmd.cclose { mods = { silent = true, emsg_silent = true } }
         end
     end,
 })
@@ -75,8 +75,8 @@ M.on_attach = function(client, bufnr)
     keymap('gI', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
     keymap('gD', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
-    keymap('<leader>fd', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
-    keymap('<leader>fw', function()
+    keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
+    keymap('<leader>fS', function()
         -- Disable the grep switch header.
         require('fzf-lua').lsp_live_workspace_symbols { no_header_i = true }
     end, 'Workspace symbols')
