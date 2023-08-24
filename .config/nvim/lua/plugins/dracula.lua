@@ -13,6 +13,8 @@ return {
                 bg = '#0E1419',
                 comment = '#B08BBB',
                 orange = '#FFBFA9',
+                red = '#E95678',
+                bright_red = '#EC6A88',
             },
             italic_comment = true,
             overrides = function(colors)
