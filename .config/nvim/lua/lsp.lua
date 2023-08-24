@@ -62,7 +62,10 @@ M.on_attach = function(client, bufnr)
     end
 
     if client.supports_method(methods.textDocument_definition) then
-        keymap('gd', '<cmd>FzfLua lsp_definitions<cr>', 'Go to definition')
+        keymap('gd', '<cmd>FzfLua lsp_definitions<cr>', 'Peek definition')
+        keymap('gD', function()
+            require('fzf-lua').lsp_definitions { jump_to_single_result = true }
+        end, 'Go/jump to definition')
     end
 
     if client.supports_method(methods.textDocument_signatureHelp) then
