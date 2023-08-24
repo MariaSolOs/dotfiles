@@ -37,14 +37,14 @@ return {
                 mode = 'c',
             },
         },
-        config = function()
+        opts = function()
             local cmdline_formats = require('noice.config').defaults().cmdline.format
             for _, format in pairs(cmdline_formats) do
                 -- TODO: Set this to false when https://github.com/folke/noice.nvim/pull/558 gets merged.
                 format.conceal = true
             end
 
-            require('noice').setup {
+            return {
                 presets = {
                     -- Have borders around hover and signature help.
                     lsp_doc_border = true,

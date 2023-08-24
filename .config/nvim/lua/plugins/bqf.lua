@@ -14,9 +14,6 @@ return {
             func_map = {
                 split = '<C-s>',
             },
-            preview = {
-                auto_preview = false,
-            },
         },
     },
 }

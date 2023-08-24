@@ -105,8 +105,7 @@ return {
             options = { permanent_delete = false },
         },
         config = function(_, opts)
-            local minifiles = require 'mini.files'
-            minifiles.setup(opts)
+            require('mini.files').setup(opts)
 
             -- Add rounded corners.
             vim.api.nvim_create_autocmd('User', {

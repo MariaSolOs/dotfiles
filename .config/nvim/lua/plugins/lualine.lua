@@ -1,22 +1,15 @@
 local diagnostic_icons = require('icons').diagnostics
 
 -- Statusline.
+-- TODO: Write my own statusline :)
 return {
     {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
-        config = function()
+        opts = function()
             local colors = require 'dracula.palette-soft'
 
-            -- Disable this since the mode will be displayed by lualine.
-            vim.o.showmode = false
-
-            -- Update the statusline with the latest LSP message.
-            vim.api.nvim_create_autocmd('LspProgress', {
-                command = 'redrawstatus',
-            })
-
-            require('lualine').setup {
+            return {
                 options = {
                     theme = 'dracula-nvim',
                     component_separators = '|',
@@ -71,6 +64,15 @@ return {
                     lualine_y = { 'encoding', 'filetype' },
                 },
             }
+        end,
+        config = function(_, opts)
+            require('lualine').setup(opts)
+
+            -- Disable this since the mode will be displayed by lualine.
+            vim.o.showmode = false
+
+            -- Update the statusline with the latest LSP message.
+            vim.api.nvim_create_autocmd('LspProgress', { command = 'redrawstatus' })
         end,
     },
 }

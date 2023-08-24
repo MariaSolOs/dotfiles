@@ -10,8 +10,7 @@ vim.diagnostic.config {
         end,
         -- Show only the first line of each diagnostic.
         format = function(diagnostic)
-            local lines = vim.split(diagnostic.message, '\n')
-            return lines[1]
+            return vim.split(diagnostic.message, '\n')[1]
         end,
     },
     float = {

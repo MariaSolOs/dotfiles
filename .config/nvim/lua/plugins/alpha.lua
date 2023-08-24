@@ -4,7 +4,7 @@ return {
         'goolord/alpha-nvim',
         dependencies = 'nvim-tree/nvim-web-devicons',
         event = 'VimEnter',
-        config = function()
+        opts = function()
             local dashboard = require 'alpha.themes.dashboard'
 
             local header = [[
@@ -37,7 +37,7 @@ return {
             dashboard.section.footer.val = "It's not a bug, it's a feature. 🌟"
             dashboard.section.footer.opts.hl = 'AlphaFooter'
 
-            require('alpha').setup(dashboard.opts)
+            return dashboard.opts
         end,
     },
 }

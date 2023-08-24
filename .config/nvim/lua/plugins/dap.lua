@@ -1,3 +1,19 @@
+-- Set up icons.
+local icons = {
+    Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
+    Breakpoint = ' ',
+    BreakpointCondition = ' ',
+    BreakpointRejected = { ' ', 'DiagnosticError' },
+    LogPoint = '.>',
+}
+for name, sign in pairs(icons) do
+    sign = type(sign) == 'table' and sign or { sign }
+    vim.fn.sign_define(
+        'Dap' .. name,
+        { text = sign[1], texthl = sign[2] or 'DiagnosticInfo', linehl = sign[3], numhl = sign[3] }
+    )
+end
+
 -- Debugging.
 return {
     {
@@ -170,22 +186,6 @@ return {
         },
         config = function()
             local dap = require 'dap'
-
-            -- Set up icons.
-            local icons = {
-                Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
-                Breakpoint = ' ',
-                BreakpointCondition = ' ',
-                BreakpointRejected = { ' ', 'DiagnosticError' },
-                LogPoint = '.>',
-            }
-            for name, sign in pairs(icons) do
-                sign = type(sign) == 'table' and sign or { sign }
-                vim.fn.sign_define(
-                    'Dap' .. name,
-                    { text = sign[1], texthl = sign[2] or 'DiagnosticInfo', linehl = sign[3], numhl = sign[3] }
-                )
-            end
 
             -- Set up adapter configurations.
             for _, language in ipairs { 'typescript', 'javascript' } do

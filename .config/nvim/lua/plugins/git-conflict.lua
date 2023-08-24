@@ -1,5 +1,4 @@
 -- Resolve and visualize git conflicts.
--- TODO: Use Trouble instead of the quicklist (https://github.com/akinsho/git-conflict.nvim/issues/61)
 return {
     {
         'akinsho/git-conflict.nvim',

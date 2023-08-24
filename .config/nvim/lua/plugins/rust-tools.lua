@@ -3,7 +3,7 @@ return {
     {
         'simrat39/rust-tools.nvim',
         event = { 'BufReadPost *.rs', 'BufNewFile *.rs' },
-        config = function()
+        opts = function()
             local rt = require 'rust-tools'
 
             -- Adapter shenanigans.
@@ -12,7 +12,7 @@ return {
             local liblldb_path = extension_path .. 'lldb/lib/liblldb.dylib'
             local adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path)
 
-            rt.setup {
+            return {
                 tools = {
                     -- Disable inlay hints since Neovim now supports them.
                     inlay_hints = {

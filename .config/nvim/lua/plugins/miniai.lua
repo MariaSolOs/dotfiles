@@ -4,10 +4,10 @@ return {
         'echasnovski/mini.ai',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = 'nvim-treesitter-textobjects',
-        config = function()
+        opts = function()
             local miniai = require 'mini.ai'
 
-            miniai.setup {
+            return {
                 n_lines = 300,
                 custom_textobjects = {
                     o = miniai.gen_spec.treesitter({

@@ -5,7 +5,7 @@ return {
     {
         'Bekaboo/dropbar.nvim',
         event = 'VeryLazy',
-        config = function()
+        opts = function()
             local api = require 'dropbar.api'
 
             -- Closes all the windows in the current dropbar.
@@ -19,16 +19,7 @@ return {
                 end
             end
 
-            require('dropbar').setup {
-                general = {
-                    enable = function(bufnr, winnr)
-                        return not vim.api.nvim_win_get_config(winnr).zindex
-                            and vim.bo[bufnr].buftype == ''
-                            and vim.bo[bufnr].filetype ~= ''
-                            and vim.api.nvim_buf_get_name(bufnr) ~= ''
-                            and not vim.wo[winnr].diff
-                    end,
-                },
+            return {
                 menu = {
                     win_configs = { border = 'rounded' },
                     keymaps = {
@@ -73,8 +64,11 @@ return {
                     },
                 },
             }
+        end,
+        config = function(_, opts)
+            require('dropbar').setup(opts)
 
-            vim.keymap.set('n', '<leader>w', api.pick, { desc = 'Winbar pick' })
+            vim.keymap.set('n', '<leader>w', require('dropbar.api').pick, { desc = 'Winbar pick' })
         end,
     },
 }

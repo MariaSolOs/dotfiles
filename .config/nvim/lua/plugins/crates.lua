@@ -3,10 +3,13 @@ return {
     {
         'Saecki/crates.nvim',
         event = 'BufRead Cargo.toml',
-        config = function()
+        opts = {
+            popup = { border = 'rounded' },
+        },
+        config = function(_, opts)
             local crates = require 'crates'
 
-            crates.setup { popup = { border = 'rounded' } }
+            crates.setup(opts)
 
             -- Lazily load the completion source.
             vim.api.nvim_create_autocmd('BufRead', {

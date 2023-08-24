@@ -55,71 +55,70 @@ return {
             { '<leader>fh', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
             { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
         },
-        config = function()
-            local fzf = require 'fzf-lua'
+        opts = {
+            -- Make stuff better combine with the editor.
+            fzf_colors = {
+                bg = { 'bg', 'Normal' },
+                gutter = { 'bg', 'Normal' },
+                info = { 'fg', 'Conditional' },
+                scrollbar = { 'bg', 'Normal' },
+                separator = { 'fg', 'Comment' },
+            },
+            fzf_opts = {
+                ['--info'] = 'default',
+                ['--layout'] = 'reverse-list',
+            },
+            keymap = {
+                builtin = {
+                    ['<C-/>'] = 'toggle-help',
+                    ['<C-a>'] = 'toggle-fullscreen',
+                    ['<C-i>'] = 'toggle-preview',
+                    ['<C-f>'] = 'preview-page-down',
+                    ['<C-b>'] = 'preview-page-up',
+                },
+                fzf = {
+                    ['alt-s'] = 'toggle',
+                    ['alt-a'] = 'toggle-all',
+                },
+            },
+            winopts = {
+                height = 0.7,
+                width = 0.55,
+                preview = {
+                    scrollbar = false,
+                    layout = 'vertical',
+                    vertical = 'up:40%',
+                },
+            },
+            -- Configuration for specific commands.
+            files = {
+                git_icons = false,
+                winopts = {
+                    preview = { hidden = 'hidden' },
+                },
+            },
+            grep = {
+                git_icons = false,
+                header_prefix = ' ',
+            },
+            highlights = { prompt = 'Highlights> ' },
+            lsp = {
+                symbols = {
+                    symbol_icons = symbol_icons,
+                },
+            },
+            oldfiles = {
+                include_current_session = true,
+                winopts = {
+                    preview = { hidden = 'hidden' },
+                },
+            },
+        },
+        config = function(_, opts)
+            require('fzf-lua').setup(opts)
 
             -- Add the .gitignore toggle description for the files picker.
             require('fzf-lua.config').set_action_helpstr(FilesPicker.toggle, 'no-ignore<->ignore')
-
-            fzf.setup {
-                -- Make stuff better combine with the editor.
-                fzf_colors = {
-                    bg = { 'bg', 'Normal' },
-                    gutter = { 'bg', 'Normal' },
-                    info = { 'fg', 'Conditional' },
-                    scrollbar = { 'bg', 'Normal' },
-                    separator = { 'fg', 'Comment' },
-                },
-                fzf_opts = {
-                    ['--info'] = 'default',
-                    ['--layout'] = 'reverse-list',
-                },
-                keymap = {
-                    builtin = {
-                        ['<C-/>'] = 'toggle-help',
-                        ['<C-a>'] = 'toggle-fullscreen',
-                        ['<C-i>'] = 'toggle-preview',
-                        ['<C-f>'] = 'preview-page-down',
-                        ['<C-b>'] = 'preview-page-up',
-                    },
-                    fzf = {
-                        ['alt-s'] = 'toggle',
-                        ['alt-a'] = 'toggle-all',
-                    },
-                },
-                winopts = {
-                    height = 0.7,
-                    width = 0.55,
-                    preview = {
-                        scrollbar = false,
-                        layout = 'vertical',
-                        vertical = 'up:40%',
-                    },
-                },
-                -- Configuration for specific commands.
-                files = {
-                    git_icons = false,
-                    winopts = {
-                        preview = { hidden = 'hidden' },
-                    },
-                },
-                grep = {
-                    git_icons = false,
-                    header_prefix = ' ',
-                },
-                highlights = { prompt = 'Highlights> ' },
-                lsp = {
-                    symbols = {
-                        symbol_icons = symbol_icons,
-                    },
-                },
-                oldfiles = {
-                    include_current_session = true,
-                    winopts = {
-                        preview = { hidden = 'hidden' },
-                    },
-                },
-            }
         end,
     },
 }

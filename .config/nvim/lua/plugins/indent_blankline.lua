@@ -10,7 +10,6 @@ return {
             char_priority = 12,
             show_foldtext = false,
             filetype_exclude = {
-                'Trouble',
                 'alpha',
                 'help',
                 'lazy',

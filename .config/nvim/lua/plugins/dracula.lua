@@ -4,10 +4,6 @@ return {
         'Mofiqul/dracula.nvim',
         lazy = false,
         priority = 1000,
-        config = function(_, opts)
-            require('dracula').setup(opts)
-            vim.cmd.colorscheme 'dracula-soft'
-        end,
         opts = {
             colors = {
                 bg = '#0E1419',
@@ -100,5 +96,9 @@ return {
                 }
             end,
         },
+        config = function(_, opts)
+            require('dracula').setup(opts)
+            vim.cmd.colorscheme 'dracula-soft'
+        end,
     },
 }

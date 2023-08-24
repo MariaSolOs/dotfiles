@@ -7,28 +7,10 @@ return {
         dependencies = {
             {
                 'L3MON4D3/LuaSnip',
-                config = function()
-                    local luasnip = require 'luasnip'
+                opts = function()
                     local types = require 'luasnip.util.types'
 
-                    require('luasnip.loaders.from_vscode').lazy_load()
-
-                    -- HACK: Cancel the snippet session when leaving insert mode.
-                    vim.api.nvim_create_autocmd('ModeChanged', {
-                        group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', { clear = true }),
-                        pattern = { 's:n', 'i:*' },
-                        callback = function(event)
-                            if
-                                luasnip.session
-                                and luasnip.session.current_nodes[event.buf]
-                                and not luasnip.session.jump_active
-                            then
-                                luasnip.unlink_current()
-                            end
-                        end,
-                    })
-
-                    luasnip.setup {
+                    return {
                         -- Display a cursor-like placeholder in unvisited nodes
                         -- of the snippet.
                         ext_opts = {
@@ -47,6 +29,27 @@ return {
                         },
                     }
                 end,
+                config = function(_, opts)
+                    local luasnip = require 'luasnip'
+
+                    luasnip.setup(opts)
+                    require('luasnip.loaders.from_vscode').lazy_load()
+
+                    -- HACK: Cancel the snippet session when leaving insert mode.
+                    vim.api.nvim_create_autocmd('ModeChanged', {
+                        group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', { clear = true }),
+                        pattern = { 's:n', 'i:*' },
+                        callback = function(event)
+                            if
+                                luasnip.session
+                                and luasnip.session.current_nodes[event.buf]
+                                and not luasnip.session.jump_active
+                            then
+                                luasnip.unlink_current()
+                            end
+                        end,
+                    })
+                end,
             },
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-nvim-lsp',
@@ -54,15 +57,11 @@ return {
         },
         version = false,
         event = 'InsertEnter',
-        config = function()
+        opts = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
 
-            -- Inside a snippet, use backspace to remove the placeholder.
-            vim.keymap.set('s', '<BS>', '<C-O>s')
-
-            ---@diagnostic disable: missing-fields
-            cmp.setup {
+            return {
                 -- Disable preselect. On enter, the first thing will be used if nothing
                 -- is selected.
                 preselect = cmp.PreselectMode.None,
@@ -131,7 +130,14 @@ return {
                     { name = 'buffer', keyword_length = 4 },
                 }),
             }
-            ---@diagnostic enable: missing-fields
+        end,
+        config = function(_, opts)
+            local cmp = require 'cmp'
+
+            -- Inside a snippet, use backspace to remove the placeholder.
+            vim.keymap.set('s', '<BS>', '<C-O>s')
+
+            cmp.setup(opts)
         end,
     },
 }
