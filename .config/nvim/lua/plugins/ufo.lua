@@ -50,8 +50,6 @@ return {
                     maxheight = 10,
                 },
             },
-            -- Automatically close imports/comments when first loading the buffer.
-            close_fold_kinds = { 'imports', 'comment' },
         },
         config = function(_, opts)
             require('ufo').setup(opts)
