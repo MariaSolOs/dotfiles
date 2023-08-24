@@ -4,8 +4,8 @@ return {
         'numToStr/Comment.nvim',
         config = true,
         keys = {
-            'gcc',
-            { 'gc', mode = { 'n', 'x', 'o' } },
+            { 'gcc', desc = 'Toggle line comment' },
+            { 'gc', mode = { 'n', 'x', 'o' }, desc = 'Toggle comment' },
         },
     },
 }
