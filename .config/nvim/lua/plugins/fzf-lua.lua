@@ -19,7 +19,10 @@ FilesPicker.pick = function(opts)
         behavior = 'ignoring'
         opts.cmd = opts.cmd .. ' --no-ignore'
     end
-    opts.winopts = { title = 'Files (' .. behavior .. ' .gitignore)' }
+    opts.winopts = {
+        title = 'Files (' .. behavior .. ' .gitignore)',
+        title_pos = 'center',
+    }
     FilesPicker.opts = opts
 
     require('fzf-lua').files(opts)
@@ -36,16 +39,10 @@ return {
                 '<leader>fb',
                 function()
                     require('fzf-lua').grep_curbuf {
-                        fzf_opts = {
-                            ['--layout'] = 'reverse',
-                        },
                         winopts = {
                             height = 0.6,
                             width = 0.5,
-                            preview = {
-                                layout = 'vertical',
-                                vertical = 'down:70%',
-                            },
+                            preview = { vertical = 'up:70%' },
                         },
                     }
                 end,
@@ -75,6 +72,7 @@ return {
                 },
                 fzf_opts = {
                     ['--info'] = 'default',
+                    ['--layout'] = 'reverse-list',
                 },
                 keymap = {
                     builtin = {
@@ -90,18 +88,35 @@ return {
                     },
                 },
                 winopts = {
-                    preview = { scrollbar = false },
+                    height = 0.7,
+                    width = 0.55,
+                    preview = {
+                        scrollbar = false,
+                        layout = 'vertical',
+                        vertical = 'up:40%',
+                    },
                 },
                 -- Configuration for specific commands.
-                files = { git_icons = false },
-                oldfiles = { include_current_session = true },
+                files = {
+                    git_icons = false,
+                    winopts = {
+                        preview = { hidden = 'hidden' },
+                    },
+                },
                 grep = {
                     git_icons = false,
                     header_prefix = ' ',
                 },
+                highlights = { prompt = 'Highlights> ' },
                 lsp = {
                     symbols = {
                         symbol_icons = symbol_icons,
+                    },
+                },
+                oldfiles = {
+                    include_current_session = true,
+                    winopts = {
+                        preview = { hidden = 'hidden' },
                     },
                 },
             }

@@ -62,9 +62,7 @@ M.on_attach = function(client, bufnr)
     end
 
     if client.supports_method(methods.textDocument_definition) then
-        keymap('gd', function()
-            require('fzf-lua').lsp_definitions { jump_to_single_result = true }
-        end, 'Go to definition')
+        keymap('gd', '<cmd>FzfLua lsp_definitions<cr>', 'Go to definition')
     end
 
     if client.supports_method(methods.textDocument_signatureHelp) then
@@ -72,8 +70,8 @@ M.on_attach = function(client, bufnr)
     end
 
     keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
-    keymap('gI', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
-    keymap('gD', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
+    keymap('gm', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
+    keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
     keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
     keymap('<leader>fS', function()
