@@ -74,7 +74,7 @@ M.on_attach = function(client, bufnr)
 
     keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
     keymap('gm', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
-    keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
+    keymap('gt', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
     keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
     keymap('<leader>fS', function()

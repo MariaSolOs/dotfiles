@@ -25,9 +25,11 @@ return {
         config = function(_, opts)
             require('bufferline').setup(opts)
 
-            -- Buffer navigation.
+            -- Buffer and tab navigation.
             vim.keymap.set('n', '[b', '<cmd>BufferLineCyclePrev<cr>', { desc = 'Previous buffer' })
             vim.keymap.set('n', ']b', '<cmd>BufferLineCycleNext<cr>', { desc = 'Next buffer' })
+            vim.keymap.set('n', '[p', '<cmd>tabp<cr>', { desc = 'Previous tab page' })
+            vim.keymap.set('n', ']p', '<cmd>tabn<cr>', { desc = 'Next tab page' })
             require('which-key').register {
                 ['<leader>b'] = {
                     name = '+buffers',
@@ -42,7 +44,6 @@ return {
                     o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
                     r = { '<cmd>BufferLineCloseRight<cr>', 'Close buffers to the right' },
                 },
-                -- Tab navigation.
                 ['<leader>p'] = {
                     name = '+tabs',
                     c = { '<cmd>tabclose<cr>', 'Close tab page' },
