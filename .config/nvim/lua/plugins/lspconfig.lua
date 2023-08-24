@@ -188,6 +188,20 @@ return {
                             end,
                         }
                     end,
+                    taplo = function()
+                        lspconfig.taplo.setup {
+                            capabilities = capabilities(),
+                            on_attach = on_attach,
+                            settings = {
+                                evenBetterToml = {
+                                    -- TODO: Remove this hack when https://github.com/tamasfe/taplo/issues/463 gets fixed.
+                                    schema = {
+                                        catalogs = { 'https://taplo.tamasfe.dev/schema_index.json' },
+                                    },
+                                },
+                            },
+                        }
+                    end,
                 },
             }
         end,
