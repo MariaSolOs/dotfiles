@@ -2,7 +2,10 @@
 return {
     {
         'numToStr/Comment.nvim',
-        event = { 'BufReadPre', 'BufNewFile' },
         config = true,
+        keys = {
+            'gcc',
+            { 'gc', mode = { 'n', 'x', 'o' } },
+        },
     },
 }
