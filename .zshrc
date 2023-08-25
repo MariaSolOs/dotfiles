@@ -14,6 +14,11 @@ setopt hist_ignore_dups # ignore duplicated commands history list
 # Set up neovim as the default editor.
 export EDITOR="$(which nvim)"
 
+# Completion for kitty
+if [[ "$TERM" == "xterm-kitty" ]]; then
+  kitty + complete setup zsh | source /dev/stdin
+fi
+
 # Load nvm and set up bash completions.
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
