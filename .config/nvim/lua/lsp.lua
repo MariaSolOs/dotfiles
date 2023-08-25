@@ -72,8 +72,11 @@ M.on_attach = function(client, bufnr)
         keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
     end
 
+    if client.supports_method(methods.textDocument_implementation) then
+        keymap('gm', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
+    end
+
     keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
-    keymap('gm', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
     keymap('gt', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
     keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
