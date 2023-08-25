@@ -176,6 +176,7 @@ return {
                                         enable = true,
                                         arrayIndex = 'Disable',
                                     },
+                                    completion = { callSnippet = 'Replace' },
                                 },
                             },
                         }
