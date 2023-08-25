@@ -1,3 +1,5 @@
+local disabled_filetypes = { 'qf' }
+
 -- Navigation with jump motions.
 return {
     {
@@ -11,7 +13,12 @@ return {
                 's',
                 mode = { 'n', 'x', 'o' },
                 function()
-                    require('flash').jump()
+                    if not vim.iter(disabled_filetypes):find(vim.bo.filetype) then
+                        vim.schedule(function()
+                            require('flash').jump()
+                        end)
+                    end
+                    return '<Ignore>'
                 end,
                 desc = 'Flash',
             },
@@ -19,7 +26,12 @@ return {
                 'r',
                 mode = 'o',
                 function()
-                    require('flash').treesitter_search()
+                    if not vim.iter(disabled_filetypes):find(vim.bo.filetype) then
+                        vim.schedule(function()
+                            require('flash').treesitter_search()
+                        end)
+                    end
+                    return '<Ignore>'
                 end,
                 desc = 'Treesitter Search',
             },
