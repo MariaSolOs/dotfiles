@@ -13,12 +13,13 @@ return {
                 's',
                 mode = { 'n', 'x', 'o' },
                 function()
-                    if not vim.iter(disabled_filetypes):find(vim.bo.filetype) then
+                    if vim.iter(disabled_filetypes):find(vim.bo.filetype) then
+                        return 's'
+                    else
                         vim.schedule(function()
                             require('flash').jump()
                         end)
                     end
-                    return '<Ignore>'
                 end,
                 desc = 'Flash',
             },
@@ -26,12 +27,11 @@ return {
                 'r',
                 mode = 'o',
                 function()
-                    if not vim.iter(disabled_filetypes):find(vim.bo.filetype) then
-                        vim.schedule(function()
-                            require('flash').treesitter_search()
-                        end)
+                    if vim.iter(disabled_filetypes):find(vim.bo.filetype) then
+                        return 'r'
+                    else
+                        require('flash').treesitter_search()
                     end
-                    return '<Ignore>'
                 end,
                 desc = 'Treesitter Search',
             },
