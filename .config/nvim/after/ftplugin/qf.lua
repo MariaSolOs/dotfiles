@@ -32,5 +32,5 @@ local function list_delete()
     vim.fn.setpos('.', { buf, line, 1, 0 })
 end
 
-vim.keymap.set('n', 'dd', list_delete, { desc = 'Delete current quickfix entry' })
-vim.keymap.set('v', 'd', list_delete, { desc = 'Delete selected quickfix entry' })
+vim.keymap.set('n', 'dd', list_delete, { desc = 'Delete current quickfix entry', buffer = 0 })
+vim.keymap.set('v', 'd', list_delete, { desc = 'Delete selected quickfix entry', buffer = 0 })
