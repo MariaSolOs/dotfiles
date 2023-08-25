@@ -58,14 +58,22 @@ alias gp='git push'
 alias gst='git status'
 
 # Git aliases for my dotfiles repo.
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-# Idk why but I couldn't use the config alias below.
-alias cs='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME status'
-alias ca='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME add'
-alias cc='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME commit -m'
+function config() {
+    /usr/bin/git --git-dir="$HOME/.cfg/" --work-tree="$HOME" "$@"
+}
+alias cs='config status'
+alias ca='config add'
+alias cc='config commit -m'
+alias cp='config push'
+alias cdiff='config diff'
+alias cl='config log'
 
 # Auto-suggestions.
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Auto-close, delete and skip over matching delimiters.
+source ~/.zsh/zsh-autopair/autopair.zsh
+autopair-init
 
 # Syntax highlighting (must be at the end of this file).
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
