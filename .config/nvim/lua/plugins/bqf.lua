@@ -7,7 +7,7 @@ return {
             {
                 'yorickpeterse/nvim-pqf',
                 event = 'VeryLazy',
-                config = true,
+                opts = { show_multiple_lines = true },
             },
         },
         opts = {

@@ -1,4 +1,5 @@
 -- Copilot.
+-- TODO: Use github/copilot.vim?
 return {
     {
         'zbirenbaum/copilot.lua',
