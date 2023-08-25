@@ -4,6 +4,7 @@ return {
         'kevinhwang91/nvim-bqf',
         ft = 'qf',
         dependencies = {
+            -- TODO: Define my own qf formatter.
             {
                 'yorickpeterse/nvim-pqf',
                 event = 'VeryLazy',

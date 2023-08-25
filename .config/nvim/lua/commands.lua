@@ -7,7 +7,7 @@ vim.api.nvim_create_user_command('ClearRegisters', function()
 end, { desc = 'Clear registers' })
 
 vim.api.nvim_create_user_command('Todos', function()
-    require('fzf-lua').grep { search = 'TODO|todo!', no_esc = true }
+    require('fzf-lua').grep { search = [[TODO:|todo!\(.*\)]], no_esc = true }
 end, { desc = 'TODOs' })
 
 -- Highlight on yank.
