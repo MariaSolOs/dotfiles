@@ -4,11 +4,13 @@ return {
         'kevinhwang91/nvim-bqf',
         ft = 'qf',
         dependencies = {
-            -- TODO: Define my own qf formatter.
             {
                 'yorickpeterse/nvim-pqf',
                 event = 'VeryLazy',
-                opts = { show_multiple_lines = true },
+                opts = {
+                    show_multiple_lines = true,
+                    max_filename_length = 40,
+                },
             },
         },
         opts = {
