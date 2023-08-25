@@ -50,10 +50,6 @@ return {
                                 -- These are a bit too much.
                                 chainingHints = { enable = false },
                             },
-                            completion = {
-                                -- Do not fill in parameters.
-                                callable = { snippets = 'add_parentheses' },
-                            },
                         },
                     },
                 },
