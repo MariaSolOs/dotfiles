@@ -123,7 +123,8 @@ return {
             function minifiles.go_in()
                 mini_go_in()
                 local target = minifiles.get_target_window()
-                if minifiles.get_fs_entry().fs_type == 'file' and target then
+                local entry = minifiles.get_fs_entry()
+                if entry and target and entry.fs_type == 'file' then
                     vim.bo[vim.api.nvim_win_get_buf(target)].buflisted = true
                 end
             end
