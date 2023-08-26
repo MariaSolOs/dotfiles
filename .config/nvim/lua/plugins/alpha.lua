@@ -2,7 +2,20 @@
 return {
     {
         'goolord/alpha-nvim',
-        dependencies = 'nvim-tree/nvim-web-devicons',
+        dependencies = {
+            'nvim-tree/nvim-web-devicons',
+            opts = {
+                -- Make the icon for query files more visible.
+                override = {
+                    ['scm'] = {
+                        icon = '󰘧',
+                        color = '#A9ABAC',
+                        cterm_color = '16',
+                        name = 'Scheme',
+                    },
+                },
+            },
+        },
         event = 'VimEnter',
         opts = function()
             local dashboard = require 'alpha.themes.dashboard'
