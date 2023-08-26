@@ -25,9 +25,6 @@ return {
 
                 keymap(']g', gs.next_hunk, 'Next hunk')
                 keymap('[g', gs.prev_hunk, 'Previous hunk')
-                keymap('<leader>xh', function()
-                    gs.setqflist 'all'
-                end, 'Hunks')
 
                 require('which-key').register {
                     ['<leader>g'] = {
@@ -35,7 +32,7 @@ return {
                         b = { gs.blame_line, 'Blame line', buffer = bufnr },
                         h = {
                             function()
-                                gs.setloclist 'all'
+                                gs.setloclist(0, 'all')
                             end,
                             'Hunks',
                             buffer = bufnr,
@@ -45,6 +42,7 @@ return {
                                 require('float_term').float_term('lazygit', { width = 0.9, height = 0.9 })
                             end,
                             'Lazygit',
+                            buffer = bufnr,
                         },
                         p = { gs.preview_hunk, 'Preview hunk', buffer = bufnr },
                         r = { gs.reset_hunk, 'Reset hunk', buffer = bufnr },
