@@ -26,10 +26,11 @@ return {
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
                     -- Smoother colors in the completion menu.
-                    CmpItemKind = { fg = colors.white, bg = 'NONE' },
+                    CmpItemKind = { bg = 'NONE' },
                     CmpItemAbbr = { fg = colors.white, bg = 'NONE' },
                     CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
                     CmpItemAbbrDeprecated = { strikethrough = true },
+                    CmpItemMenu = { fg = '#A9ABAC' },
 
                     -- Make these virtual text thingies different from comments/regular code.
                     LspInlayHint = { fg = '#6272A4', italic = true },

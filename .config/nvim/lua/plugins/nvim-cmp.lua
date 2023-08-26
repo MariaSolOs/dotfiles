@@ -68,25 +68,26 @@ return {
                 -- is selected.
                 preselect = cmp.PreselectMode.None,
                 formatting = {
+                    fields = { 'kind', 'abbr', 'menu' },
                     format = function(_, vim_item)
-                        local ABBR_WIDTH, MAX_MENU_WIDTH, ELLIPSIS = 20, 25, '…'
+                        local MAX_ABBR_WIDTH, MAX_MENU_WIDTH = 25, 30
+                        local ELLIPSIS = '…'
 
-                        -- Truncate the label, or pad it if it's too short.
-                        local label, len = vim_item.abbr, vim.api.nvim_strwidth(vim_item.abbr)
-                        if len < ABBR_WIDTH then
-                            vim_item.abbr = label .. string.rep(' ', ABBR_WIDTH - len)
-                        elseif len > ABBR_WIDTH then
-                            vim_item.abbr = vim.fn.strcharpart(label, 0, ABBR_WIDTH) .. ELLIPSIS
+                        -- Add the icon.
+                        vim_item.kind = (symbol_kinds[vim_item.kind] or symbol_kinds.Text)
+                            .. ' ['
+                            .. vim_item.kind
+                            .. ']'
+
+                        -- Truncate the label.
+                        if vim.api.nvim_strwidth(vim_item.abbr) > MAX_ABBR_WIDTH then
+                            vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, MAX_ABBR_WIDTH) .. ELLIPSIS
                         end
 
                         -- Truncate the description part.
-                        local menu = vim_item.menu
-                        if menu and vim.api.nvim_strwidth(menu) > MAX_MENU_WIDTH then
-                            vim_item.menu = vim.fn.strcharpart(menu, 0, MAX_MENU_WIDTH) .. ELLIPSIS
+                        if vim.api.nvim_strwidth(vim_item.menu or '') > MAX_MENU_WIDTH then
+                            vim_item.menu = vim.fn.strcharpart(vim_item.menu, 0, MAX_MENU_WIDTH) .. ELLIPSIS
                         end
-
-                        -- Add the icon.
-                        vim_item.kind = (symbol_kinds[vim_item.kind] or '') .. '  ' .. vim_item.kind
 
                         return vim_item
                     end,

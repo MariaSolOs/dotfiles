@@ -44,9 +44,9 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- Toggle relative line numbers.
-local ToggleLineNumbers = vim.api.nvim_create_augroup('ToggleLineNumbers', {})
+local line_numbers_group = vim.api.nvim_create_augroup('ToggleLineNumbers', {})
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
-    group = ToggleLineNumbers,
+    group = line_numbers_group,
     callback = function()
         if vim.o.nu and vim.api.nvim_get_mode().mode ~= 'i' then
             vim.opt.relativenumber = true
@@ -54,7 +54,7 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'Cmdline
     end,
 })
 vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
-    group = ToggleLineNumbers,
+    group = line_numbers_group,
     callback = function()
         if vim.o.nu then
             vim.opt.relativenumber = false
