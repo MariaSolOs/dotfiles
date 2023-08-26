@@ -61,14 +61,33 @@ return {
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
 
+            local winhighlight = 'Normal:Normal,FloatBorder:Normal,CursorLine:Visual,Search:None'
+
             return {
                 -- Disable preselect. On enter, the first thing will be used if nothing
                 -- is selected.
                 preselect = cmp.PreselectMode.None,
-                -- Add icons to the completion menu.
                 formatting = {
                     format = function(_, vim_item)
+                        local ABBR_WIDTH, MAX_MENU_WIDTH, ELLIPSIS = 20, 25, '…'
+
+                        -- Truncate the label, or pad it if it's too short.
+                        local label, len = vim_item.abbr, vim.api.nvim_strwidth(vim_item.abbr)
+                        if len < ABBR_WIDTH then
+                            vim_item.abbr = label .. string.rep(' ', ABBR_WIDTH - len)
+                        elseif len > ABBR_WIDTH then
+                            vim_item.abbr = vim.fn.strcharpart(label, 0, ABBR_WIDTH) .. ELLIPSIS
+                        end
+
+                        -- Truncate the description part.
+                        local menu = vim_item.menu
+                        if menu and vim.api.nvim_strwidth(menu) > MAX_MENU_WIDTH then
+                            vim_item.menu = vim.fn.strcharpart(menu, 0, MAX_MENU_WIDTH) .. ELLIPSIS
+                        end
+
+                        -- Add the icon.
                         vim_item.kind = (symbol_kinds[vim_item.kind] or '') .. '  ' .. vim_item.kind
+
                         return vim_item
                     end,
                 },
@@ -78,9 +97,17 @@ return {
                     end,
                 },
                 window = {
-                    -- Make the completion menu bordered.
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
+                    completion = {
+                        border = 'rounded',
+                        winhighlight = winhighlight,
+                        scrollbar = true,
+                    },
+                    documentation = {
+                        border = 'rounded',
+                        winhighlight = winhighlight,
+                        max_height = math.floor(vim.o.lines * 0.5),
+                        max_width = math.floor(vim.o.columns * 0.4),
+                    },
                 },
                 mapping = cmp.mapping.preset.insert {
                     ['<C-b>'] = cmp.mapping.scroll_docs(-4),

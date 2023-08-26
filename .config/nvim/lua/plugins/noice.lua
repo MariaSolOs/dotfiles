@@ -131,6 +131,12 @@ return {
                     progress = { align = 'left' },
                 },
                 views = {
+                    cmdline_popup = {
+                        position = { row = 12 },
+                    },
+                    cmdline_popupmenu = {
+                        position = { row = 15 },
+                    },
                     mini = {
                         -- Hide mini messages after 5 seconds.
                         timeout = 5000,

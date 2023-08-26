@@ -7,10 +7,11 @@ return {
         opts = {
             colors = {
                 bg = '#0E1419',
+                bright_red = '#EC6A88',
                 comment = '#B08BBB',
                 orange = '#FFBFA9',
                 red = '#E95678',
-                bright_red = '#EC6A88',
+                selection = '#3C4148',
             },
             italic_comment = true,
             overrides = function(colors)
@@ -24,10 +25,11 @@ return {
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
-                    -- Smoother backgrounds in the completion menu.
+                    -- Smoother colors in the completion menu.
                     CmpItemKind = { fg = colors.white, bg = 'NONE' },
                     CmpItemAbbr = { fg = colors.white, bg = 'NONE' },
                     CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
+                    CmpItemAbbrDeprecated = { strikethrough = true },
 
                     -- Make these virtual text thingies different from comments/regular code.
                     LspInlayHint = { fg = '#6272A4', italic = true },
