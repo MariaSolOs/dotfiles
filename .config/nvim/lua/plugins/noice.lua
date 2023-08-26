@@ -1,5 +1,4 @@
 -- Nice notifications, command line UI, and more.
--- NOTE: Highlights are broken rn, but https://github.com/folke/noice.nvim/pull/571 fixes it.
 return {
     {
         'folke/noice.nvim',
