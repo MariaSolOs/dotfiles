@@ -5,15 +5,8 @@ return {
     {
         'akinsho/bufferline.nvim',
         event = 'VeryLazy',
-        dependencies = 'echasnovski/mini.bufremove',
         opts = {
             options = {
-                close_command = function(bufnr)
-                    require('mini.bufremove').delete(bufnr, false)
-                end,
-                right_mouse_command = function(bufnr)
-                    require('mini.bufremove').delete(bufnr, false)
-                end,
                 diagnostics = 'nvim_lsp',
                 diagnostics_indicator = function(_, _, diag)
                     local indicator = (diag.error and diagnostic_icons.ERROR .. ' ' or '')
@@ -34,12 +27,7 @@ return {
                 ['<leader>b'] = {
                     name = '+buffers',
                     c = { '<cmd>BufferLinePickClose<cr>', 'Select a buffer to close' },
-                    d = {
-                        function()
-                            require('mini.bufremove').delete(0, true)
-                        end,
-                        'Delete current buffer',
-                    },
+                    d = { '<cmd>bdelete<cr>', 'Delete current buffer' },
                     l = { '<cmd>BufferLineCloseLeft<cr>', 'Close buffers to the left' },
                     o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
                     r = { '<cmd>BufferLineCloseRight<cr>', 'Close buffers to the right' },

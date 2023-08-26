@@ -94,7 +94,7 @@ return {
                     qfPath = { fg = colors.bright_blue },
                     qfPosition = { fg = colors.pink, underline = true },
                     QuickFixLine = { italic = true, bg = '#342231' },
-                    BqfPreviewRange = { bg = colors.bright_magenta },
+                    BqfPreviewRange = { fg = colors.bg, bg = colors.bright_magenta },
                 }
             end,
         },

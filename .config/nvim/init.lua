@@ -23,8 +23,8 @@ require('lazy').setup('plugins', {
     ui = { border = 'rounded' },
     dev = { path = '~/Code' },
     install = {
-        -- Load colorschemes during startup installations.
-        colorscheme = { 'dracula-soft', 'habamax' },
+        -- Do not automatically install on startup.
+        missing = false,
     },
     -- Don't bother me when tweaking plugins.
     change_detection = { notify = false },

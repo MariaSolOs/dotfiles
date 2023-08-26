@@ -105,7 +105,9 @@ return {
             options = { permanent_delete = false },
         },
         config = function(_, opts)
-            require('mini.files').setup(opts)
+            local minifiles = require 'mini.files'
+
+            minifiles.setup(opts)
 
             -- Add rounded corners.
             vim.api.nvim_create_autocmd('User', {
@@ -114,6 +116,17 @@ return {
                     vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' })
                 end,
             })
+
+            -- HACK: Make sure that all files opened by minifiles are listed.
+            local mini_go_in = minifiles.go_in
+            ---@diagnostic disable-next-line: duplicate-set-field
+            function minifiles.go_in()
+                mini_go_in()
+                local target = minifiles.get_target_window()
+                if minifiles.get_fs_entry().fs_type == 'file' and target then
+                    vim.bo[vim.api.nvim_win_get_buf(target)].buflisted = true
+                end
+            end
 
             -- Open files in splits.
             vim.api.nvim_create_autocmd('User', {
