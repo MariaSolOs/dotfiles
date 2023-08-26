@@ -74,10 +74,7 @@ return {
                         local ELLIPSIS = '…'
 
                         -- Add the icon.
-                        vim_item.kind = (symbol_kinds[vim_item.kind] or symbol_kinds.Text)
-                            .. ' ['
-                            .. vim_item.kind
-                            .. ']'
+                        vim_item.kind = (symbol_kinds[vim_item.kind] or symbol_kinds.Text) .. ' ' .. vim_item.kind
 
                         -- Truncate the label.
                         if vim.api.nvim_strwidth(vim_item.abbr) > MAX_ABBR_WIDTH then
