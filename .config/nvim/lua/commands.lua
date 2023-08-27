@@ -1,11 +1,11 @@
--- Utility command for clearing macros.
+-- Clear registers.
 vim.api.nvim_create_user_command('ClearRegisters', function()
     for r in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):gmatch '%a' do
         vim.fn.setreg(r, '')
     end
-    vim.cmd 'wshada'
 end, { desc = 'Clear registers' })
 
+-- Find TODOs.
 vim.api.nvim_create_user_command('Todos', function()
     require('fzf-lua').grep { search = [[TODO:|todo!\(.*\)]], no_esc = true }
 end, { desc = 'TODOs' })
