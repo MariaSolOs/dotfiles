@@ -31,8 +31,8 @@ return {
                             if not menu then
                                 return
                             end
-                            local cursor = vim.api.nvim_win_get_cursor(menu.win)
-                            local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
+                            local row = vim.api.nvim_win_get_cursor(menu.win)[1]
+                            local component = menu.entries[row]:first_clickable()
                             if component then
                                 menu:click_on(component, nil, 1, 'l')
                             end
