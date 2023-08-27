@@ -6,10 +6,6 @@ vim.g.maplocalleader = ' '
 -- Add binaries installed by mason.nvim to path.
 vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
 
--- Some weird shit happens when enabling modelines.
--- TODO: Follow up with https://github.com/folke/noice.nvim/issues/572.
-vim.o.modeline = false
-
 -- Use an indentation of 4 spaces.
 vim.o.sw = 4
 vim.o.ts = 4

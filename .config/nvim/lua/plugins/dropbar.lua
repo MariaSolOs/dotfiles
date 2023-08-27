@@ -20,6 +20,10 @@ return {
             end
 
             return {
+                general = {
+                    -- Remove the 'OptionSet' event since it causes weird issues with modelines.
+                    attach_events = { 'BufWinEnter', 'BufWritePost' },
+                },
                 menu = {
                     win_configs = { border = 'rounded' },
                     keymaps = {
