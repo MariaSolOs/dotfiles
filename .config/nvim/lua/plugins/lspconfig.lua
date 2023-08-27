@@ -143,32 +143,17 @@ return {
                         lspconfig.lua_ls.setup {
                             capabilities = capabilities(),
                             on_attach = on_attach,
-                            on_init = function(client)
-                                local path = client.workspace_folders[1].name
-                                if
-                                    not vim.uv.fs_stat(path .. '/.luarc.json')
-                                    and not vim.uv.fs_stat(path .. '/.luarc.jsonc')
-                                then
-                                    -- Make the server aware of Neovim runtime files
-                                    client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-                                        Lua = {
-                                            runtime = { version = 'LuaJIT' },
-                                            workspace = {
-                                                checkThirdParty = false,
-                                                library = {
-                                                    vim.env.VIMRUNTIME,
-                                                    '${3rd}/luv/library',
-                                                },
-                                            },
-                                        },
-                                    })
-                                    client.notify(vim.lsp.protocol.Methods.workspace_didChangeConfiguration, {
-                                        settings = client.config.settings,
-                                    })
-                                end
-                            end,
                             settings = {
                                 Lua = {
+                                    runtime = { version = 'LuaJIT' },
+                                    workspace = {
+                                        checkThirdParty = false,
+                                        -- Make the server aware of Neovim runtime files.
+                                        library = {
+                                            vim.env.VIMRUNTIME,
+                                            '${3rd}/luv/library',
+                                        },
+                                    },
                                     telemetry = { enable = false },
                                     -- Using stylua for formatting.
                                     format = { enable = false },

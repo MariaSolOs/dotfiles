@@ -1,13 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-  "runtime": {
-    "version": "LuaJIT",
-    "path": [
-      "?.lua",
-      "?/init.lua"
-    ],
-    "pathStrict": true
-  },
   "workspace": {
     "library": [
       // Runtime and builtin libraries.
@@ -21,6 +13,7 @@
       "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",
       "$XDG_DATA_HOME/nvim/lazy/alpha-nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/bufferline.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/Comment.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
       "$XDG_DATA_HOME/nvim/lazy/crates.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/dracula.nvim/lua",
@@ -42,7 +35,6 @@
       "$XDG_DATA_HOME/nvim/lazy/rust-tools.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/vim-illuminate/lua",
       "$XDG_DATA_HOME/nvim/lazy/which-key.nvim/lua"
-    ],
-    "checkThirdParty": false
+    ]
   }
 }
