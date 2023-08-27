@@ -1,5 +1,9 @@
 -- Some settings.
 vim.o.nu = true
+vim.o.buflisted = false
+
+-- Add the cfilter plugin.
+vim.cmd.packadd 'cfilter'
 
 -- Deleting entries.
 local function list_delete()
@@ -31,6 +35,5 @@ local function list_delete()
     -- Restore cursor position.
     vim.fn.setpos('.', { buf, line, 1, 0 })
 end
-
 vim.keymap.set('n', 'dd', list_delete, { desc = 'Delete current quickfix entry', buffer = 0 })
 vim.keymap.set('v', 'd', list_delete, { desc = 'Delete selected quickfix entry', buffer = 0 })

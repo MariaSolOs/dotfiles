@@ -1,7 +1,6 @@
 local diagnostic_icons = require('icons').diagnostics
 
 -- Statusline.
--- TODO: Write my own statusline :)
 return {
     {
         'nvim-lualine/lualine.nvim',
