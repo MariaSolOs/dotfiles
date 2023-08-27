@@ -7,6 +7,10 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             jump = { nohlsearch = true },
+            prompt = {
+                -- Place the prompt above the statusline.
+                win_config = { row = -2 },
+            },
         },
         keys = {
             {

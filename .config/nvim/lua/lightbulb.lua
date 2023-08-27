@@ -1,5 +1,5 @@
----VSCode-like lightbulb.
----Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/37cee912e8d1d1d8bd0477e735a82017374061c0/lua/lspsaga/codeaction/lightbulb.lua
+--VSCode-like lightbulb.
+--Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/37cee912e8d1d1d8bd0477e735a82017374061c0/lua/lspsaga/codeaction/lightbulb.lua
 
 local lb_name = 'CodeActionLightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
@@ -68,9 +68,9 @@ local function render(bufnr)
     end)
 end
 
----@param bufnr number
 -- I don't fully understand how this works, kind of just copy-pasted it
 -- from lspsaga.
+---@param bufnr number
 local function update(bufnr)
     assert(timer, 'Timer is not initialized')
 
