@@ -16,6 +16,7 @@ local function update_extmark(bufnr, line)
     if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
         return
     end
+
     vim.api.nvim_buf_clear_namespace(bufnr, lb_namespace, 0, -1)
 
     -- Extra check for not being in insert mode here because sometimes the autocommand
@@ -41,9 +42,9 @@ local function render(bufnr)
 
     -- If there are hints in the current line, don't show yet another lightbulb.
     if
-        #vim.tbl_filter(function(diag)
+        vim.iter(diagnostics):any(function(diag)
             return diag.severity == vim.diagnostic.severity.HINT
-        end, diagnostics) > 0
+        end)
     then
         update_extmark(bufnr, nil)
         return
@@ -60,11 +61,7 @@ local function render(bufnr)
             return
         end
 
-        if res and #res > 0 then
-            update_extmark(bufnr, line)
-        else
-            update_extmark(bufnr, nil)
-        end
+        update_extmark(bufnr, (res and #res > 0 and line) or nil)
     end)
 end
 
@@ -89,16 +86,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(ev)
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
-        if not client then
-            return
-        end
-        if not client.supports_method(code_action_method) then
+        if not client or not client.supports_method(code_action_method) then
             return
         end
 
         local buf_group_name = lb_name .. tostring(ev.buf)
-        local ok = pcall(vim.api.nvim_get_autocmds, { group = buf_group_name })
-        if ok then
+        if pcall(vim.api.nvim_get_autocmds, { group = buf_group_name }) then
             return
         end
 
