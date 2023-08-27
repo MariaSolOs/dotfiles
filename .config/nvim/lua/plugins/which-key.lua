@@ -7,9 +7,6 @@ return {
         version = '1.4.3',
         opts = {
             window = { border = 'rounded' },
-            disable = {
-                filetypes = { 'alpha' },
-            },
         },
         config = function(_, opts)
             local wk = require 'which-key'
