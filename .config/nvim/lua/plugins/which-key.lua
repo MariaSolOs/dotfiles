@@ -46,9 +46,7 @@ return {
                 _ = 'Underscore',
                 a = 'Argument',
                 b = 'Balanced ), ], }',
-                c = 'Class',
                 f = 'Function',
-                o = 'Block, conditional, loop',
                 q = 'Quote `, ", \'',
                 t = 'Tag',
             }
