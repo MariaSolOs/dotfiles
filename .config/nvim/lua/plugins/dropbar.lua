@@ -6,11 +6,11 @@ return {
         'Bekaboo/dropbar.nvim',
         event = 'VeryLazy',
         opts = function()
-            local api = require 'dropbar.api'
+            local menu_utils = require 'dropbar.utils.menu'
 
             -- Closes all the windows in the current dropbar.
             local function close()
-                local menu = api.get_current_dropbar_menu()
+                local menu = menu_utils.get_current()
                 while menu and menu.prev_menu do
                     menu = menu.prev_menu
                 end
@@ -27,7 +27,7 @@ return {
                         ['h'] = '<C-w>c',
                         -- Expands the entry if possible.
                         ['l'] = function()
-                            local menu = api.get_current_dropbar_menu()
+                            local menu = menu_utils.get_current()
                             if not menu then
                                 return
                             end
@@ -39,7 +39,7 @@ return {
                         end,
                         -- "Jump and close".
                         ['o'] = function()
-                            local menu = api.get_current_dropbar_menu()
+                            local menu = menu_utils.get_current()
                             if not menu then
                                 return
                             end
