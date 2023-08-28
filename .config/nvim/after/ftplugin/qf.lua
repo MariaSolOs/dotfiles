@@ -1,5 +1,5 @@
 -- Some settings.
-vim.o.nu = true
+vim.wo.nu = true
 vim.o.buflisted = false
 
 -- Add the cfilter plugin.
