@@ -1,35 +1,36 @@
 -- Colorscheme.
+-- Using my own fork because the original one is getting bloated with plugins
+-- I don't use.
+
 return {
     {
-        'Mofiqul/dracula.nvim',
+        'MariaSolOs/dracula.nvim',
         lazy = false,
         priority = 1000,
         opts = {
-            colors = {
-                bg = '#0E1419',
-                bright_red = '#EC6A88',
-                comment = '#B08BBB',
-                orange = '#FFBFA9',
-                red = '#E95678',
-                selection = '#3C4148',
-            },
             italic_comment = true,
             overrides = function(colors)
-                return {
-                    -- Make the separations between windows more visible.
-                    VertSplit = { fg = colors.white },
+                local statusline_groups = {}
+                for mode, color in pairs {
+                    Normal = 'purple',
+                    Pending = 'pink',
+                    Visual = 'yellow',
+                    Insert = 'green',
+                    Command = 'cyan',
+                    Other = 'orange',
+                } do
+                    statusline_groups['StatuslineMode' .. mode] = { bg = colors[color], fg = colors.bg }
+                    statusline_groups['StatuslineModeSeparator' .. mode] = { fg = colors[color] }
+                end
 
+                return vim.tbl_extend('error', statusline_groups, {
                     -- Make whitespace less prominent.
                     Whitespace = { fg = '#292d32' },
 
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
-                    -- Smoother colors in the completion menu.
-                    CmpItemKind = { bg = 'NONE' },
-                    CmpItemAbbr = { fg = colors.white, bg = 'NONE' },
-                    CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
-                    CmpItemAbbrDeprecated = { strikethrough = true },
+                    -- Greyish description in the completion menu.
                     CmpItemMenu = { fg = '#A9ABAC' },
 
                     -- Make these virtual text thingies different from comments/regular code.
@@ -48,20 +49,10 @@ return {
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
-                    -- Smoother Bufferline tabs.
-                    BufferLineFill = { bg = colors.bg },
-                    BufferLineSeparator = { fg = colors.bg },
-
                     -- Highlights for the LSP Lualine component.
                     NoiceLspProgressSpinner = { fg = '#E11299', bg = colors.black },
                     NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
                     NoiceLspProgressClient = { fg = colors.cyan, bg = colors.black },
-
-                    -- Diff highlights.
-                    DiffAdd = { fg = colors.bright_green, bold = true },
-                    DiffChange = { fg = colors.orange, bold = true },
-                    DiffDelete = { fg = colors.bright_red, bold = true },
-                    DiffText = { fg = colors.bright_white, bold = true },
 
                     -- Nicer highlights for the word under the cursor.
                     IlluminatedWordRead = { bg = '#19272C' },
@@ -96,7 +87,7 @@ return {
                     qfPosition = { fg = colors.pink, underline = true },
                     QuickFixLine = { italic = true, bg = '#342231' },
                     BqfPreviewRange = { fg = colors.bg, bg = colors.bright_magenta },
-                }
+                })
             end,
         },
         config = function(_, opts)
