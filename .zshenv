@@ -13,8 +13,12 @@ export HISTFILE="$ZDOTDIR/.zsh_history"
 export HISTSIZE=10000
 export SAVEHIST=10000
 
+# Man pages
+export MANPAGER='nvim +Man!'
+
 # Set up neovim as the default editor.
 export EDITOR="$(which nvim)"
+export VISUAL="$EDITOR"
 
 # Ripgrep.
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"

@@ -4,6 +4,10 @@ setopt auto_cd
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
 
+# History navigation.
+bindkey '^P' history-search-backward
+bindkey '^N' history-search-forward
+
 # Complete a single word with <Ctrl+Left>, and the full thing with <Left>.
 bindkey '^[[1;5C' forward-word
 
@@ -19,14 +23,12 @@ if [[ "$TERM" == "xterm-kitty" ]]; then
 fi
 
 # Load nvm and set up bash completions.
-# TODO: Move this inside .config
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$XDG_CONFIG_HOME/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Python setup.
-# TODO: Move this inside .config
-export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_ROOT="$XDG_CONFIG_HOME/pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
