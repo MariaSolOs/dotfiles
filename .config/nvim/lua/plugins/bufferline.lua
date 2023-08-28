@@ -4,7 +4,7 @@ local diagnostic_icons = require('icons').diagnostics
 return {
     {
         'akinsho/bufferline.nvim',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             options = {
                 diagnostics = 'nvim_lsp',
