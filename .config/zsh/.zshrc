@@ -4,15 +4,14 @@ setopt auto_cd
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
 
-# Command history.
-HISTFILE="$HOME/.zsh_history"
-HISTSIZE=10000
-SAVEHIST=10000
-setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-setopt hist_ignore_dups # ignore duplicated commands history list
+# Complete a single word with <Ctrl+Left>, and the full thing with <Left>.
+bindkey '^[[1;5C' forward-word
 
-# Set up neovim as the default editor.
-export EDITOR="$(which nvim)"
+# Delete duplicates first when HISTFILE size exceeds HISTSIZE.
+setopt hist_expire_dups_first
+
+# Ignore duplicated commands history list.
+setopt hist_ignore_dups
 
 # Completion for kitty
 if [[ "$TERM" == "xterm-kitty" ]]; then
@@ -20,11 +19,13 @@ if [[ "$TERM" == "xterm-kitty" ]]; then
 fi
 
 # Load nvm and set up bash completions.
+# TODO: Move this inside .config
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Python setup.
+# TODO: Move this inside .config
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
@@ -33,14 +34,10 @@ eval "$(pyenv init -)"
 eval "$(starship init zsh)"
 
 # Functions for completion sources.
-fpath+=~/.zsh/func
-fpath+="$(brew --prefix)/share/zsh/site-functions"
+fpath=($ZDOTDIR/func $fpath)
+fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
 autoload -Uz compinit
 compinit
-
-# Setup fzf.
-[ -f ~/.zsh/.fzf.zsh ] && source ~/.zsh/.fzf.zsh
-export FZF_DEFAULT_OPTS='--color=fg:#f8f8f2,bg:#000000,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9,info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6,spinner:#a4ffff,header:#6272a4'
 
 # Use a completion menu.
 zstyle ':completion:*' menu select
@@ -73,12 +70,15 @@ alias cp='config push'
 alias cdiff='config diff'
 alias cl='config log'
 
+# fzf.
+source "$ZDOTDIR/.fzf.zsh"
+
 # Auto-suggestions.
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 # Auto-close, delete and skip over matching delimiters.
-source ~/.zsh/zsh-autopair/autopair.zsh
+source "$ZDOTDIR/zsh-autopair/autopair.zsh"
 autopair-init
 
 # Syntax highlighting (must be at the end of this file).
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source "$ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
