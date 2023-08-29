@@ -1,10 +1,21 @@
 local symbol_kinds = require('icons').symbol_kinds
 
 -- Winbar with breadcrumbs.
+-- TODO: Only show the path in non-active windows.
+-- Issue asking for help: https://github.com/Bekaboo/dropbar.nvim/issues/76
 return {
     {
         'Bekaboo/dropbar.nvim',
         event = 'VeryLazy',
+        keys = {
+            {
+                '<leader>w',
+                function()
+                    require('dropbar.api').pick()
+                end,
+                desc = 'Winbar pick',
+            },
+        },
         opts = function()
             local menu_utils = require 'dropbar.utils.menu'
 
@@ -23,6 +34,14 @@ return {
                 general = {
                     -- Remove the 'OptionSet' event since it causes weird issues with modelines.
                     attach_events = { 'BufWinEnter', 'BufWritePost' },
+                },
+                -- Keep the icons used in other parts of the UI.
+                icons = {
+                    kinds = {
+                        symbols = vim.tbl_map(function(symbol)
+                            return symbol .. ' '
+                        end, symbol_kinds),
+                    },
                 },
                 menu = {
                     win_configs = { border = 'rounded' },
@@ -60,19 +79,7 @@ return {
                         ['<esc>'] = close,
                     },
                 },
-                icons = {
-                    kinds = {
-                        symbols = vim.tbl_map(function(symbol)
-                            return symbol .. ' '
-                        end, symbol_kinds),
-                    },
-                },
             }
-        end,
-        config = function(_, opts)
-            require('dropbar').setup(opts)
-
-            vim.keymap.set('n', '<leader>w', require('dropbar.api').pick, { desc = 'Winbar pick' })
         end,
     },
 }
