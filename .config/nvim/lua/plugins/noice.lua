@@ -37,10 +37,10 @@ return {
             },
         },
         opts = function()
+            -- Use the default command line formats, but don't conceal the prefixes.
             local cmdline_formats = require('noice.config').defaults().cmdline.format
             for _, format in pairs(cmdline_formats) do
-                -- TODO: Set this to false when https://github.com/folke/noice.nvim/pull/558 gets merged.
-                format.conceal = true
+                format.conceal = false
             end
 
             return {
@@ -122,7 +122,6 @@ return {
                     },
                 },
                 cmdline = {
-                    -- Use the default formats, but don't conceal the prefixes.
                     format = cmdline_formats,
                 },
                 format = {
