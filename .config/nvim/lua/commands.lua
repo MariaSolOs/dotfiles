@@ -1,10 +1,3 @@
--- Clear registers.
-vim.api.nvim_create_user_command('ClearRegisters', function()
-    for r in ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):gmatch '%a' do
-        vim.fn.setreg(r, '')
-    end
-end, { desc = 'Clear registers' })
-
 -- Find TODOs.
 vim.api.nvim_create_user_command('Todos', function()
     require('fzf-lua').grep { search = [[TODO:|todo!\(.*\)]], no_esc = true }
@@ -21,9 +14,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Resize splits if the window gets resized.
 vim.api.nvim_create_autocmd('VimResized', {
     group = vim.api.nvim_create_augroup('ResizeSplits', { clear = true }),
-    callback = function()
-        vim.cmd 'tabdo wincmd ='
-    end,
+    command = 'tabdo wincmd=',
 })
 
 -- Close some filetypes with <q>.

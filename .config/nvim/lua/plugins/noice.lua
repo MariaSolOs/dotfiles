@@ -139,6 +139,12 @@ return {
                     mini = {
                         -- Hide mini messages after 5 seconds.
                         timeout = 5000,
+                        -- Make a nice pink box for these.
+                        position = { row = -2 },
+                        border = { style = 'rounded' },
+                        win_options = {
+                            winhighlight = 'FloatBorder:NoiceMini,Normal:NoiceMini',
+                        },
                     },
                 },
             }

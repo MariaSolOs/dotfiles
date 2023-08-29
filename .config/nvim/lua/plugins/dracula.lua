@@ -1,13 +1,18 @@
 -- Colorscheme.
 -- Using my own fork because the original one is getting bloated with plugins
 -- I don't use.
-
 return {
     {
         'MariaSolOs/dracula.nvim',
         lazy = false,
         priority = 1000,
         opts = {
+            -- Some extra colors.
+            colors = {
+                fuchsia = '#E11299',
+                grey = '#A9ABAC',
+                lavender = '#6272A4',
+            },
             italic_comment = true,
             overrides = function(colors)
                 local statusline_groups = {}
@@ -22,6 +27,10 @@ return {
                     statusline_groups['StatuslineMode' .. mode] = { bg = colors[color], fg = colors.bg }
                     statusline_groups['StatuslineModeSeparator' .. mode] = { fg = colors[color] }
                 end
+                statusline_groups = vim.tbl_extend('error', statusline_groups, {
+                    StatuslineItalic = { fg = colors.grey, bg = colors.black, italic = true },
+                    StatuslineTitle = { fg = colors.bright_white, bg = colors.black, bold = true },
+                })
 
                 return vim.tbl_extend('error', statusline_groups, {
                     -- Make whitespace less prominent.
@@ -31,17 +40,17 @@ return {
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
                     -- Greyish description in the completion menu.
-                    CmpItemMenu = { fg = '#A9ABAC' },
+                    CmpItemMenu = { fg = colors.grey },
 
                     -- Make these virtual text thingies different from comments/regular code.
-                    LspInlayHint = { fg = '#6272A4', italic = true },
+                    LspInlayHint = { fg = colors.lavender, italic = true },
 
                     -- Group used by Gitsigns and Noice. Make it stand out.
-                    MoreMsg = { fg = '#E11299' },
+                    MoreMsg = { fg = colors.fuchsia },
 
                     -- Make search a bit more visible for flash.
-                    IncSearch = { fg = '#000000', bg = '#E11299' },
-                    Substitute = { fg = '#E11299', bg = colors.orange, bold = true },
+                    IncSearch = { fg = '#000000', bg = colors.fuchsia },
+                    Substitute = { fg = colors.fuchsia, bg = colors.orange, bold = true },
 
                     -- When triggering flash, make everything in the backdrop italic.
                     FlashBackdrop = { italic = true },
@@ -49,8 +58,11 @@ return {
                     -- Make the title of the focused window in the file explorer more visible.
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
+                    -- Notifications.
+                    MsgArea = { fg = colors.bright_magenta },
+
                     -- Highlights for the LSP Lualine component.
-                    NoiceLspProgressSpinner = { fg = '#E11299', bg = colors.black },
+                    NoiceLspProgressSpinner = { fg = colors.fuchsia, bg = colors.black },
                     NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
                     NoiceLspProgressClient = { fg = colors.cyan, bg = colors.black },
 
@@ -66,14 +78,14 @@ return {
                     DropBarMenuCurrentContext = { link = 'Normal' },
 
                     -- Virtual text for DAP.
-                    NvimDapVirtualText = { fg = '#6272A4', underline = true },
+                    NvimDapVirtualText = { fg = colors.lavender, underline = true },
 
                     -- Fzf overrides.
                     FzfLuaBorder = { fg = colors.comment },
                     FzfLuaSearch = { link = 'IlluminatedWordWrite' },
                     FzfLuaHeaderText = { fg = colors.pink },
                     FzfLuaPreviewTitle = { fg = colors.fg },
-                    FzfLuaHeaderBind = { fg = '#6272A4' },
+                    FzfLuaHeaderBind = { fg = colors.lavender },
 
                     -- Mason window.
                     MasonMuted = { fg = colors.bright_cyan },
