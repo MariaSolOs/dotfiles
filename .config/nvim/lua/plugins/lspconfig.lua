@@ -102,6 +102,7 @@ return {
             require('mason-lspconfig').setup {
                 ensure_installed = {
                     'bashls',
+                    'clangd',
                     'eslint',
                     'jsonls',
                     'lua_ls',
@@ -114,6 +115,15 @@ return {
                     function(server)
                         lspconfig[server].setup {
                             capabilities = capabilities(),
+                            on_attach = on_attach,
+                        }
+                    end,
+                    clangd = function()
+                        lspconfig.clangd.setup {
+                            capabilities = vim.tbl_deep_extend('error', capabilities(), {
+                                -- Prevents the  multiple different client offset_encodings detected for buffer' warning.
+                                offsetEncoding = { 'utf-16' },
+                            }),
                             on_attach = on_attach,
                         }
                     end,
