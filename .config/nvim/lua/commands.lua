@@ -33,6 +33,17 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
+-- Do not include some filetypes in the buffer list.
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('Unlisted', { clear = true }),
+    pattern = {
+        'checkhealth',
+    },
+    callback = function(event)
+        vim.bo[event.buf].buflisted = false
+    end,
+})
+
 -- Toggle relative line numbers.
 local line_numbers_group = vim.api.nvim_create_augroup('ToggleLineNumbers', {})
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
