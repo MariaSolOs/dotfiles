@@ -67,9 +67,6 @@ return {
         config = function(_, opts)
             require('lualine').setup(opts)
 
-            -- Disable this since the mode will be displayed by lualine.
-            vim.o.showmode = false
-
             -- Update the statusline with the latest LSP message.
             vim.api.nvim_create_autocmd('LspProgress', { command = 'redrawstatus' })
         end,

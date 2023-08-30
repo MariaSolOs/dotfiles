@@ -24,6 +24,10 @@ vim.o.mouse = 'a'
 -- Disable horizontal scrolling.
 vim.o.mousescroll = 'ver:3,hor:0'
 
+-- We're showing the mode in the statusline instead.
+-- TODO: Move this to the statusline file when I'm done with it.
+vim.o.showmode = false
+
 -- Folding.
 vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99
@@ -47,10 +51,11 @@ vim.o.smartcase = true
 -- Keep signcolumn on by default.
 vim.wo.signcolumn = 'yes'
 
--- Decrease update times and timeouts.
-vim.o.updatetime = 200
+-- Update times and timeouts.
+vim.o.updatetime = 300
 vim.o.timeout = true
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 500
+vim.o.ttimeoutlen = 10
 
 -- Set completeopt to have a better completion experience.
 vim.o.completeopt = 'menuone,noselect,noinsert'
