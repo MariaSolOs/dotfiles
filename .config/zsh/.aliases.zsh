@@ -25,3 +25,4 @@ alias cc='config commit -m'
 alias cp='config push'
 alias cdiff='config diff'
 alias cl='config log'
+alias clazy="lazygit --git-dir=$HOME/.cfg/ --work-tree=$HOME"
