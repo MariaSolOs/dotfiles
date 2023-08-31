@@ -8,10 +8,13 @@ local icons = {
 }
 for name, sign in pairs(icons) do
     sign = type(sign) == 'table' and sign or { sign }
-    vim.fn.sign_define(
-        'Dap' .. name,
-        { text = sign[1], texthl = sign[2] or 'DiagnosticInfo', linehl = sign[3], numhl = sign[3] }
-    )
+    vim.fn.sign_define('Dap' .. name, {
+        -- stylua: ignore
+        text = sign[1] --[[@as string]],
+        texthl = sign[2] or 'DiagnosticInfo',
+        linehl = sign[3],
+        numhl = sign[3],
+    })
 end
 
 -- Debugging.
@@ -23,13 +26,6 @@ return {
             {
                 'rcarriga/nvim-dap-ui',
                 keys = {
-                    {
-                        '<leader>du',
-                        function()
-                            require('dapui').toggle {}
-                        end,
-                        desc = 'Toggle DAP UI',
-                    },
                     {
                         '<leader>de',
                         function()
@@ -105,10 +101,10 @@ return {
                     local dap = require 'dap'
 
                     dap.adapters.nlua = function(callback, config)
-                        -- TODO: Is it fine to ignore this error?
-                        ---@diagnostic disable-next-line: undefined-field
                         callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
                     end
+                    -- TODO: Is it fine to ignore this warning?
+                    ---@diagnostic disable-next-line: inject-field
                     dap.configurations.lua = {
                         {
                             type = 'nlua',
@@ -121,18 +117,23 @@ return {
         },
         keys = {
             {
-                '<leader>dB',
-                function()
-                    require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-                end,
-                desc = 'Breakpoint condition',
-            },
-            {
                 '<leader>db',
                 function()
                     require('dap').toggle_breakpoint()
                 end,
                 desc = 'Toggle breakpoint',
+            },
+            {
+                '<leader>dB',
+                '<cmd>FzfLua dap_breakpoints<cr>',
+                desc = 'List breakpoints',
+            },
+            {
+                '<leader>dc',
+                function()
+                    require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+                end,
+                desc = 'Breakpoint condition',
             },
             {
                 '<leader>dj',
