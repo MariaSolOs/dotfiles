@@ -24,12 +24,13 @@ return {
                     Command = 'cyan',
                     Other = 'orange',
                 } do
-                    statusline_groups['StatuslineMode' .. mode] = { bg = colors[color], fg = colors.bg }
-                    statusline_groups['StatuslineModeSeparator' .. mode] = { fg = colors[color] }
+                    statusline_groups['StatuslineMode' .. mode] = { fg = colors.black, bg = colors[color] }
+                    statusline_groups['StatuslineModeSeparator' .. mode] = { fg = colors[color], bg = colors.black }
                 end
                 statusline_groups = vim.tbl_extend('error', statusline_groups, {
                     StatuslineItalic = { fg = colors.grey, bg = colors.black, italic = true },
                     StatuslineTitle = { fg = colors.bright_white, bg = colors.black, bold = true },
+                    StatuslineNoice = { fg = colors.yellow, bg = colors.black, underline = true },
                 })
 
                 return vim.tbl_extend('error', statusline_groups, {
@@ -60,11 +61,6 @@ return {
 
                     -- Notifications.
                     MsgArea = { fg = colors.bright_magenta },
-
-                    -- Highlights for the LSP Lualine component.
-                    NoiceLspProgressSpinner = { fg = colors.fuchsia, bg = colors.black },
-                    NoiceLspProgressTitle = { fg = colors.white, bg = colors.black },
-                    NoiceLspProgressClient = { fg = colors.cyan, bg = colors.black },
 
                     -- Nicer highlights for the word under the cursor.
                     IlluminatedWordRead = { bg = '#19272C' },

@@ -10,5 +10,8 @@ error_symbol = "[!](bold red)"
 [git_status]
 disabled = true
 
+[git_branch]
+symbol = ' '
+
 [package]
 disabled = true

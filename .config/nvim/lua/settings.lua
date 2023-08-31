@@ -24,10 +24,6 @@ vim.o.mouse = 'a'
 -- Disable horizontal scrolling.
 vim.o.mousescroll = 'ver:3,hor:0'
 
--- We're showing the mode in the statusline instead.
--- TODO: Move this to the statusline file when I'm done with it.
-vim.o.showmode = false
-
 -- Folding.
 vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99

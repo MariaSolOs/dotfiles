@@ -59,10 +59,8 @@ return {
                     signature = {
                         auto_open = { enabled = false },
                     },
-                },
-                status = {
-                    -- Statusline component for LSP progress notifications.
-                    lsp_progress = { event = 'lsp', kind = 'progress' },
+                    -- Disable progress messages.
+                    progress = { enabled = false },
                 },
                 -- Send redirected messages to the messages view.
                 redirect = { view = 'messages' },
@@ -74,8 +72,7 @@ return {
                             event = 'msg_show',
                             min_height = 20,
                             cond = function()
-                                local bufr = vim.api.nvim_get_current_buf()
-                                return vim.bo[bufr].filetype ~= 'minifiles'
+                                return vim.bo.filetype ~= 'minifiles'
                             end,
                         },
                         view = 'cmdline_output',
@@ -92,14 +89,6 @@ return {
                                 { find = '%d more lines' },
                                 { find = '%d lines filtered' },
                             },
-                        },
-                        opts = { skip = true },
-                    },
-                    -- Don't show these in the default view, use Lualine instead.
-                    {
-                        filter = {
-                            event = 'lsp',
-                            kind = 'progress',
                         },
                         opts = { skip = true },
                     },
@@ -123,10 +112,6 @@ return {
                 },
                 cmdline = {
                     format = cmdline_formats,
-                },
-                format = {
-                    -- Looks better for Lualine.
-                    progress = { align = 'left' },
                 },
                 views = {
                     cmdline_popup = {

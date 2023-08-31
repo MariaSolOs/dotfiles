@@ -13,6 +13,7 @@ return {
                         .. (diag.warning and diagnostic_icons.WARN or '')
                     return vim.trim(indicator)
                 end,
+                diagnostics_update_in_insert = false,
             },
         },
         config = function(_, opts)

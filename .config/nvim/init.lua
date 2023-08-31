@@ -2,6 +2,7 @@
 require 'settings'
 require 'keymaps'
 require 'commands'
+require 'statusline'
 require 'lightbulb'
 
 -- Install package manager.
