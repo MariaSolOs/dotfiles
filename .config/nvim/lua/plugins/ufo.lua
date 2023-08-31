@@ -55,9 +55,6 @@ return {
             require('ufo').setup(opts)
 
             -- HACK: Refresh indent lines after folding/unfolding.
-            local function keymap(lhs, rhs)
-                vim.keymap.set('n', lhs, rhs, { noremap = true })
-            end
             for _, lhs in pairs {
                 'zo',
                 'zO',
@@ -70,13 +67,8 @@ return {
                 'zm',
                 'zr',
             } do
-                keymap(lhs, lhs .. '<cmd>IndentBlanklineRefresh<cr>')
+                vim.keymap.set('n', lhs, lhs .. '<cmd>IndentBlanklineRefresh<cr>', { noremap = true })
             end
-
-            -- Add a label to which-key for all these mappings.
-            require('which-key').register {
-                ['z'] = { name = '+fold/scroll' },
-            }
         end,
     },
 }

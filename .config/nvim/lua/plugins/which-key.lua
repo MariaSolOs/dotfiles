@@ -20,6 +20,7 @@ return {
                 ['<leader>x'] = { name = '+loclist/quickfix' },
                 -- Other builtin prefixes.
                 ['g'] = { name = '+goto' },
+                ['z'] = { name = '+fold/scroll' },
                 ['['] = { name = '+previous' },
                 [']'] = { name = '+next' },
                 ['='] = { name = '+put' },
