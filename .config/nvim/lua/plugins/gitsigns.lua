@@ -39,7 +39,7 @@ return {
                         },
                         l = {
                             function()
-                                require('float_term').float_term('lazygit', { width = 0.9, height = 0.9 })
+                                require('float_term').float_term('lazygit', { width = 0.9, height = 0.8 })
                             end,
                             'Lazygit',
                             buffer = bufnr,

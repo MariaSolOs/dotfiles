@@ -47,7 +47,7 @@ return {
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
                     -- Group used by Gitsigns and Noice. Make it stand out.
-                    MoreMsg = { fg = colors.fuchsia },
+                    MoreMsg = { fg = colors.bright_white, bold = true },
 
                     -- Make search a bit more visible for flash.
                     IncSearch = { fg = '#000000', bg = colors.fuchsia },
