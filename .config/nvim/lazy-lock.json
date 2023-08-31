@@ -53,7 +53,7 @@
   "vim-highlighturl": { "branch": "master", "commit": "012fee983e03913db6ba6393307eac434999b896" },
   "vim-illuminate": { "branch": "master", "commit": "76f28e858f1caae87bfa45fb4fd09e4b053fc45b" },
   "vim-sleuth": { "branch": "master", "commit": "1cc4557420f215d02c4d2645a748a816c220e99b" },
-  "vscode-js-debug": { "branch": "main", "commit": "df0247e2df0dc816e0b2b8a38a37867673a75815" },
+  "vscode-js-debug": { "branch": "main", "commit": "43ab1c29d3672131d9daa910bd51fefc197f8ac9" },
   "which-key.nvim": { "branch": "main", "commit": "e271c28118998c93a14d189af3395812a1aa646c" },
   "yanky.nvim": { "branch": "main", "commit": "95c2f006ea6eaed2b2d8b8b4943b8fcf13faf03f" }
 }
