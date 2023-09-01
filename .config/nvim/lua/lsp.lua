@@ -9,18 +9,6 @@ for severity, icon in pairs(diagnostic_icons) do
     vim.fn.sign_define(hl, { text = icon, texthl = hl })
 end
 
--- Update diagnostic locations.
-local diagnostic_group = vim.api.nvim_create_augroup('DiagnosticsToQf', { clear = true })
-vim.api.nvim_create_autocmd('DiagnosticChanged', {
-    group = diagnostic_group,
-    callback = function(args)
-        vim.diagnostic.setqflist { open = false }
-        if #args.data.diagnostics == 0 then
-            vim.cmd.cclose { mods = { silent = true, emsg_silent = true } }
-        end
-    end,
-})
-
 ---Returns the editor's capabilities + some overrides.
 M.client_capabilities = function()
     return vim.tbl_deep_extend(
