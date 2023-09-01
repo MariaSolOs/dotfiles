@@ -25,39 +25,6 @@ return {
                 [']'] = { name = '+next' },
                 ['='] = { name = '+put' },
             }
-
-            -- Register all text objects.
-            local i = {
-                [' '] = 'Whitespace',
-                ['"'] = 'Balanced "',
-                ["'"] = "Balanced '",
-                ['`'] = 'Balanced `',
-                ['('] = 'Balanced (',
-                [')'] = 'Balanced ) including white-space',
-                ['>'] = 'Balanced > including white-space',
-                ['<lt>'] = 'Balanced <',
-                [']'] = 'Balanced ] including white-space',
-                ['['] = 'Balanced [',
-                ['}'] = 'Balanced } including white-space',
-                ['{'] = 'Balanced {',
-                ['?'] = 'User Prompt',
-                _ = 'Underscore',
-                a = 'Argument',
-                b = 'Balanced ), ], }',
-                f = 'Function',
-                q = 'Quote `, ", \'',
-                t = 'Tag',
-            }
-            local a = vim.deepcopy(i)
-            for k, v in pairs(a) do
-                a[k] = v:gsub(' including.*', '')
-            end
-
-            wk.register {
-                mode = { 'o', 'x' },
-                i = i,
-                a = a,
-            }
         end,
     },
 }

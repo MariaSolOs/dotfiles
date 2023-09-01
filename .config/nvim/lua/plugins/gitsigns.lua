@@ -1,3 +1,5 @@
+local gutter_icon = '│'
+
 -- Adds git releated signs to the gutter, as well as utilities for managing changes.
 return {
     {
@@ -5,16 +7,19 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             signs = {
-                add = { text = '│' },
-                untracked = { text = '│' },
-                change = { text = '│' },
-                delete = { text = '│' },
-                topdelete = { text = '│' },
-                changedelete = { text = '│' },
+                add = { text = gutter_icon },
+                untracked = { text = gutter_icon },
+                change = { text = gutter_icon },
+                delete = { text = gutter_icon },
+                topdelete = { text = gutter_icon },
+                changedelete = { text = gutter_icon },
             },
             preview_config = { border = 'rounded' },
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns
+
+                -- At this point I know that I'm in a git repo, so load git-conflict too.
+                require('lazy').load { plugins = { 'git-conflict.nvim' } }
 
                 local function keymap(lhs, rhs, desc, opts)
                     opts = opts or {}

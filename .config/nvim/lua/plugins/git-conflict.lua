@@ -2,7 +2,7 @@
 return {
     {
         'akinsho/git-conflict.nvim',
-        event = 'VeryLazy',
+        lazy = true,
         opts = {
             default_mappings = {
                 ours = '<leader>go',

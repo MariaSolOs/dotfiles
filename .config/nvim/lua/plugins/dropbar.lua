@@ -6,7 +6,7 @@ local symbol_kinds = require('icons').symbol_kinds
 return {
     {
         'Bekaboo/dropbar.nvim',
-        event = 'VeryLazy',
+        event = { 'BufReadPre', 'BufNewFile' },
         keys = {
             {
                 '<leader>w',
