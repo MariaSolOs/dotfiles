@@ -1,7 +1,7 @@
 local diagnostic_icons = require('icons').diagnostics
+local statusline_group = vim.api.nvim_create_augroup('MyStatusline', { clear = true })
 
 -- Global statusline everywhere except in the Alpha dashboard.
-local statusline_group = vim.api.nvim_create_augroup('LastStatusToggle', { clear = true })
 vim.api.nvim_create_autocmd('User', {
     pattern = 'AlphaReady',
     group = statusline_group,
@@ -135,16 +135,54 @@ local function dap_component()
 end
 
 ---The current status recorded by noice (like macro recording messages).
----@return string
+---@return string?
 local function noice_status_component()
     if not package.loaded['noice'] or not require('noice').api.status.mode.has() then
-        return ''
+        return nil
     end
 
     return string.format('%%#StatuslineNoice#%s', require('noice').api.status.mode.get())
 end
 
--- TODO: LSP client status messages?
+local progress_status = {
+    client = nil,
+    kind = nil,
+    title = nil,
+}
+vim.api.nvim_create_autocmd('LspProgress', {
+    group = statusline_group,
+    pattern = { 'begin', 'end' },
+    callback = function(event)
+        progress_status = {
+            client = vim.lsp.get_client_by_id(event.data.client_id).name,
+            kind = event.data.result.value.kind,
+            title = event.data.result.value.title,
+        }
+
+        if progress_status.kind == 'end' then
+            progress_status.title = nil
+            -- Wait a bit before clearing the status.
+            vim.defer_fn(function()
+                vim.cmd 'redrawstatus'
+            end, 3000)
+        else
+            vim.cmd 'redrawstatus'
+        end
+    end,
+})
+---The latest LSP progress message.
+---@return string
+local function lsp_progress_component()
+    if not progress_status.client or not progress_status.title then
+        return ''
+    end
+
+    return table.concat {
+        '%#StatuslineSpinner#󱥸 ',
+        string.format('%%#StatuslineTitle#%s  ', progress_status.client),
+        string.format('%%#StatuslineItalic#%s...', progress_status.title),
+    }
+end
 
 ---The buffer's filetype.
 ---@return string
@@ -227,7 +265,7 @@ function Render()
     local left_components = table.concat({
         mode_component(),
         git_component(),
-        dap_component() or noice_status_component(),
+        dap_component() or noice_status_component() or lsp_progress_component(),
     }, component_spacing)
     local right_components = table.concat({
         diagnostics_component(),

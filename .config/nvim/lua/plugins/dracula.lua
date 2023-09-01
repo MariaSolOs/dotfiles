@@ -29,8 +29,9 @@ return {
                 end
                 statusline_groups = vim.tbl_extend('error', statusline_groups, {
                     StatuslineItalic = { fg = colors.grey, bg = colors.black, italic = true },
-                    StatuslineTitle = { fg = colors.bright_white, bg = colors.black, bold = true },
                     StatuslineNoice = { fg = colors.yellow, bg = colors.black, underline = true },
+                    StatuslineSpinner = { fg = colors.bright_green, bg = colors.black, bold = true },
+                    StatuslineTitle = { fg = colors.bright_white, bg = colors.black, bold = true },
                 })
 
                 return vim.tbl_extend('error', statusline_groups, {
