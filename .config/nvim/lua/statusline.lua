@@ -190,11 +190,12 @@ local function filetype_component()
     -- Special icons for some filetypes.
     local special_icons = {
         DressingInput = { '󰍩', 'Comment' },
-        spectre_panel = { '', 'String' },
         dropbar_menu = { '', 'Directory' },
         fzf = { '', 'Special' },
+        lazy = { '', 'Special' },
         lazyterm = { '', 'Special' },
         minifiles = { '󰉋', 'Directory' },
+        spectre_panel = { '', 'String' },
     }
 
     local filetype = vim.bo.filetype

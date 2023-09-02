@@ -77,17 +77,22 @@ return {
                         },
                         view = 'cmdline_output',
                     },
-                    -- Ignore the typical vim change messages.
+                    -- Messages I don't care about.
                     {
                         filter = {
                             event = 'msg_show',
                             any = {
+                                -- Typical vim change messages.
                                 { find = '%d+L, %d+B' },
                                 { find = '; after #%d+' },
                                 { find = '; before #%d+' },
                                 { find = '%d fewer lines' },
                                 { find = '%d more lines' },
                                 { find = '%d lines filtered' },
+                                -- fzf's message when previewing huge files.
+                                { find = "consider increasing 'syntax_limit_b" },
+                                -- Trying to fold stuff.
+                                { find = 'E%d+: No fold found' },
                             },
                         },
                         opts = { skip = true },
@@ -98,14 +103,6 @@ return {
                             event = 'notify',
                             kind = 'debug',
                             find = 'indent%-blankline',
-                        },
-                        opts = { skip = true },
-                    },
-                    -- Ignore fzf's message when previewing huge files.
-                    {
-                        filter = {
-                            event = 'msg_show',
-                            find = "consider increasing 'syntax_limit_b",
                         },
                         opts = { skip = true },
                     },
@@ -121,8 +118,8 @@ return {
                         position = { row = 15 },
                     },
                     mini = {
-                        -- Hide mini messages after 5 seconds.
-                        timeout = 5000,
+                        -- Hide mini messages after 4 seconds.
+                        timeout = 4000,
                         -- Make a nice pink box for these.
                         position = { row = -2 },
                         border = { style = 'rounded' },

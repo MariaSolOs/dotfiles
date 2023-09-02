@@ -187,6 +187,7 @@ return {
         },
         config = function()
             local dap = require 'dap'
+            local pick_process = require('dap.utils').pick_process
 
             -- Set up adapter configurations.
             for _, language in ipairs { 'typescript', 'javascript' } do
@@ -194,7 +195,7 @@ return {
                     {
                         type = 'pwa-node',
                         request = 'attach',
-                        processId = require('dap.utils').pick_process,
+                        processId = pick_process,
                         name = 'Attach debugger to existing node process',
                         sourceMaps = true,
                         cwd = '${workspaceFolder}',

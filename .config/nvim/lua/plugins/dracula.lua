@@ -12,6 +12,7 @@ return {
                 fuchsia = '#E11299',
                 grey = '#A9ABAC',
                 lavender = '#6272A4',
+                lilac = '#6D5978',
             },
             italic_comment = true,
             overrides = function(colors)
@@ -37,6 +38,9 @@ return {
                 return vim.tbl_extend('error', statusline_groups, {
                     -- Make whitespace less prominent.
                     Whitespace = { fg = '#292d32' },
+
+                    -- Blend line numbers with the background.
+                    LineNr = { fg = colors.lilac },
 
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
@@ -68,7 +72,7 @@ return {
                     IlluminatedWordWrite = { bg = '#342231' },
 
                     -- Highlight for the Treesitter sticky context.
-                    TreesitterContextBottom = { underline = true, sp = colors.comment },
+                    TreesitterContextBottom = { underline = true, sp = colors.lilac },
 
                     -- Winbar styling.
                     WinBar = { bold = false },
