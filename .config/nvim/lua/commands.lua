@@ -49,7 +49,7 @@ local line_numbers_group = vim.api.nvim_create_augroup('ToggleLineNumbers', {})
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
     group = line_numbers_group,
     callback = function()
-        if vim.o.nu and vim.api.nvim_get_mode().mode ~= 'i' then
+        if vim.o.nu and vim.api.nvim_get_mode().mode:sub(1, 1) ~= 'i' then
             vim.opt.relativenumber = true
         end
     end,

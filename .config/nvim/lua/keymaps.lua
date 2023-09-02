@@ -49,6 +49,27 @@ vim.keymap.set('x', '@', function()
     return ':norm @' .. vim.fn.getcharstr() .. '<cr>'
 end, { expr = true })
 
+vim.keymap.set('n', 'gx', function()
+    local file = vim.fn.expand '<cfile>' --[[@as string]]
+
+    -- First try the default behaviour from https://github.com/neovim/neovim/blob/597355deae2ebddcb8b930da9a8b45a65d05d09b/runtime/lua/vim/_editor.lua#L1084.
+    local _, err = vim.ui.open(file)
+    if not err then
+        return
+    end
+
+    -- Consider anything that looks like string/string a GitHub link.
+    local link = file:match '%w[%w%-]+/[%w%-%._]+'
+    if link then
+        _, err = vim.ui.open('https://www.github.com/' .. link)
+    end
+
+    -- If that fails, just blame me.
+    if err then
+        vim.notify(err, vim.log.levels.ERROR)
+    end
+end, { desc = 'Opens filepath or URI under cursor' })
+
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>')
 
