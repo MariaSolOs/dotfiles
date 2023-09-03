@@ -22,20 +22,6 @@ return {
         },
         keys = {
             {
-                'zR',
-                function()
-                    require('ufo').openAllFolds()
-                    vim.cmd 'IndentBlanklineRefresh'
-                end,
-            },
-            {
-                'zM',
-                function()
-                    require('ufo').closeAllFolds()
-                    vim.cmd 'IndentBlanklineRefresh'
-                end,
-            },
-            {
                 'zp',
                 function()
                     require('ufo').peekFoldedLinesUnderCursor()
@@ -55,7 +41,7 @@ return {
             require('ufo').setup(opts)
 
             -- HACK: Refresh indent lines after folding/unfolding.
-            for _, lhs in pairs {
+            for _, keys in pairs {
                 'zo',
                 'zO',
                 'zc',
@@ -66,8 +52,18 @@ return {
                 'zx',
                 'zm',
                 'zr',
+                {
+                    'zM',
+                    ':lua require("ufo").closeAllFolds()<cr>',
+                },
+                {
+                    'zR',
+                    ':lua require("ufo").openAllFolds()<cr>',
+                },
             } do
-                vim.keymap.set('n', lhs, lhs .. '<cmd>IndentBlanklineRefresh<cr>', { noremap = true })
+                local rhs = type(keys) == 'table' and keys[2] or keys
+                local lhs = type(keys) == 'table' and keys[1] or keys
+                vim.keymap.set('n', lhs, rhs .. '<cmd>IndentBlanklineRefresh<cr>', { noremap = true })
             end
         end,
     },

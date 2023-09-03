@@ -16,30 +16,21 @@ return {
                 diagnostics_update_in_insert = false,
             },
         },
-        config = function(_, opts)
-            require('bufferline').setup(opts)
-
-            -- Buffer and tab navigation.
-            vim.keymap.set('n', '[b', '<cmd>BufferLineCyclePrev<cr>', { desc = 'Previous buffer' })
-            vim.keymap.set('n', ']b', '<cmd>BufferLineCycleNext<cr>', { desc = 'Next buffer' })
-            vim.keymap.set('n', '[p', '<cmd>tabp<cr>', { desc = 'Previous tab page' })
-            vim.keymap.set('n', ']p', '<cmd>tabn<cr>', { desc = 'Next tab page' })
-            require('which-key').register {
-                ['<leader>b'] = {
-                    name = '+buffers',
-                    c = { '<cmd>BufferLinePickClose<cr>', 'Select a buffer to close' },
-                    d = { '<cmd>bdelete<cr>', 'Delete current buffer' },
-                    l = { '<cmd>BufferLineCloseLeft<cr>', 'Close buffers to the left' },
-                    o = { '<cmd>BufferLinePick<cr>', 'Select a buffer to open' },
-                    r = { '<cmd>BufferLineCloseRight<cr>', 'Close buffers to the right' },
-                },
-                ['<leader>p'] = {
-                    name = '+tabs',
-                    c = { '<cmd>tabclose<cr>', 'Close tab page' },
-                    n = { '<cmd>tab split<cr>', 'New tab page' },
-                    o = { '<cmd>tabonly<cr>', 'Close other tab pages' },
-                },
-            }
-        end,
+        keys = {
+            -- Buffer navigation.
+            { '[b', '<cmd>BufferLineCyclePrev<cr>', desc = 'Previous buffer' },
+            { ']b', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
+            { '<leader>bc', '<cmd>BufferLinePickClose<cr>', desc = 'Select a buffer to close' },
+            { '<leader>bd', '<cmd>bdelete<cr>', desc = 'Delete current buffer' },
+            { '<leader>bl', '<cmd>BufferLineCloseLeft<cr>', desc = 'Close buffers to the left' },
+            { '<leader>bo', '<cmd>BufferLinePick<cr>', desc = 'Select a buffer to open' },
+            { '<leader>br', '<cmd>BufferLineCloseRight<cr>', desc = 'Close buffers to the right' },
+            -- Tab navigation.
+            { '[p', '<cmd>tabp<cr>', desc = 'Previous tab page' },
+            { ']p', '<cmd>tabn<cr>', desc = 'Next tab page' },
+            { '<leader>pc', '<cmd>tabclose<cr>', desc = 'Close tab page' },
+            { '<leader>pn', '<cmd>tab split<cr>', desc = 'New tab page' },
+            { '<leader>po', '<cmd>tabonly<cr>', desc = 'Close other tab pages' },
+        },
     },
 }

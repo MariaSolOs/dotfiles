@@ -1,4 +1,4 @@
-local gutter_icon = '│'
+local sign_icon = '│'
 
 -- Adds git releated signs to the gutter, as well as utilities for managing changes.
 return {
@@ -7,12 +7,12 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             signs = {
-                add = { text = gutter_icon },
-                untracked = { text = gutter_icon },
-                change = { text = gutter_icon },
-                delete = { text = gutter_icon },
-                topdelete = { text = gutter_icon },
-                changedelete = { text = gutter_icon },
+                add = { text = sign_icon },
+                untracked = { text = sign_icon },
+                change = { text = sign_icon },
+                delete = { text = sign_icon },
+                topdelete = { text = sign_icon },
+                changedelete = { text = sign_icon },
             },
             preview_config = { border = 'rounded' },
             on_attach = function(bufnr)
@@ -21,15 +21,8 @@ return {
                 -- At this point I know that I'm in a git repo, so load git-conflict too.
                 require('lazy').load { plugins = { 'git-conflict.nvim' } }
 
-                local function keymap(lhs, rhs, desc, opts)
-                    opts = opts or {}
-                    opts.desc = desc
-                    opts.buffer = bufnr
-                    vim.keymap.set('n', lhs, rhs, opts)
-                end
-
-                keymap(']g', gs.next_hunk, 'Next hunk')
-                keymap('[g', gs.prev_hunk, 'Previous hunk')
+                vim.keymap.set('n', ']g', gs.next_hunk, { desc = 'Next hunk', buffer = bufnr })
+                vim.keymap.set('n', '[g', gs.prev_hunk, { desc = 'Previous hunk', buffer = bufnr })
 
                 require('which-key').register {
                     ['<leader>g'] = {

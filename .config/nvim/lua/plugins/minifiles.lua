@@ -32,7 +32,7 @@ return {
         'echasnovski/mini.files',
         keys = {
             -- Do not open netrw with "go to file". Load minifiles instead.
-            { '<C-w><C-f>', nil, desc = 'which_key_ignore' },
+            { '<C-w><C-f>', nil, desc = 'Edit file in new window' },
             { 'gf', nil, desc = 'Go to file under cursor' },
             {
                 '<leader>e',
