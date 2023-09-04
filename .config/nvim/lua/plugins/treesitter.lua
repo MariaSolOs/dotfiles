@@ -3,7 +3,13 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         dependencies = {
-            'nvim-treesitter/nvim-treesitter-textobjects',
+            {
+                'nvim-treesitter/nvim-treesitter-textobjects',
+                init = function()
+                    -- Disable the rtp plugin since I only use them for mini.ai
+                    require('lazy.core.loader').disable_rtp_plugin 'nvim-treesitter-textobjects'
+                end,
+            },
             {
                 'nvim-treesitter/nvim-treesitter-context',
                 opts = {
@@ -74,13 +80,6 @@ return {
                     node_incremental = '<cr>',
                     scope_incremental = false,
                     node_decremental = '<bs>',
-                },
-            },
-            textobjects = {
-                move = {
-                    enable = true,
-                    goto_next_start = { [']f'] = '@function.outer' },
-                    goto_previous_start = { ['[f'] = '@function.outer' },
                 },
             },
         },
