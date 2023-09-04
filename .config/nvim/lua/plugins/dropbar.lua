@@ -1,8 +1,6 @@
 local symbol_kinds = require('icons').symbol_kinds
 
 -- Winbar with breadcrumbs.
--- TODO: Only show the path in non-active windows.
--- Issue asking for help: https://github.com/Bekaboo/dropbar.nvim/issues/76
 return {
     {
         'Bekaboo/dropbar.nvim',
@@ -34,6 +32,11 @@ return {
                 general = {
                     -- Remove the 'OptionSet' event since it causes weird issues with modelines.
                     attach_events = { 'BufWinEnter', 'BufWritePost' },
+                    update_events = {
+                        -- Remove the 'WinEnter' event since I handle it manually for just
+                        -- showing the full dropbar in the current window.
+                        win = { 'CursorMoved', 'CursorMovedI', 'WinResized' },
+                    },
                 },
                 -- Keep the icons used in other parts of the UI.
                 icons = {
@@ -42,6 +45,36 @@ return {
                             return symbol .. ' '
                         end, symbol_kinds),
                     },
+                },
+                bar = {
+                    pick = {
+                        -- Use the same labels as flash.
+                        pivots = 'asdfghjklqwertyuiopzxcvbnm',
+                    },
+                    sources = function()
+                        local sources = require 'dropbar.sources'
+                        local utils = require 'dropbar.utils.source'
+
+                        -- Just show the path info for non-active windows.
+                        return {
+                            sources.path,
+                            {
+                                get_symbols = function(buf, win, cursor)
+                                    if vim.api.nvim_get_current_win() ~= win then
+                                        return {}
+                                    end
+
+                                    if vim.bo[buf].ft == 'markdown' then
+                                        return sources.markdown.get_symbols(buf, win, cursor)
+                                    end
+
+                                    return utils
+                                        .fallback({ sources.lsp, sources.treesitter })
+                                        .get_symbols(buf, win, cursor)
+                                end,
+                            },
+                        }
+                    end,
                 },
                 menu = {
                     win_configs = { border = 'rounded' },
@@ -80,6 +113,21 @@ return {
                     },
                 },
             }
+        end,
+        config = function(_, opts)
+            local bar_utils = require 'dropbar.utils.bar'
+
+            require('dropbar').setup(opts)
+
+            -- Better way to do this? Follow up in https://github.com/Bekaboo/dropbar.nvim/issues/76
+            vim.api.nvim_create_autocmd('WinEnter', {
+                callback = function()
+                    -- Refresh the dropbars except when entering the dropbar itself.
+                    if vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].winbar == 1 then
+                        bar_utils.exec 'update'
+                    end
+                end,
+            })
         end,
     },
 }
