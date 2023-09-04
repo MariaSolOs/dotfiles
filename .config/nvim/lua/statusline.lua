@@ -89,7 +89,7 @@ local function mode_component()
     }
 
     -- Get the respective string to display.
-    local mode = mode_to_str[vim.api.nvim_get_mode().mode]
+    local mode = mode_to_str[vim.api.nvim_get_mode().mode] or 'UNKNOWN'
 
     -- Set the highlight group.
     local hl = 'Other'
@@ -195,6 +195,7 @@ local function filetype_component()
         lazy = { '', 'Special' },
         lazyterm = { '', 'Special' },
         minifiles = { '󰉋', 'Directory' },
+        noice = { '', 'Conditional' },
         spectre_panel = { '', 'String' },
     }
 
@@ -262,21 +263,26 @@ end
 ---Renders the statusline.
 ---@return string
 function Render()
-    local component_spacing = '   '
-    local left_components = table.concat({
-        mode_component(),
-        git_component(),
-        dap_component() or noice_status_component() or lsp_progress_component(),
-    }, component_spacing)
-    local right_components = table.concat({
-        diagnostics_component(),
-        filetype_component(),
-        position_component(),
-    }, component_spacing)
+    ---@param components string[]
+    ---@return string
+    local function concat_components(components)
+        return vim.iter(components):skip(1):fold(components[1], function(acc, component)
+            return #component > 0 and string.format('%s    %s', acc, component) or acc
+        end)
+    end
+
     return table.concat {
-        left_components,
+        concat_components {
+            mode_component(),
+            git_component(),
+            dap_component() or noice_status_component() or lsp_progress_component(),
+        },
         '%#StatusLine#%=',
-        right_components,
+        concat_components {
+            diagnostics_component(),
+            filetype_component(),
+            position_component(),
+        },
         ' ',
     }
 end
