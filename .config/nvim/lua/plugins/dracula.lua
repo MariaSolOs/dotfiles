@@ -61,7 +61,8 @@ return {
                     -- When triggering flash, make everything in the backdrop italic.
                     FlashBackdrop = { italic = true },
 
-                    -- Make the title of the focused window in the file explorer more visible.
+                    -- Make these titles more visible.
+                    MiniClueTitle = { bold = true, fg = colors.cyan },
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
                     -- Notifications.

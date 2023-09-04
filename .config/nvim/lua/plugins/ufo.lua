@@ -40,7 +40,11 @@ return {
         config = function(_, opts)
             require('ufo').setup(opts)
 
-            -- HACK: Refresh indent lines after folding/unfolding.
+            -- Add keymap descriptions to the folding commands I use.
+            local descs = {}
+            for _, clue in ipairs(require('mini.clue').gen_clues.z()) do
+                descs[clue.keys] = clue.desc
+            end
             for _, keys in pairs {
                 'zo',
                 'zO',
@@ -63,7 +67,12 @@ return {
             } do
                 local rhs = type(keys) == 'table' and keys[2] or keys
                 local lhs = type(keys) == 'table' and keys[1] or keys
-                vim.keymap.set('n', lhs, rhs .. '<cmd>IndentBlanklineRefresh<cr>', { noremap = true })
+                vim.keymap.set(
+                    'n',
+                    lhs,
+                    rhs .. '<cmd>IndentBlanklineRefresh<cr>',
+                    { noremap = true, desc = descs[lhs] }
+                )
             end
         end,
     },

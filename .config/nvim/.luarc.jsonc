@@ -24,6 +24,7 @@
       "$XDG_DATA_HOME/nvim/lazy/lazy.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/lsp-format.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.hipatterns/lua",
       "$XDG_DATA_HOME/nvim/lazy/noice.nvim/lua",
@@ -34,8 +35,7 @@
       "$XDG_DATA_HOME/nvim/lazy/nvim-ufo/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-web-devicons/lua",
       "$XDG_DATA_HOME/nvim/lazy/rust-tools.nvim/lua",
-      "$XDG_DATA_HOME/nvim/lazy/vim-illuminate/lua",
-      "$XDG_DATA_HOME/nvim/lazy/which-key.nvim/lua"
+      "$XDG_DATA_HOME/nvim/lazy/vim-illuminate/lua"
     ]
   }
 }

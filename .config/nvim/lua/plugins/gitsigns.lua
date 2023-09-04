@@ -21,35 +21,30 @@ return {
                 -- At this point I know that I'm in a git repo, so load git-conflict too.
                 require('lazy').load { plugins = { 'git-conflict.nvim' } }
 
-                vim.keymap.set('n', ']g', gs.next_hunk, { desc = 'Next hunk', buffer = bufnr })
-                vim.keymap.set('n', '[g', gs.prev_hunk, { desc = 'Previous hunk', buffer = bufnr })
+                local function map(lhs, rhs, desc)
+                    vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
+                end
 
-                require('which-key').register {
-                    ['<leader>g'] = {
-                        name = '+git',
-                        b = { gs.blame_line, 'Blame line', buffer = bufnr },
-                        h = {
-                            function()
-                                gs.setloclist(0, 'all')
-                            end,
-                            'Hunks',
-                            buffer = bufnr,
-                        },
-                        l = {
-                            function()
-                                require('float_term').float_term('lazygit', { width = 0.8, height = 0.8 })
-                            end,
-                            'Lazygit',
-                            buffer = bufnr,
-                        },
-                        p = { gs.preview_hunk, 'Preview hunk', buffer = bufnr },
-                        r = { gs.reset_hunk, 'Reset hunk', buffer = bufnr },
-                        R = { gs.reset_buffer, 'Reset buffer', buffer = bufnr },
-                        s = { gs.stage_hunk, 'Stage hunk', buffer = bufnr },
-                        S = { gs.stage_buffer, 'Stage buffer', buffer = bufnr },
-                        u = { gs.undo_stage_hunk, 'Undo stage hunk', buffer = bufnr },
+                -- Register the leader group with miniclue.
+                vim.b[bufnr].miniclue_config = {
+                    clues = {
+                        { mode = 'n', keys = '<leader>g', desc = '+git' },
                     },
                 }
+
+                map(']g', gs.prev_hunk, 'Previous hunk')
+                map('[g', gs.next_hunk, 'Next hunk')
+                map('<leader>gR', gs.reset_buffer, 'Reset buffer')
+                map('<leader>gb', gs.blame_line, 'Blame line')
+                map('<leader>gp', gs.preview_hunk, 'Preview hunk')
+                map('<leader>gr', gs.reset_hunk, 'Reset hunk')
+                map('<leader>gs', gs.stage_hunk, 'Stage hunk')
+                map('<leader>gh', function()
+                    gs.setloclist(0, 'all')
+                end, 'Hunks')
+                map('<leader>gl', function()
+                    require('float_term').float_term('lazygit', { width = 0.8, height = 0.8 })
+                end, 'Lazygit')
             end,
         },
     },
