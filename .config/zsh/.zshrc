@@ -8,6 +8,9 @@ WORDCHARS=${WORDCHARS/\/}
 bindkey '^P' history-search-backward
 bindkey '^N' history-search-forward
 
+# Disable vim mode.
+bindkey -e
+
 # Complete a single word with <Ctrl+Left>, and the full thing with <Left>.
 bindkey '^[[1;5C' forward-word
 
