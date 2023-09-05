@@ -191,6 +191,7 @@ function M.filetype_component()
     -- Special icons for some filetypes.
     local special_icons = {
         DressingInput = { '󰍩', 'Comment' },
+        DressingSelect = { '', 'Comment' },
         dropbar_menu = { '', 'Directory' },
         fzf = { '', 'Special' },
         lazy = { '', 'Special' },
