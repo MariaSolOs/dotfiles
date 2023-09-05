@@ -48,7 +48,6 @@
   "plenary.nvim": { "branch": "master", "commit": "0dbe561ae023f02c2fb772b879e905055b939ce3" },
   "promise-async": { "branch": "main", "commit": "e94f35161b8c5d4a4ca3b6ff93dd073eb9214c0e" },
   "rust-tools.nvim": { "branch": "master", "commit": "0cc8adab23117783a0292a0c8a2fbed1005dc645" },
-  "statuscol.nvim": { "branch": "main", "commit": "0944234914438695050eec6f83b4669864680c1a" },
   "treesj": { "branch": "main", "commit": "bff8c32b826e188fa558e94c7c93ac17a8ef0365" },
   "typescript-tools.nvim": { "branch": "master", "commit": "98165e3cd9d8b1cd0aa7635f1d81a337ae780b55" },
   "vim-highlighturl": { "branch": "master", "commit": "012fee983e03913db6ba6393307eac434999b896" },

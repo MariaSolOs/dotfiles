@@ -51,10 +51,13 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # Custom aliases.
-source "$ZDOTDIR/.aliases.zsh"
+source "$ZDOTDIR/aliases.zsh"
+
+# Custom functions.
+source "$ZDOTDIR/functions.zsh"
 
 # fzf.
-source "$ZDOTDIR/.fzf.zsh"
+source "$ZDOTDIR/fzf.zsh"
 
 # Auto-suggestions.
 source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
