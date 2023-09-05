@@ -8,9 +8,9 @@ return {
             -- Get rid of the numbers in the folding column.
             {
                 'luukvbaal/statuscol.nvim',
-                config = function()
+                opts = function()
                     local builtin = require 'statuscol.builtin'
-                    require('statuscol').setup {
+                    return {
                         segments = {
                             { text = { builtin.foldfunc } },
                             { text = { '%s' } },
@@ -28,6 +28,20 @@ return {
                 end,
                 desc = 'Peek folded lines under cursor',
             },
+            {
+                'zM',
+                function()
+                    require('ufo').closeAllFolds()
+                end,
+                desc = 'Close all folds',
+            },
+            {
+                'zR',
+                function()
+                    require('ufo').openAllFolds()
+                end,
+                desc = 'Open all folds',
+            },
         },
         opts = {
             preview = {
@@ -37,43 +51,5 @@ return {
                 },
             },
         },
-        config = function(_, opts)
-            require('ufo').setup(opts)
-
-            -- Add keymap descriptions to the folding commands I use.
-            local descs = {}
-            for _, clue in ipairs(require('mini.clue').gen_clues.z()) do
-                descs[clue.keys] = clue.desc
-            end
-            for _, keys in pairs {
-                'zo',
-                'zO',
-                'zc',
-                'zC',
-                'za',
-                'zA',
-                'zv',
-                'zx',
-                'zm',
-                'zr',
-                {
-                    'zM',
-                    ':lua require("ufo").closeAllFolds()<cr>',
-                },
-                {
-                    'zR',
-                    ':lua require("ufo").openAllFolds()<cr>',
-                },
-            } do
-                local rhs = type(keys) == 'table' and keys[2] or keys
-                local lhs = type(keys) == 'table' and keys[1] or keys
-                vim.keymap.set(
-                    'n',
-                    lhs,
-                    rhs .. '<cmd>IndentBlanklineRefresh<cr>',
-                    { noremap = true, desc = descs[lhs] }
-                )
-            end
-        end,
     },
 }

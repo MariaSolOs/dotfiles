@@ -2,21 +2,28 @@
 return {
     {
         'lukas-reineke/indent-blankline.nvim',
-        event = 'VeryLazy',
+        main = 'ibl',
+        -- TODO: Remove this when the PR gets merged to master.
+        branch = 'v3',
+        event = 'BufReadPre',
         -- For setting shiftwidth and tabstop automatically.
         dependencies = 'tpope/vim-sleuth',
         opts = {
-            show_trailing_blankline_indent = false,
-            char_priority = 12,
-            show_foldtext = false,
-            filetype_exclude = {
-                'alpha',
-                'help',
-                'lazy',
-                'lazyterm',
-                'mason',
-                'noice',
-                'qf',
+            scope = { enabled = false },
+            indent = {
+                char = '│',
+                -- Make sure the guides are visible in folded lines (ufo
+                -- uses a priority of 10).
+                priority = 11,
+            },
+            exclude = {
+                filetypes = {
+                    'alpha',
+                    'lazy',
+                    'lazyterm',
+                    'mason',
+                    'noice',
+                },
             },
         },
     },
