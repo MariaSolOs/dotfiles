@@ -65,8 +65,26 @@ return {
                 -- Send redirected messages to the messages view.
                 redirect = { view = 'messages' },
                 routes = {
-                    -- Redirect long messages to the split view, except for
-                    -- confirmation messages from minifiles.
+                    -- Make the 'more-prompt' experience less awkward.
+                    -- TODO: Follow up in https://github.com/folke/noice.nvim/issues/587
+                    {
+                        filter = {
+                            event = 'msg_show',
+                            cond = function()
+                                return vim.api.nvim_get_mode().mode == 'rm'
+                            end,
+                        },
+                        view = 'split',
+                        opts = {
+                            position = 'right',
+                            size = '40%',
+                            win_options = {
+                                winhighlight = { Normal = 'MsgArea', FloatBorder = 'MsgArea' },
+                            },
+                        },
+                    },
+                    -- Redirect long messages except for confirmation messages
+                    -- from minifiles.
                     {
                         filter = {
                             event = 'msg_show',
@@ -107,9 +125,7 @@ return {
                         opts = { skip = true },
                     },
                 },
-                cmdline = {
-                    format = cmdline_formats,
-                },
+                cmdline = { format = cmdline_formats },
                 views = {
                     cmdline_popup = {
                         position = { row = 12 },
@@ -124,7 +140,10 @@ return {
                         position = { row = -2 },
                         border = { style = 'rounded' },
                         win_options = {
-                            winhighlight = 'FloatBorder:NoiceMini,Normal:NoiceMini',
+                            winhighlight = {
+                                Normal = 'NoiceMini',
+                                FloatBorder = 'NoiceMini',
+                            },
                         },
                     },
                 },
