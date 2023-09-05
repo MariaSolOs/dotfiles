@@ -1,3 +1,4 @@
+local M = {}
 local diagnostic_icons = require('icons').diagnostics
 local statusline_group = vim.api.nvim_create_augroup('MyStatusline', { clear = true })
 
@@ -30,7 +31,7 @@ vim.o.showmode = false
 local statusline_hls = {}
 ---@param hl string
 ---@return string
-local function get_or_create_statusline_hl(hl)
+function M.get_or_create_hl(hl)
     local hl_name = 'Statusline' .. hl
 
     if not statusline_hls[hl] then
@@ -47,7 +48,7 @@ end
 
 ---Current mode.
 ---@return string
-local function mode_component()
+function M.mode_component()
     -- Note that: \19 = ^S and \22 = ^V.
     local mode_to_str = {
         ['n'] = 'NORMAL',
@@ -115,7 +116,7 @@ end
 
 ---Git status (if any).
 ---@return string
-local function git_component()
+function M.git_component()
     local head = vim.b.gitsigns_head
     if not head then
         return ''
@@ -126,17 +127,17 @@ end
 
 ---The current debugging status (if any).
 ---@return string?
-local function dap_component()
+function M.dap_component()
     if not package.loaded['dap'] or require('dap').status() == '' then
         return nil
     end
 
-    return string.format('%%#%s#  %s', get_or_create_statusline_hl 'DapUIRestart', require('dap').status())
+    return string.format('%%#%s#  %s', M.get_or_create_hl 'DapUIRestart', require('dap').status())
 end
 
 ---The current status recorded by noice (like macro recording messages).
 ---@return string?
-local function noice_status_component()
+function M.noice_status_component()
     if not package.loaded['noice'] or not require('noice').api.status.mode.has() then
         return nil
     end
@@ -172,7 +173,7 @@ vim.api.nvim_create_autocmd('LspProgress', {
 })
 ---The latest LSP progress message.
 ---@return string
-local function lsp_progress_component()
+function M.lsp_progress_component()
     if not progress_status.client or not progress_status.title then
         return ''
     end
@@ -186,7 +187,7 @@ end
 
 ---The buffer's filetype.
 ---@return string
-local function filetype_component()
+function M.filetype_component()
     -- Special icons for some filetypes.
     local special_icons = {
         DressingInput = { '󰍩', 'Comment' },
@@ -209,7 +210,7 @@ local function filetype_component()
 
         icon, icon_hl = require('nvim-web-devicons').get_icon(name, ext, { default = true })
     end
-    icon_hl = get_or_create_statusline_hl(icon_hl)
+    icon_hl = M.get_or_create_hl(icon_hl)
 
     return string.format('%%#%s#%s %%#StatuslineTitle#%s', icon_hl, icon, filetype)
 end
@@ -217,7 +218,7 @@ end
 local last_diagnostic_component = ''
 ---Diagnostic counts in the current buffer.
 ---@return string
-local function diagnostics_component()
+function M.diagnostics_component()
     -- Use the last computed value if in insert mode.
     if vim.api.nvim_get_mode().mode:sub(1, 1) == 'i' then
         return last_diagnostic_component
@@ -240,7 +241,7 @@ local function diagnostics_component()
         end
 
         local hl = 'Diagnostic' .. severity:sub(1, 1) .. severity:sub(2):lower()
-        return string.format('%%#%s#%s %d', get_or_create_statusline_hl(hl), diagnostic_icons[severity], count)
+        return string.format('%%#%s#%s %d', M.get_or_create_hl(hl), diagnostic_icons[severity], count)
     end, counts)
 
     return table.concat(parts, ' ')
@@ -248,7 +249,7 @@ end
 
 ---The current line, total line count, and column position.
 ---@return string
-local function position_component()
+function M.position_component()
     local line = vim.fn.line '.'
     local line_count = vim.api.nvim_buf_line_count(0)
     local col = vim.fn.virtcol '.'
@@ -262,7 +263,7 @@ end
 
 ---Renders the statusline.
 ---@return string
-function Render()
+function M.render()
     ---@param components string[]
     ---@return string
     local function concat_components(components)
@@ -273,18 +274,19 @@ function Render()
 
     return table.concat {
         concat_components {
-            mode_component(),
-            git_component(),
-            dap_component() or noice_status_component() or lsp_progress_component(),
+            M.mode_component(),
+            M.git_component(),
+            M.dap_component() or M.noice_status_component() or M.lsp_progress_component(),
         },
         '%#StatusLine#%=',
         concat_components {
-            diagnostics_component(),
-            filetype_component(),
-            position_component(),
+            M.diagnostics_component(),
+            M.filetype_component(),
+            M.position_component(),
         },
         ' ',
     }
 end
+vim.o.statusline = [[%!v:lua.require'statusline'.render()]]
 
-vim.o.statusline = '%!v:lua.Render()'
+return M
