@@ -2,7 +2,7 @@
 return {
     {
         'akinsho/git-conflict.nvim',
-        lazy = true,
+        event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             default_mappings = {
                 ours = '<leader>go',

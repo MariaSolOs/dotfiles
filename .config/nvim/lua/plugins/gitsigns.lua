@@ -18,9 +18,6 @@ return {
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns
 
-                -- At this point I know that I'm in a git repo, so load git-conflict too.
-                require('lazy').load { plugins = { 'git-conflict.nvim' } }
-
                 local function map(lhs, rhs, desc)
                     vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
                 end
