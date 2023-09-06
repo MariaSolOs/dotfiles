@@ -30,7 +30,7 @@ return {
                         require('lsp').on_attach(client, bufnr)
 
                         -- Format on save.
-                        require('lsp-format').on_attach(client)
+                        require('lsp-format').on_attach(client, bufnr)
 
                         -- Set up extra Rust commands.
                         vim.keymap.set('n', 'K', rt.hover_actions.hover_actions, {

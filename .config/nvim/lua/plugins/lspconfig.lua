@@ -139,7 +139,7 @@ return {
                             capabilities = capabilities(),
                             on_attach = function(client, bufnr)
                                 on_attach(client, bufnr)
-                                format_attach(client)
+                                format_attach(client, bufnr)
                             end,
                             settings = {
                                 json = {
