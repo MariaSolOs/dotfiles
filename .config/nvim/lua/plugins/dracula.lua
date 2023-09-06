@@ -1,14 +1,19 @@
 -- Colorscheme.
--- Using my own fork because the original one is getting bloated with plugins
--- I don't use.
 return {
     {
-        'MariaSolOs/dracula.nvim',
+        'Mofiqul/dracula.nvim',
         lazy = false,
         priority = 1000,
         opts = {
-            -- Some extra colors.
             colors = {
+                -- Overrides.
+                bg = '#0E1419',
+                bright_red = '#EC6A88',
+                comment = '#B08BBB',
+                orange = '#FFBFA9',
+                red = '#E95678',
+                selection = '#3C4148',
+                -- Some extra colors.
                 fuchsia = '#E11299',
                 grey = '#A9ABAC',
                 lavender = '#6272A4',
@@ -47,6 +52,25 @@ return {
 
                     -- Greyish description in the completion menu.
                     CmpItemMenu = { fg = colors.grey },
+
+                    -- Nicer diffs.
+                    DiffAdd = { fg = colors.bright_green, bold = true },
+                    DiffChange = { fg = colors.orange, bold = true },
+                    DiffDelete = { fg = colors.bright_red, bold = true },
+                    DiffText = { fg = colors.bright_white, bold = true },
+
+                    -- Make window separators more visible.
+                    VertSplit = { fg = colors.white },
+
+                    -- Smoother bufferline.
+                    BufferLineFill = { bg = colors.bg },
+                    BufferLineSeparator = { fg = colors.bg },
+
+                    -- Nicer completion UI.
+                    CmpItemKind = { bg = 'NONE' },
+                    CmpItemAbbr = { fg = colors.white, bg = 'NONE' },
+                    CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
+                    CmpItemAbbrDeprecated = { strikethrough = true },
 
                     -- Make these virtual text thingies different from comments/regular code.
                     LspInlayHint = { fg = colors.lavender, italic = true },
