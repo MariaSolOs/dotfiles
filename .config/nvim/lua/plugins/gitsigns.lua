@@ -40,7 +40,10 @@ return {
                     gs.setloclist(0, 'all')
                 end, 'Hunks')
                 map('<leader>gl', function()
-                    require('float_term').float_term('lazygit', { width = 0.8, height = 0.8 })
+                    require('float_term').float_term('lazygit', {
+                        size = { width = 0.85, height = 0.8 },
+                        cwd = vim.b.gitsigns_status_dict.root,
+                    })
                 end, 'Lazygit')
             end,
         },

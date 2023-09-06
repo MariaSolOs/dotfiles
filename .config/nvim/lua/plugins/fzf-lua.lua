@@ -3,12 +3,15 @@ local symbol_icons = require('icons').symbol_kinds
 -- Custom files picker with toggling for respecting/ignoring .gitignore.
 local FilesPicker = {
     opts = nil,
-    ignoring = true,
+    ignoring = nil,
 }
 FilesPicker.toggle = function(_, _)
     FilesPicker.pick(FilesPicker.opts)
 end
 FilesPicker.pick = function(opts)
+    if not opts then
+        FilesPicker.ignoring = true
+    end
     opts = opts or {}
     opts.actions = {
         ['ctrl-g'] = FilesPicker.toggle,
@@ -25,8 +28,8 @@ FilesPicker.pick = function(opts)
         title = 'Files (' .. behavior .. ' .gitignore)',
         title_pos = 'center',
     }
-    FilesPicker.opts = opts
     FilesPicker.ignoring = not FilesPicker.ignoring
+    FilesPicker.opts = opts
 
     require('fzf-lua').files(opts)
 end

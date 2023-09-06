@@ -10,20 +10,15 @@ end
 -- Make the leader a noop when not followed by something.
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
--- Remap for dealing with word wrap.
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
+-- Remap for dealing with word wrap and adding jumps to the jumplist.
+vim.keymap.set('n', 'j', [[(v:count > 1 ? 'm`' . v:count : '') . 'gj']], { expr = true, silent = true })
+vim.keymap.set('n', 'k', [[(v:count > 1 ? 'm`' . v:count : '') . 'gk']], { expr = true, silent = true })
 
 -- Keeping the cursor centered.
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll downwards' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll upwards' })
 vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next result' })
 vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous result' })
-
--- Add undo break-points.
-vim.keymap.set('i', ',', ',<c-g>u')
-vim.keymap.set('i', '.', '.<c-g>u')
-vim.keymap.set('i', ';', ';<c-g>u')
 
 -- Indent while remaining in visual mode.
 vim.keymap.set('v', '<', '<gv')
@@ -48,27 +43,6 @@ vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit in
 vim.keymap.set('x', '@', function()
     return ':norm @' .. vim.fn.getcharstr() .. '<cr>'
 end, { expr = true })
-
-vim.keymap.set('n', 'gx', function()
-    local file = vim.fn.expand '<cfile>' --[[@as string]]
-
-    -- First try the default behaviour from https://github.com/neovim/neovim/blob/597355deae2ebddcb8b930da9a8b45a65d05d09b/runtime/lua/vim/_editor.lua#L1084.
-    local _, err = vim.ui.open(file)
-    if not err then
-        return
-    end
-
-    -- Consider anything that looks like string/string a GitHub link.
-    local link = file:match '%w[%w%-]+/[%w%-%._]+'
-    if link then
-        _, err = vim.ui.open('https://www.github.com/' .. link)
-    end
-
-    -- If that fails, just blame me.
-    if err then
-        vim.notify(err, vim.log.levels.ERROR)
-    end
-end, { desc = 'Opens filepath or URI under cursor' })
 
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>')

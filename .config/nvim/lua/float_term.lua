@@ -1,20 +1,22 @@
 local M = {}
 local terminals = {} ---@type LazyFloat[]
 
---- Opens an interactive floating terminal.
---- @param cmd? string
---- @param opts {width?: number, height?: number}
+---Opens an interactive floating terminal.
+---@param cmd? string
+---@param opts table
 function M.float_term(cmd, opts)
+    opts = vim.tbl_deep_extend('force', {
+        ft = 'lazyterm',
+        size = { width = 0.7, height = 0.7 },
+        persistent = true,
+    }, opts)
+
     local termkey = vim.inspect { cmd = cmd or 'shell', count = vim.v.count1 }
 
     if terminals[termkey] and terminals[termkey]:buf_valid() then
         terminals[termkey]:toggle()
     else
-        terminals[termkey] = require('lazy.util').float_term(cmd, {
-            ft = 'lazyterm',
-            size = { width = opts.width or 0.7, height = opts.height or 0.7 },
-            persistent = true,
-        })
+        terminals[termkey] = require('lazy.util').float_term(cmd, opts)
         local buf = terminals[termkey].buf
         vim.b[buf].lazyterm_cmd = cmd
 
