@@ -140,6 +140,7 @@ return {
                         position = { row = -2 },
                         border = { style = 'rounded' },
                         win_options = {
+                            winblend = 5,
                             winhighlight = {
                                 Normal = 'NoiceMini',
                                 FloatBorder = 'NoiceMini',

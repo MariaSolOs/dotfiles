@@ -30,7 +30,7 @@ return {
         opts = {
             preview = {
                 win_config = {
-                    winblend = 10,
+                    winblend = 5,
                     maxheight = 10,
                 },
             },

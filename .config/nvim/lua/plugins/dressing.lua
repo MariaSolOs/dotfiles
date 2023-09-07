@@ -20,6 +20,7 @@ return {
                 win_options = {
                     -- Use a purple-ish border.
                     winhighlight = 'FloatBorder:LspFloatWinBorder',
+                    winblend = 5,
                 },
             },
             select = {
@@ -37,7 +38,8 @@ return {
                     },
                     win_options = {
                         -- Same UI as the input field.
-                        winhighlight = 'FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle',
+                        winhighlight = 'FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle,MatchParen:Ignore',
+                        winblend = 5,
                     },
                 },
                 get_config = function(opts)
