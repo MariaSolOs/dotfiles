@@ -1,31 +1,5 @@
 local capabilities = require('lsp').client_capabilities
 local on_attach = require('lsp').on_attach
-local diagnostic_icons = require('icons').diagnostics
-
-vim.diagnostic.config {
-    virtual_text = {
-        -- Show severity icons as prefixes.
-        prefix = function(diagnostic)
-            return diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]] .. ' '
-        end,
-        -- Show only the first line of each diagnostic.
-        format = function(diagnostic)
-            return vim.split(diagnostic.message, '\n')[1]
-        end,
-    },
-    float = {
-        border = 'rounded',
-        source = 'if_many',
-        -- Show severity icons as prefixes.
-        prefix = function(diag)
-            local level = vim.diagnostic.severity[diag.severity]
-            local prefix = string.format(' %s ', diagnostic_icons[level])
-            return prefix, 'Diagnostic' .. level:gsub('^%l', string.upper)
-        end,
-    },
-    -- Disable signs in the gutter.
-    signs = false,
-}
 
 -- Update mappings when registering dynamic capabilities.
 local register_method = vim.lsp.protocol.Methods.client_registerCapability
@@ -164,7 +138,6 @@ return {
                                             '${3rd}/luv/library',
                                         },
                                     },
-                                    telemetry = { enable = false },
                                     -- Using stylua for formatting.
                                     format = { enable = false },
                                     hint = {
