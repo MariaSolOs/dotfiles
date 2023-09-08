@@ -83,7 +83,8 @@ return {
                     IncSearch = { fg = '#000000', bg = colors.fuchsia },
                     Substitute = { fg = colors.fuchsia, bg = colors.orange, bold = true },
 
-                    -- When triggering flash, make everything in the backdrop italic.
+                    -- When triggering flash, use a white font and make everything in the backdrop italic.
+                    FlashPrompt = { link = 'Normal' },
                     FlashBackdrop = { italic = true },
 
                     -- Make these titles more visible.
