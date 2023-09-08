@@ -1,5 +1,5 @@
 --VSCode-like lightbulb.
---Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/37cee912e8d1d1d8bd0477e735a82017374061c0/lua/lspsaga/codeaction/lightbulb.lua
+--Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/c9b17bc7dc694bdbeb3788a583518073a30a6de2/lua/lspsaga/codeaction/lightbulb.lua
 
 local lb_name = 'CodeActionLightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
@@ -76,7 +76,9 @@ local function update(bufnr)
     timer:start(100, 0, function()
         timer:stop()
         vim.schedule(function()
-            render(bufnr)
+            if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_get_current_buf() == bufnr then
+                render(bufnr)
+            end
         end)
     end)
 end

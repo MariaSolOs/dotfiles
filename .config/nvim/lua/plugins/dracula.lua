@@ -1,4 +1,5 @@
 -- Colorscheme.
+-- NOTE: I have a local path to remove unused highlight groups.
 return {
     {
         'Mofiqul/dracula.nvim',
