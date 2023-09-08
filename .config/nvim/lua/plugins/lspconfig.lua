@@ -111,10 +111,7 @@ return {
                     jsonls = function()
                         lspconfig.jsonls.setup {
                             capabilities = capabilities(),
-                            on_attach = function(client, bufnr)
-                                on_attach(client, bufnr)
-                                format_attach(client, bufnr)
-                            end,
+                            on_attach = on_attach,
                             settings = {
                                 json = {
                                     schemas = require('schemastore').json.schemas(),
