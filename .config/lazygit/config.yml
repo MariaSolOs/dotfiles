@@ -7,14 +7,11 @@ gui:
     activeBorderColor:
       - magenta
       - bold
-    inactiveBorderColor:
-      - white
-    optionsTextColor:
-      - blue
     selectedLineBgColor:
-      - reverse
+      - black
     selectedRangeBgColor:
-      - reverse
+      - black
+      - bold
     unstagedChangesColor:
       - yellow
   border: rounded
