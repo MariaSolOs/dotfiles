@@ -203,6 +203,7 @@ function M.filetype_component()
         lazyterm = { '', 'Special' },
         minifiles = { '󰉋', 'Directory' },
         noice = { '', 'Conditional' },
+        qf = { '', 'Conditional' },
         spectre_panel = { '', 'String' },
     }
 
