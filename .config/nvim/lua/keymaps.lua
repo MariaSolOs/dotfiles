@@ -1,12 +1,3 @@
--- Make all keymaps silent by default.
-local keymap_set = vim.keymap.set
----@diagnostic disable-next-line: duplicate-set-field
-vim.keymap.set = function(mode, lhs, rhs, opts)
-    opts = opts or {}
-    opts.silent = opts.silent ~= false
-    return keymap_set(mode, lhs, rhs, opts)
-end
-
 -- Make the leader a noop when not followed by something.
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
@@ -46,6 +37,10 @@ end, { expr = true })
 
 -- HACK: <C-c> doesn't trigger the insert leave event, so remap it to escape so that it does.
 vim.keymap.set('i', '<C-c>', '<esc>')
+
+-- Word navigation in non-normal modes.
+vim.keymap.set({ 'i', 'c' }, '<C-h>', '<C-Left>', { desc = 'Move word(s) backwards' })
+vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-Right>', { desc = 'Move word(s) forwards' })
 
 -- Floating terminal.
 vim.keymap.set('n', '<M-t>', function()

@@ -29,13 +29,19 @@ vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
-vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+
+-- UI characters.
+vim.opt.fillchars = {
+    eob = ' ',
+    fold = ' ',
+    foldclose = '',
+    foldopen = '',
+    foldsep = ' ',
+    msgsep = '─',
+}
 
 -- Sync clipboard between the OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
-
--- Enable break indent.
-vim.o.breakindent = true
 
 -- Save undo history.
 vim.o.undofile = true
@@ -53,17 +59,19 @@ vim.o.timeout = true
 vim.o.timeoutlen = 500
 vim.o.ttimeoutlen = 10
 
--- Set completeopt to have a better completion experience.
+-- Completion.
+vim.opt.wildignore:append { '.DS_Store' }
 vim.o.completeopt = 'menuone,noselect,noinsert'
-
--- Cap the number of displayed completions.
 vim.o.pumheight = 15
 
 -- Diff mode settings.
 vim.opt.diffopt:append 'vertical,foldcolumn:0'
 
--- Disable some of those annoying hit-enter messages.
-vim.opt.shortmess:append 'IWs'
+vim.opt.shortmess:append {
+    I = true, -- Disable the vim intro.
+    w = true,
+    s = true,
+}
 
 -- Use ripgrep for grepping.
 vim.o.grepprg = 'rg --vimgrep'

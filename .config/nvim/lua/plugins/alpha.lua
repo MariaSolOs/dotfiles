@@ -20,6 +20,9 @@ return {
         opts = function()
             local dashboard = require 'alpha.themes.dashboard'
 
+            -- Add some extra padding at the top.
+            dashboard.opts.layout[1].val = 6
+
             local header = [[
 ██╗  ██╗███████╗██╗   ██╗    ██████╗ ██████╗ ███████╗████████╗████████╗██╗   ██╗     ██████╗ ██╗██████╗ ██╗
 ██║  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝╚██╗ ██╔╝    ██╔════╝ ██║██╔══██╗██║
@@ -38,14 +41,13 @@ return {
                 return button
             end
             dashboard.section.buttons.val = {
-                dashboard_button('f', '  Find file', '<cmd>FzfLua files<cr>'),
+                dashboard_button('f', '󰉋  Find file', '<cmd>FzfLua files<cr>'),
                 dashboard_button('r', '  Recent files', '<cmd>FzfLua oldfiles<cr>'),
                 dashboard_button('g', '  Grep', '<cmd>FzfLua live_grep<cr>'),
                 dashboard_button('q', '  Quit', '<cmd>qa<cr>'),
                 { type = 'padding', val = 2 },
             }
             dashboard.section.buttons.opts.hl = 'AlphaButtons'
-            dashboard.opts.layout[1].val = #dashboard.section.buttons.val
 
             dashboard.section.footer.val = "It's not a bug, it's a feature. 🌟"
             dashboard.section.footer.opts.hl = 'AlphaFooter'

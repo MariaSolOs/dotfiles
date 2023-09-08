@@ -1,6 +1,5 @@
 -- Remember my mappings.
 -- TODO: Unpatch my noautocmd fix when https://github.com/echasnovski/mini.nvim/issues/430#issuecomment-1704360374 is addressed.
--- TODO: Noice breaks submodes, follow up in https://github.com/folke/noice.nvim/pull/585
 return {
     {
         'echasnovski/mini.clue',

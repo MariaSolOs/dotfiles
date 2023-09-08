@@ -22,7 +22,6 @@ return {
                     'lazy',
                     'lazyterm',
                     'mason',
-                    'noice',
                 },
             },
         },

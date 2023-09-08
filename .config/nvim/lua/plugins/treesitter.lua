@@ -86,6 +86,18 @@ return {
             },
         },
         config = function(_, opts)
+            -- Disable incremental selection in the cmdline window.
+            local toggle_inc_selection_group =
+                vim.api.nvim_create_augroup('ToggleIncrementalSelection', { clear = true })
+            vim.api.nvim_create_autocmd('CmdwinEnter', {
+                group = toggle_inc_selection_group,
+                command = 'TSBufDisable incremental_selection',
+            })
+            vim.api.nvim_create_autocmd('CmdwinLeave', {
+                group = toggle_inc_selection_group,
+                command = 'TSBufEnable incremental_selection',
+            })
+
             require('nvim-treesitter.configs').setup(opts)
         end,
     },

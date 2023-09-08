@@ -2,19 +2,21 @@ local M = {}
 local diagnostic_icons = require('icons').diagnostics
 local statusline_group = vim.api.nvim_create_augroup('MyStatusline', { clear = true })
 
--- Global statusline everywhere except in the Alpha dashboard.
+-- Hide the statusline and command line in the start dashboard.
 vim.api.nvim_create_autocmd('User', {
     pattern = 'AlphaReady',
     group = statusline_group,
     once = true,
     callback = function(event)
         vim.o.laststatus = 0
+        vim.o.cmdheight = 0
         vim.api.nvim_create_autocmd('BufUnload', {
             group = statusline_group,
             buffer = event.buf,
             once = true,
             callback = function()
                 vim.o.laststatus = 3
+                vim.o.cmdheight = 1
             end,
         })
     end,
@@ -133,16 +135,6 @@ function M.dap_component()
     end
 
     return string.format('%%#%s#  %s', M.get_or_create_hl 'DapUIRestart', require('dap').status())
-end
-
----The current status recorded by noice (like macro recording messages).
----@return string?
-function M.noice_status_component()
-    if not package.loaded['noice'] or not require('noice').api.status.mode.has() then
-        return nil
-    end
-
-    return string.format('%%#StatuslineNoice#%s', require('noice').api.status.mode.get())
 end
 
 local progress_status = {
@@ -283,7 +275,7 @@ function M.render()
         concat_components {
             M.mode_component(),
             M.git_component(),
-            M.dap_component() or M.noice_status_component() or M.lsp_progress_component(),
+            M.dap_component() or M.lsp_progress_component(),
         },
         '%#StatusLine#%=',
         concat_components {

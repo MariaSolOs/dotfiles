@@ -54,9 +54,10 @@ return {
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-nvim-lsp',
             'saadparwaiz1/cmp_luasnip',
+            'hrsh7th/cmp-cmdline',
         },
         version = false,
-        event = 'InsertEnter',
+        event = { 'CmdlineEnter', 'InsertEnter' },
         opts = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
@@ -69,7 +70,17 @@ return {
                 preselect = cmp.PreselectMode.None,
                 formatting = {
                     fields = { 'kind', 'abbr', 'menu' },
-                    format = function(_, vim_item)
+                    format = function(cmp_item, vim_item)
+                        -- In the command line, just add icons for files/folders and don't
+                        -- truncate.
+                        if cmp_item.source.name == 'cmdline' then
+                            local stat = vim.uv.fs_stat(vim_item.word)
+                            vim_item.kind = stat
+                                    and ((stat.type == 'directory' and symbol_kinds.Folder) or symbol_kinds.File)
+                                or ''
+                            return vim_item
+                        end
+
                         local MAX_ABBR_WIDTH, MAX_MENU_WIDTH = 25, 30
                         local ELLIPSIS = '…'
 
@@ -163,6 +174,17 @@ return {
             vim.keymap.set('s', '<BS>', '<C-O>s')
 
             cmp.setup(opts)
+
+            -- Command line setup.
+            cmp.setup.cmdline(':', {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources {
+                    { name = 'cmdline' },
+                },
+                formatting = {
+                    fields = { 'abbr', 'kind' },
+                },
+            })
         end,
     },
 }

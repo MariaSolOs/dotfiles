@@ -36,7 +36,6 @@ return {
                 end
                 statusline_groups = vim.tbl_extend('error', statusline_groups, {
                     StatuslineItalic = { fg = colors.grey, bg = colors.black, italic = true },
-                    StatuslineNoice = { fg = colors.yellow, bg = colors.black, underline = true },
                     StatuslineSpinner = { fg = colors.bright_green, bg = colors.black, bold = true },
                     StatuslineTitle = { fg = colors.bright_white, bg = colors.black, bold = true },
                 })
@@ -76,8 +75,10 @@ return {
                     -- Make these virtual text thingies different from comments/regular code.
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
-                    -- Group used by Gitsigns and Noice. Make it stand out.
+                    -- Command line.
                     MoreMsg = { fg = colors.bright_white, bold = true },
+                    MsgArea = { fg = colors.cyan },
+                    MsgSeparator = { fg = colors.lilac },
 
                     -- Make search a bit more visible for flash.
                     IncSearch = { fg = '#000000', bg = colors.fuchsia },
@@ -90,9 +91,6 @@ return {
                     -- Make these titles more visible.
                     MiniClueTitle = { bold = true, fg = colors.cyan },
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
-
-                    -- Notifications.
-                    MsgArea = { fg = colors.bright_magenta },
 
                     -- Nicer highlights for the word under the cursor.
                     IlluminatedWordRead = { bg = '#19272C' },

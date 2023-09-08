@@ -10,7 +10,7 @@ return {
             jump = { nohlsearch = true },
             prompt = {
                 -- Place the prompt above the statusline.
-                win_config = { row = -2 },
+                win_config = { row = -3 },
             },
         },
         keys = {
