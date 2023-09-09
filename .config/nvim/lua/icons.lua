@@ -1,6 +1,6 @@
 local M = {}
 
--- Diagnostic severities.
+--- Diagnostic severities.
 M.diagnostics = {
     ERROR = '',
     WARN = '',
@@ -8,7 +8,15 @@ M.diagnostics = {
     INFO = '',
 }
 
--- LSP symbol kinds.
+--- For folding.
+M.arrows = {
+    right = '',
+    left = '',
+    up = '',
+    down = '',
+}
+
+--- LSP symbol kinds.
 M.symbol_kinds = {
     Array = '󰅪',
     Class = '',
@@ -36,6 +44,11 @@ M.symbol_kinds = {
     Unit = '',
     Value = '',
     Variable = '󰀫',
+}
+
+--- Icons that don't really fit into a category.
+M.misc = {
+    search = '',
 }
 
 return M

@@ -1,5 +1,6 @@
+-- TODO: Make this more fancy. I feel that I'm lacking useful components.
 local M = {}
-local diagnostic_icons = require('icons').diagnostics
+local icons = require 'icons'
 local statusline_group = vim.api.nvim_create_augroup('MyStatusline', { clear = true })
 
 -- Hide the statusline and command line in the start dashboard.
@@ -191,12 +192,12 @@ function M.filetype_component()
         DressingSelect = { '', 'Comment' },
         dropbar_menu = { '', 'Directory' },
         fzf = { '', 'Special' },
-        lazy = { '', 'Special' },
+        lazy = { icons.symbol_kinds.Method, 'Special' },
         lazyterm = { '', 'Special' },
-        minifiles = { '󰉋', 'Directory' },
+        minifiles = { icons.symbol_kinds.Folder, 'Directory' },
         noice = { '', 'Conditional' },
-        qf = { '', 'Conditional' },
-        spectre_panel = { '', 'String' },
+        qf = { icons.misc.search, 'Conditional' },
+        spectre_panel = { icons.misc.search, 'String' },
     }
 
     local filetype = vim.bo.filetype
@@ -240,7 +241,7 @@ function M.diagnostics_component()
         end
 
         local hl = 'Diagnostic' .. severity:sub(1, 1) .. severity:sub(2):lower()
-        return string.format('%%#%s#%s %d', M.get_or_create_hl(hl), diagnostic_icons[severity], count)
+        return string.format('%%#%s#%s %d', M.get_or_create_hl(hl), icons.diagnostics[severity], count)
     end, counts)
 
     return table.concat(parts, ' ')

@@ -38,8 +38,12 @@ return {
                         win = { 'CursorMoved', 'CursorMovedI', 'WinResized' },
                     },
                 },
-                -- Keep the icons used in other parts of the UI.
                 icons = {
+                    -- Add a space before the separator.
+                    ui = {
+                        bar = { separator = '  ' },
+                    },
+                    -- Keep the LSP icons used in other parts of the UI.
                     kinds = {
                         symbols = vim.tbl_map(function(symbol)
                             return symbol .. ' '

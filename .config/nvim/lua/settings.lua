@@ -1,3 +1,5 @@
+local arrows = require('icons').arrows
+
 -- Set <space> as the leader key.
 -- Must happen before plugins are required (otherwise the wrong leader will be used).
 vim.g.mapleader = ' '
@@ -34,8 +36,8 @@ vim.o.foldenable = true
 vim.opt.fillchars = {
     eob = ' ',
     fold = ' ',
-    foldclose = '',
-    foldopen = '',
+    foldclose = arrows.right,
+    foldopen = arrows.down,
     foldsep = ' ',
     msgsep = '─',
 }

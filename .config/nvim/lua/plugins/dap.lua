@@ -1,16 +1,18 @@
+local arrows = require('icons').arrows
+
 -- Set up icons.
 local icons = {
-    Stopped = { ' ', 'DiagnosticWarn', 'DapStoppedLine' },
-    Breakpoint = ' ',
-    BreakpointCondition = ' ',
-    BreakpointRejected = { ' ', 'DiagnosticError' },
-    LogPoint = '.>',
+    Stopped = { '', 'DiagnosticWarn', 'DapStoppedLine' },
+    Breakpoint = '',
+    BreakpointCondition = '',
+    BreakpointRejected = { '', 'DiagnosticError' },
+    LogPoint = arrows.right,
 }
 for name, sign in pairs(icons) do
     sign = type(sign) == 'table' and sign or { sign }
     vim.fn.sign_define('Dap' .. name, {
         -- stylua: ignore
-        text = sign[1] --[[@as string]],
+        text = sign[1] --[[@as string]] .. ' ',
         texthl = sign[2] or 'DiagnosticInfo',
         linehl = sign[3],
         numhl = sign[3],
@@ -37,6 +39,11 @@ return {
                     },
                 },
                 opts = {
+                    icons = {
+                        collapsed = arrows.right,
+                        current_frame = arrows.right,
+                        expanded = arrows.down,
+                    },
                     layouts = {
                         {
                             elements = {
@@ -54,6 +61,14 @@ return {
                     local dapui = require 'dapui'
 
                     dapui.setup(opts)
+
+                    -- Hide the fold column.
+                    vim.api.nvim_create_autocmd('FileType', {
+                        pattern = { 'dapui_scopes', 'dapui_stacks', 'dapui_breakpoints' },
+                        callback = function()
+                            require('ufo').detach()
+                        end,
+                    })
 
                     -- Automatically open the UI when a new debug session is created.
                     dap.listeners.after.event_initialized['dapui_config'] = function()

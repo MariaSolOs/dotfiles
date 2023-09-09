@@ -1,4 +1,4 @@
-local symbol_icons = require('icons').symbol_kinds
+local icons = require 'icons'
 
 -- Custom files picker with toggling for respecting/ignoring .gitignore.
 local FilesPicker = {
@@ -106,12 +106,13 @@ return {
             },
             grep = {
                 git_icons = false,
-                header_prefix = ' ',
+                header_prefix = icons.misc.search .. ' ',
             },
+            -- Add the arrow to the end as other pickers.
             highlights = { prompt = 'Highlights> ' },
             lsp = {
                 symbols = {
-                    symbol_icons = symbol_icons,
+                    symbol_icons = icons.symbol_kinds,
                 },
             },
             oldfiles = {
