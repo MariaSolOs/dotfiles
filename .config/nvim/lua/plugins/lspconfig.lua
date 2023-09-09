@@ -81,8 +81,6 @@ return {
                     'jsonls',
                     'lua_ls',
                     'marksman',
-                    'pyright',
-                    'ruff_lsp',
                     'taplo',
                 },
                 handlers = {
@@ -144,17 +142,6 @@ return {
                                     completion = { callSnippet = 'Replace' },
                                 },
                             },
-                        }
-                    end,
-                    ruff_lsp = function()
-                        lspconfig.ruff_lsp.setup {
-                            capabilities = capabilities(),
-                            on_attach = function(client, bufnr)
-                                -- Disable hover in favor of pyright.
-                                client.server_capabilities.hoverProvider = false
-
-                                on_attach(client, bufnr)
-                            end,
                         }
                     end,
                 },
