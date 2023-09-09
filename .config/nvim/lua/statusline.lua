@@ -183,38 +183,6 @@ function M.lsp_progress_component()
     }
 end
 
----The buffer's filetype.
----@return string
-function M.filetype_component()
-    -- Special icons for some filetypes.
-    local special_icons = {
-        DressingInput = { '󰍩', 'Comment' },
-        DressingSelect = { '', 'Comment' },
-        dropbar_menu = { '', 'Directory' },
-        fzf = { '', 'Special' },
-        lazy = { icons.symbol_kinds.Method, 'Special' },
-        lazyterm = { '', 'Special' },
-        minifiles = { icons.symbol_kinds.Folder, 'Directory' },
-        noice = { '', 'Conditional' },
-        qf = { icons.misc.search, 'Conditional' },
-        spectre_panel = { icons.misc.search, 'String' },
-    }
-
-    local filetype = vim.bo.filetype
-    local icon, icon_hl
-    if special_icons[filetype] then
-        icon, icon_hl = unpack(special_icons[filetype])
-    else
-        local buf_name = vim.api.nvim_buf_get_name(0)
-        local name, ext = vim.fn.fnamemodify(buf_name, ':t'), vim.fn.fnamemodify(buf_name, ':e')
-
-        icon, icon_hl = require('nvim-web-devicons').get_icon(name, ext, { default = true })
-    end
-    icon_hl = M.get_or_create_hl(icon_hl)
-
-    return string.format('%%#%s#%s %%#StatuslineTitle#%s', icon_hl, icon, filetype)
-end
-
 local last_diagnostic_component = ''
 ---Diagnostic counts in the current buffer.
 ---@return string
@@ -245,6 +213,49 @@ function M.diagnostics_component()
     end, counts)
 
     return table.concat(parts, ' ')
+end
+
+---The buffer's filetype.
+---@return string
+function M.filetype_component()
+    local devicons = require 'nvim-web-devicons'
+    -- Special icons for some filetypes.
+    local special_icons = {
+        DressingInput = { '󰍩', 'Comment' },
+        DressingSelect = { '', 'Comment' },
+        dropbar_menu = { '', 'Directory' },
+        fzf = { '', 'Special' },
+        lazy = { icons.symbol_kinds.Method, 'Special' },
+        lazyterm = { '', 'Special' },
+        minifiles = { icons.symbol_kinds.Folder, 'Directory' },
+        noice = { '', 'Conditional' },
+        qf = { icons.misc.search, 'Conditional' },
+        spectre_panel = { icons.misc.search, 'String' },
+    }
+
+    local filetype = vim.bo.filetype
+    local icon, icon_hl
+    if special_icons[filetype] then
+        icon, icon_hl = unpack(special_icons[filetype])
+    else
+        local buf_name = vim.api.nvim_buf_get_name(0)
+        local name, ext = vim.fn.fnamemodify(buf_name, ':t'), vim.fn.fnamemodify(buf_name, ':e')
+
+        icon, icon_hl = devicons.get_icon(name, ext)
+        if not icon then
+            icon, icon_hl = devicons.get_icon_by_filetype(filetype, { default = true })
+        end
+    end
+    icon_hl = M.get_or_create_hl(icon_hl)
+
+    return string.format('%%#%s#%s %%#StatuslineTitle#%s', icon_hl, icon, filetype)
+end
+
+---File-content encoding for the current buffer.
+---@return string
+function M.encoding_component()
+    local encoding = vim.opt.fileencoding:get()
+    return encoding ~= '' and string.format('%%#StatuslineModeSeparatorOther# %s', encoding) or ''
 end
 
 ---The current line, total line count, and column position.
@@ -282,6 +293,7 @@ function M.render()
         concat_components {
             M.diagnostics_component(),
             M.filetype_component(),
+            M.encoding_component(),
             M.position_component(),
         },
         ' ',

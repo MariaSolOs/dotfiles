@@ -44,6 +44,7 @@ return {
                         current_frame = arrows.right,
                         expanded = arrows.down,
                     },
+                    floating = { border = 'rounded' },
                     layouts = {
                         {
                             elements = {
