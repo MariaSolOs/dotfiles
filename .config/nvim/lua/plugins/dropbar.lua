@@ -39,9 +39,10 @@ return {
                     },
                 },
                 icons = {
-                    -- Add a space before the separator.
                     ui = {
+                        -- Tweak the spacing around the separator.
                         bar = { separator = '  ' },
+                        menu = { separator = '' },
                     },
                     -- Keep the LSP icons used in other parts of the UI.
                     kinds = {

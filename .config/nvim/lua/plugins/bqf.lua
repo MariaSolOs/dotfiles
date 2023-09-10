@@ -50,11 +50,6 @@ return {
                 desc = 'Toggle location list',
             },
             {
-                '<leader>xd',
-                vim.diagnostic.setqflist,
-                desc = 'Diagnostics',
-            },
-            {
                 '[q',
                 '<cmd>cprev<cr>zz',
                 desc = 'Previous quickfix item',

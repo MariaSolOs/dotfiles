@@ -31,11 +31,9 @@ return {
             { '<leader>bo', '<cmd>BufferLinePick<cr>', desc = 'Select a buffer to open' },
             { '<leader>br', '<cmd>BufferLineCloseRight<cr>', desc = 'Close buffers to the right' },
             -- Tab navigation.
-            { '[p', '<cmd>tabp<cr>', desc = 'Previous tab page' },
-            { ']p', '<cmd>tabn<cr>', desc = 'Next tab page' },
-            { '<leader>pc', '<cmd>tabclose<cr>', desc = 'Close tab page' },
-            { '<leader>pn', '<cmd>tab split<cr>', desc = 'New tab page' },
-            { '<leader>po', '<cmd>tabonly<cr>', desc = 'Close other tab pages' },
+            { '<leader>tc', '<cmd>tabclose<cr>', desc = 'Close tab page' },
+            { '<leader>tn', '<cmd>tab split<cr>', desc = 'New tab page' },
+            { '<leader>to', '<cmd>tabonly<cr>', desc = 'Close other tab pages' },
         },
     },
 }
