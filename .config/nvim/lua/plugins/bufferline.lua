@@ -7,6 +7,12 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             options = {
+                close_command = function(bufnr)
+                    require('mini.bufremove').delete(bufnr, false)
+                end,
+                right_mouse_command = function(bufnr)
+                    require('mini.bufremove').delete(bufnr, false)
+                end,
                 diagnostics = 'nvim_lsp',
                 diagnostics_indicator = function(_, _, diag)
                     local indicator = (diag.error and diagnostic_icons.ERROR .. ' ' or '')
@@ -21,7 +27,6 @@ return {
             { '[b', '<cmd>BufferLineCyclePrev<cr>', desc = 'Previous buffer' },
             { ']b', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
             { '<leader>bc', '<cmd>BufferLinePickClose<cr>', desc = 'Select a buffer to close' },
-            { '<leader>bd', '<cmd>bdelete<cr>', desc = 'Delete current buffer' },
             { '<leader>bl', '<cmd>BufferLineCloseLeft<cr>', desc = 'Close buffers to the left' },
             { '<leader>bo', '<cmd>BufferLinePick<cr>', desc = 'Select a buffer to open' },
             { '<leader>br', '<cmd>BufferLineCloseRight<cr>', desc = 'Close buffers to the right' },

@@ -7,6 +7,7 @@ vim.o.buflisted = false
 -- Add the cfilter plugin.
 vim.cmd.packadd 'cfilter'
 
+-- TODO: Try to find a plugin that does this.
 -- Deleting entries.
 local function list_delete()
     -- Figure out if we're in the quickfix list or the location list.
