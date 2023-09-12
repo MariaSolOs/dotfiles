@@ -2,8 +2,8 @@
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
 -- Remap for dealing with word wrap and adding jumps to the jumplist.
-vim.keymap.set('n', 'j', [[(v:count > 1 ? 'm`' . v:count : '') . 'gj']], { expr = true, silent = true })
-vim.keymap.set('n', 'k', [[(v:count > 1 ? 'm`' . v:count : '') . 'gk']], { expr = true, silent = true })
+vim.keymap.set('n', 'j', [[(v:count > 1 ? 'm`' . v:count : '') . 'gj']], { expr = true })
+vim.keymap.set('n', 'k', [[(v:count > 1 ? 'm`' . v:count : '') . 'gk']], { expr = true })
 
 -- Keeping the cursor centered.
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll downwards' })
@@ -26,6 +26,9 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window', rema
 
 -- Clear search with <esc>
 vim.keymap.set('n', '<esc>', '<cmd>noh<cr><esc>', { desc = 'Escape and clear hlsearch' })
+
+-- Make U opposite to u.
+vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 
 -- Escape and save changes.
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
