@@ -18,10 +18,6 @@ return {
             on_attach = function(bufnr)
                 local gs = package.loaded.gitsigns
 
-                local function map(lhs, rhs, desc)
-                    vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
-                end
-
                 -- Register the leader group with miniclue.
                 vim.b[bufnr].miniclue_config = {
                     clues = {
@@ -29,6 +25,13 @@ return {
                     },
                 }
 
+                -- Text object.
+                vim.keymap.set('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', { buffer = bufnr })
+
+                -- Actions.
+                local function map(lhs, rhs, desc)
+                    vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
+                end
                 map(']g', gs.prev_hunk, 'Previous hunk')
                 map('[g', gs.next_hunk, 'Next hunk')
                 map('<leader>gR', gs.reset_buffer, 'Reset buffer')
