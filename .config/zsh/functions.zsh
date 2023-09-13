@@ -57,6 +57,10 @@ EOF
     # Remove the patched changes.
     git checkout .
 
+    # Push to my fork.
+    echo "\n========== PUSHING CHANGES IN MASTER... ==========\n"
+    git push
+
     # Go back to where I was.
     popd
 }
