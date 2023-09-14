@@ -77,9 +77,13 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'Cmdline
 })
 vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
     group = line_numbers_group,
-    callback = function()
+    callback = function(args)
         if vim.wo.nu then
             vim.wo.relativenumber = false
+        end
+
+        -- Redraw here to avoid having to first write something for the line numbers to update.
+        if args.event == 'CmdlineEnter' then
             vim.cmd.redraw()
         end
     end,
