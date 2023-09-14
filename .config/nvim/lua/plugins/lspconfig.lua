@@ -38,40 +38,12 @@ return {
             'neovim/nvim-lspconfig',
             -- JSON schemas.
             { 'b0o/SchemaStore.nvim', version = false },
-            -- Formatting on save.
-            { 'lukas-reineke/lsp-format.nvim', config = true },
         },
         config = function()
             local lspconfig = require 'lspconfig'
-            local format_attach = require('lsp-format').on_attach
 
             -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'
-
-            -- Set up EFM for general formatters.
-            -- Configuring this separately since I don't install EFM with mason.
-            local languages = {
-                lua = {
-                    {
-                        formatCommand = string.format('%s --color Never -', vim.fn.exepath 'stylua'),
-                        formatStdin = true,
-                        rootMarkers = { 'stylua.toml', '.stylua.toml' },
-                    },
-                },
-                sh = {
-                    { formatCommand = 'shfmt -i 2 -ci -bn' },
-                },
-            }
-            lspconfig.efm.setup {
-                capabilities = capabilities(),
-                on_attach = format_attach,
-                init_options = { documentFormatting = true },
-                filetypes = vim.tbl_keys(languages),
-                settings = {
-                    rootMarkers = { '.git' },
-                    languages = languages,
-                },
-            }
 
             require('mason-lspconfig').setup {
                 ensure_installed = {

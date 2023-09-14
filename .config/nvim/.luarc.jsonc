@@ -18,7 +18,6 @@
       "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/fzf-lua/lua",
       "$XDG_DATA_HOME/nvim/lazy/lazy.nvim/lua",
-      "$XDG_DATA_HOME/nvim/lazy/lsp-format.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.bufremove/lua",
