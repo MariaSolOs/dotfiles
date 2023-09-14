@@ -234,6 +234,10 @@ function M.filetype_component()
     }
 
     local filetype = vim.bo.filetype
+    if filetype == '' then
+        return ''
+    end
+
     local icon, icon_hl
     if special_icons[filetype] then
         icon, icon_hl = unpack(special_icons[filetype])
