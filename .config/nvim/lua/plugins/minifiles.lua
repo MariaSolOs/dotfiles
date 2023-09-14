@@ -31,7 +31,7 @@ return {
     {
         'echasnovski/mini.files',
         keys = {
-            { 'gf', nil, desc = 'Go to file under cursor' },
+            { '<C-w>F', nil, desc = 'Split + edit file' },
             {
                 '<leader>e',
                 -- Open the explorer in the current directory, with focus on the current
