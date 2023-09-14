@@ -7,6 +7,11 @@ function buildnvim() {
     # cd and save the CWD in the stack.
     pushd $nvim_dir
 
+    if ! git diff --exit-code; then
+        echo "\n========== LOCAL NEOVIM CHANGES! ==========\n"
+        return
+    fi
+
     # Checkout the master branch.
     git checkout master
 
@@ -58,8 +63,8 @@ EOF
     git checkout .
 
     # Push to my fork.
-    echo "\n========== PUSHING CHANGES IN MASTER... ==========\n"
-    git push
+    echo "\n========== PUSHING CHANGES TO MASTER... ==========\n"
+    git push origin master
 
     # Go back to where I was.
     popd
