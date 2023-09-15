@@ -4,6 +4,7 @@ require 'keymaps'
 require 'commands'
 require 'statusline'
 require 'lightbulb'
+require 'marks'
 
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
