@@ -51,29 +51,27 @@ return {
             },
             {
                 '[q',
-                '<cmd>cprev<cr>zz',
+                '<cmd>cprev<cr>zvzz',
                 desc = 'Previous quickfix item',
             },
             {
                 ']q',
-                '<cmd>cnext<cr>zz',
+                '<cmd>cnext<cr>zvzz',
                 desc = 'Next quickfix item',
             },
             {
                 '[l',
-                '<cmd>lprev<cr>zz',
+                '<cmd>lprev<cr>zvzz',
                 desc = 'Previous location list item',
             },
             {
                 ']l',
-                '<cmd>lnext<cr>zz',
+                '<cmd>lnext<cr>zvzz',
                 desc = 'Next location list item',
             },
         },
         opts = {
-            func_map = {
-                split = '<C-s>',
-            },
+            func_map = { split = '<C-s>' },
         },
     },
 }
