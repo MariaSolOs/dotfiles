@@ -1,6 +1,6 @@
 function buildnvim() {
     # Make sure I cloned the thing.
-    nvim_dir="$HOME/Code/neovim"
+    local nvim_dir="$HOME/Code/neovim"
     [ ! -d "$nvim_dir" ] && echo "Silly girl, you haven't cloned neovim..." && return
     echo "\n========== NEOVIM DIRECTORY: $nvim_dir ==========\n"
 
@@ -27,16 +27,21 @@ function buildnvim() {
     # Clear the cache.
     rm -rf build
 
+    # Go back to the given commit or HEAD.
+    local commit="${1:-HEAD}"
+    echo "\n========== CHECKING OUT COMMIT $commit... ==========\n"
+    git reset --hard "$commit"
+
     # Apply my fold column patch.
     echo "\n========== APPLYING FOLDCOLUMN PATCH... ==========\n"
-    patch_file="$nvim_dir/foldcolumn.patch"
+    local patch_file="$nvim_dir/foldcolumn.patch"
     rm -f "$patch_file"
     cat <<'EOF' > "$patch_file"
 diff --git a/src/nvim/drawline.c b/src/nvim/drawline.c
-index 4b989fa59..655e66016 100644
+index e1550e0ec..78e5917b7 100644
 --- a/src/nvim/drawline.c
 +++ b/src/nvim/drawline.c
-@@ -433,12 +433,8 @@ size_t fill_foldcolumn(char *p, win_T *wp, foldinfo_T foldinfo, linenr_T lnum)
+@@ -431,12 +431,8 @@ size_t fill_foldcolumn(char *p, win_T *wp, foldinfo_T foldinfo, linenr_T lnum)
      if (foldinfo.fi_lnum == lnum
          && first_level + i >= foldinfo.fi_low_level) {
        symbol = wp->w_p_fcs_chars.foldopen;
@@ -51,7 +56,6 @@ index 4b989fa59..655e66016 100644
  
      len = utf_char2bytes(symbol, &p[char_counter]);
 EOF
-    git reset --hard HEAD
     git apply "$patch_file"
     rm -f "$patch_file"
 
@@ -62,9 +66,11 @@ EOF
     # Remove the patched changes.
     git checkout .
 
-    # Push to my fork.
-    echo "\n========== PUSHING CHANGES TO MASTER... ==========\n"
-    git push origin master
+    # Push to my fork if I just updated from HEAD.
+    if [ -z "$1" ]; then
+        echo "\n========== PUSHING CHANGES TO FORK... ==========\n"
+        git push origin master
+    fi
 
     # Go back to where I was.
     popd
