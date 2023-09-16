@@ -35,6 +35,17 @@ vim.diagnostic.config {
     signs = false,
 }
 
+-- Update mappings when registering dynamic capabilities.
+local register_method = vim.lsp.protocol.Methods.client_registerCapability
+local register_capability = vim.lsp.handlers[register_method]
+vim.lsp.handlers[register_method] = function(err, res, ctx)
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+    local bufnr = vim.api.nvim_get_current_buf()
+    M.on_attach(client, bufnr)
+
+    return register_capability(err, res, ctx)
+end
+
 ---Returns the editor's capabilities + some overrides.
 M.client_capabilities = function()
     return vim.tbl_deep_extend(

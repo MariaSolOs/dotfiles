@@ -1,18 +1,9 @@
 local capabilities = require('lsp').client_capabilities
 local on_attach = require('lsp').on_attach
 
--- Update mappings when registering dynamic capabilities.
-local register_method = vim.lsp.protocol.Methods.client_registerCapability
-local register_capability = vim.lsp.handlers[register_method]
-vim.lsp.handlers[register_method] = function(err, res, ctx)
-    local client = vim.lsp.get_client_by_id(ctx.client_id)
-    local bufnr = vim.api.nvim_get_current_buf()
-    on_attach(client, bufnr)
-
-    return register_capability(err, res, ctx)
-end
-
 return {
+    -- JSON schemas.
+    { 'b0o/SchemaStore.nvim', version = false, lazy = true },
     {
         'williamboman/mason-lspconfig.nvim',
         event = { 'BufReadPre', 'BufNewFile' },
@@ -36,8 +27,6 @@ return {
                 },
             },
             'neovim/nvim-lspconfig',
-            -- JSON schemas.
-            { 'b0o/SchemaStore.nvim', version = false },
         },
         config = function()
             local lspconfig = require 'lspconfig'
@@ -84,11 +73,15 @@ return {
                             on_attach = on_attach,
                             settings = {
                                 json = {
-                                    schemas = require('schemastore').json.schemas(),
                                     validate = { enable = true },
                                     format = { enable = true },
                                 },
                             },
+                            -- Lazy-load schemas.
+                            on_new_config = function(config)
+                                config.settings.json.schemas = config.settings.json.schemas or {}
+                                vim.list_extend(config.settings.json.schemas, require('schemastore').json.schemas())
+                            end,
                         }
                     end,
                     lua_ls = function()

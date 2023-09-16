@@ -41,7 +41,7 @@ return {
             },
         },
         version = false,
-        event = { 'BufReadPost', 'BufNewFile' },
+        event = 'VeryLazy',
         build = ':TSUpdate',
         keys = {
             { '<cr>', desc = 'Increment selection' },
@@ -52,6 +52,7 @@ return {
                 'bash',
                 'c',
                 'cpp',
+                'gitcommit',
                 'javascript',
                 'json',
                 'json5',
