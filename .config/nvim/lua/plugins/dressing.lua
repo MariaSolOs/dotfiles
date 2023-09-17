@@ -40,7 +40,6 @@ return {
                     mappings = { ['q'] = 'Close' },
                     win_options = {
                         -- Same UI as the input field.
-                        -- TODO: Remove the MatchParen highlight when https://github.com/neovim/neovim/pull/25096 gets merged.
                         winhighlight = 'FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle,MatchParen:Ignore',
                         winblend = 5,
                     },

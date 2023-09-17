@@ -93,8 +93,9 @@ return {
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
                     -- Nicer highlights for the word under the cursor.
-                    IlluminatedWordRead = { bg = '#19272C' },
-                    IlluminatedWordWrite = { bg = '#342231' },
+                    LspReferenceRead = { bg = '#19272C' },
+                    LspReferenceWrite = { bg = '#342231' },
+                    LspReferenceText = {},
 
                     -- Highlight for the Treesitter sticky context.
                     TreesitterContextBottom = { underline = true, sp = colors.lilac },

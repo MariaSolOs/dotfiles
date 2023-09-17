@@ -32,8 +32,7 @@
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-ufo/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-web-devicons/lua",
-      "$XDG_DATA_HOME/nvim/lazy/rust-tools.nvim/lua",
-      "$XDG_DATA_HOME/nvim/lazy/vim-illuminate/lua"
+      "$XDG_DATA_HOME/nvim/lazy/rust-tools.nvim/lua"
     ]
   }
 }

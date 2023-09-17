@@ -124,6 +124,21 @@ M.on_attach = function(client, bufnr)
     -- noice deals with the UI.
     keymap('K', vim.lsp.buf.hover, 'Hover')
 
+    -- Highlight references of the word under the cursor.
+    if client.supports_method(methods.textDocument_documentHighlight) then
+        local under_cursor_highlights_group = vim.api.nvim_create_augroup('UnderCursorHighlights', { clear = false })
+        vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave', 'BufEnter' }, {
+            group = under_cursor_highlights_group,
+            buffer = bufnr,
+            callback = vim.lsp.buf.document_highlight,
+        })
+        vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
+            group = under_cursor_highlights_group,
+            buffer = bufnr,
+            callback = vim.lsp.buf.clear_references,
+        })
+    end
+
     -- Enable inlay hints if the client supports it.
     if client.supports_method(methods.textDocument_inlayHint) then
         local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
