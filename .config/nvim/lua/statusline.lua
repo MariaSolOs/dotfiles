@@ -228,7 +228,6 @@ function M.filetype_component()
         lazy = { icons.symbol_kinds.Method, 'Special' },
         lazyterm = { '', 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
-        noice = { '', 'Conditional' },
         qf = { icons.misc.search, 'Conditional' },
         spectre_panel = { icons.misc.search, 'String' },
     }

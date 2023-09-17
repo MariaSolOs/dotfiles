@@ -26,6 +26,9 @@ vim.o.mouse = 'a'
 -- Disable horizontal scrolling.
 vim.o.mousescroll = 'ver:3,hor:0'
 
+-- Wrap long lines at words.
+vim.o.linebreak = true
+
 -- Folding.
 vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99

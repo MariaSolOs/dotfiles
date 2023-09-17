@@ -1,7 +1,7 @@
 --VSCode-like lightbulb.
 --Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/c9b17bc7dc694bdbeb3788a583518073a30a6de2/lua/lspsaga/codeaction/lightbulb.lua
 
-local lb_name = 'CodeActionLightbulb'
+local lb_name = 'mariasolos/lightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
 local lb_icon = require('icons').diagnostics.HINT
 local lb_group = vim.api.nvim_create_augroup(lb_name, { clear = true })
