@@ -58,7 +58,7 @@ return {
             { '<leader>fd', '<cmd>FzfLua lsp_document_diagnostics<cr>', desc = 'Document diagnostics' },
             { '<leader>fD', '<cmd>FzfLua lsp_workspace_diagnostics<cr>', desc = 'Workspace diagnostics' },
             { '<leader>ff', FilesPicker.pick, desc = 'Find files' },
-            { '<leader>fg', '<cmd>FzfLua live_grep<cr>', desc = 'Grep' },
+            { '<leader>fg', '<cmd>FzfLua live_grep_glob<cr>', desc = 'Grep' },
             { '<leader>fh', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
             { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
         },

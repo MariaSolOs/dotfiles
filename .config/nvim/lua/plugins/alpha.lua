@@ -45,7 +45,7 @@ return {
             dashboard.section.buttons.val = {
                 dashboard_button('f', icons.symbol_kinds.Folder .. '  Find file', '<cmd>FzfLua files<cr>'),
                 dashboard_button('r', '  Recent files', '<cmd>FzfLua oldfiles<cr>'),
-                dashboard_button('g', icons.misc.search .. '  Grep', '<cmd>FzfLua live_grep<cr>'),
+                dashboard_button('g', icons.misc.search .. '  Grep', '<cmd>FzfLua live_grep_glob<cr>'),
                 dashboard_button('q', '  Quit', '<cmd>qa<cr>'),
                 { type = 'padding', val = 2 },
             }
