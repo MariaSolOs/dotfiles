@@ -42,11 +42,11 @@ return {
                 set_trigger(false)
             end)
 
-            -- Disable suggestions when inside a snippet.
             cmp.event:on('menu_closed', function()
                 set_trigger(not luasnip.expand_or_locally_jumpable())
             end)
             vim.api.nvim_create_autocmd('User', {
+                desc = 'Disable Copilot suggestions when inside a snippet',
                 pattern = { 'LuasnipInsertNodeEnter', 'LuasnipInsertNodeLeave' },
                 callback = function()
                     set_trigger(not luasnip.expand_or_locally_jumpable())

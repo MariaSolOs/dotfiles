@@ -85,6 +85,7 @@ end
 
 vim.api.nvim_create_autocmd('LspAttach', {
     group = lb_group,
+    desc = 'Configure code action lightbulb',
     callback = function(event)
         local buf = event.buf
         local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -99,18 +100,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end
 
         local lb_buf_group = vim.api.nvim_create_augroup(buf_group_name, { clear = true })
-        -- Update the lightbulb when moving the cursor in normal/visual mode.
         vim.api.nvim_create_autocmd('CursorMoved', {
             group = lb_buf_group,
+            desc = 'Update lightbulb when moving the cursor in normal/visual mode',
             buffer = buf,
             callback = function()
                 update(buf)
             end,
         })
 
-        -- Update the lightbulb when entering insert mode or leaving the buffer.
         vim.api.nvim_create_autocmd({ 'InsertEnter', 'BufLeave' }, {
             group = lb_buf_group,
+            desc = 'Update lightbulb when entering insert mode or leaving the buffer',
             buffer = event.buf,
             callback = function()
                 update_extmark(buf, nil)
@@ -121,6 +122,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 vim.api.nvim_create_autocmd('LspDetach', {
     group = lb_group,
+    desc = 'Detach code action lightbulb',
     callback = function(event)
         pcall(vim.api.nvim_del_augroup_by_name, lb_name .. tostring(event.buf))
     end,

@@ -35,9 +35,9 @@ return {
                     luasnip.setup(opts)
                     require('luasnip.loaders.from_vscode').lazy_load()
 
-                    -- HACK: Cancel the snippet session when leaving insert mode.
                     vim.api.nvim_create_autocmd('ModeChanged', {
-                        group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', { clear = true }),
+                        group = vim.api.nvim_create_augroup('mariasolos/unlink_snippet', { clear = true }),
+                        desc = 'Cancel the snippet session when leaving insert mode',
                         pattern = { 's:n', 'i:*' },
                         callback = function(event)
                             if

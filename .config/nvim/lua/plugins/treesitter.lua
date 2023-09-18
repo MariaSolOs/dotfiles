@@ -79,14 +79,15 @@ return {
             },
         },
         config = function(_, opts)
-            -- Disable incremental selection in the cmdline window.
             local toggle_inc_selection_group =
-                vim.api.nvim_create_augroup('ToggleIncrementalSelection', { clear = true })
+                vim.api.nvim_create_augroup('mariasolos/toggle_inc_selection', { clear = true })
             vim.api.nvim_create_autocmd('CmdwinEnter', {
+                desc = 'Disable incremental selection when entering the cmdline window',
                 group = toggle_inc_selection_group,
                 command = 'TSBufDisable incremental_selection',
             })
             vim.api.nvim_create_autocmd('CmdwinLeave', {
+                desc = 'Enable incremental selection when leaving the cmdline window',
                 group = toggle_inc_selection_group,
                 command = 'TSBufEnable incremental_selection',
             })

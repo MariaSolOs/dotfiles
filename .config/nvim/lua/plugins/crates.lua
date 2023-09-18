@@ -11,9 +11,9 @@ return {
 
             crates.setup(opts)
 
-            -- Lazily load the completion source.
             vim.api.nvim_create_autocmd('BufRead', {
-                group = vim.api.nvim_create_augroup('CmpSourceCargo', { clear = true }),
+                group = vim.api.nvim_create_augroup('mariasolos/cmp_cargo_source', { clear = true }),
+                desc = 'Load cargo completion source',
                 pattern = 'Cargo.toml',
                 callback = function()
                     ---@diagnostic disable-next-line: missing-fields

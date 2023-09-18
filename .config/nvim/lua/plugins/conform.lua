@@ -26,10 +26,10 @@ return {
             -- Add commands to toggle formatting.
             vim.api.nvim_create_user_command('FormatDisable', function()
                 vim.g.disable_autoformat = true
-            end, { desc = 'Disable format on save' })
+            end, { desc = 'Disable format on save', nargs = 0 })
             vim.api.nvim_create_user_command('FormatEnable', function()
                 vim.g.disable_autoformat = false
-            end, { desc = 'Enable format on save' })
+            end, { desc = 'Enable format on save', nargs = 0 })
         end,
     },
 }

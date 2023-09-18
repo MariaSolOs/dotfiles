@@ -11,7 +11,7 @@ local marks = {}
 local sign_cache = {}
 
 ---The sign and autocommand group name.
-local sign_group_name = 'MarksSigns'
+local sign_group_name = 'mariasolos/marks_signs'
 
 ---@param mark string
 local function is_lowercase_mark(mark)
@@ -50,7 +50,6 @@ end
 ---@param line? integer
 local function register_mark(mark, bufnr, line)
     local buffer_marks = marks[bufnr]
-
     if not buffer_marks then
         return
     end
@@ -66,7 +65,7 @@ local function register_mark(mark, bufnr, line)
     buffer_marks[mark] = { line = line, id = id }
 
     -- Create the sign.
-    local sign_name = 'Marks_' .. mark
+    local sign_name = 'marks_' .. mark
     if not sign_cache[sign_name] then
         vim.fn.sign_define(sign_name, { text = mark, texthl = 'DiagnosticSignOk' })
         sign_cache[sign_name] = true
@@ -135,9 +134,9 @@ local function refresh_builtin_marks(bufnr)
     end
 end
 
--- Set up autocommands to refresh the signs.
 vim.api.nvim_create_autocmd('BufWinEnter', {
     group = vim.api.nvim_create_augroup(sign_group_name, { clear = true }),
+    desc = 'Configure mark signs',
     callback = function(event)
         local bufnr = event.buf
         -- Only handle normal buffers.
@@ -179,7 +178,6 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
             end
         end
 
-        -- Refresh builtin marks when moving the cursor.
         local buf_group_name = sign_group_name .. tostring(bufnr)
         if pcall(vim.api.nvim_get_autocmds, { group = buf_group_name, buffer = bufnr }) then
             return
@@ -188,6 +186,7 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
         local marks_buf_group = vim.api.nvim_create_augroup(buf_group_name, { clear = true })
         vim.api.nvim_create_autocmd('CursorMoved', {
             group = marks_buf_group,
+            desc = 'Refresh signs for builtin marks',
             buffer = bufnr,
             callback = function()
                 refresh_builtin_marks(bufnr)

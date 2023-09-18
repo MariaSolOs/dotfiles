@@ -107,8 +107,8 @@ return {
 
             minifiles.setup(opts)
 
-            -- Add rounded corners.
             vim.api.nvim_create_autocmd('User', {
+                desc = 'Add rounded corners to minifiles window',
                 pattern = 'MiniFilesWindowOpen',
                 callback = function(args)
                     vim.api.nvim_win_set_config(args.data.win_id, { border = 'rounded' })
@@ -127,8 +127,8 @@ return {
                 end
             end
 
-            -- Open files in splits.
             vim.api.nvim_create_autocmd('User', {
+                desc = 'Add minifiles split keymaps',
                 pattern = 'MiniFilesBufferCreate',
                 callback = function(args)
                     local buf_id = args.data.buf_id

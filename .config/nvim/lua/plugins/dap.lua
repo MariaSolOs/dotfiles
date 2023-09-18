@@ -63,8 +63,8 @@ return {
 
                     dapui.setup(opts)
 
-                    -- Hide the fold column.
                     vim.api.nvim_create_autocmd('FileType', {
+                        desc = 'Hide fold column in dapui buffers',
                         pattern = { 'dapui_scopes', 'dapui_stacks', 'dapui_breakpoints' },
                         callback = function()
                             require('ufo').detach()

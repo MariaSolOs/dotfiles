@@ -1,19 +1,18 @@
--- Find TODOs.
 vim.api.nvim_create_user_command('Todos', function()
     require('fzf-lua').grep { search = [[TODO:|todo!\(.*\)]], no_esc = true }
-end, { desc = 'TODOs' })
+end, { desc = 'Grep TODOs', nargs = 0 })
 
--- Highlight on yank.
 vim.api.nvim_create_autocmd('TextYankPost', {
-    group = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
+    group = vim.api.nvim_create_augroup('mariasolos/yank_highlight', { clear = true }),
+    desc = 'Highlight on yank',
     callback = function()
         vim.highlight.on_yank { higroup = 'Visual' }
     end,
 })
 
--- Close some filetypes with <q>.
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
+    group = vim.api.nvim_create_augroup('mariasolos/close_with_q', { clear = true }),
+    desc = 'Close with <q>',
     pattern = {
         'checkhealth',
         'help',
@@ -27,18 +26,18 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
--- Do not include some filetypes in the buffer list.
 vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('Unlisted', { clear = true }),
+    group = vim.api.nvim_create_augroup('mariasolos/unlist_buffer', { clear = true }),
+    desc = 'Exclude from buffer list',
     pattern = 'checkhealth',
     callback = function(event)
         vim.bo[event.buf].buflisted = false
     end,
 })
 
--- Open plugin repos with gx.
 vim.api.nvim_create_autocmd('VimEnter', {
-    group = vim.api.nvim_create_augroup('GxWithPlugins', { clear = true }),
+    group = vim.api.nvim_create_augroup('mariasolos/gx_with_plugins', { clear = true }),
+    desc = 'Open plugin repos with gx',
     callback = function()
         if vim.fn.getcwd() == vim.fn.stdpath 'config' then
             vim.keymap.set('n', 'gx', function()
@@ -65,10 +64,10 @@ vim.api.nvim_create_autocmd('VimEnter', {
     end,
 })
 
--- Toggle relative line numbers.
-local line_numbers_group = vim.api.nvim_create_augroup('ToggleLineNumbers', {})
+local line_numbers_group = vim.api.nvim_create_augroup('mariasolos/toggle_line_numbers', {})
 vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
     group = line_numbers_group,
+    desc = 'Toggle relative line numbers on',
     callback = function()
         if vim.wo.nu and vim.api.nvim_get_mode().mode:sub(1, 1) ~= 'i' then
             vim.wo.relativenumber = true
@@ -77,6 +76,7 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'Cmdline
 })
 vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
     group = line_numbers_group,
+    desc = 'Toggle relative line numbers off',
     callback = function(args)
         if vim.wo.nu then
             vim.wo.relativenumber = false

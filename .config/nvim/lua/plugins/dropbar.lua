@@ -126,8 +126,9 @@ return {
 
             -- Better way to do this? Follow up in https://github.com/Bekaboo/dropbar.nvim/issues/76
             vim.api.nvim_create_autocmd('WinEnter', {
+                desc = 'Refresh window dropbars',
                 callback = function()
-                    -- Refresh the dropbars except when entering the dropbar itself.
+                    -- Exclude the dropbar itself.
                     if vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].winbar == 1 then
                         bar_utils.exec 'update'
                     end

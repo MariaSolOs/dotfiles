@@ -203,16 +203,18 @@ M.on_attach = function(client, bufnr)
 
     keymap('K', vim.lsp.buf.hover, 'Hover')
 
-    -- Highlight references of the word under the cursor.
     if client.supports_method(methods.textDocument_documentHighlight) then
-        local under_cursor_highlights_group = vim.api.nvim_create_augroup('UnderCursorHighlights', { clear = false })
+        local under_cursor_highlights_group =
+            vim.api.nvim_create_augroup('mariasolos/cursor_highlights', { clear = false })
         vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave', 'BufEnter' }, {
             group = under_cursor_highlights_group,
+            desc = 'Highlight references under the cursor',
             buffer = bufnr,
             callback = vim.lsp.buf.document_highlight,
         })
         vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
             group = under_cursor_highlights_group,
+            desc = 'Clear highlight references',
             buffer = bufnr,
             callback = vim.lsp.buf.clear_references,
         })
@@ -220,7 +222,7 @@ M.on_attach = function(client, bufnr)
 
     -- Enable inlay hints if the client supports it.
     if client.supports_method(methods.textDocument_inlayHint) then
-        local inlay_hints_group = vim.api.nvim_create_augroup('ToggleInlayHints', { clear = false })
+        local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
 
         -- Initial inlay hint display.
         -- Idk why but without the delay inlay hints aren't displayed at the very start.
@@ -231,6 +233,7 @@ M.on_attach = function(client, bufnr)
 
         vim.api.nvim_create_autocmd('InsertEnter', {
             group = inlay_hints_group,
+            desc = 'Enable inlay hints',
             buffer = bufnr,
             callback = function()
                 vim.lsp.inlay_hint(bufnr, false)
@@ -238,6 +241,7 @@ M.on_attach = function(client, bufnr)
         })
         vim.api.nvim_create_autocmd('InsertLeave', {
             group = inlay_hints_group,
+            desc = 'Disable inlay hints',
             buffer = bufnr,
             callback = function()
                 vim.lsp.inlay_hint(bufnr, true)

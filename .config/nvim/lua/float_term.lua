@@ -22,6 +22,7 @@ function M.float_term(cmd, opts)
 
         vim.api.nvim_create_autocmd('BufEnter', {
             buffer = buf,
+            desc = 'Enter terminal in insert mode',
             callback = function()
                 vim.cmd.startinsert()
             end,

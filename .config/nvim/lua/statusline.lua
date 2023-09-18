@@ -1,12 +1,12 @@
 -- TODO: Make this more fancy. I feel that I'm lacking useful components.
 local M = {}
 local icons = require 'icons'
-local statusline_group = vim.api.nvim_create_augroup('MyStatusline', { clear = true })
+local statusline_group = vim.api.nvim_create_augroup('mariasolos/statusline', { clear = true })
 
--- Hide the statusline and command line in the start dashboard.
 vim.api.nvim_create_autocmd('User', {
-    pattern = 'AlphaReady',
     group = statusline_group,
+    desc = 'Hide statusline and command line in start dashboard',
+    pattern = 'AlphaReady',
     once = true,
     callback = function(event)
         vim.o.laststatus = 0
@@ -23,7 +23,7 @@ vim.api.nvim_create_autocmd('User', {
     end,
 })
 
--- Don't show the command the produced the quickfix list.
+-- Don't show the command that produced the quickfix list.
 vim.g.qf_disable_statusline = 1
 
 -- Show the mode in my custom component instead.
@@ -145,6 +145,7 @@ local progress_status = {
 }
 vim.api.nvim_create_autocmd('LspProgress', {
     group = statusline_group,
+    desc = 'Update LSP progress in statusline',
     pattern = { 'begin', 'end' },
     callback = function(event)
         -- This should in theory never happen, but I've seen weird errors.
@@ -162,10 +163,10 @@ vim.api.nvim_create_autocmd('LspProgress', {
             progress_status.title = nil
             -- Wait a bit before clearing the status.
             vim.defer_fn(function()
-                vim.cmd 'redrawstatus'
+                vim.cmd.redrawstatus()
             end, 3000)
         else
-            vim.cmd 'redrawstatus'
+            vim.cmd.redrawstatus()
         end
     end,
 })
