@@ -4,13 +4,6 @@ return {
         'nvim-treesitter/nvim-treesitter',
         dependencies = {
             {
-                'nvim-treesitter/nvim-treesitter-textobjects',
-                init = function()
-                    -- Disable the rtp plugin since I only use them for mini.ai
-                    require('lazy.core.loader').disable_rtp_plugin 'nvim-treesitter-textobjects'
-                end,
-            },
-            {
                 'nvim-treesitter/nvim-treesitter-context',
                 opts = {
                     -- Avoid the sticky context from growing a lot.
