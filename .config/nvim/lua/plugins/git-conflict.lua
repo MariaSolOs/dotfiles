@@ -5,10 +5,10 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             default_mappings = {
-                ours = '<leader>go',
-                theirs = '<leader>gt',
+                ours = '<leader>g1',
+                theirs = '<leader>g2',
                 none = '<leader>g0',
-                both = '<leader>ga',
+                both = '<leader>g3',
                 prev = '[x',
                 next = ']x',
             },

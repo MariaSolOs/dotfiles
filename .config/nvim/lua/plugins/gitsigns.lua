@@ -2,6 +2,8 @@ local sign_icon = '│'
 
 -- Adds git releated signs to the gutter, as well as utilities for managing changes.
 return {
+    -- Generate and open GitHub links.
+    { 'ruifm/gitlinker.nvim', lazy = true, opts = { mappings = nil } },
     {
         'lewis6991/gitsigns.nvim',
         event = { 'BufReadPre', 'BufNewFile' },
@@ -25,13 +27,19 @@ return {
                     },
                 }
 
-                -- Text object.
-                vim.keymap.set('o', 'ih', ':<C-U>Gitsigns select_hunk<CR>', { buffer = bufnr })
-
-                -- Actions.
+                -- Mappings.
                 local function map(lhs, rhs, desc)
                     vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
                 end
+                vim.keymap.set('v', '<leader>gc', function()
+                    require('gitlinker').get_buf_range_url 'v'
+                end, { desc = 'Copy to clipboard' })
+                map('<leader>go', function()
+                    require('gitlinker').get_buf_range_url(
+                        'n',
+                        { action_callback = require('gitlinker.actions').open_in_browser }
+                    )
+                end, 'Open in browser')
                 map(']g', gs.prev_hunk, 'Previous hunk')
                 map('[g', gs.next_hunk, 'Next hunk')
                 map('<leader>gR', gs.reset_buffer, 'Reset buffer')

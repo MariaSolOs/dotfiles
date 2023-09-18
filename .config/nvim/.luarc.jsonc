@@ -21,6 +21,7 @@
       "$XDG_DATA_HOME/nvim/lazy/dropbar.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/fzf-lua/lua",
+      "$XDG_DATA_HOME/nvim/lazy/gitlinker.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/lazy.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
