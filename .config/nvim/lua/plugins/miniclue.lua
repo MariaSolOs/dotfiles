@@ -1,5 +1,4 @@
 -- Remember my mappings.
--- TODO: Unpatch my noautocmd fix when https://github.com/echasnovski/mini.nvim/issues/430#issuecomment-1704360374 is addressed.
 return {
     {
         'echasnovski/mini.clue',

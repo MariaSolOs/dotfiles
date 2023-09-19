@@ -97,19 +97,16 @@ return {
                     vertical = 'up:40%',
                 },
             },
+            global_git_icons = false,
             -- Configuration for specific commands.
             files = {
-                git_icons = false,
                 winopts = {
                     preview = { hidden = 'hidden' },
                 },
             },
             grep = {
-                git_icons = false,
                 header_prefix = icons.misc.search .. ' ',
             },
-            -- Add the arrow to the end as other pickers.
-            highlights = { prompt = 'Highlights> ' },
             lsp = {
                 symbols = {
                     symbol_icons = icons.symbol_kinds,
