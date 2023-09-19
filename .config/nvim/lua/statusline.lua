@@ -226,6 +226,8 @@ function M.filetype_component()
         DressingSelect = { '', 'Comment' },
         dropbar_menu = { '', 'Directory' },
         fzf = { '', 'Special' },
+        gitcommit = { '', 'Conditional' },
+        gitrebase = { '', 'Conditional' },
         lazy = { icons.symbol_kinds.Method, 'Special' },
         lazyterm = { '', 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
@@ -235,7 +237,7 @@ function M.filetype_component()
 
     local filetype = vim.bo.filetype
     if filetype == '' then
-        return ''
+        filetype = '[No Name]'
     end
 
     local icon, icon_hl
