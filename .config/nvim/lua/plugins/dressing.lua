@@ -45,8 +45,8 @@ return {
                     },
                 },
                 get_config = function(opts)
-                    if opts.kind == 'codeaction' then
-                        -- Cute and compact code action menu.
+                    if opts.kind == 'codeaction' or opts.kind == 'codelens' then
+                        -- Cute and compact menu.
                         return {
                             backend = 'builtin',
                             builtin = {

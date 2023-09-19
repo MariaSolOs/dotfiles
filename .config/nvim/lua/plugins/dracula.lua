@@ -73,6 +73,8 @@ return {
                     CmpItemAbbrDeprecated = { strikethrough = true },
 
                     -- Make these virtual text thingies different from comments/regular code.
+                    LspCodeLens = { fg = colors.lavender },
+                    LspCodeLensSeparator = { fg = colors.lavender },
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
                     -- Command line.
