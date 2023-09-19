@@ -6,7 +6,6 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim', 'nvim-lspconfig' },
         opts = {
             capabilities = require('lsp').client_capabilities(),
-            on_attach = require('lsp').on_attach,
             settings = {
                 tsserver_file_preferences = {
                     includeInlayParameterNameHints = 'literals',

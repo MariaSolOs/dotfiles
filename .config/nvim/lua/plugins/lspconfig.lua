@@ -1,5 +1,4 @@
 local capabilities = require('lsp').client_capabilities
-local on_attach = require('lsp').on_attach
 
 return {
     -- JSON schemas.
@@ -46,10 +45,7 @@ return {
                 },
                 handlers = {
                     function(server)
-                        lspconfig[server].setup {
-                            capabilities = capabilities(),
-                            on_attach = on_attach,
-                        }
+                        lspconfig[server].setup { capabilities = capabilities() }
                     end,
                     clangd = function()
                         lspconfig.clangd.setup {
@@ -57,20 +53,17 @@ return {
                                 -- Prevents the  multiple different client offset_encodings detected for buffer' warning.
                                 offsetEncoding = { 'utf-16' },
                             }),
-                            on_attach = on_attach,
                         }
                     end,
                     eslint = function()
                         lspconfig.eslint.setup {
                             capabilities = capabilities(),
-                            on_attach = on_attach,
                             settings = { format = false },
                         }
                     end,
                     jsonls = function()
                         lspconfig.jsonls.setup {
                             capabilities = capabilities(),
-                            on_attach = on_attach,
                             settings = {
                                 json = {
                                     validate = { enable = true },
@@ -87,7 +80,6 @@ return {
                     lua_ls = function()
                         lspconfig.lua_ls.setup {
                             capabilities = capabilities(),
-                            on_attach = on_attach,
                             on_init = function(client)
                                 local path = client.workspace_folders[1].name
                                 if

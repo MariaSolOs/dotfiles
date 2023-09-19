@@ -26,10 +26,8 @@ return {
                 },
                 server = {
                     capabilities = require('lsp').client_capabilities(),
-                    on_attach = function(client, bufnr)
-                        require('lsp').on_attach(client, bufnr)
-
-                        -- Format on save.
+                    on_attach = function(_, bufnr)
+                        -- Add some extra rust-specific keymaps.
                         vim.keymap.set('n', 'K', rt.hover_actions.hover_actions, {
                             buffer = bufnr,
                             desc = 'Hover',

@@ -3,6 +3,132 @@ local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
+---Returns the editor's capabilities + some overrides.
+M.client_capabilities = function()
+    return vim.tbl_deep_extend(
+        'force',
+        vim.lsp.protocol.make_client_capabilities(),
+        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
+        require('cmp_nvim_lsp').default_capabilities(),
+        {
+            workspace = {
+                -- PERF: didChangeWatchedFiles is too slow.
+                -- TODO: Remove this when https://github.com/neovim/neovim/issues/23291#issuecomment-1686709265 is fixed.
+                didChangeWatchedFiles = { dynamicRegistration = false },
+            },
+        },
+        {
+            textDocument = {
+                -- Enable folding.
+                foldingRange = {
+                    dynamicRegistration = false,
+                    lineFoldingOnly = true,
+                },
+            },
+        }
+    )
+end
+
+---Sets up LSP keymaps and autocommands for the given buffer.
+---@param client lsp.Client
+---@param bufnr integer
+local function on_attach(client, bufnr)
+    ---@param lhs string
+    ---@param rhs string|function
+    ---@param desc string
+    ---@param mode? string|string[]
+    local function keymap(lhs, rhs, desc, mode)
+        mode = mode or 'n'
+        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+    end
+
+    keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
+
+    keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
+
+    keymap('K', vim.lsp.buf.hover, 'Hover')
+
+    keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
+    keymap('<leader>fS', function()
+        -- Disable the grep switch header.
+        require('fzf-lua').lsp_live_workspace_symbols { no_header_i = true }
+    end, 'Workspace symbols')
+
+    keymap('<leader>cd', vim.diagnostic.open_float, 'Line diagnostics')
+    keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
+    keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
+    keymap('[e', function()
+        vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
+    end, 'Previous error')
+    keymap(']e', function()
+        vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
+    end, 'Next error')
+
+    if client.supports_method(methods.textDocument_codeAction) then
+        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
+    end
+
+    if client.supports_method(methods.textDocument_rename) then
+        keymap('<leader>cr', vim.lsp.buf.rename, 'Rename')
+    end
+
+    if client.supports_method(methods.textDocument_definition) then
+        keymap('gD', '<cmd>FzfLua lsp_definitions<cr>', 'Peek definition')
+        keymap('gd', function()
+            require('fzf-lua').lsp_definitions { jump_to_single_result = true }
+        end, 'Go to definition')
+    end
+
+    if client.supports_method(methods.textDocument_signatureHelp) then
+        keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
+    end
+
+    if client.supports_method(methods.textDocument_documentHighlight) then
+        local under_cursor_highlights_group =
+            vim.api.nvim_create_augroup('mariasolos/cursor_highlights', { clear = false })
+        vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave', 'BufEnter' }, {
+            group = under_cursor_highlights_group,
+            desc = 'Highlight references under the cursor',
+            buffer = bufnr,
+            callback = vim.lsp.buf.document_highlight,
+        })
+        vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
+            group = under_cursor_highlights_group,
+            desc = 'Clear highlight references',
+            buffer = bufnr,
+            callback = vim.lsp.buf.clear_references,
+        })
+    end
+
+    if client.supports_method(methods.textDocument_inlayHint) then
+        local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
+
+        -- Initial inlay hint display.
+        -- Idk why but without the delay inlay hints aren't displayed at the very start.
+        vim.defer_fn(function()
+            local mode = vim.api.nvim_get_mode().mode
+            vim.lsp.inlay_hint(bufnr, mode == 'n' or mode == 'v')
+        end, 500)
+
+        vim.api.nvim_create_autocmd('InsertEnter', {
+            group = inlay_hints_group,
+            desc = 'Enable inlay hints',
+            buffer = bufnr,
+            callback = function()
+                vim.lsp.inlay_hint(bufnr, false)
+            end,
+        })
+        vim.api.nvim_create_autocmd('InsertLeave', {
+            group = inlay_hints_group,
+            desc = 'Disable inlay hints',
+            buffer = bufnr,
+            callback = function()
+                vim.lsp.inlay_hint(bufnr, true)
+            end,
+        })
+    end
+end
+
 -- Define the diagnostic signs.
 for severity, icon in pairs(diagnostic_icons) do
     local hl = 'DiagnosticSign' .. severity:sub(1, 1) .. severity:sub(2):lower()
@@ -41,7 +167,7 @@ local md_namespace = vim.api.nvim_create_namespace 'mariasolos/lsp_float'
 ---Code inspired from `noice`.
 ---@param handler fun(err: any, result: any, ctx: any, config: any): integer, integer
 ---@return function
-local function enhanced_handler(handler)
+local function enhanced_float_handler(handler)
     return function(err, result, ctx, config)
         local buf, win = handler(
             err,
@@ -112,142 +238,35 @@ local function enhanced_handler(handler)
     end
 end
 
-vim.lsp.handlers[methods.textDocument_hover] = enhanced_handler(vim.lsp.handlers.hover)
-vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_handler(vim.lsp.handlers.signature_help)
+vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover)
+vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help)
 
 -- Update mappings when registering dynamic capabilities.
 local register_method = vim.lsp.protocol.Methods.client_registerCapability
 local register_capability = vim.lsp.handlers[register_method]
 vim.lsp.handlers[register_method] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
-    local bufnr = vim.api.nvim_get_current_buf()
-    M.on_attach(client, bufnr)
+    if not client then
+        return
+    end
+
+    on_attach(client, vim.api.nvim_get_current_buf())
 
     return register_capability(err, res, ctx)
 end
 
----Returns the editor's capabilities + some overrides.
-M.client_capabilities = function()
-    return vim.tbl_deep_extend(
-        'force',
-        vim.lsp.protocol.make_client_capabilities(),
-        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
-        require('cmp_nvim_lsp').default_capabilities(),
-        {
-            workspace = {
-                -- PERF: didChangeWatchedFiles is too slow.
-                -- TODO: Remove this when https://github.com/neovim/neovim/issues/23291#issuecomment-1686709265 is fixed.
-                didChangeWatchedFiles = { dynamicRegistration = false },
-            },
-        },
-        {
-            textDocument = {
-                -- Enable folding.
-                foldingRange = {
-                    dynamicRegistration = false,
-                    lineFoldingOnly = true,
-                },
-            },
-        }
-    )
-end
+vim.api.nvim_create_autocmd('LspAttach', {
+    desc = 'Configure LSP keymaps',
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
 
----Sets up LSP keymaps and autocommands for the given buffer.
-M.on_attach = function(client, bufnr)
-    local function keymap(lhs, rhs, desc, mode)
-        mode = mode or 'n'
-        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
-    end
+        -- I don't think this can happen but it's a wild world out there.
+        if not client then
+            return
+        end
 
-    if client.supports_method(methods.textDocument_codeAction) then
-        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
-    end
-
-    if client.supports_method(methods.textDocument_rename) then
-        vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename, { desc = 'Rename' })
-    end
-
-    if client.supports_method(methods.textDocument_definition) then
-        keymap('gD', '<cmd>FzfLua lsp_definitions<cr>', 'Peek definition')
-        keymap('gd', function()
-            require('fzf-lua').lsp_definitions { jump_to_single_result = true }
-        end, 'Go to definition')
-    end
-
-    if client.supports_method(methods.textDocument_signatureHelp) then
-        keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
-    end
-
-    if client.supports_method(methods.textDocument_implementation) then
-        keymap('gm', '<cmd>FzfLua lsp_implementations<cr>', 'Go to implementation')
-    end
-
-    keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
-    keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
-
-    keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
-    keymap('<leader>fS', function()
-        -- Disable the grep switch header.
-        require('fzf-lua').lsp_live_workspace_symbols { no_header_i = true }
-    end, 'Workspace symbols')
-
-    keymap('<leader>cd', vim.diagnostic.open_float, 'Line diagnostics')
-    keymap('[d', vim.diagnostic.goto_prev, 'Previous diagnostic')
-    keymap(']d', vim.diagnostic.goto_next, 'Next diagnostic')
-    keymap('[e', function()
-        vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
-    end, 'Previous error')
-    keymap(']e', function()
-        vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
-    end, 'Next error')
-
-    keymap('K', vim.lsp.buf.hover, 'Hover')
-
-    if client.supports_method(methods.textDocument_documentHighlight) then
-        local under_cursor_highlights_group =
-            vim.api.nvim_create_augroup('mariasolos/cursor_highlights', { clear = false })
-        vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave', 'BufEnter' }, {
-            group = under_cursor_highlights_group,
-            desc = 'Highlight references under the cursor',
-            buffer = bufnr,
-            callback = vim.lsp.buf.document_highlight,
-        })
-        vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
-            group = under_cursor_highlights_group,
-            desc = 'Clear highlight references',
-            buffer = bufnr,
-            callback = vim.lsp.buf.clear_references,
-        })
-    end
-
-    -- Enable inlay hints if the client supports it.
-    if client.supports_method(methods.textDocument_inlayHint) then
-        local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
-
-        -- Initial inlay hint display.
-        -- Idk why but without the delay inlay hints aren't displayed at the very start.
-        vim.defer_fn(function()
-            local mode = vim.api.nvim_get_mode().mode
-            vim.lsp.inlay_hint(bufnr, mode == 'n' or mode == 'v')
-        end, 500)
-
-        vim.api.nvim_create_autocmd('InsertEnter', {
-            group = inlay_hints_group,
-            desc = 'Enable inlay hints',
-            buffer = bufnr,
-            callback = function()
-                vim.lsp.inlay_hint(bufnr, false)
-            end,
-        })
-        vim.api.nvim_create_autocmd('InsertLeave', {
-            group = inlay_hints_group,
-            desc = 'Disable inlay hints',
-            buffer = bufnr,
-            callback = function()
-                vim.lsp.inlay_hint(bufnr, true)
-            end,
-        })
-    end
-end
+        on_attach(client, args.buf)
+    end,
+})
 
 return M
