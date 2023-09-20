@@ -25,7 +25,7 @@ function buildnvim() {
     git merge upstream/master
 
     # Clear the cache.
-    rm -rf build
+    make distclean
 
     # Go back to the given commit or HEAD.
     local commit="${1:-HEAD}"
@@ -38,10 +38,10 @@ function buildnvim() {
     rm -f "$patch_file"
     cat <<'EOF' > "$patch_file"
 diff --git a/src/nvim/drawline.c b/src/nvim/drawline.c
-index e1550e0ec..78e5917b7 100644
+index 8b4786a98..b4b78fd8c 100644
 --- a/src/nvim/drawline.c
 +++ b/src/nvim/drawline.c
-@@ -431,12 +431,8 @@ size_t fill_foldcolumn(char *p, win_T *wp, foldinfo_T foldinfo, linenr_T lnum)
+@@ -434,12 +434,8 @@ size_t fill_foldcolumn(char *p, win_T *wp, foldinfo_T foldinfo, linenr_T lnum, i
      if (foldinfo.fi_lnum == lnum
          && first_level + i >= foldinfo.fi_low_level) {
        symbol = wp->w_p_fcs_chars.foldopen;
@@ -51,7 +51,7 @@ index e1550e0ec..78e5917b7 100644
 -      symbol = '0' + first_level + i;
      } else {
 -      symbol = '>';
-+      symbol = ' ';
++      symbol = wp->w_p_fcs_chars.foldsep;
      }
  
      len = utf_char2bytes(symbol, &p[char_counter]);
