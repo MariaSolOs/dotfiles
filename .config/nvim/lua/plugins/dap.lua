@@ -63,14 +63,6 @@ return {
 
                     dapui.setup(opts)
 
-                    vim.api.nvim_create_autocmd('FileType', {
-                        desc = 'Hide fold column in dapui buffers',
-                        pattern = { 'dapui_scopes', 'dapui_stacks', 'dapui_breakpoints' },
-                        callback = function()
-                            require('ufo').detach()
-                        end,
-                    })
-
                     -- Automatically open the UI when a new debug session is created.
                     dap.listeners.after.event_initialized['dapui_config'] = function()
                         dapui.open {}

@@ -2,6 +2,7 @@
 return {
     {
         'nvim-treesitter/nvim-treesitter',
+        event = 'VeryLazy',
         dependencies = {
             {
                 'nvim-treesitter/nvim-treesitter-context',
@@ -34,7 +35,6 @@ return {
             },
         },
         version = false,
-        event = 'VeryLazy',
         build = ':TSUpdate',
         keys = {
             { '<cr>', desc = 'Increment selection' },

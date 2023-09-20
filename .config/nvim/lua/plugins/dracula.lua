@@ -77,6 +77,9 @@ return {
                     LspCodeLensSeparator = { fg = colors.lavender },
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
+                    -- Folded regions.
+                    Folded = { fg = colors.lilac, underline = true },
+
                     -- Command line.
                     MoreMsg = { fg = colors.bright_white, bold = true },
                     MsgArea = { fg = colors.cyan },

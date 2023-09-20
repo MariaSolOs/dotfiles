@@ -16,15 +16,6 @@ M.client_capabilities = function()
                 -- TODO: Remove this when https://github.com/neovim/neovim/issues/23291#issuecomment-1686709265 is fixed.
                 didChangeWatchedFiles = { dynamicRegistration = false },
             },
-        },
-        {
-            textDocument = {
-                -- Enable folding.
-                foldingRange = {
-                    dynamicRegistration = false,
-                    lineFoldingOnly = true,
-                },
-            },
         }
     )
 end
@@ -159,6 +150,7 @@ for severity, icon in pairs(diagnostic_icons) do
 end
 
 -- Diagnostic configuration.
+-- TODO: Configure virtual text like https://github.com/dgagn/diagflow.nvim
 vim.diagnostic.config {
     virtual_text = {
         -- Show severity icons as prefixes.
