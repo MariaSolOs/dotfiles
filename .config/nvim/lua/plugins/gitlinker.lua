@@ -4,6 +4,6 @@ return {
         'ruifm/gitlinker.nvim',
         -- Loaded when attaching gitsigns.
         lazy = true,
-        opts = { mappings = nil },
+        opts = { mappings = '<leader>gc' },
     },
 }
