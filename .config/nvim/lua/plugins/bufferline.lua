@@ -1,10 +1,8 @@
-local diagnostic_icons = require('icons').diagnostics
-
--- Bufferline for pretty tabs.
+-- Pretty bufferline.
 return {
     {
         'akinsho/bufferline.nvim',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = 'VeryLazy',
         opts = {
             options = {
                 close_command = function(bufnr)
@@ -14,12 +12,12 @@ return {
                     require('mini.bufremove').delete(bufnr, false)
                 end,
                 diagnostics = 'nvim_lsp',
+                diagnostics_update_in_insert = false,
                 diagnostics_indicator = function(_, _, diag)
-                    local indicator = (diag.error and diagnostic_icons.ERROR .. ' ' or '')
-                        .. (diag.warning and diagnostic_icons.WARN or '')
+                    local icons = require('icons').diagnostics
+                    local indicator = (diag.error and icons.ERROR .. ' ' or '') .. (diag.warning and icons.WARN or '')
                     return vim.trim(indicator)
                 end,
-                diagnostics_update_in_insert = false,
             },
         },
         keys = {
@@ -30,10 +28,6 @@ return {
             { '<leader>bl', '<cmd>BufferLineCloseLeft<cr>', desc = 'Close buffers to the left' },
             { '<leader>bo', '<cmd>BufferLinePick<cr>', desc = 'Select a buffer to open' },
             { '<leader>br', '<cmd>BufferLineCloseRight<cr>', desc = 'Close buffers to the right' },
-            -- Tab navigation.
-            { '<leader>tc', '<cmd>tabclose<cr>', desc = 'Close tab page' },
-            { '<leader>tn', '<cmd>tab split<cr>', desc = 'New tab page' },
-            { '<leader>to', '<cmd>tabonly<cr>', desc = 'Close other tab pages' },
         },
     },
 }

@@ -36,13 +36,6 @@ vim.o.foldenable = true
 vim.o.foldmethod = 'expr'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
----Custom function for the text of folded regions.
----@return string
-function _G.foldtext()
-    return string.format('%s   ... %d lines ...', vim.fn.getline(vim.v.foldstart), vim.v.foldend - vim.v.foldstart + 1)
-end
-vim.wo.foldtext = 'v:lua.foldtext()'
-
 -- UI characters.
 vim.opt.fillchars = {
     eob = ' ',

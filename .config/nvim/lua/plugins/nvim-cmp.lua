@@ -1,5 +1,3 @@
-local symbol_kinds = require('icons').symbol_kinds
-
 -- Completion.
 return {
     {
@@ -61,6 +59,7 @@ return {
         opts = function()
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
+            local symbol_kinds = require('icons').symbol_kinds
 
             local winhighlight = 'Normal:Normal,FloatBorder:Normal,CursorLine:Visual,Search:None'
 

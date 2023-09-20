@@ -2,7 +2,6 @@
 return {
     {
         'zbirenbaum/copilot.lua',
-        cmd = 'Copilot',
         event = 'InsertEnter',
         opts = {
             -- I don't find the panel useful.
@@ -29,6 +28,7 @@ return {
 
             require('copilot').setup(opts)
 
+            ---@param trigger boolean
             local function set_trigger(trigger)
                 vim.b.copilot_suggestion_auto_trigger = trigger
                 vim.b.copilot_suggestion_hidden = not trigger
@@ -46,7 +46,7 @@ return {
                 set_trigger(not luasnip.expand_or_locally_jumpable())
             end)
             vim.api.nvim_create_autocmd('User', {
-                desc = 'Disable Copilot suggestions when inside a snippet',
+                desc = 'Disable Copilot inside snippets',
                 pattern = { 'LuasnipInsertNodeEnter', 'LuasnipInsertNodeLeave' },
                 callback = function()
                     set_trigger(not luasnip.expand_or_locally_jumpable())

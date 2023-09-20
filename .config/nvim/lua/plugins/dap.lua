@@ -185,13 +185,6 @@ return {
                 end,
                 desc = 'Step Out',
             },
-            {
-                '<leader>dt',
-                function()
-                    require('dap').terminate()
-                end,
-                desc = 'Terminate',
-            },
         },
         config = function()
             local dap = require 'dap'

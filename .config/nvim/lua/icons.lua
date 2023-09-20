@@ -49,6 +49,7 @@ M.symbol_kinds = {
 --- Icons that don't really fit into a category.
 M.misc = {
     search = '',
+    vertical_bar = '│',
 }
 
 return M

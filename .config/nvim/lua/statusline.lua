@@ -138,6 +138,7 @@ function M.dap_component()
     return string.format('%%#%s#  %s', M.get_or_create_hl 'DapUIRestart', require('dap').status())
 end
 
+---@type table<string, string?>
 local progress_status = {
     client = nil,
     kind = nil,
@@ -220,7 +221,9 @@ end
 ---@return string
 function M.filetype_component()
     local devicons = require 'nvim-web-devicons'
+
     -- Special icons for some filetypes.
+    -- TODO: Add icons for dap windows.
     local special_icons = {
         DressingInput = { '󰍩', 'Comment' },
         DressingSelect = { '', 'Comment' },

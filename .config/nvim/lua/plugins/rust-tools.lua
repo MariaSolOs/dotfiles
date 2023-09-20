@@ -2,7 +2,7 @@
 return {
     {
         'simrat39/rust-tools.nvim',
-        event = { 'BufReadPost *.rs', 'BufNewFile *.rs' },
+        event = { 'BufReadPre *.rs', 'BufNewFile *.rs' },
         opts = function()
             local rt = require 'rust-tools'
 

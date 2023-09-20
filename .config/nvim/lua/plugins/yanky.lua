@@ -1,4 +1,4 @@
--- Nicer pasting.
+-- Better copy/pasting.
 return {
     'gbprod/yanky.nvim',
     opts = {

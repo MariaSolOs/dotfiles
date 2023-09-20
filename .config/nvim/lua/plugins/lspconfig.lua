@@ -1,12 +1,9 @@
-local capabilities = require('lsp').client_capabilities
-
 return {
-    -- JSON schemas.
-    { 'b0o/SchemaStore.nvim', version = false, lazy = true },
     {
-        'williamboman/mason-lspconfig.nvim',
+        'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
+            'williamboman/mason-lspconfig.nvim',
             {
                 'williamboman/mason.nvim',
                 cmd = 'Mason',
@@ -25,10 +22,10 @@ return {
                     },
                 },
             },
-            'neovim/nvim-lspconfig',
         },
         config = function()
             local lspconfig = require 'lspconfig'
+            local capabilities = require('lsp').client_capabilities
 
             -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'

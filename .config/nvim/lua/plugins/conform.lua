@@ -2,7 +2,7 @@
 return {
     {
         'stevearc/conform.nvim',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = { 'LspAttach', 'BufWritePre' },
         opts = {
             notify_on_error = false,
             formatters_by_ft = {
@@ -16,13 +16,12 @@ return {
 
                 return {
                     timeout_ms = 500,
+                    -- Filetypes to use LSP formatting for.
                     lsp_fallback = vim.iter({ 'json', 'jsonc', 'rust' }):find(vim.bo[bufnr].filetype) ~= nil,
                 }
             end,
         },
-        config = function(_, opts)
-            require('conform').setup(opts)
-
+        init = function()
             -- Add commands to toggle formatting.
             vim.api.nvim_create_user_command('FormatDisable', function()
                 vim.g.disable_autoformat = true

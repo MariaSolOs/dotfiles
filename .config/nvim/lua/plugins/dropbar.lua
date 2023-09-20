@@ -1,10 +1,8 @@
-local symbol_kinds = require('icons').symbol_kinds
-
 -- Winbar with breadcrumbs.
 return {
     {
         'Bekaboo/dropbar.nvim',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = 'VeryLazy',
         keys = {
             {
                 '<leader>w',
@@ -48,7 +46,7 @@ return {
                     kinds = {
                         symbols = vim.tbl_map(function(symbol)
                             return symbol .. ' '
-                        end, symbol_kinds),
+                        end, require('icons').symbol_kinds),
                     },
                 },
                 bar = {

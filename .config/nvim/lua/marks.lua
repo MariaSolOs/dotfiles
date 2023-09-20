@@ -1,6 +1,6 @@
--- Custom mark API.
--- Implementation slightly inspired by https://github.com/chentoast/marks.nvim, but this is
--- much simpler.
+---Custom mark API.
+---Implementation slightly inspired by https://github.com/chentoast/marks.nvim, but this is
+---much simpler.
 
 ---Map of mark information per buffer.
 ---@type table<integer, table<string, {line: integer, id: integer}>>
@@ -32,7 +32,6 @@ end
 ---@param bufnr integer
 local function delete_mark(mark, bufnr)
     local buffer_marks = marks[bufnr]
-
     if not buffer_marks or not buffer_marks[mark] then
         return
     end
@@ -139,6 +138,7 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
     desc = 'Configure mark signs',
     callback = function(event)
         local bufnr = event.buf
+
         -- Only handle normal buffers.
         if vim.bo[bufnr].bt ~= '' then
             return

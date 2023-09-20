@@ -2,7 +2,7 @@
 return {
     {
         'echasnovski/mini.move',
-        event = 'BufReadPre',
+        event = 'VeryLazy',
         config = true,
     },
 }

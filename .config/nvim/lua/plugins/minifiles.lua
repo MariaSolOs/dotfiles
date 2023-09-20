@@ -23,8 +23,7 @@ local function map_split(buf_id, lhs, direction)
         minifiles.close()
     end
 
-    local desc = 'Split ' .. string.sub(direction, 12)
-    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc })
+    vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = 'Split ' .. string.sub(direction, 12) })
 end
 
 return {
@@ -34,8 +33,6 @@ return {
             { '<C-w>F', nil, desc = 'Split + edit file' },
             {
                 '<leader>e',
-                -- Open the explorer in the current directory, with focus on the current
-                -- file and in the last used state.
                 function()
                     local bufname = vim.api.nvim_buf_get_name(0)
                     local path = vim.fn.fnamemodify(bufname, ':p')

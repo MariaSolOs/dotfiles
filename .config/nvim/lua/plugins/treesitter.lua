@@ -2,7 +2,6 @@
 return {
     {
         'nvim-treesitter/nvim-treesitter',
-        event = 'VeryLazy',
         dependencies = {
             {
                 'nvim-treesitter/nvim-treesitter-context',
@@ -34,12 +33,9 @@ return {
                 },
             },
         },
+        event = 'VeryLazy',
         version = false,
         build = ':TSUpdate',
-        keys = {
-            { '<cr>', desc = 'Increment selection' },
-            { '<bs>', desc = 'Decrement selection', mode = 'x' },
-        },
         opts = {
             ensure_installed = {
                 'bash',

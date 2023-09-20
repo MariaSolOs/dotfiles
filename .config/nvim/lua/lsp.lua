@@ -281,9 +281,8 @@ vim.lsp.util.stylize_markdown = function(bufnr, contents, opts)
 end
 
 -- Update mappings when registering dynamic capabilities.
-local register_method = vim.lsp.protocol.Methods.client_registerCapability
-local register_capability = vim.lsp.handlers[register_method]
-vim.lsp.handlers[register_method] = function(err, res, ctx)
+local register_capability = vim.lsp.handlers[methods.client_registerCapability]
+vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     if not client then
         return

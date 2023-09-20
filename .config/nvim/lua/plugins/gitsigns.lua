@@ -1,9 +1,7 @@
-local sign_icon = '│'
+local sign_icon = require('icons').misc.vertical_bar
 
 -- Adds git releated signs to the gutter, as well as utilities for managing changes.
 return {
-    -- Generate and open GitHub links.
-    { 'ruifm/gitlinker.nvim', lazy = true, opts = { mappings = nil } },
     {
         'lewis6991/gitsigns.nvim',
         event = { 'BufReadPre', 'BufNewFile' },
@@ -28,12 +26,16 @@ return {
                 }
 
                 -- Mappings.
-                local function map(lhs, rhs, desc)
-                    vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
+                ---@param lhs string
+                ---@param rhs function
+                ---@param desc string
+                ---@param mode? string
+                local function map(lhs, rhs, desc, mode)
+                    vim.keymap.set(mode or 'n', lhs, rhs, { desc = desc, buffer = bufnr })
                 end
-                vim.keymap.set('v', '<leader>gc', function()
+                map('<leader>gc', function()
                     require('gitlinker').get_buf_range_url 'v'
-                end, { desc = 'Copy to clipboard' })
+                end, 'Copy to clipboard', 'v')
                 map('<leader>go', function()
                     require('gitlinker').get_buf_range_url(
                         'n',

@@ -2,23 +2,7 @@
 return {
     {
         'stevearc/dressing.nvim',
-        keys = {
-            -- Use dressing for spelling suggestions.
-            {
-                'z=',
-                function()
-                    vim.ui.select(
-                        vim.fn.spellsuggest(vim.fn.expand '<cword>'),
-                        {},
-                        vim.schedule_wrap(function(selected)
-                            if selected then
-                                vim.cmd.normal { args = { 'ciw' .. selected }, bang = true }
-                            end
-                        end)
-                    )
-                end,
-            },
-        },
+        lazy = true,
         opts = {
             input = {
                 win_options = {

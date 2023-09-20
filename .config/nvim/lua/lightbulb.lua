@@ -25,6 +25,7 @@ local function update_extmark(bufnr, line)
         return
     end
 
+    -- TODO: If I continue seeing decorator errors, wrap this in a pcall.
     vim.api.nvim_buf_set_extmark(bufnr, lb_namespace, line, -1, {
         virt_text = { { ' ' .. lb_icon, 'DiagnosticSignHint' } },
         hl_mode = 'combine',

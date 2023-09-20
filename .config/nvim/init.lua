@@ -1,5 +1,6 @@
 -- Setup all my goodies.
 require 'settings'
+require 'foldtext'
 require 'keymaps'
 require 'commands'
 require 'statusline'

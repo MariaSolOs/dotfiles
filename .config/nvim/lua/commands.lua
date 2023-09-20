@@ -14,7 +14,6 @@ vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('mariasolos/close_with_q', { clear = true }),
     desc = 'Close with <q>',
     pattern = {
-        'checkhealth',
         'help',
         'man',
         'qf',
@@ -23,15 +22,6 @@ vim.api.nvim_create_autocmd('FileType', {
     },
     callback = function(event)
         vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = event.buf })
-    end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('mariasolos/unlist_buffer', { clear = true }),
-    desc = 'Exclude from buffer list',
-    pattern = 'checkhealth',
-    callback = function(event)
-        vim.bo[event.buf].buflisted = false
     end,
 })
 
