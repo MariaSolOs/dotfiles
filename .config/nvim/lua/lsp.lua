@@ -178,13 +178,40 @@ vim.diagnostic.config {
 
 local md_namespace = vim.api.nvim_create_namespace 'mariasolos/lsp_float'
 
+---Adds extra inline highlights to the given buffer.
+---@param buf integer
+local function add_inline_highlights(buf)
+    for l, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
+        for pattern, hl_group in pairs {
+            ['@%S+'] = '@parameter',
+            ['^%s*(Parameters:)'] = '@text.title',
+            ['^%s*(Return:)'] = '@text.title',
+            ['^%s*(See also:)'] = '@text.title',
+            ['{%S-}'] = '@parameter',
+        } do
+            local from = 1 ---@type integer?
+            while from do
+                local to
+                from, to = line:find(pattern, from)
+                if from then
+                    vim.api.nvim_buf_set_extmark(buf, md_namespace, l - 1, from - 1, {
+                        end_col = to,
+                        hl_group = hl_group,
+                    })
+                end
+                from = to and to + 1 or nil
+            end
+        end
+    end
+end
+
 ---LSP handler that adds extra inline highlights, keymaps, and window options.
 ---Code inspired from `noice`.
 ---@param handler fun(err: any, result: any, ctx: any, config: any): integer, integer
 ---@return function
 local function enhanced_float_handler(handler)
     return function(err, result, ctx, config)
-        local buf, win = handler(
+        local bufnr, winnr = handler(
             err,
             result,
             ctx,
@@ -195,40 +222,18 @@ local function enhanced_float_handler(handler)
             })
         )
 
-        if not buf or not win then
+        if not bufnr or not winnr then
             return
         end
 
         -- Conceal everything.
-        vim.wo[win].concealcursor = 'n'
+        vim.wo[winnr].concealcursor = 'n'
 
         -- Extra highlights.
-        for l, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
-            for pattern, hl_group in pairs {
-                ['|%S-|'] = '@text.reference',
-                ['@%S+'] = '@parameter',
-                ['^%s*(Parameters:)'] = '@text.title',
-                ['^%s*(Return:)'] = '@text.title',
-                ['^%s*(See also:)'] = '@text.title',
-                ['{%S-}'] = '@parameter',
-            } do
-                local from = 1 ---@type integer?
-                while from do
-                    local to
-                    from, to = line:find(pattern, from)
-                    if from then
-                        vim.api.nvim_buf_set_extmark(buf, md_namespace, l - 1, from - 1, {
-                            end_col = to,
-                            hl_group = hl_group,
-                        })
-                    end
-                    from = to and to + 1 or nil
-                end
-            end
-        end
+        add_inline_highlights(bufnr)
 
         -- Add keymaps for opening links.
-        if not vim.b[buf].markdown_keys then
+        if not vim.b[bufnr].markdown_keys then
             vim.keymap.set('n', 'K', function()
                 -- Vim help links.
                 local url = (vim.fn.expand '<cWORD>' --[[@as string]]):match '|(%S-)|'
@@ -247,14 +252,33 @@ local function enhanced_float_handler(handler)
                         end
                     end)
                 end
-            end, { buffer = buf, silent = true })
-            vim.b[buf].markdown_keys = true
+            end, { buffer = bufnr, silent = true })
+            vim.b[bufnr].markdown_keys = true
         end
     end
 end
 
 vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover)
 vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help)
+
+---HACK: Override `vim.lsp.util.stylize_markdown` to use Treesitter.
+---@param bufnr integer
+---@param contents string[]
+---@param opts table
+---@return string[]
+---@diagnostic disable-next-line: duplicate-set-field
+vim.lsp.util.stylize_markdown = function(bufnr, contents, opts)
+    contents = vim.lsp.util._normalize_markdown(contents, {
+        width = vim.lsp.util._make_floating_popup_size(contents, opts),
+    })
+    vim.bo[bufnr].filetype = 'markdown'
+    vim.treesitter.start(bufnr)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, contents)
+
+    add_inline_highlights(bufnr)
+
+    return contents
+end
 
 -- Update mappings when registering dynamic capabilities.
 local register_method = vim.lsp.protocol.Methods.client_registerCapability
