@@ -25,6 +25,8 @@ return {
                 local button = dashboard.button(sc, txt, keybind)
                 button.opts.hl_shortcut = 'AlphaShortcut'
                 button.opts.hl = 'AlphaButtons'
+                -- Do not move the cursor, it creates a weird effect at the beginning.
+                button.opts.cursor = 0
                 return button
             end
             dashboard.section.buttons.val = {
@@ -40,6 +42,32 @@ return {
             dashboard.section.footer.opts.hl = 'AlphaFooter'
 
             return dashboard.opts
+        end,
+        config = function(_, opts)
+            require('alpha').setup(opts)
+
+            -- Hide some parts of the UI while the dashboard is open.
+            local alpha_group = vim.api.nvim_create_augroup('mariasolos/alpha', { clear = true })
+            vim.api.nvim_create_autocmd('User', {
+                group = alpha_group,
+                desc = 'Minimal UI in Alpha dashboard',
+                pattern = 'AlphaReady',
+                once = true,
+                callback = function(event)
+                    vim.o.laststatus = 0
+                    vim.o.cmdheight = 0
+
+                    vim.api.nvim_create_autocmd('BufUnload', {
+                        group = alpha_group,
+                        buffer = event.buf,
+                        once = true,
+                        callback = function()
+                            vim.o.laststatus = 3
+                            vim.o.cmdheight = 1
+                        end,
+                    })
+                end,
+            })
         end,
     },
 }

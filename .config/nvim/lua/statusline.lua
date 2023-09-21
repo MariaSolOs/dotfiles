@@ -1,27 +1,6 @@
 -- TODO: Make this more fancy. I feel that I'm lacking useful components.
 local M = {}
 local icons = require 'icons'
-local statusline_group = vim.api.nvim_create_augroup('mariasolos/statusline', { clear = true })
-
-vim.api.nvim_create_autocmd('User', {
-    group = statusline_group,
-    desc = 'Hide statusline and command line in start dashboard',
-    pattern = 'AlphaReady',
-    once = true,
-    callback = function(event)
-        vim.o.laststatus = 0
-        vim.o.cmdheight = 0
-        vim.api.nvim_create_autocmd('BufUnload', {
-            group = statusline_group,
-            buffer = event.buf,
-            once = true,
-            callback = function()
-                vim.o.laststatus = 3
-                vim.o.cmdheight = 1
-            end,
-        })
-    end,
-})
 
 -- Don't show the command that produced the quickfix list.
 vim.g.qf_disable_statusline = 1
@@ -145,7 +124,7 @@ local progress_status = {
     title = nil,
 }
 vim.api.nvim_create_autocmd('LspProgress', {
-    group = statusline_group,
+    group = vim.api.nvim_create_augroup('mariasolos/statusline', { clear = true }),
     desc = 'Update LSP progress in statusline',
     pattern = { 'begin', 'end' },
     callback = function(event)
