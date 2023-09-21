@@ -56,7 +56,7 @@ local function on_attach(client, bufnr)
     end, 'Next error')
 
     if client.supports_method(methods.textDocument_codeAction) then
-        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code action', { 'n', 'v' })
+        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code actions', { 'n', 'v' })
     end
 
     if client.supports_method(methods.textDocument_rename) then
@@ -150,17 +150,15 @@ for severity, icon in pairs(diagnostic_icons) do
 end
 
 -- Diagnostic configuration.
--- TODO: Configure virtual text like https://github.com/dgagn/diagflow.nvim
 vim.diagnostic.config {
     virtual_text = {
-        -- Show severity icons as prefixes.
-        prefix = function(diagnostic)
-            return diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]] .. ' '
-        end,
-        -- Show only the first line of each diagnostic.
+        prefix = '',
         format = function(diagnostic)
-            return vim.split(diagnostic.message, '\n')[1]
+            local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
+            local message = vim.split(diagnostic.message, '\n')[1]
+            return string.format('%s %s ', icon, message)
         end,
+        spacing = 5,
     },
     float = {
         border = 'rounded',
@@ -174,6 +172,19 @@ vim.diagnostic.config {
     },
     -- Disable signs in the gutter.
     signs = false,
+}
+
+-- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
+local show_handler = vim.diagnostic.handlers.virtual_text.show
+local hide_handler = vim.diagnostic.handlers.virtual_text.hide
+vim.diagnostic.handlers.virtual_text = {
+    show = function(ns, bufnr, diagnostics, opts)
+        table.sort(diagnostics, function(diag1, diag2)
+            return diag1.severity > diag2.severity
+        end)
+        return show_handler(ns, bufnr, diagnostics, opts)
+    end,
+    hide = hide_handler,
 }
 
 local md_namespace = vim.api.nvim_create_namespace 'mariasolos/lsp_float'

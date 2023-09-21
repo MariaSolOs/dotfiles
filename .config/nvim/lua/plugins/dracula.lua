@@ -19,6 +19,9 @@ return {
                 grey = '#A9ABAC',
                 lavender = '#6272A4',
                 lilac = '#6D5978',
+                transparent_blue = '#19272C',
+                transparent_red = '#342231',
+                transparent_yellow = '#202624',
             },
             italic_comment = true,
             overrides = function(colors)
@@ -98,9 +101,15 @@ return {
                     MiniFilesTitleFocused = { bold = true, fg = colors.cyan },
 
                     -- Nicer highlights for the word under the cursor.
-                    LspReferenceRead = { bg = '#19272C' },
-                    LspReferenceWrite = { bg = '#342231' },
+                    LspReferenceRead = { bg = colors.transparent_blue },
+                    LspReferenceWrite = { bg = colors.transparent_red },
                     LspReferenceText = {},
+
+                    -- Add backgrounds to diagnostic virtual text.
+                    DiagnosticVirtualTextError = { fg = colors.red, bg = colors.transparent_red },
+                    DiagnosticVirtualTextWarn = { fg = colors.yellow, bg = colors.transparent_yellow },
+                    DiagnosticVirtualTextInfo = { fg = colors.cyan, bg = colors.transparent_blue },
+                    DiagnosticVirtualTextHint = { fg = colors.cyan, bg = colors.transparent_blue },
 
                     -- Highlight for the Treesitter sticky context.
                     TreesitterContextBottom = { underline = true, sp = colors.lilac },
@@ -129,7 +138,7 @@ return {
                     -- Quickfix window.
                     qfPath = { fg = colors.bright_blue },
                     qfPosition = { fg = colors.pink, underline = true },
-                    QuickFixLine = { italic = true, bg = '#342231' },
+                    QuickFixLine = { italic = true, bg = colors.transparent_red },
                     BqfPreviewRange = { fg = colors.bg, bg = colors.bright_magenta },
                 })
             end,
