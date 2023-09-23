@@ -57,23 +57,6 @@ return {
                         },
                     },
                 },
-                config = function(_, opts)
-                    local dap = require 'dap'
-                    local dapui = require 'dapui'
-
-                    dapui.setup(opts)
-
-                    -- Automatically open the UI when a new debug session is created.
-                    dap.listeners.after.event_initialized['dapui_config'] = function()
-                        dapui.open {}
-                    end
-                    dap.listeners.before.event_terminated['dapui_config'] = function()
-                        dapui.close {}
-                    end
-                    dap.listeners.before.event_exited['dapui_config'] = function()
-                        dapui.close {}
-                    end
-                end,
             },
             -- Virtual text.
             {
@@ -105,22 +88,6 @@ return {
                         desc = 'Launch Lua adapter',
                     },
                 },
-                config = function()
-                    local dap = require 'dap'
-
-                    dap.adapters.nlua = function(callback, config)
-                        callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
-                    end
-                    -- TODO: Is it fine to ignore this warning?
-                    ---@diagnostic disable-next-line: inject-field
-                    dap.configurations.lua = {
-                        {
-                            type = 'nlua',
-                            request = 'attach',
-                            name = 'Attach to running Neovim instance',
-                        },
-                    }
-                end,
             },
         },
         keys = {
@@ -142,20 +109,6 @@ return {
                     require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
                 end,
                 desc = 'Breakpoint condition',
-            },
-            {
-                '<leader>dj',
-                function()
-                    require('dap').down()
-                end,
-                desc = 'Down in current stacktrace',
-            },
-            {
-                '<leader>dk',
-                function()
-                    require('dap').up()
-                end,
-                desc = 'Up in current stacktrace',
             },
             {
                 '<F5>',
@@ -188,9 +141,34 @@ return {
         },
         config = function()
             local dap = require 'dap'
+            local dapui = require 'dapui'
             local pick_process = require('dap.utils').pick_process
 
+            -- Automatically open the UI when a new debug session is created.
+            dap.listeners.after.event_initialized['dapui_config'] = function()
+                dapui.open {}
+            end
+            dap.listeners.before.event_terminated['dapui_config'] = function()
+                dapui.close {}
+            end
+            dap.listeners.before.event_exited['dapui_config'] = function()
+                dapui.close {}
+            end
+
             -- Set up adapter configurations.
+            dap.adapters.nlua = function(callback, config)
+                callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
+            end
+            -- TODO: Is it fine to ignore this warning?
+            ---@diagnostic disable-next-line: inject-field
+            dap.configurations.lua = {
+                {
+                    type = 'nlua',
+                    request = 'attach',
+                    name = 'Attach to running Neovim instance',
+                },
+            }
+
             for _, language in ipairs { 'typescript', 'javascript' } do
                 dap.configurations[language] = {
                     {
