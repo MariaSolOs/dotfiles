@@ -144,6 +144,9 @@ return {
             local dapui = require 'dapui'
             local pick_process = require('dap.utils').pick_process
 
+            -- Use kitty when launching stuff in another terminal.
+            dap.defaults.fallback.external_terminal = { command = 'kitty' }
+
             -- Automatically open the UI when a new debug session is created.
             dap.listeners.after.event_initialized['dapui_config'] = function()
                 dapui.open {}
@@ -155,13 +158,11 @@ return {
                 dapui.close {}
             end
 
-            -- Set up adapter configurations.
+            -- Lua configurations.
             dap.adapters.nlua = function(callback, config)
                 callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }
             end
-            -- TODO: Is it fine to ignore this warning?
-            ---@diagnostic disable-next-line: inject-field
-            dap.configurations.lua = {
+            dap.configurations['lua'] = {
                 {
                     type = 'nlua',
                     request = 'attach',
@@ -169,13 +170,35 @@ return {
                 },
             }
 
+            -- C configurations.
+            dap.adapters.codelldb = {
+                type = 'server',
+                host = 'localhost',
+                port = '${port}',
+                executable = {
+                    command = 'codelldb',
+                    args = { '--port', '${port}' },
+                },
+            }
+            dap.configurations['c'] = {
+                {
+                    type = 'codelldb',
+                    request = 'launch',
+                    name = 'Neovim',
+                    program = string.format('%s/neovim/build/bin/nvim', vim.g.projects_dir),
+                    terminal = 'external',
+                    stdio = { nil, nil, 'dap-log.txt' },
+                },
+            }
+
+            -- JS/TS configurations.
             for _, language in ipairs { 'typescript', 'javascript' } do
                 dap.configurations[language] = {
                     {
                         type = 'pwa-node',
                         request = 'attach',
                         processId = pick_process,
-                        name = 'Attach debugger to existing node process',
+                        name = 'Attach to process',
                         sourceMaps = true,
                         cwd = '${workspaceFolder}',
                         resolveSourceMapLocations = {

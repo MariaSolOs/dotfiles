@@ -7,6 +7,9 @@ require 'statusline'
 require 'lightbulb'
 require 'marks'
 
+-- Global variables.
+vim.g.projects_dir = vim.fn.expand '~/Code'
+
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
@@ -24,7 +27,7 @@ vim.opt.rtp = vim.opt.rtp ^ lazypath
 -- Configure plugins.
 require('lazy').setup('plugins', {
     ui = { border = 'rounded' },
-    dev = { path = '~/Code' },
+    dev = { path = vim.g.projects_dir },
     install = {
         -- Do not automatically install on startup.
         missing = false,
