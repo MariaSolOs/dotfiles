@@ -6,7 +6,10 @@ local lb_namespace = vim.api.nvim_create_namespace(lb_name)
 local lb_icon = require('icons').diagnostics.HINT
 local lb_group = vim.api.nvim_create_augroup(lb_name, { clear = true })
 local code_action_method = vim.lsp.protocol.Methods.textDocument_codeAction
+
 local timer = vim.uv.new_timer()
+assert(timer, 'Timer was not initialized')
+
 local updated_bufnr = nil
 
 ---Updates the current lightbulb.
@@ -70,8 +73,6 @@ end
 -- from lspsaga.
 ---@param bufnr number
 local function update(bufnr)
-    assert(timer, 'Timer is not initialized')
-
     timer:stop()
     update_extmark(updated_bufnr)
     timer:start(100, 0, function()
