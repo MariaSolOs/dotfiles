@@ -7,8 +7,9 @@ return {
             local miniclue = require 'mini.clue'
 
             -- Some builtin keymaps that I don't use and that I don't want mini.clue to show.
-            vim.keymap.del('n', '[%')
-            vim.keymap.del('n', ']%')
+            for _, lhs in ipairs { '[%', ']%', 'g%' } do
+                vim.keymap.del('n', lhs)
+            end
 
             -- Add a-z/A-Z marks.
             local function mark_clues()
@@ -79,11 +80,6 @@ return {
                     { mode = 'n', keys = ']' },
                 },
                 clues = {
-                    miniclue.gen_clues.g(),
-                    miniclue.gen_clues.z(),
-                    miniclue.gen_clues.marks(),
-                    miniclue.gen_clues.registers(),
-                    miniclue.gen_clues.windows(),
                     -- Mapping groups.
                     { mode = 'n', keys = '<leader>b', desc = '+buffers' },
                     { mode = 'n', keys = '<leader>c', desc = '+code' },
@@ -93,9 +89,60 @@ return {
                     { mode = 'n', keys = '<leader>x', desc = '+loclist/quickfix' },
                     { mode = 'n', keys = '[', desc = '+prev' },
                     { mode = 'n', keys = ']', desc = '+next' },
+                    -- Useful builtins.
+                    miniclue.gen_clues.marks(),
+                    miniclue.gen_clues.registers(),
                     -- Custom extras.
                     mark_clues,
                     macro_clues,
+                    -- Clues for g mappings.
+                    { mode = 'n', keys = 'ga', desc = 'Print ascii value' },
+                    { mode = 'n', keys = 'gE', desc = 'Go backwards to end of previous WORD' },
+                    { mode = 'n', keys = 'ge', desc = 'Go backwards to end of previous word' },
+                    { mode = 'n', keys = 'gg', desc = 'Go to line (def: first)' },
+                    { mode = 'n', keys = 'gT', desc = 'Go to previous tabpage' },
+                    { mode = 'n', keys = 'gt', desc = 'Go to next tabpage' },
+                    { mode = 'n', keys = 'gx', desc = 'Execute app for file under cursor' },
+                    { mode = 'n', keys = 'g#', desc = 'Search backwards word under cursor' },
+                    { mode = 'n', keys = 'g*', desc = 'Search word under cursor' },
+                    -- Clues for z mappings.
+                    { mode = 'n', keys = 'zA', desc = 'Toggle folds recursively' },
+                    { mode = 'n', keys = 'za', desc = 'Toggle fold' },
+                    { mode = 'n', keys = 'zb', desc = 'Redraw at bottom' },
+                    { mode = 'n', keys = 'zC', desc = 'Close folds recursively' },
+                    { mode = 'n', keys = 'zc', desc = 'Close fold' },
+                    { mode = 'n', keys = 'zF', desc = 'Create fold' },
+                    { mode = 'n', keys = 'zf', desc = 'Create fold (operator)' },
+                    { mode = 'n', keys = 'zi', desc = "Toggle 'foldenable'" },
+                    { mode = 'n', keys = 'zj', desc = 'Move to start of next fold' },
+                    { mode = 'n', keys = 'zk', desc = 'Move to end of previous fold' },
+                    { mode = 'n', keys = 'zm', desc = 'Fold more' },
+                    { mode = 'n', keys = 'zM', desc = 'Close all folds' },
+                    { mode = 'n', keys = 'zO', desc = 'Open folds recursively' },
+                    { mode = 'n', keys = 'zo', desc = 'Open fold' },
+                    { mode = 'n', keys = 'zR', desc = 'Open all folds' },
+                    { mode = 'n', keys = 'zr', desc = 'Fold less' },
+                    { mode = 'n', keys = 'zt', desc = 'Redraw at top' },
+                    { mode = 'n', keys = 'zv', desc = 'Open enough folds' },
+                    { mode = 'n', keys = 'zx', desc = 'Update folds + open enough folds' },
+                    { mode = 'n', keys = 'z=', desc = 'Show spelling suggestions' },
+                    -- Clues for window mappings.
+                    { mode = 'n', keys = '<C-w>=', desc = 'Make windows same dimensions' },
+                    { mode = 'n', keys = '<C-w>c', desc = 'Close' },
+                    { mode = 'n', keys = '<C-w>F', desc = 'Split + edit file name + jump' },
+                    { mode = 'n', keys = '<C-w>f', desc = 'Split + edit file name' },
+                    { mode = 'n', keys = '<C-w>H', desc = 'Move to very left' },
+                    { mode = 'n', keys = '<C-w>J', desc = 'Move to very bottom' },
+                    { mode = 'n', keys = '<C-w>K', desc = 'Move to very top' },
+                    { mode = 'n', keys = '<C-w>L', desc = 'Move to very right' },
+                    { mode = 'n', keys = '<C-w>n', desc = 'Open new' },
+                    { mode = 'n', keys = '<C-w>o', desc = 'Close all but current' },
+                    { mode = 'n', keys = '<C-w>q', desc = 'Quit current' },
+                    { mode = 'n', keys = '<C-w>R', desc = 'Rotate up/left' },
+                    { mode = 'n', keys = '<C-w>r', desc = 'Rotate down/right' },
+                    { mode = 'n', keys = '<C-w>s', desc = 'Split horizontally' },
+                    { mode = 'n', keys = '<C-w>v', desc = 'Split vertically' },
+                    { mode = 'n', keys = '<C-w>x', desc = 'Exchange windows' },
                 },
                 window = {
                     delay = 500,
