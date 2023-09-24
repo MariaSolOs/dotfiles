@@ -2,14 +2,6 @@ vim.api.nvim_create_user_command('Todos', function()
     require('fzf-lua').grep { search = [[TODO:|todo!\(.*\)]], no_esc = true }
 end, { desc = 'Grep TODOs', nargs = 0 })
 
-vim.api.nvim_create_autocmd('TextYankPost', {
-    group = vim.api.nvim_create_augroup('mariasolos/yank_highlight', { clear = true }),
-    desc = 'Highlight on yank',
-    callback = function()
-        vim.highlight.on_yank { higroup = 'Visual' }
-    end,
-})
-
 vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('mariasolos/close_with_q', { clear = true }),
     desc = 'Close with <q>',
