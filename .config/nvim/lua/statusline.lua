@@ -8,7 +8,7 @@ vim.g.qf_disable_statusline = 1
 -- Show the mode in my custom component instead.
 vim.o.showmode = false
 
----Keeps track of the highlight groups I've already created.
+--- Keeps track of the highlight groups I've already created.
 ---@type table<string, boolean>
 local statusline_hls = {}
 ---@param hl string
@@ -28,7 +28,7 @@ function M.get_or_create_hl(hl)
     return hl_name
 end
 
----Current mode.
+--- Current mode.
 ---@return string
 function M.mode_component()
     -- Note that: \19 = ^S and \22 = ^V.
@@ -96,7 +96,7 @@ function M.mode_component()
     }
 end
 
----Git status (if any).
+--- Git status (if any).
 ---@return string
 function M.git_component()
     local head = vim.b.gitsigns_head
@@ -107,7 +107,7 @@ function M.git_component()
     return string.format(' %s', head)
 end
 
----The current debugging status (if any).
+--- The current debugging status (if any).
 ---@return string?
 function M.dap_component()
     if not package.loaded['dap'] or require('dap').status() == '' then
@@ -150,7 +150,7 @@ vim.api.nvim_create_autocmd('LspProgress', {
         end
     end,
 })
----The latest LSP progress message.
+--- The latest LSP progress message.
 ---@return string
 function M.lsp_progress_component()
     if not progress_status.client or not progress_status.title then
@@ -165,7 +165,7 @@ function M.lsp_progress_component()
 end
 
 local last_diagnostic_component = ''
----Diagnostic counts in the current buffer.
+--- Diagnostic counts in the current buffer.
 ---@return string
 function M.diagnostics_component()
     -- Use the last computed value if in insert mode.
@@ -196,7 +196,7 @@ function M.diagnostics_component()
     return table.concat(parts, ' ')
 end
 
----The buffer's filetype.
+--- The buffer's filetype.
 ---@return string
 function M.filetype_component()
     local devicons = require 'nvim-web-devicons'
@@ -239,14 +239,14 @@ function M.filetype_component()
     return string.format('%%#%s#%s %%#StatuslineTitle#%s', icon_hl, icon, filetype)
 end
 
----File-content encoding for the current buffer.
+--- File-content encoding for the current buffer.
 ---@return string
 function M.encoding_component()
     local encoding = vim.opt.fileencoding:get()
     return encoding ~= '' and string.format('%%#StatuslineModeSeparatorOther# %s', encoding) or ''
 end
 
----The current line, total line count, and column position.
+--- The current line, total line count, and column position.
 ---@return string
 function M.position_component()
     local line = vim.fn.line '.'
@@ -260,7 +260,7 @@ function M.position_component()
     }
 end
 
----Renders the statusline.
+--- Renders the statusline.
 ---@return string
 function M.render()
     ---@param components string[]

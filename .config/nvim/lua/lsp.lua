@@ -3,7 +3,7 @@ local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
----Returns the editor's capabilities + some overrides.
+--- Returns the editor's capabilities + some overrides.
 M.client_capabilities = function()
     return vim.tbl_deep_extend(
         'force',
@@ -20,7 +20,7 @@ M.client_capabilities = function()
     )
 end
 
----Sets up LSP keymaps and autocommands for the given buffer.
+--- Sets up LSP keymaps and autocommands for the given buffer.
 ---@param client lsp.Client
 ---@param bufnr integer
 local function on_attach(client, bufnr)
@@ -189,7 +189,7 @@ vim.diagnostic.handlers.virtual_text = {
 
 local md_namespace = vim.api.nvim_create_namespace 'mariasolos/lsp_float'
 
----Adds extra inline highlights to the given buffer.
+--- Adds extra inline highlights to the given buffer.
 ---@param buf integer
 local function add_inline_highlights(buf)
     for l, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
@@ -216,8 +216,8 @@ local function add_inline_highlights(buf)
     end
 end
 
----LSP handler that adds extra inline highlights, keymaps, and window options.
----Code inspired from `noice`.
+--- LSP handler that adds extra inline highlights, keymaps, and window options.
+--- Code inspired from `noice`.
 ---@param handler fun(err: any, result: any, ctx: any, config: any): integer, integer
 ---@return function
 local function enhanced_float_handler(handler)
@@ -272,7 +272,7 @@ end
 vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover)
 vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help)
 
----HACK: Override `vim.lsp.util.stylize_markdown` to use Treesitter.
+--- HACK: Override `vim.lsp.util.stylize_markdown` to use Treesitter.
 ---@param bufnr integer
 ---@param contents string[]
 ---@param opts table

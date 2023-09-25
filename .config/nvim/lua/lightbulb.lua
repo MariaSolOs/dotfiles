@@ -1,5 +1,5 @@
---VSCode-like lightbulb.
---Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/c9b17bc7dc694bdbeb3788a583518073a30a6de2/lua/lspsaga/codeaction/lightbulb.lua
+-- VSCode-like lightbulb.
+-- Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/c9b17bc7dc694bdbeb3788a583518073a30a6de2/lua/lspsaga/codeaction/lightbulb.lua
 
 local lb_name = 'mariasolos/lightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
@@ -12,7 +12,7 @@ assert(timer, 'Timer was not initialized')
 
 local updated_bufnr = nil
 
----Updates the current lightbulb.
+--- Updates the current lightbulb.
 ---@param bufnr number?
 ---@param line number?
 local function update_extmark(bufnr, line)
@@ -37,8 +37,8 @@ local function update_extmark(bufnr, line)
     updated_bufnr = bufnr
 end
 
----Queries the LSP servers for code actions and updates the lightbulb
----accordingly.
+--- Queries the LSP servers for code actions and updates the lightbulb
+--- accordingly.
 ---@param bufnr number
 local function render(bufnr)
     local line = vim.api.nvim_win_get_cursor(0)[1] - 1

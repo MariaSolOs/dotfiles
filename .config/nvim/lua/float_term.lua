@@ -1,7 +1,7 @@
 local M = {}
 local terminals = {} ---@type LazyFloat[]
 
----Opens an interactive floating terminal.
+--- Opens an interactive floating terminal.
 ---@param cmd? string
 ---@param opts table
 function M.float_term(cmd, opts)

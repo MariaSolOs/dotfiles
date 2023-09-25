@@ -1,16 +1,16 @@
----Custom mark API.
----Implementation slightly inspired by https://github.com/chentoast/marks.nvim, but this is
----much simpler.
+--- Custom mark API.
+--- Implementation slightly inspired by https://github.com/chentoast/marks.nvim, but this is
+--- much simpler.
 
----Map of mark information per buffer.
+--- Map of mark information per buffer.
 ---@type table<integer, table<string, {line: integer, id: integer}>>
 local marks = {}
 
----Keeps track of the signs I've already created.
+--- Keeps track of the signs I've already created.
 ---@type table<string, boolean>
 local sign_cache = {}
 
----The sign and autocommand group name.
+--- The sign and autocommand group name.
 local sign_group_name = 'mariasolos/marks_signs'
 
 ---@param mark string
