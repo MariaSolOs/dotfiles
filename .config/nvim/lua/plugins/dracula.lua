@@ -53,9 +53,6 @@ return {
                     -- Make these diagnostics different from regular comments.
                     DiagnosticUnnecessary = { fg = colors.white, italic = true },
 
-                    -- Greyish description in the completion menu.
-                    CmpItemMenu = { fg = colors.grey },
-
                     -- Nicer diffs.
                     DiffAdd = { fg = colors.bright_green, bold = true },
                     DiffChange = { fg = colors.orange, bold = true },
@@ -74,6 +71,7 @@ return {
                     CmpItemAbbr = { fg = colors.white, bg = 'NONE' },
                     CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
                     CmpItemAbbrDeprecated = { strikethrough = true },
+                    CmpItemMenu = { fg = colors.grey },
 
                     -- Make these virtual text thingies different from comments/regular code.
                     LspCodeLens = { fg = colors.lavender },
