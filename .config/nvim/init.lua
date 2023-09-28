@@ -5,7 +5,6 @@ require 'keymaps'
 require 'commands'
 require 'statusline'
 require 'lightbulb'
-require 'marks'
 
 -- Global variables.
 vim.g.projects_dir = vim.fn.expand '~/Code'
