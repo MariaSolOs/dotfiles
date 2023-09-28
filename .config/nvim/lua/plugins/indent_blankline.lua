@@ -3,8 +3,6 @@ return {
     {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
-        -- TODO: Remove this when the PR gets merged to master.
-        branch = 'v3',
         event = 'VeryLazy',
         -- For setting shiftwidth and tabstop automatically.
         dependencies = 'tpope/vim-sleuth',

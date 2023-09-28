@@ -1,5 +1,4 @@
 -- Navigation with jump motions.
--- TODO: Remove local folding patch when https://github.com/folke/flash.nvim/pull/225 gets merged.
 return {
     {
         'folke/flash.nvim',
