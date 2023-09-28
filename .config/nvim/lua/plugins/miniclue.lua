@@ -105,6 +105,8 @@ return {
                     { mode = 'n', keys = 'gx', desc = 'Execute app for file under cursor' },
                     { mode = 'n', keys = 'g#', desc = 'Search backwards word under cursor' },
                     { mode = 'n', keys = 'g*', desc = 'Search word under cursor' },
+                    { mode = 'n', keys = "g'", desc = "Jump to mark (don't affect jumplist)" },
+                    { mode = 'n', keys = 'g`', desc = "Jump to mark (don't affect jumplist)" },
                     -- Clues for z mappings.
                     { mode = 'n', keys = 'zA', desc = 'Toggle folds recursively' },
                     { mode = 'n', keys = 'za', desc = 'Toggle fold' },
