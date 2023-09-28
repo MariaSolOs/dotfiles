@@ -8,9 +8,6 @@ WORDCHARS=${WORDCHARS/\/}
 bindkey '^P' history-search-backward
 bindkey '^N' history-search-forward
 
-# Disable vim mode.
-bindkey -e
-
 # Complete a single word with <Ctrl+Left>, and the full thing with <Left>.
 bindkey '^[[1;5C' forward-word
 
@@ -26,9 +23,9 @@ if [[ "$TERM" == "xterm-kitty" ]]; then
 fi
 
 # Load nvm and set up bash completions.
-export NVM_DIR="$XDG_CONFIG_HOME/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Python setup.
 export PYENV_ROOT="$HOME/.pyenv"

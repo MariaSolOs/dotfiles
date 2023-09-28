@@ -1,7 +1,7 @@
-# Colored commands.
-alias ls='ls --color=auto'
+# Colored ls with hyperlinks.
+alias ls='gls --color=auto --hyperlink=auto'
 
-# Nvim.
+# Neovim.
 alias nvimconfig="cd $XDG_CONFIG_HOME/nvim && nvim"
 
 # General git aliases.

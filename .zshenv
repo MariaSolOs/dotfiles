@@ -6,6 +6,12 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export PATH="$HOME/.cargo/bin:$PATH" # cargo
 export PATH="$HOME/nvim/bin:$PATH" # neovim
 export PATH="/usr/local/opt/tcl-tk/bin:$PATH" # tcl-tk
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH" # GNU coreutils
+
+# Load nvm and set up bash completions.
+export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # zsh configuration.
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
