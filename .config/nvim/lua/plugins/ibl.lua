@@ -7,20 +7,12 @@ return {
         -- For setting shiftwidth and tabstop automatically.
         dependencies = 'tpope/vim-sleuth',
         opts = {
-            scope = { enabled = false },
             indent = {
                 char = require('icons').misc.vertical_bar,
-                -- Make sure the guides are visible in folded lines (ufo
-                -- uses a priority of 10).
-                priority = 11,
             },
-            exclude = {
-                filetypes = {
-                    'alpha',
-                    'lazy',
-                    'lazyterm',
-                    'mason',
-                },
+            scope = {
+                char = '▎',
+                show_end = false,
             },
         },
     },

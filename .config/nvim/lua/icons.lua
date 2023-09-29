@@ -46,7 +46,7 @@ M.symbol_kinds = {
     Variable = '󰀫',
 }
 
---- Icons that don't really fit into a category.
+--- Shared icons that don't really fit into a category.
 M.misc = {
     search = '',
     vertical_bar = '│',
