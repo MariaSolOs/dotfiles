@@ -212,6 +212,7 @@ function M.filetype_component()
         fzf = { '', 'Special' },
         gitcommit = { '', 'Conditional' },
         gitrebase = { '', 'Conditional' },
+        kitty_scrollback = { '󰄛', 'Conditional' },
         lazy = { icons.symbol_kinds.Method, 'Special' },
         lazyterm = { '', 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },

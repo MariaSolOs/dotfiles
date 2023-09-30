@@ -4,6 +4,9 @@ setopt auto_cd
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
 
+# Enable vi mode.
+bindkey -v
+
 # History navigation.
 bindkey '^P' history-search-backward
 bindkey '^N' history-search-forward
@@ -17,15 +20,10 @@ setopt hist_expire_dups_first
 # Ignore duplicated commands history list.
 setopt hist_ignore_dups
 
-# Completion for kitty
+# Completion for kitty.
 if [[ "$TERM" == "xterm-kitty" ]]; then
   kitty + complete setup zsh | source /dev/stdin
 fi
-
-# Load nvm and set up bash completions.
-# export NVM_DIR="$XDG_CONFIG_HOME/nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Python setup.
 export PYENV_ROOT="$HOME/.pyenv"

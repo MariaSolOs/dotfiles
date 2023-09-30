@@ -1,12 +1,8 @@
 local arrows = require('icons').arrows
 
 -- Set <space> as the leader key.
--- Must happen before plugins are required (otherwise the wrong leader will be used).
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
--- Add binaries installed by mason.nvim to path.
-vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
 
 -- Use an indentation of 4 spaces.
 vim.o.sw = 4

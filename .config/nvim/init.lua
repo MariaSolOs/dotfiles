@@ -1,13 +1,10 @@
--- Setup all my goodies.
-require 'settings'
-require 'foldtext'
-require 'keymaps'
-require 'commands'
-require 'statusline'
-require 'lightbulb'
+-- TODO: Try out https://github.com/stevearc/overseer.nvim
 
 -- Global variables.
 vim.g.projects_dir = vim.fn.expand '~/Code'
+
+-- Add binaries installed by mason.nvim to path.
+vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
 
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -23,8 +20,31 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp = vim.opt.rtp ^ lazypath
 
+--- @type LazySpec
+local plugins = 'plugins'
+
+-- General setup.
+require 'settings'
+require 'keymaps'
+require 'commands'
+require 'statusline'
+
+-- Minimal plugins when just displaying the scrollback buffer.
+if vim.env.SCROLLBACK_PAGE then
+    require 'kitty_scrollback'
+    plugins = {
+        { 'Mofiqul/dracula.nvim', import = 'plugins.dracula' },
+        { 'folke/flash.nvim', import = 'plugins.flash', opts = { prompt = { enabled = false } } },
+        { 'itchyny/vim-highlighturl', import = 'plugins.highlighturl' },
+        { 'nvim-tree/nvim-web-devicons', import = 'plugins.nvim-web-devicons' },
+    }
+else
+    -- Load my extra goodies when not displaying the scrollback buffer.
+    require 'lightbulb'
+end
+
 -- Configure plugins.
-require('lazy').setup('plugins', {
+require('lazy').setup(plugins, {
     ui = { border = 'rounded' },
     dev = { path = vim.g.projects_dir },
     install = {

@@ -11,9 +11,10 @@ vim.api.nvim_create_autocmd('FileType', {
         'qf',
         'query',
         'spectre_panel',
+        'kitty_scrollback',
     },
     callback = function(event)
-        vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = event.buf })
+        vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = event.buf })
     end,
 })
 
