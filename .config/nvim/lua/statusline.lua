@@ -114,7 +114,7 @@ function M.dap_component()
         return nil
     end
 
-    return string.format('%%#%s#  %s', M.get_or_create_hl 'DapUIRestart', require('dap').status())
+    return string.format('%%#%s#%s  %s', M.get_or_create_hl 'DapUIRestart', icons.misc.bug, require('dap').status())
 end
 
 ---@type table<string, string?>
@@ -202,10 +202,12 @@ function M.filetype_component()
     local devicons = require 'nvim-web-devicons'
 
     -- Special icons for some filetypes.
-    -- TODO: Add icons for dap windows.
     local special_icons = {
         DressingInput = { '󰍩', 'Comment' },
         DressingSelect = { '', 'Comment' },
+        dapui_breakpoints = { icons.misc.bug, 'DapUIRestart' },
+        dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
+        dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
         dropbar_menu = { '', 'Directory' },
         fzf = { '', 'Special' },
         gitcommit = { '', 'Conditional' },
