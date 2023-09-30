@@ -8,7 +8,8 @@ vim.o.laststatus = 3
 
 local term = vim.api.nvim_open_term(buf, {})
 
-local scrollback_group = vim.api.nvim_create_augroup('mariasolos/kitty_scrollback', {})
+-- Setup autocommands.
+local scrollback_group = vim.api.nvim_create_augroup('mariasolos/kitty_scrollback', { clear = true })
 vim.api.nvim_create_autocmd('ModeChanged', {
     group = scrollback_group,
     desc = 'Stop insert mode inside the scrollback buffer',
@@ -28,5 +29,12 @@ vim.api.nvim_create_autocmd('VimEnter', {
 
         vim.api.nvim_win_set_buf(win, buf)
         vim.api.nvim_buf_delete(ev.buf, { force = true })
+    end,
+})
+vim.api.nvim_create_autocmd('TextYankPost', {
+    group = scrollback_group,
+    desc = 'Highlight on yank',
+    callback = function()
+        vim.highlight.on_yank { higroup = 'Visual' }
     end,
 })

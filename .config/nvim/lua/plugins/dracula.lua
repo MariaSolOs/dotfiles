@@ -103,6 +103,10 @@ return {
                     LspReferenceWrite = { bg = colors.transparent_red },
                     LspReferenceText = {},
 
+                    -- Nicer yanky highlights.
+                    YankyPut = { link = 'Visual' },
+                    YankyYanked = { link = 'Visual' },
+
                     -- Add backgrounds to diagnostic virtual text.
                     DiagnosticVirtualTextError = { fg = colors.red, bg = colors.transparent_red },
                     DiagnosticVirtualTextWarn = { fg = colors.yellow, bg = colors.transparent_yellow },
