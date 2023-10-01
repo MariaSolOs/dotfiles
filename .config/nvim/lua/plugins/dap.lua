@@ -142,7 +142,6 @@ return {
         config = function()
             local dap = require 'dap'
             local dapui = require 'dapui'
-            local pick_process = require('dap.utils').pick_process
 
             -- Use kitty when launching stuff in another terminal.
             dap.defaults.fallback.external_terminal = { command = 'kitty' }
@@ -180,39 +179,12 @@ return {
                     args = { '--port', '${port}' },
                 },
             }
-            dap.configurations['c'] = {
-                {
-                    type = 'codelldb',
-                    request = 'launch',
-                    name = 'Neovim',
-                    program = string.format('%s/neovim/build/bin/nvim', vim.g.projects_dir),
-                    terminal = 'external',
-                    stdio = { nil, nil, 'dap-log.txt' },
-                },
-            }
 
-            -- JS/TS configurations.
-            for _, language in ipairs { 'typescript', 'javascript' } do
-                dap.configurations[language] = {
-                    {
-                        type = 'pwa-node',
-                        request = 'attach',
-                        processId = pick_process,
-                        name = 'Attach to process',
-                        sourceMaps = true,
-                        cwd = '${workspaceFolder}',
-                        resolveSourceMapLocations = {
-                            '${workspaceFolder}/**',
-                            '!**/node_modules/**',
-                        },
-                        outFiles = {
-                            '${workspaceFolder}/**',
-                            '!**/node_modules/**',
-                        },
-                        skipFiles = { '**/node_modules/**' },
-                    },
-                }
-            end
+            -- Add configurations from launch.json
+            require('dap.ext.vscode').load_launchjs(nil, {
+                ['codelldb'] = { 'c' },
+                ['pwa-node'] = { 'typescript', 'javascript' },
+            })
         end,
     },
 }
