@@ -11,7 +11,7 @@ return {
                 char = require('icons').misc.vertical_bar,
             },
             scope = {
-                char = '▎',
+                show_start = false,
                 show_end = false,
             },
         },

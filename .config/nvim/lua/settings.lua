@@ -30,6 +30,7 @@ vim.o.foldcolumn = '1'
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 vim.o.foldmethod = 'expr'
+vim.wo.foldtext = 'v:lua.vim.treesitter.foldtext()'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 -- UI characters.
@@ -67,7 +68,8 @@ vim.o.completeopt = 'menuone,noselect,noinsert'
 vim.o.pumheight = 15
 
 -- Diff mode settings.
-vim.opt.diffopt:append 'vertical,foldcolumn:0'
+-- Setting the context to a very large number disables folding.
+vim.opt.diffopt:append 'vertical,context:99'
 
 vim.opt.shortmess:append {
     I = true, -- Disable the vim intro.

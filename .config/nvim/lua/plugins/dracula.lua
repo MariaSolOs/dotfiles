@@ -20,6 +20,7 @@ return {
                 lavender = '#6272A4',
                 lilac = '#6D5978',
                 transparent_blue = '#19272C',
+                transparent_lilac = '#1e1f29',
                 transparent_red = '#342231',
                 transparent_yellow = '#202624',
             },
@@ -78,8 +79,8 @@ return {
                     LspCodeLensSeparator = { fg = colors.lavender },
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
-                    -- Folded regions.
-                    Folded = { fg = colors.lilac, underline = true },
+                    -- Background for folded lines.
+                    Folded = { bg = colors.transparent_lilac },
 
                     -- Command line.
                     MoreMsg = { fg = colors.bright_white, bold = true },
