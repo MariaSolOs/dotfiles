@@ -4,18 +4,22 @@ setopt auto_cd
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
 
-# Enable vi mode.
-bindkey -v
+# Disable vi mode.
+bindkey -e
 
 # History navigation.
 bindkey '^P' history-search-backward
 bindkey '^N' history-search-forward
 
-# Complete a single word with <Ctrl+Left>, and the full thing with <Left>.
+# Complete a single word with <Ctrl+Right>, and the full thing with <Ctrl+Space>.
 bindkey '^[[1;5C' forward-word
+bindkey '^ ' autosuggest-accept
 
 # Delete duplicates first when HISTFILE size exceeds HISTSIZE.
 setopt hist_expire_dups_first
+
+# Share history between windows.
+setopt SHARE_HISTORY
 
 # Ignore duplicated commands history list.
 setopt hist_ignore_dups
