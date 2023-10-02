@@ -205,10 +205,12 @@ function M.filetype_component()
     local special_icons = {
         DressingInput = { '󰍩', 'Comment' },
         DressingSelect = { '', 'Comment' },
+        OverseerForm = { '󰦬', 'Special' },
+        OverseerList = { '󰦬', 'Special' },
         dapui_breakpoints = { icons.misc.bug, 'DapUIRestart' },
         dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
         dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
-        dropbar_menu = { '', 'Directory' },
+        dropbar_menu = { icons.symbol_kinds.Class, 'Directory' },
         fzf = { '', 'Special' },
         gitcommit = { '', 'Conditional' },
         gitrebase = { '', 'Conditional' },

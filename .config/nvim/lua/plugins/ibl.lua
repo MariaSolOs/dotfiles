@@ -14,6 +14,9 @@ return {
                 show_start = false,
                 show_end = false,
             },
+            exclude = {
+                filetypes = { 'OverseerForm' },
+            },
         },
     },
 }

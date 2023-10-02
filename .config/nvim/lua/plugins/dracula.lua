@@ -143,6 +143,9 @@ return {
                     qfPosition = { fg = colors.pink, underline = true },
                     QuickFixLine = { italic = true, bg = colors.transparent_red },
                     BqfPreviewRange = { fg = colors.bg, bg = colors.bright_magenta },
+
+                    -- Overseeer overrides.
+                    OverseerComponent = { link = '@keyword' },
                 })
             end,
         },

@@ -157,6 +157,10 @@ return {
                 dapui.close {}
             end
 
+            -- Use overseer for running preLaunchTask and postDebugTask.
+            require('overseer').patch_dap(true)
+            require('dap.ext.vscode').json_decode = require('overseer.json').decode
+
             -- Lua configurations.
             dap.adapters.nlua = function(callback, config)
                 callback { type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 }

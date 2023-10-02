@@ -1,5 +1,3 @@
--- TODO: Try out https://github.com/stevearc/overseer.nvim
-
 -- Global variables.
 vim.g.projects_dir = vim.fn.expand '~/Code'
 
