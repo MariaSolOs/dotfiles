@@ -30,6 +30,33 @@ return {
             -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'
 
+            -- Python is... special. I need to set it up manually.
+            require('lspconfig.configs').pylance = {
+                default_config = {
+                    name = 'pylance',
+                    autostart = true,
+                    single_file_support = true,
+                    cmd = { 'pylance', '--stdio' },
+                    filetypes = { 'python' },
+                },
+            }
+            lspconfig.pylance.setup {
+                capabilities = capabilities(),
+                settings = {
+                    python = {
+                        analysis = {
+                            typeCheckingMode = 'basic',
+                            extraPaths = { vim.fn.getcwd() },
+                            inlayHints = {
+                                callArgumentNames = true,
+                                functionReturnTypes = true,
+                                variableTypes = true,
+                            },
+                        },
+                    },
+                },
+            }
+
             require('mason-lspconfig').setup {
                 ensure_installed = {
                     'bashls',
@@ -47,7 +74,7 @@ return {
                     clangd = function()
                         lspconfig.clangd.setup {
                             capabilities = vim.tbl_deep_extend('error', capabilities(), {
-                                -- Prevents the  multiple different client offset_encodings detected for buffer' warning.
+                                -- Prevents the 'multiple different client offset_encodings detected for buffer' warning.
                                 offsetEncoding = { 'utf-16' },
                             }),
                         }
