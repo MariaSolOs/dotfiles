@@ -24,7 +24,7 @@ local function update_extmark(bufnr, line)
 
     -- Extra check for not being in insert mode here because sometimes the autocommand
     -- fails with motions from Comment.nvim.
-    if not line or vim.api.nvim_get_mode().mode:sub(1, 1) == 'i' then
+    if not line or vim.startswith(vim.api.nvim_get_mode().mode, 'i') then
         return
     end
 

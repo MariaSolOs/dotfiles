@@ -169,7 +169,7 @@ local last_diagnostic_component = ''
 ---@return string
 function M.diagnostics_component()
     -- Use the last computed value if in insert mode.
-    if vim.api.nvim_get_mode().mode:sub(1, 1) == 'i' then
+    if vim.startswith(vim.api.nvim_get_mode().mode, 'i') then
         return last_diagnostic_component
     end
 

@@ -67,7 +67,7 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'Cmdline
     group = line_numbers_group,
     desc = 'Toggle relative line numbers on',
     callback = function()
-        if vim.wo.nu and vim.api.nvim_get_mode().mode:sub(1, 1) ~= 'i' then
+        if vim.wo.nu and not vim.startswith(vim.api.nvim_get_mode().mode, 'i') then
             vim.wo.relativenumber = true
         end
     end,
