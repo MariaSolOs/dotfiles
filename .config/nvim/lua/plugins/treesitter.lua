@@ -59,9 +59,15 @@ return {
             },
             highlight = {
                 enable = true,
-                disable = function(lang, buf)
-                    -- Looking at you checker.ts
-                    return lang == 'typescript' and vim.api.nvim_buf_line_count(buf) > 10000
+                disable = function(_, buf)
+                    -- Don't disable for read-only buffers.
+                    if not vim.bo[buf].modifiable then
+                        return false
+                    end
+
+                    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+                    -- Disable for files larger than 250 KB.
+                    return ok and stats and stats.size > (250 * 1024)
                 end,
             },
             incremental_selection = {
