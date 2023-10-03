@@ -5,29 +5,30 @@ local FilesPicker = {
     opts = nil,
     ignoring = nil,
 }
-FilesPicker.toggle = function(_, _)
+FilesPicker.toggle = function()
     FilesPicker.pick(FilesPicker.opts)
 end
 FilesPicker.pick = function(opts)
+    -- Always start by respecting .gitignore (will be toggled below).
     if not opts then
         FilesPicker.ignoring = true
     end
-    opts = opts or {}
-    opts.actions = {
-        ['ctrl-g'] = FilesPicker.toggle,
-    }
+
+    -- Settings to always apply.
+    opts = opts or { actions = { ['ctrl-g'] = FilesPicker.toggle } }
+    opts.winopts = opts.winopts or { title_pos = 'center' }
+    opts.cmd = 'fd --color=never --type f --hidden --follow'
+
     local behavior = ''
     if FilesPicker.ignoring then
         behavior = 'respecting'
-        opts.cmd = 'fd --color=never --type f --hidden --follow --exclude .git'
+        opts.cmd = opts.cmd .. ' --exclude .git'
     else
         behavior = 'ignoring'
-        opts.cmd = 'fd --color=never --type f --hidden --follow --no-ignore'
+        opts.cmd = opts.cmd .. ' --no-ignore'
     end
-    opts.winopts = {
-        title = 'Files (' .. behavior .. ' .gitignore)',
-        title_pos = 'center',
-    }
+    opts.winopts.title = string.format('Files (%s .gitignore)', behavior)
+
     FilesPicker.ignoring = not FilesPicker.ignoring
     FilesPicker.opts = opts
 
