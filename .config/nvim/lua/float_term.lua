@@ -11,7 +11,7 @@ function M.float_term(cmd, opts)
         persistent = true,
     }, opts)
 
-    local termkey = vim.inspect { cmd = cmd or 'shell', count = vim.v.count1 }
+    local termkey = vim.inspect { cmd = cmd or 'shell', cwd = opts.cwd, count = vim.v.count1 }
 
     if terminals[termkey] and terminals[termkey]:buf_valid() then
         terminals[termkey]:toggle()

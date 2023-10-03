@@ -93,8 +93,15 @@ vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-Right>', { desc = 'Move word(s) forwar
 
 -- Floating terminal.
 vim.keymap.set('n', '<M-t>', function()
+    local cwd = vim.fn.expand '%:p:h'
+    ---@cast cwd string
+    if vim.startswith(cwd, 'term') then
+        vim.cmd 'close'
+    else
+        require('float_term').float_term(nil, { cwd = cwd })
+    end
+end, { desc = 'Toggle terminal' })
+vim.keymap.set('n', '<M-T>', function()
     require('float_term').float_term(nil, {})
-end, { desc = 'Open terminal' })
+end, { desc = 'Open terminal (root dir)' })
 vim.keymap.set('t', '<M-t>', '<cmd>close<cr>', { desc = 'Close terminal' })
-vim.keymap.set('t', '<C-p>', '<Up>', { desc = 'Previous command' })
-vim.keymap.set('t', '<C-n>', '<Down>', { desc = 'Next command' })

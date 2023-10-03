@@ -30,6 +30,9 @@ export SHELL_SESSIONS_DISABLE=1
 # Ripgrep.
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 
+# Always starting in insert mode.
+export ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+
 # Highlights for vim mode.
 export ZVM_VI_HIGHLIGHT_BACKGROUND=#FF79C6
 export ZVM_VI_HIGHLIGHT_FOREGROUND=#000000
