@@ -30,6 +30,10 @@ export SHELL_SESSIONS_DISABLE=1
 # Ripgrep.
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 
+# Highlights for vim mode.
+export ZVM_VI_HIGHLIGHT_BACKGROUND=#FF79C6
+export ZVM_VI_HIGHLIGHT_FOREGROUND=#000000
+
 # fzf settings.
 export FZF_DEFAULT_OPTS="--color=fg:#f8f8f2,bg:#000000,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9,info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6,spinner:#a4ffff,header:#6272a4 \
 --cycle"

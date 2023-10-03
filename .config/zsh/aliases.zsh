@@ -2,7 +2,8 @@
 alias ls='gls --color=auto --hyperlink=auto'
 
 # Neovim.
-alias nvimconfig="cd $XDG_CONFIG_HOME/nvim && nvim"
+alias nv='nvim'
+alias nvconfig="cd $XDG_CONFIG_HOME/nvim && nvim"
 
 # General git aliases.
 alias ga='git add'

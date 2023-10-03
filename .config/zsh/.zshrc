@@ -4,17 +4,6 @@ setopt auto_cd
 # When deleting with <C-w>, delete file names at a time.
 WORDCHARS=${WORDCHARS/\/}
 
-# Disable vi mode.
-bindkey -e
-
-# History navigation.
-bindkey '^P' history-search-backward
-bindkey '^N' history-search-forward
-
-# Complete a single word with <Ctrl+Right>, and the full thing with <Ctrl+Space>.
-bindkey '^[[1;5C' forward-word
-bindkey '^ ' autosuggest-accept
-
 # Delete duplicates first when HISTFILE size exceeds HISTSIZE.
 setopt hist_expire_dups_first
 
@@ -55,15 +44,23 @@ source "$ZDOTDIR/aliases.zsh"
 # Custom functions.
 source "$ZDOTDIR/functions.zsh"
 
-# fzf.
-source "$ZDOTDIR/fzf.zsh"
+# Vim mode. After setting it up, load other plugins to avoid keymap conflicts.
+source "$(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+function zvm_after_init() {
+  # Complete a single word with <Ctrl+Right>, and the full thing with <Ctrl+Space>.
+  bindkey '^[[1;5C' forward-word
+  bindkey '^ ' autosuggest-accept
 
-# Auto-suggestions.
-source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  # fzf.
+  source "$ZDOTDIR/fzf.zsh"
 
-# Auto-close, delete and skip over matching delimiters.
-source "$ZDOTDIR/zsh-autopair/autopair.zsh"
-autopair-init
+  # Auto-suggestions.
+  source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+  # Auto-close, delete and skip over matching delimiters.
+  source "$ZDOTDIR/zsh-autopair/autopair.zsh"
+  autopair-init
+}
 
 # Syntax highlighting (must be at the end of this file).
 source "$ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
