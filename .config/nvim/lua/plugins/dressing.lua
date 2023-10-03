@@ -12,23 +12,13 @@ return {
                 },
             },
             select = {
-                backend = { 'fzf_lua', 'builtin' },
                 trim_prompt = false,
-                fzf_lua = {
-                    winopts = {
-                        height = 0.6,
-                        width = 0.5,
-                    },
-                },
-                builtin = {
-                    mappings = { ['q'] = 'Close' },
-                    win_options = {
-                        -- Same UI as the input field.
-                        winhighlight = 'FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle,MatchParen:Ignore',
-                        winblend = 5,
-                    },
-                },
                 get_config = function(opts)
+                    -- Add a colon to the prompt if it doesn't have one.
+                    if opts.prompt and not opts.prompt:match ':%s*$' then
+                        opts.prompt = opts.prompt .. ': '
+                    end
+
                     if opts.kind == 'luasnip' then
                         -- Smaller menu for snippet choices.
                         return {
@@ -51,9 +41,26 @@ return {
                                 max_height = 0.33,
                                 min_height = 5,
                                 max_width = 0.40,
+                                mappings = { ['q'] = 'Close' },
+                                win_options = {
+                                    -- Same UI as the input field.
+                                    winhighlight = 'FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle,MatchParen:Ignore',
+                                    winblend = 5,
+                                },
                             },
                         }
                     end
+
+                    -- Default selector.
+                    return {
+                        backend = 'fzf_lua',
+                        fzf_lua = {
+                            winopts = {
+                                height = 0.6,
+                                width = 0.5,
+                            },
+                        },
+                    }
                 end,
             },
         },

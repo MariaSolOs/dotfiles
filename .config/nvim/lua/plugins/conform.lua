@@ -17,7 +17,7 @@ return {
                 return {
                     timeout_ms = 500,
                     -- Filetypes to use LSP formatting for.
-                    lsp_fallback = vim.iter({ 'json', 'jsonc', 'rust' }):find(vim.bo[bufnr].filetype) ~= nil,
+                    lsp_fallback = vim.tbl_contains({ 'json', 'jsonc', 'rust' }, vim.bo[bufnr].filetype),
                 }
             end,
         },
