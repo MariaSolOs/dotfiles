@@ -45,7 +45,7 @@ source "$ZDOTDIR/aliases.zsh"
 source "$ZDOTDIR/functions.zsh"
 
 # Vim mode. After setting it up, load other plugins to avoid keymap conflicts.
-source "$(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+source "$ZDOTDIR/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
 function zvm_after_init() {
   # Complete a single word with <Ctrl+Right>, and the full thing with <Ctrl+Space>.
   bindkey '^[[1;5C' forward-word

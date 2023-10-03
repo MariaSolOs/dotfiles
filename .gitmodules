@@ -1,0 +1,12 @@
+[submodule ".config/zsh/zsh-autopair"]
+	path = .config/zsh/zsh-autopair
+	url = https://github.com/hlissner/zsh-autopair
+[submodule ".config/zsh/zsh-autosuggestions"]
+	path = .config/zsh/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule ".config/zsh/zsh-syntax-highlighting"]
+	path = .config/zsh/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule ".config/zsh/zsh-vi-mode"]
+	path = .config/zsh/zsh-vi-mode
+	url = https://github.com/jeffreytse/zsh-vi-mode.git
