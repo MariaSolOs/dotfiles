@@ -29,6 +29,19 @@ return {
                     },
                 },
                 get_config = function(opts)
+                    if opts.kind == 'luasnip' then
+                        -- Smaller menu for snippet choices.
+                        return {
+                            backend = 'fzf_lua',
+                            fzf_lua = {
+                                winopts = {
+                                    height = 0.35,
+                                    width = 0.3,
+                                },
+                            },
+                        }
+                    end
+
                     if opts.kind == 'codeaction' or opts.kind == 'codelens' then
                         -- Cute and compact menu.
                         return {

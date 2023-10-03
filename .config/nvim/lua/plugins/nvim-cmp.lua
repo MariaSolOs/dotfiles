@@ -31,6 +31,16 @@ return {
                     local luasnip = require 'luasnip'
 
                     luasnip.setup(opts)
+
+                    -- Use <C-c> to select a choice in a snippet.
+                    vim.keymap.set({ 'i', 's' }, '<C-c>', function()
+                        if luasnip.choice_active() then
+                            require 'luasnip.extras.select_choice'()
+                        end
+                    end, { desc = 'Select choice' })
+
+                    -- Load my snippets and the ones from VSCode.
+                    require('luasnip.loaders.from_lua').lazy_load()
                     require('luasnip.loaders.from_vscode').lazy_load()
 
                     vim.api.nvim_create_autocmd('ModeChanged', {
@@ -42,6 +52,7 @@ return {
                                 luasnip.session
                                 and luasnip.session.current_nodes[event.buf]
                                 and not luasnip.session.jump_active
+                                and not luasnip.choice_active()
                             then
                                 luasnip.unlink_current()
                             end

@@ -137,6 +137,7 @@ return {
                     -- TODOs and notes.
                     MiniHipatternsTodo = { fg = colors.bg, bg = colors.cyan, bold = true },
                     MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
+                    MiniHipatternsHack = { fg = colors.bg, bg = colors.orange, bold = true },
 
                     -- Quickfix window.
                     qfPath = { fg = colors.bright_blue },
