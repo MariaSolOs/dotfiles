@@ -45,7 +45,6 @@
   "one-small-step-for-vimkind": { "branch": "main", "commit": "edbb34ee779049f2071dc7becff0bbf51c865906" },
   "overseer.nvim": { "branch": "master", "commit": "b24a027af87160bfe78a599942a57ab21ffcbdf9" },
   "plenary.nvim": { "branch": "master", "commit": "9ce85b0f7dcfe5358c0be937ad23e456907d410b" },
-  "rust-tools.nvim": { "branch": "master", "commit": "0cc8adab23117783a0292a0c8a2fbed1005dc645" },
   "treesj": { "branch": "main", "commit": "81d0ae51b84143e228d27b6cf79d09012d2021cb" },
   "typescript-tools.nvim": { "branch": "master", "commit": "0f3162f46a562d195d3d5fd4bd6e2ca54cfd3840" },
   "vim-highlighturl": { "branch": "master", "commit": "012fee983e03913db6ba6393307eac434999b896" },

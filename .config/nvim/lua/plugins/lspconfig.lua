@@ -65,6 +65,7 @@ return {
                     'jsonls',
                     'lua_ls',
                     'marksman',
+                    'rust_analyzer',
                     'taplo',
                 },
                 handlers = {
@@ -141,6 +142,19 @@ return {
                                         arrayIndex = 'Disable',
                                     },
                                     completion = { callSnippet = 'Replace' },
+                                },
+                            },
+                        }
+                    end,
+                    rust_analyzer = function()
+                        lspconfig.rust_analyzer.setup {
+                            capabilities = capabilities(),
+                            settings = {
+                                ['rust-analyzer'] = {
+                                    inlayHints = {
+                                        -- These are a bit too much.
+                                        chainingHints = { enable = false },
+                                    },
                                 },
                             },
                         }
