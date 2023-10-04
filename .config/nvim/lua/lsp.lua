@@ -91,8 +91,7 @@ local function on_attach(client, bufnr)
         })
     end
 
-    -- Don't enable this for TSServer.
-    if client.name ~= 'typescript-tools' and client.supports_method(methods.textDocument_codeLens) then
+    if client.supports_method(methods.textDocument_codeLens) then
         keymap('<leader>cl', vim.lsp.codelens.run, 'Run CodeLens')
 
         local codelens_group = vim.api.nvim_create_augroup('mariasolos/codelens', { clear = false })
@@ -223,12 +222,6 @@ end
 ---@return function
 local function enhanced_float_handler(handler)
     return function(err, result, ctx, config)
-        -- HACK: Pylance adds these weird module thingies.
-        local client = vim.lsp.get_client_by_id(ctx.client_id)
-        if client and client.name == 'pylance' and result and type(result.contents) == 'table' then
-            result.contents.value = result.contents.value:gsub('<!%-%-.*%-%->', '')
-        end
-
         local bufnr, winnr = handler(
             err,
             result,
