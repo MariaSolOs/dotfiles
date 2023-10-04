@@ -38,6 +38,7 @@ if vim.env.SCROLLBACK_PAGE then
     }
 else
     -- Load my extra goodies when not displaying the scrollback buffer.
+    require 'winbar'
     require 'lightbulb'
 end
 

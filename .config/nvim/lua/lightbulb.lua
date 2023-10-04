@@ -1,5 +1,5 @@
--- VSCode-like lightbulb.
--- Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/c9b17bc7dc694bdbeb3788a583518073a30a6de2/lua/lspsaga/codeaction/lightbulb.lua
+--- VSCode-like lightbulb.
+--- Implementation inspired from https://github.com/nvimdev/lspsaga.nvim/blob/c9b17bc7dc694bdbeb3788a583518073a30a6de2/lua/lspsaga/codeaction/lightbulb.lua
 
 local lb_name = 'mariasolos/lightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
@@ -28,8 +28,8 @@ local function update_extmark(bufnr, line)
         return
     end
 
-    -- TODO: If I continue seeing decorator errors, wrap this in a pcall.
-    vim.api.nvim_buf_set_extmark(bufnr, lb_namespace, line, -1, {
+    -- Swallow errors.
+    pcall(vim.api.nvim_buf_set_extmark, bufnr, lb_namespace, line, -1, {
         virt_text = { { ' ' .. lb_icon, 'DiagnosticSignHint' } },
         hl_mode = 'combine',
     })

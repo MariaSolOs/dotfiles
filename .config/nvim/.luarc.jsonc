@@ -17,7 +17,6 @@
       "$XDG_DATA_HOME/nvim/lazy/alpha-nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/Comment.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
-      "$XDG_DATA_HOME/nvim/lazy/dropbar.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/fzf-lua/lua",
       "$XDG_DATA_HOME/nvim/lazy/gitlinker.nvim/lua",
@@ -32,8 +31,7 @@
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap-ui/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-web-devicons/lua",
-      "$XDG_DATA_HOME/nvim/lazy/overseer.nvim/lua/overseer/init.lua",
-      "$XDG_DATA_HOME/nvim/lazy/rust-tools.nvim/lua"
+      "$XDG_DATA_HOME/nvim/lazy/overseer.nvim/lua/overseer/init.lua"
     ]
   }
 }

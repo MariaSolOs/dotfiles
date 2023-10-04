@@ -210,7 +210,6 @@ function M.filetype_component()
         dapui_breakpoints = { icons.misc.bug, 'DapUIRestart' },
         dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
         dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
-        dropbar_menu = { icons.symbol_kinds.Class, 'Directory' },
         fzf = { '', 'Special' },
         gitcommit = { '', 'Conditional' },
         gitrebase = { '', 'Conditional' },
@@ -292,6 +291,6 @@ function M.render()
         ' ',
     }
 end
-vim.o.statusline = [[%!v:lua.require'statusline'.render()]]
+vim.o.statusline = "%!v:lua.require'statusline'.render()"
 
 return M

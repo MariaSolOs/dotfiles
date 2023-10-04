@@ -9,6 +9,7 @@ return {
             colors = {
                 -- Overrides.
                 bg = '#0E1419',
+                black = '#1E1F29',
                 bright_red = '#EC6A88',
                 comment = '#B08BBB',
                 orange = '#FFBFA9',
@@ -20,7 +21,6 @@ return {
                 lavender = '#6272A4',
                 lilac = '#6D5978',
                 transparent_blue = '#19272C',
-                transparent_lilac = '#1e1f29',
                 transparent_red = '#342231',
                 transparent_yellow = '#202624',
             },
@@ -80,7 +80,10 @@ return {
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
                     -- Background for folded lines.
-                    Folded = { bg = colors.transparent_lilac },
+                    Folded = { bg = colors.black },
+
+                    -- Super visible cursor.
+                    Cursor = { fg = '#000000', bg = colors.white },
 
                     -- Command line.
                     MoreMsg = { fg = colors.bright_white, bold = true },
@@ -118,8 +121,9 @@ return {
                     TreesitterContextBottom = { underline = true, sp = colors.lilac },
 
                     -- Winbar styling.
-                    WinBar = { bold = false },
-                    DropBarMenuCurrentContext = { link = 'Normal' },
+                    WinBar = { fg = colors.fg, bg = colors.black },
+                    WinBarDir = { fg = colors.bright_magenta, bg = colors.black, italic = true },
+                    WinBarSeparator = { fg = colors.green, bg = colors.black },
 
                     -- Virtual text for DAP.
                     NvimDapVirtualText = { fg = colors.lavender, underline = true },
