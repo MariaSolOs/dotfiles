@@ -29,8 +29,8 @@ end
 return {
     {
         'echasnovski/mini.files',
+        lazy = false,
         keys = {
-            { '<C-w>F', nil, desc = 'Split + edit file' },
             {
                 '<leader>e',
                 function()
