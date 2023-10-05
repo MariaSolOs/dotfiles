@@ -40,6 +40,7 @@ else
     -- Load my extra goodies when not displaying the scrollback buffer.
     require 'winbar'
     require 'lightbulb'
+    require 'marks'
 end
 
 -- Configure plugins.

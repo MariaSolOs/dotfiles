@@ -1,9 +1,12 @@
 local M = {}
-local terminals = {} ---@type LazyFloat[]
+
+---@type table<string, LazyFloat>
+local terminals = {}
 
 --- Opens an interactive floating terminal.
 ---@param cmd? string
 ---@param opts table
+---@return LazyFloat
 function M.float_term(cmd, opts)
     opts = vim.tbl_deep_extend('force', {
         ft = 'lazyterm',

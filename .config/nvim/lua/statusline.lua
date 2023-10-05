@@ -1,6 +1,6 @@
--- TODO: Make this more fancy. I feel that I'm lacking useful components.
-local M = {}
 local icons = require 'icons'
+
+local M = {}
 
 -- Don't show the command that produced the quickfix list.
 vim.g.qf_disable_statusline = 1
@@ -11,6 +11,7 @@ vim.o.showmode = false
 --- Keeps track of the highlight groups I've already created.
 ---@type table<string, boolean>
 local statusline_hls = {}
+
 ---@param hl string
 ---@return string
 function M.get_or_create_hl(hl)
@@ -123,6 +124,7 @@ local progress_status = {
     kind = nil,
     title = nil,
 }
+
 vim.api.nvim_create_autocmd('LspProgress', {
     group = vim.api.nvim_create_augroup('mariasolos/statusline', { clear = true }),
     desc = 'Update LSP progress in statusline',

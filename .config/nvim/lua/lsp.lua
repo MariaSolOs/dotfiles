@@ -4,6 +4,7 @@ local methods = vim.lsp.protocol.Methods
 local M = {}
 
 --- Returns the editor's capabilities + some overrides.
+---@return lsp.ClientCapabilities
 M.client_capabilities = function()
     return vim.tbl_deep_extend(
         'force',
@@ -158,7 +159,6 @@ vim.diagnostic.config {
             local message = vim.split(diagnostic.message, '\n')[1]
             return string.format('%s %s ', icon, message)
         end,
-        spacing = 5,
     },
     float = {
         border = 'rounded',
@@ -218,8 +218,8 @@ end
 
 --- LSP handler that adds extra inline highlights, keymaps, and window options.
 --- Code inspired from `noice`.
----@param handler fun(err: any, result: any, ctx: any, config: any): integer, integer
----@return function
+---@param handler fun(err: any, result: any, ctx: any, config: any): integer?, integer?
+---@return fun(err: any, result: any, ctx: any, config: any)
 local function enhanced_float_handler(handler)
     return function(err, result, ctx, config)
         local bufnr, winnr = handler(
