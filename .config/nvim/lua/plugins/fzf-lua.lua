@@ -63,63 +63,73 @@ return {
             { '<leader>fh', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
             { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
         },
-        opts = {
-            -- Make stuff better combine with the editor.
-            fzf_colors = {
-                bg = { 'bg', 'Normal' },
-                gutter = { 'bg', 'Normal' },
-                info = { 'fg', 'Conditional' },
-                scrollbar = { 'bg', 'Normal' },
-                separator = { 'fg', 'Comment' },
-            },
-            fzf_opts = {
-                ['--info'] = 'default',
-                ['--layout'] = 'reverse-list',
-            },
-            keymap = {
-                builtin = {
-                    ['<C-/>'] = 'toggle-help',
-                    ['<C-a>'] = 'toggle-fullscreen',
-                    ['<C-i>'] = 'toggle-preview',
-                    ['<C-f>'] = 'preview-page-down',
-                    ['<C-b>'] = 'preview-page-up',
+        opts = function()
+            local actions = require 'fzf-lua.actions'
+
+            return {
+                -- Make stuff better combine with the editor.
+                fzf_colors = {
+                    bg = { 'bg', 'Normal' },
+                    gutter = { 'bg', 'Normal' },
+                    info = { 'fg', 'Conditional' },
+                    scrollbar = { 'bg', 'Normal' },
+                    separator = { 'fg', 'Comment' },
                 },
-                fzf = {
-                    ['alt-s'] = 'toggle',
-                    ['alt-a'] = 'toggle-all',
+                fzf_opts = {
+                    ['--info'] = 'default',
+                    ['--layout'] = 'reverse-list',
                 },
-            },
-            winopts = {
-                height = 0.7,
-                width = 0.55,
-                preview = {
-                    scrollbar = false,
-                    layout = 'vertical',
-                    vertical = 'up:40%',
+                keymap = {
+                    builtin = {
+                        ['<C-/>'] = 'toggle-help',
+                        ['<C-a>'] = 'toggle-fullscreen',
+                        ['<C-i>'] = 'toggle-preview',
+                        ['<C-f>'] = 'preview-page-down',
+                        ['<C-b>'] = 'preview-page-up',
+                    },
+                    fzf = {
+                        ['alt-s'] = 'toggle',
+                        ['alt-a'] = 'toggle-all',
+                    },
                 },
-            },
-            global_git_icons = false,
-            -- Configuration for specific commands.
-            files = {
                 winopts = {
-                    preview = { hidden = 'hidden' },
+                    height = 0.7,
+                    width = 0.55,
+                    preview = {
+                        scrollbar = false,
+                        layout = 'vertical',
+                        vertical = 'up:40%',
+                    },
                 },
-            },
-            grep = {
-                header_prefix = icons.misc.search .. ' ',
-            },
-            lsp = {
-                symbols = {
-                    symbol_icons = icons.symbol_kinds,
+                global_git_icons = false,
+                -- Configuration for specific commands.
+                files = {
+                    winopts = {
+                        preview = { hidden = 'hidden' },
+                    },
                 },
-            },
-            oldfiles = {
-                include_current_session = true,
-                winopts = {
-                    preview = { hidden = 'hidden' },
+                grep = {
+                    header_prefix = icons.misc.search .. ' ',
                 },
-            },
-        },
+                helptags = {
+                    actions = {
+                        -- Open help pages in a vertical split.
+                        ['default'] = actions.help_vert,
+                    },
+                },
+                lsp = {
+                    symbols = {
+                        symbol_icons = icons.symbol_kinds,
+                    },
+                },
+                oldfiles = {
+                    include_current_session = true,
+                    winopts = {
+                        preview = { hidden = 'hidden' },
+                    },
+                },
+            }
+        end,
         config = function(_, opts)
             require('fzf-lua').setup(opts)
 
