@@ -65,9 +65,10 @@ return {
             'saadparwaiz1/cmp_luasnip',
         },
         version = false,
-        event = { 'CmdlineEnter', 'InsertEnter' },
+        event = 'InsertEnter',
         opts = function()
             local cmp = require 'cmp'
+            local compare = require 'cmp.config.compare'
             local luasnip = require 'luasnip'
             local symbol_kinds = require('icons').symbol_kinds
 
@@ -157,6 +158,16 @@ return {
                 }, {
                     { name = 'buffer', keyword_length = 4 },
                 }),
+                sorting = {
+                    comparators = {
+                        compare.offset,
+                        compare.exact,
+                        compare.score,
+                        compare.recently_used,
+                        compare.sort_text,
+                        compare.length,
+                    },
+                },
             }
         end,
         config = function(_, opts)
