@@ -74,9 +74,7 @@ return {
                     CmpItemAbbrDeprecated = { strikethrough = true },
                     CmpItemMenu = { fg = colors.grey },
 
-                    -- Make these virtual text thingies different from comments/regular code.
-                    LspCodeLens = { fg = colors.lavender },
-                    LspCodeLensSeparator = { fg = colors.lavender },
+                    -- Make these hints different from comments/regular code.
                     LspInlayHint = { fg = colors.lavender, italic = true },
 
                     -- Background for folded lines.

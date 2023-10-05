@@ -92,29 +92,6 @@ local function on_attach(client, bufnr)
         })
     end
 
-    if client.supports_method(methods.textDocument_codeLens) then
-        keymap('<leader>cl', vim.lsp.codelens.run, 'Run CodeLens')
-
-        local codelens_group = vim.api.nvim_create_augroup('mariasolos/codelens', { clear = false })
-        vim.api.nvim_create_autocmd('InsertEnter', {
-            group = codelens_group,
-            desc = 'Disable CodeLens in insert mode',
-            buffer = bufnr,
-            callback = function()
-                vim.lsp.codelens.clear(nil, bufnr)
-            end,
-        })
-        vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'InsertLeave' }, {
-            group = codelens_group,
-            desc = 'Refresh CodeLens',
-            buffer = bufnr,
-            callback = vim.lsp.codelens.refresh,
-        })
-
-        -- Initial CodeLens display.
-        vim.lsp.codelens.refresh()
-    end
-
     if client.supports_method(methods.textDocument_inlayHint) then
         local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
 
