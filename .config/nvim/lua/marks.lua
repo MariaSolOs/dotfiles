@@ -122,8 +122,8 @@ end
 -- Set up autocommands to refresh the signs.
 vim.api.nvim_create_autocmd('BufWinEnter', {
     group = vim.api.nvim_create_augroup(sign_group_name, { clear = true }),
-    callback = function(event)
-        local bufnr = event.buf
+    callback = function(args)
+        local bufnr = args.buf
         -- Only handle normal buffers.
         if vim.bo[bufnr].bt ~= '' then
             return

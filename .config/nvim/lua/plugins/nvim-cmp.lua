@@ -47,10 +47,10 @@ return {
                         group = vim.api.nvim_create_augroup('mariasolos/unlink_snippet', { clear = true }),
                         desc = 'Cancel the snippet session when leaving insert mode',
                         pattern = { 's:n', 'i:*' },
-                        callback = function(event)
+                        callback = function(args)
                             if
                                 luasnip.session
-                                and luasnip.session.current_nodes[event.buf]
+                                and luasnip.session.current_nodes[args.buf]
                                 and not luasnip.session.jump_active
                                 and not luasnip.choice_active()
                             then

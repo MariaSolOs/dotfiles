@@ -88,9 +88,9 @@ end
 vim.api.nvim_create_autocmd('LspAttach', {
     group = lb_group,
     desc = 'Configure code action lightbulb',
-    callback = function(event)
-        local buf = event.buf
-        local client = vim.lsp.get_client_by_id(event.data.client_id)
+    callback = function(args)
+        local buf = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
 
         if not client or not client.supports_method(code_action_method) then
             return
@@ -114,7 +114,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.api.nvim_create_autocmd({ 'InsertEnter', 'BufLeave' }, {
             group = lb_buf_group,
             desc = 'Update lightbulb when entering insert mode or leaving the buffer',
-            buffer = event.buf,
+            buffer = args.buf,
             callback = function()
                 update_extmark(buf, nil)
             end,
@@ -125,7 +125,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.api.nvim_create_autocmd('LspDetach', {
     group = lb_group,
     desc = 'Detach code action lightbulb',
-    callback = function(event)
-        pcall(vim.api.nvim_del_augroup_by_name, lb_name .. tostring(event.buf))
+    callback = function(args)
+        pcall(vim.api.nvim_del_augroup_by_name, lb_name .. tostring(args.buf))
     end,
 })

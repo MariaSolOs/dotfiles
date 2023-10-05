@@ -53,13 +53,13 @@ return {
                 desc = 'Minimal UI in Alpha dashboard',
                 pattern = 'AlphaReady',
                 once = true,
-                callback = function(event)
+                callback = function(args)
                     vim.o.laststatus = 0
                     vim.o.cmdheight = 0
 
                     vim.api.nvim_create_autocmd('BufUnload', {
                         group = alpha_group,
-                        buffer = event.buf,
+                        buffer = args.buf,
                         once = true,
                         callback = function()
                             vim.o.laststatus = 3

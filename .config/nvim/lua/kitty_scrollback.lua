@@ -20,15 +20,15 @@ vim.api.nvim_create_autocmd('VimEnter', {
     group = scrollback_group,
     desc = 'Set the scrollback buffer',
     once = true,
-    callback = function(ev)
+    callback = function(args)
         local win = vim.fn.win_getid()
-        for _, line in ipairs(vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)) do
+        for _, line in ipairs(vim.api.nvim_buf_get_lines(args.buf, 0, -1, false)) do
             vim.api.nvim_chan_send(term, line)
             vim.api.nvim_chan_send(term, '\r\n')
         end
 
         vim.api.nvim_win_set_buf(win, buf)
-        vim.api.nvim_buf_delete(ev.buf, { force = true })
+        vim.api.nvim_buf_delete(args.buf, { force = true })
     end,
 })
 vim.api.nvim_create_autocmd('TextYankPost', {

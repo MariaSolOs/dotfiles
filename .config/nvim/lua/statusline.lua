@@ -129,16 +129,16 @@ vim.api.nvim_create_autocmd('LspProgress', {
     group = vim.api.nvim_create_augroup('mariasolos/statusline', { clear = true }),
     desc = 'Update LSP progress in statusline',
     pattern = { 'begin', 'end' },
-    callback = function(event)
+    callback = function(args)
         -- This should in theory never happen, but I've seen weird errors.
-        if not event.data then
+        if not args.data then
             return
         end
 
         progress_status = {
-            client = vim.lsp.get_client_by_id(event.data.client_id).name,
-            kind = event.data.result.value.kind,
-            title = event.data.result.value.title,
+            client = vim.lsp.get_client_by_id(args.data.client_id).name,
+            kind = args.data.result.value.kind,
+            title = args.data.result.value.title,
         }
 
         if progress_status.kind == 'end' then
