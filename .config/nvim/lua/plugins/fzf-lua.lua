@@ -45,7 +45,7 @@ return {
             {
                 '<leader>fb',
                 function()
-                    require('fzf-lua').grep_curbuf {
+                    require('fzf-lua').lgrep_curbuf {
                         winopts = {
                             height = 0.6,
                             width = 0.5,
