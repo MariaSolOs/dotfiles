@@ -8,11 +8,13 @@ return {
             local row, col = unpack(vim.api.nvim_win_get_cursor(0))
             local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
 
-            return ok
-                and node
-                and not vim.iter({ 'string', 'comment' }):any(function(name)
-                    return node:type():match(name)
-                end)
+            if not ok or not node then
+                return true
+            end
+
+            return not vim.iter({ 'string', 'comment' }):any(function(name)
+                return node:type():match(name)
+            end)
         end,
     }, {
         d(1, function()

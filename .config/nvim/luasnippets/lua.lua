@@ -9,11 +9,16 @@ return {
                 local row, col = unpack(vim.api.nvim_win_get_cursor(0))
                 local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
 
-                return ok and node and not vim.tbl_contains({ 'string_content', 'comment_content' }, node:type())
+                if not ok or not node then
+                    return true
+                end
+
+                return not vim.tbl_contains({ 'string_content', 'comment_content' }, node:type())
             end,
         },
         fmt(
             [[
+    -- {}
     return {{
         {{
             '{}',
@@ -22,7 +27,8 @@ return {
     }}
     ]],
             {
-                d(1, function()
+                i(1),
+                d(2, function()
                     -- Try to use the clipboard to get the plugin's URL.
                     local author, plugin = 'author', 'plugin'
                     local clipboard = vim.fn.getreg '+'
