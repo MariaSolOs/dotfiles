@@ -14,6 +14,12 @@ return {
                     return
                 end
 
+                -- Disable in large files.
+                local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+                if not ok or (stats and stats.size > (100 * 1024)) then
+                    return
+                end
+
                 return {
                     timeout_ms = 500,
                     -- Filetypes to use LSP formatting for.

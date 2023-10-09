@@ -66,7 +66,7 @@ return {
                         return false
                     end
 
-                    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+                    local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
                     -- Disable for files larger than 250 KB.
                     return ok and stats and stats.size > (250 * 1024)
                 end,
