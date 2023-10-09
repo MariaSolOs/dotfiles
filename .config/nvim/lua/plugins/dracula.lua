@@ -73,6 +73,9 @@ return {
                     CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
                     CmpItemAbbrDeprecated = { strikethrough = true },
                     CmpItemMenu = { fg = colors.grey },
+                    Pmenu = { fg = colors.white, bg = colors.transparent_blue },
+                    PmenuSel = { fg = colors.cyan, bg = colors.selection },
+                    PmenuSbar = { bg = colors.transparent_blue },
 
                     -- Make these hints different from comments/regular code.
                     LspInlayHint = { fg = colors.lavender, italic = true },
