@@ -28,7 +28,6 @@ vim.o.linebreak = true
 -- Folding.
 vim.o.foldcolumn = '1'
 vim.o.foldlevelstart = 99
-vim.o.foldenable = true
 vim.o.foldmethod = 'expr'
 vim.wo.foldtext = 'v:lua.vim.treesitter.foldtext()'
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
@@ -58,7 +57,6 @@ vim.wo.signcolumn = 'yes'
 
 -- Update times and timeouts.
 vim.o.updatetime = 300
-vim.o.timeout = true
 vim.o.timeoutlen = 500
 vim.o.ttimeoutlen = 10
 

@@ -1,46 +1,12 @@
 ---@diagnostic disable: undefined-global
 return {
-    s(
-        {
-            trig = 'plug',
-            name = 'Plugin spec',
-            desc = 'Neovim plugin specification',
-            show_condition = function()
-                local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-                local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
-
-                if not ok or not node then
-                    return true
-                end
-
-                return not vim.tbl_contains({ 'string_content', 'comment_content' }, node:type())
-            end,
-        },
-        fmt(
-            [[
-    -- {}
-    return {{
-        {{
-            '{}',
-            opts = {{}}
-        }}
-    }}
-    ]],
-            {
-                i(1),
-                d(2, function()
-                    -- Try to use the clipboard to get the plugin's URL.
-                    local author, plugin = 'author', 'plugin'
-                    local clipboard = vim.fn.getreg '+'
-                    ---@cast clipboard string
-                    local parts = vim.split(clipboard, '/')
-                    if vim.startswith(clipboard, 'https://github.com/') and #parts >= 2 then
-                        author, plugin = parts[#parts - 1], parts[#parts]
-                    end
-
-                    return sn(nil, { t(author .. '/' .. plugin) })
-                end),
-            }
-        )
-    ),
+    postfix({
+        trig = '.vp',
+        name = 'Vim print',
+        desc = 'Wrap in print statement',
+    }, {
+        f(function(_, parent)
+            return string.format('vim.print(%s)', parent.snippet.env.POSTFIX_MATCH)
+        end),
+    }),
 }

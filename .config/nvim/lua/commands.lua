@@ -37,28 +37,30 @@ vim.api.nvim_create_autocmd('VimEnter', {
     group = vim.api.nvim_create_augroup('mariasolos/gx_with_plugins', { clear = true }),
     desc = 'Open plugin repos with gx',
     callback = function()
-        if vim.fn.getcwd() == vim.fn.stdpath 'config' then
-            vim.keymap.set('n', 'gx', function()
-                local file = vim.fn.expand '<cfile>' --[[@as string]]
-
-                -- First try the default behaviour from https://github.com/neovim/neovim/blob/597355deae2ebddcb8b930da9a8b45a65d05d09b/runtime/lua/vim/_editor.lua#L1084.
-                local _, err = vim.ui.open(file)
-                if not err then
-                    return
-                end
-
-                -- Consider anything that looks like string/string a GitHub link.
-                local link = file:match '%w[%w%-]+/[%w%-%._]+'
-                if link then
-                    _, err = vim.ui.open('https://www.github.com/' .. link)
-                end
-
-                -- If that fails, just blame me.
-                if err then
-                    vim.notify(err, vim.log.levels.ERROR)
-                end
-            end, { desc = 'Open filepath or URI under cursor' })
+        if vim.fn.getcwd() ~= vim.fn.stdpath 'config' then
+            return
         end
+
+        vim.keymap.set('n', 'gx', function()
+            local file = vim.fn.expand '<cfile>' --[[@as string]]
+
+            -- First try the default behaviour from https://github.com/neovim/neovim/blob/597355deae2ebddcb8b930da9a8b45a65d05d09b/runtime/lua/vim/_editor.lua#L1084.
+            local _, err = vim.ui.open(file)
+            if not err then
+                return
+            end
+
+            -- Consider anything that looks like string/string a GitHub link.
+            local link = file:match '%w[%w%-]+/[%w%-%._]+'
+            if link then
+                _, err = vim.ui.open('https://www.github.com/' .. link)
+            end
+
+            -- If that fails, just blame me.
+            if err then
+                vim.notify(err, vim.log.levels.ERROR)
+            end
+        end, { desc = 'Open filepath or URI under cursor' })
     end,
 })
 
@@ -102,8 +104,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
         local line_count = vim.api.nvim_buf_line_count(args.buf)
         if mark[1] > 0 and mark[1] <= line_count then
-            vim.api.nvim_win_set_cursor(0, mark)
-            vim.cmd 'normal! zz'
+            vim.cmd 'normal! g`"zz'
         end
     end,
 })

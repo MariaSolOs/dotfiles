@@ -40,8 +40,16 @@ return {
                     end, { desc = 'Select choice' })
 
                     -- Load my snippets and the ones from VSCode.
-                    require('luasnip.loaders.from_lua').lazy_load()
                     require('luasnip.loaders.from_vscode').lazy_load()
+
+                    require('luasnip.loaders.from_lua').lazy_load {
+                        paths = {
+                            -- Load local snippets if present.
+                            vim.fn.getcwd() .. '/.luasnippets',
+                            -- Global snippets.
+                            vim.fn.stdpath 'config' .. '/luasnippets',
+                        },
+                    }
 
                     vim.api.nvim_create_autocmd('ModeChanged', {
                         group = vim.api.nvim_create_augroup('mariasolos/unlink_snippet', { clear = true }),
