@@ -20,10 +20,4 @@ alias gst='git status'
 function config() {
     /usr/bin/git --git-dir="$HOME/.cfg/" --work-tree="$HOME" "$@"
 }
-alias cs='config status'
-alias ca='config add'
-alias cc='config commit -m'
-alias cp='config push'
-alias cdiff='config diff'
-alias cl='config log'
 alias clazy="lazygit --git-dir=$HOME/.cfg/ --work-tree=$HOME"
