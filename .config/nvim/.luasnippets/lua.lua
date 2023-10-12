@@ -5,16 +5,9 @@ return {
             trig = 'plug',
             name = 'Plugin spec',
             desc = 'Neovim plugin specification',
-            show_condition = function()
-                local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-                local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
-
-                if not ok or not node then
-                    return true
-                end
-
-                return not vim.tbl_contains({ 'string_content', 'comment_content' }, node:type())
-            end,
+            show_condition = ts_show(function(node_type)
+                return not vim.tbl_contains({ 'string_content', 'comment_content' }, node_type)
+            end),
         },
         fmt(
             [[

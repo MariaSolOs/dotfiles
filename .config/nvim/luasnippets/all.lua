@@ -4,18 +4,11 @@ return {
         trig = 'td',
         name = 'TODO',
         desc = 'TODO/NOTE/HACK comment',
-        show_condition = function()
-            local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-            local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
-
-            if not ok or not node then
-                return true
-            end
-
+        show_condition = ts_show(function(node_type)
             return not vim.iter({ 'string', 'comment' }):any(function(name)
-                return node:type():match(name)
+                return node_type:match(name)
             end)
-        end,
+        end),
     }, {
         d(1, function()
             -- Remove leading whitespace from the commentstring.

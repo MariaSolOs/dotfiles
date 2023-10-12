@@ -25,6 +25,23 @@ return {
                                 },
                             },
                         },
+                        snip_env = {
+                            -- Helper function for showing a snippet if the Treesitter node
+                            -- satisfies a given predicate.
+                            ts_show = function(pred)
+                                return function()
+                                    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+                                    local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
+
+                                    -- Show the snippet if Treesitter bails.
+                                    if not ok or not node then
+                                        return true
+                                    end
+
+                                    return pred(node:type())
+                                end
+                            end,
+                        },
                     }
                 end,
                 config = function(_, opts)
