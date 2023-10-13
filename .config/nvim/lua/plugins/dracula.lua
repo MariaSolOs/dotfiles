@@ -1,10 +1,11 @@
 -- Colorscheme.
--- NOTE: I have a local path to remove unused highlight groups.
 return {
     {
         'Mofiqul/dracula.nvim',
         lazy = false,
         priority = 1000,
+        -- Remove unused highlight groups.
+        build = 'git stash apply hl-override',
         opts = {
             colors = {
                 -- Overrides.
