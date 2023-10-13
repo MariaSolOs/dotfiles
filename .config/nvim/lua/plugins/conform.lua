@@ -6,8 +6,8 @@ return {
         opts = {
             notify_on_error = false,
             formatters_by_ft = {
-                sh = { 'shfmt' },
                 lua = { 'stylua' },
+                sh = { 'shfmt' },
             },
             format_on_save = function(bufnr)
                 if vim.g.disable_autoformat then
@@ -23,7 +23,7 @@ return {
                 return {
                     timeout_ms = 500,
                     -- Filetypes to use LSP formatting for.
-                    lsp_fallback = vim.tbl_contains({ 'json', 'jsonc', 'rust' }, vim.bo[bufnr].filetype),
+                    lsp_fallback = vim.tbl_contains({ 'c', 'json', 'jsonc', 'rust' }, vim.bo[bufnr].filetype),
                 }
             end,
         },

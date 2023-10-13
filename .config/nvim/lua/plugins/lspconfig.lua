@@ -52,6 +52,14 @@ return {
                                 -- Prevents the 'multiple different client offset_encodings detected for buffer' warning.
                                 offsetEncoding = { 'utf-16' },
                             }),
+                            cmd = {
+                                'clangd',
+                                '--clang-tidy',
+                                '--header-insertion=iwyu',
+                                '--completion-style=detailed',
+                                '--function-arg-placeholders',
+                                '--fallback-style=none',
+                            },
                         }
                     end,
                     eslint = function()
