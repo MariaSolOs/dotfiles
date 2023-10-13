@@ -11,11 +11,11 @@ return {
         },
         fmt(
             [[
-    -- {}
+    -- {1}
     return {{
         {{
-            '{}',
-            opts = {{}}
+            '{2}',
+            opts = {{{3}}}
         }}
     }}
     ]],
@@ -33,6 +33,7 @@ return {
 
                     return sn(nil, { t(author .. '/' .. plugin) })
                 end),
+                i(3),
             }
         )
     ),

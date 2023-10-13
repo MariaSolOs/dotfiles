@@ -4,11 +4,18 @@ return {
         trig = 'td',
         name = 'TODO',
         desc = 'TODO/NOTE/HACK comment',
-        show_condition = ts_show(function(node_type)
-            return not vim.iter({ 'string', 'comment' }):any(function(name)
-                return node_type:match(name)
-            end)
-        end),
+        show_condition = function()
+            -- Enable in normal buffers only.
+            if vim.bo.buftype ~= '' then
+                return false
+            end
+
+            return ts_show(function(node_type)
+                return not vim.iter({ 'string', 'comment' }):any(function(name)
+                    return node_type:match(name)
+                end)
+            end)()
+        end,
     }, {
         d(1, function()
             -- Remove leading whitespace from the commentstring.
