@@ -112,18 +112,6 @@ return {
                 end,
             })
 
-            -- HACK: Make sure that all files opened by minifiles are listed.
-            local mini_go_in = minifiles.go_in
-            ---@diagnostic disable-next-line: duplicate-set-field
-            function minifiles.go_in()
-                mini_go_in()
-                local target = minifiles.get_target_window()
-                local entry = minifiles.get_fs_entry()
-                if entry and target and entry.fs_type == 'file' then
-                    vim.bo[vim.api.nvim_win_get_buf(target)].buflisted = true
-                end
-            end
-
             vim.api.nvim_create_autocmd('User', {
                 desc = 'Add minifiles split keymaps',
                 pattern = 'MiniFilesBufferCreate',
