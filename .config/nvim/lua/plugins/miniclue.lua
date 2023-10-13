@@ -83,8 +83,9 @@ return {
                     -- Mapping groups.
                     { mode = 'n', keys = '<leader>b', desc = '+buffers' },
                     { mode = 'n', keys = '<leader>c', desc = '+code' },
-                    { mode = 'n', keys = '<leader>d', desc = '+debug/tasks' },
+                    { mode = 'n', keys = '<leader>d', desc = '+debug' },
                     { mode = 'n', keys = '<leader>f', desc = '+find' },
+                    { mode = 'n', keys = '<leader>o', desc = '+overseer' },
                     { mode = 'n', keys = '<leader>t', desc = '+tabs' },
                     { mode = 'n', keys = '<leader>x', desc = '+loclist/quickfix' },
                     { mode = 'n', keys = '[', desc = '+prev' },

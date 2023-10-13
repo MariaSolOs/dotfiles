@@ -22,6 +22,13 @@ function M.float_term(cmd, opts)
         terminals[termkey] = require('lazy.util').float_term(cmd, opts)
         local buf = terminals[termkey].buf
         vim.b[buf].lazyterm_cmd = cmd
+
+        vim.api.nvim_create_autocmd('BufEnter', {
+            buffer = buf,
+            callback = function()
+                vim.cmd.startinsert()
+            end,
+        })
     end
 
     return terminals[termkey]
