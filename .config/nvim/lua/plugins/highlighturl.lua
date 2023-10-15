@@ -3,7 +3,18 @@ return {
     {
         'itchyny/vim-highlighturl',
         event = 'ColorScheme',
-        -- Must be a function because lazy cannot handle config = true with vim plugins.
-        config = function() end,
+        config = function()
+            -- Disable the plugin in some places where the default highlighting
+            -- is preferred.
+            vim.api.nvim_create_autocmd('FileType', {
+                desc = 'Disable URL highlights',
+                pattern = {
+                    'fzf',
+                    'lazyterm',
+                    'spectre_panel',
+                },
+                command = 'call highlighturl#disable_local()',
+            })
+        end,
     },
 }

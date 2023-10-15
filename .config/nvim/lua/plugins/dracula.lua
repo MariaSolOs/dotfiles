@@ -1,4 +1,5 @@
 -- Colorscheme.
+-- TODO(?): Vendor my own theme.
 return {
     {
         'Mofiqul/dracula.nvim',
@@ -109,6 +110,9 @@ return {
                     LspReferenceWrite = { bg = colors.transparent_red },
                     LspReferenceText = {},
 
+                    -- Active parameter in signature help.
+                    LspSignatureActiveParameter = { bold = true, underline = true, sp = colors.fg },
+
                     -- Nicer yanky highlights.
                     YankyPut = { link = 'Visual' },
                     YankyYanked = { link = 'Visual' },
@@ -132,10 +136,10 @@ return {
 
                     -- Fzf overrides.
                     FzfLuaBorder = { fg = colors.comment },
-                    FzfLuaSearch = { link = 'IlluminatedWordWrite' },
                     FzfLuaHeaderText = { fg = colors.pink },
-                    FzfLuaPreviewTitle = { fg = colors.fg },
                     FzfLuaHeaderBind = { fg = colors.lavender },
+                    FzfLuaPreviewTitle = { fg = colors.fg },
+                    FzfLuaSearch = { bg = colors.transparent_red },
 
                     -- Mason window.
                     MasonMuted = { fg = colors.bright_cyan },

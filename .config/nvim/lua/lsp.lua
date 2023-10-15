@@ -196,8 +196,9 @@ end
 --- LSP handler that adds extra inline highlights, keymaps, and window options.
 --- Code inspired from `noice`.
 ---@param handler fun(err: any, result: any, ctx: any, config: any): integer?, integer?
+---@param focusable boolean
 ---@return fun(err: any, result: any, ctx: any, config: any)
-local function enhanced_float_handler(handler)
+local function enhanced_float_handler(handler, focusable)
     return function(err, result, ctx, config)
         local bufnr, winnr = handler(
             err,
@@ -205,6 +206,7 @@ local function enhanced_float_handler(handler)
             ctx,
             vim.tbl_deep_extend('force', config or {}, {
                 border = 'rounded',
+                focusable = focusable,
                 max_height = math.floor(vim.o.lines * 0.5),
                 max_width = math.floor(vim.o.columns * 0.4),
             })
@@ -221,7 +223,7 @@ local function enhanced_float_handler(handler)
         add_inline_highlights(bufnr)
 
         -- Add keymaps for opening links.
-        if not vim.b[bufnr].markdown_keys then
+        if focusable and not vim.b[bufnr].markdown_keys then
             vim.keymap.set('n', 'K', function()
                 -- Vim help links.
                 local url = (vim.fn.expand '<cWORD>' --[[@as string]]):match '|(%S-)|'
@@ -246,8 +248,8 @@ local function enhanced_float_handler(handler)
     end
 end
 
-vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover)
-vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help)
+vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover, true)
+vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help, false)
 
 --- HACK: Override `vim.lsp.util.stylize_markdown` to use Treesitter.
 ---@param bufnr integer
