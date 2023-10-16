@@ -4,6 +4,9 @@ vim.g.projects_dir = vim.fn.expand '~/Code'
 -- Add binaries installed by mason.nvim to path.
 vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
 
+-- Set my colorscheme.
+vim.cmd.colorscheme 'miss-dracula'
+
 -- Install package manager.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
@@ -31,7 +34,6 @@ require 'statusline'
 if vim.env.SCROLLBACK_PAGE then
     require 'kitty_scrollback'
     plugins = {
-        { 'Mofiqul/dracula.nvim', import = 'plugins.dracula' },
         { 'folke/flash.nvim', import = 'plugins.flash', opts = { prompt = { enabled = false } } },
         { 'itchyny/vim-highlighturl', import = 'plugins.highlighturl' },
         { 'nvim-tree/nvim-web-devicons', import = 'plugins.nvim-web-devicons' },

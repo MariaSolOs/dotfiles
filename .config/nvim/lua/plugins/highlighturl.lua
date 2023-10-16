@@ -2,7 +2,7 @@
 return {
     {
         'itchyny/vim-highlighturl',
-        event = 'ColorScheme',
+        event = 'VeryLazy',
         config = function()
             -- Disable the plugin in some places where the default highlighting
             -- is preferred.

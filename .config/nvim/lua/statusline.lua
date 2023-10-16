@@ -220,7 +220,7 @@ function M.filetype_component()
         lazyterm = { '', 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
         qf = { icons.misc.search, 'Conditional' },
-        spectre_panel = { icons.misc.search, 'String' },
+        spectre_panel = { icons.misc.search, 'Constant' },
     }
 
     local filetype = vim.bo.filetype
