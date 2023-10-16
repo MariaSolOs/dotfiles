@@ -31,10 +31,3 @@ vim.api.nvim_create_autocmd('VimEnter', {
         vim.api.nvim_buf_delete(args.buf, { force = true })
     end,
 })
-vim.api.nvim_create_autocmd('TextYankPost', {
-    group = scrollback_group,
-    desc = 'Highlight on yank',
-    callback = function()
-        vim.highlight.on_yank { higroup = 'Visual' }
-    end,
-})
