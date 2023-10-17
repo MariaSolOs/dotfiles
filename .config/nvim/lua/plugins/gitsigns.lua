@@ -41,8 +41,14 @@ return {
                 map('<leader>go', function()
                     gitlinker.get_buf_range_url('n', { action_callback = require('gitlinker.actions').open_in_browser })
                 end, 'Open in browser')
-                map(']g', gs.prev_hunk, 'Previous hunk')
-                map('[g', gs.next_hunk, 'Next hunk')
+                map(']g', function()
+                    gs.prev_hunk()
+                    vim.cmd 'normal! zz'
+                end, 'Previous hunk')
+                map('[g', function()
+                    gs.next_hunk()
+                    vim.cmd 'normal! zz'
+                end, 'Next hunk')
                 map('<leader>gR', gs.reset_buffer, 'Reset buffer')
                 map('<leader>gb', gs.blame_line, 'Blame line')
                 map('<leader>gp', gs.preview_hunk, 'Preview hunk')

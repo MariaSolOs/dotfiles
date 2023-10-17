@@ -1,14 +1,14 @@
 -- Pretty bufferline.
+-- TODO: Is there a way to customize the tabline?
 return {
     {
         'akinsho/bufferline.nvim',
         event = 'VeryLazy',
         opts = {
             options = {
+                show_buffer_close_icons = false,
+                truncate_names = false,
                 close_command = function(bufnr)
-                    require('mini.bufremove').delete(bufnr, false)
-                end,
-                right_mouse_command = function(bufnr)
                     require('mini.bufremove').delete(bufnr, false)
                 end,
                 diagnostics = 'nvim_lsp',
