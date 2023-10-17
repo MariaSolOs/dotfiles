@@ -1,5 +1,6 @@
 -- Global variables.
 vim.g.projects_dir = vim.fn.expand '~/Code'
+vim.g.personal_projects_dir = vim.g.projects_dir .. '/Personal'
 
 -- Add binaries installed by mason.nvim to path.
 vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
@@ -7,7 +8,7 @@ vim.env.PATH = vim.env.PATH .. ':' .. vim.fn.stdpath 'data' .. '/mason/bin'
 -- Set my colorscheme.
 vim.cmd.colorscheme 'miss-dracula'
 
--- Install package manager.
+-- Install Lazy.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
     vim.fn.system {
@@ -39,7 +40,7 @@ if vim.env.SCROLLBACK_PAGE then
         { 'nvim-tree/nvim-web-devicons', import = 'plugins.nvim-web-devicons' },
     }
 else
-    -- Load my extra goodies when not displaying the scrollback buffer.
+    -- Load my extra goodies otherwise.
     require 'winbar'
     require 'lightbulb'
     require 'marks'

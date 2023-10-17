@@ -21,10 +21,11 @@ function M.render()
         -- sure to pick the longest prefix).
         ---@type table<string, string>
         local special_dirs = {
-        -- stylua: ignore
-        DOTFILES = vim.fn.stdpath 'config' --[[@as string]],
             CODE = vim.g.projects_dir,
+            -- stylua: ignore
+            DOTFILES = vim.fn.stdpath 'config' --[[@as string]],
             HOME = vim.env.HOME,
+            PERSONAL = vim.g.personal_projects_dir,
         }
         for dir_name, dir_path in pairs(special_dirs) do
             if vim.startswith(path, vim.fs.normalize(dir_path)) and #dir_path > #prefix_path then

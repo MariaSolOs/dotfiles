@@ -15,6 +15,9 @@ vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous result' })
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 
+-- Formatting.
+vim.keymap.set('n', 'gQ', 'mzgggqG`z<cmd>delmarks z<cr>', { desc = 'Format buffer' })
+
 -- Toggle the quickfix/loclist window.
 -- When toggling these, ignore error messages and restore the cursor to the original window when opening the list.
 local silent_mods = { mods = { silent = true, emsg_silent = true } }
