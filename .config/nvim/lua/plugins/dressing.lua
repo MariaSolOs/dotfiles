@@ -14,26 +14,8 @@ return {
             select = {
                 trim_prompt = false,
                 get_config = function(opts)
-                    -- Add a colon to the prompt if it doesn't have one.
-                    if opts.prompt and not opts.prompt:match ':%s*$' then
-                        opts.prompt = opts.prompt .. ': '
-                    end
-
-                    if opts.kind == 'luasnip' then
-                        -- Smaller menu for snippet choices.
-                        return {
-                            backend = 'fzf_lua',
-                            fzf_lua = {
-                                winopts = {
-                                    height = 0.35,
-                                    width = 0.3,
-                                },
-                            },
-                        }
-                    end
-
-                    if opts.kind == 'codeaction' or opts.kind == 'codelens' then
-                        -- Cute and compact menu.
+                    if opts.kind == 'codeaction' then
+                        -- Cute and compact code action menu.
                         return {
                             backend = 'builtin',
                             builtin = {
@@ -51,15 +33,23 @@ return {
                         }
                     end
 
-                    -- Default selector.
+                    local winopts = { height = 0.6, width = 0.5 }
+
+                    -- Smaller menu for snippet choices.
+                    if opts.kind == 'luasnip' then
+                        opts.prompt = 'Snippet choice: '
+                        winopts = { height = 0.35, width = 0.3 }
+                    end
+
+                    -- Add a colon to the prompt if it doesn't have one.
+                    if opts.prompt and not opts.prompt:match ':%s*$' then
+                        opts.prompt = opts.prompt .. ': '
+                    end
+
+                    -- Fallback to fzf-lua.
                     return {
                         backend = 'fzf_lua',
-                        fzf_lua = {
-                            winopts = {
-                                height = 0.6,
-                                width = 0.5,
-                            },
-                        },
+                        fzf_lua = { winopts = winopts },
                     }
                 end,
             },
