@@ -1,4 +1,3 @@
--- Utilities for creating splits.
 local function map_split(buf_id, lhs, direction)
     local minifiles = require 'mini.files'
 
@@ -26,6 +25,7 @@ local function map_split(buf_id, lhs, direction)
     vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = 'Split ' .. string.sub(direction, 12) })
 end
 
+-- File explorer.
 return {
     {
         'echasnovski/mini.files',

@@ -1,3 +1,17 @@
+local function open_and_close()
+    local overseer = require 'overseer'
+
+    -- Open the task window.
+    overseer.open { enter = false }
+
+    -- Close it after 10 seconds (if not inside the window).
+    vim.defer_fn(function()
+        if vim.bo.filetype ~= 'OverseerList' then
+            overseer.close()
+        end
+    end, 10 * 1000)
+end
+
 -- Task runner.
 return {
     {
@@ -52,6 +66,7 @@ return {
                         vim.notify('No tasks found', vim.log.levels.WARN)
                     else
                         overseer.run_action(tasks[1], 'restart')
+                        open_and_close()
                     end
                 end,
                 desc = 'Restart last task',
@@ -59,12 +74,9 @@ return {
             {
                 '<leader>or',
                 function()
-                    local overseer = require 'overseer'
-
-                    -- Run the task and immediately open the task window.
-                    overseer.run_template({}, function(task)
+                    require('overseer').run_template({}, function(task)
                         if task then
-                            overseer.open { enter = false }
+                            open_and_close()
                         end
                     end)
                 end,
