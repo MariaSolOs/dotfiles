@@ -247,7 +247,6 @@ local function enhanced_float_handler(handler, focusable)
         end
     end
 end
-
 vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover, true)
 vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help, false)
 

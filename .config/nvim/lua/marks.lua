@@ -126,7 +126,7 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
         local bufnr = args.buf
         -- Only handle normal buffers.
         if vim.bo[bufnr].bt ~= '' then
-            return
+            return true
         end
 
         -- Set custom mappings.

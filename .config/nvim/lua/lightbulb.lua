@@ -4,7 +4,7 @@
 local lb_name = 'mariasolos/lightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
 local lb_icon = require('icons').diagnostics.HINT
-local lb_group = vim.api.nvim_create_augroup(lb_name, { clear = true })
+local lb_group = vim.api.nvim_create_augroup(lb_name, {})
 local code_action_method = vim.lsp.protocol.Methods.textDocument_codeAction
 
 local timer = vim.uv.new_timer()
@@ -93,7 +93,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local client = vim.lsp.get_client_by_id(args.data.client_id)
 
         if not client or not client.supports_method(code_action_method) then
-            return
+            return true
         end
 
         local buf_group_name = lb_name .. tostring(buf)

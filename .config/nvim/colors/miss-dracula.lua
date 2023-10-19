@@ -139,9 +139,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     StorageClass = { fg = colors.pink },
     Structure = { fg = colors.yellow },
     Substitute = { fg = colors.fuchsia, bg = colors.orange, bold = true },
-    TabLine = { fg = colors.comment },
-    TabLineFill = { bg = colors.bg },
-    TabLineSel = { fg = colors.white },
     Title = { fg = colors.cyan },
     Todo = { fg = colors.purple, bold = true, italic = true },
     Type = { fg = colors.cyan },
@@ -345,10 +342,11 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     GitSignsDelete = { fg = colors.bright_red },
 
     -- Bufferline.
-    BufferLineBufferSelected = { bg = colors.bg },
+    BufferLineBufferSelected = { bg = colors.bg, underline = true, sp = colors.purple },
     BufferLineFill = { bg = colors.bg },
-    BufferLineIndicatorSelected = { fg = colors.purple },
-    BufferLineSeparator = { fg = colors.bg },
+    TabLine = { fg = colors.comment, bg = colors.bg },
+    TabLineFill = { bg = colors.bg },
+    TabLineSel = { bg = colors.purple },
 
     -- Start dashboard.
     AlphaHeader = { fg = colors.purple },
