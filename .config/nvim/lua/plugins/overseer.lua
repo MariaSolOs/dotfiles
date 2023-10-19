@@ -39,6 +39,7 @@ return {
             templates = {
                 'builtin',
                 'c.compile',
+                'c.run',
             },
             form = {
                 win_opts = { winblend = 0 },

@@ -1,4 +1,4 @@
--- Task to compile C programs.
+-- Compile C programs.
 return {
     name = 'gcc: compile',
     builder = function()
@@ -10,7 +10,6 @@ return {
                 '-Wall',
                 '-W',
                 '-pedantic',
-                '-ansi',
                 vim.fn.expand '%:p',
                 '-o',
                 vim.fn.expand '%:t:r',
