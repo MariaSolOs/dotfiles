@@ -19,13 +19,6 @@ return {
                 local gitlinker = require 'gitlinker'
                 local gs = package.loaded.gitsigns
 
-                -- Register the leader group with miniclue.
-                vim.b[bufnr].miniclue_config = {
-                    clues = {
-                        { mode = 'n', keys = '<leader>g', desc = '+git' },
-                    },
-                }
-
                 -- Gitlinker doesn't add descriptions.
                 local miniclue = require 'mini.clue'
                 miniclue.set_mapping_desc('n', '<leader>gc', 'Copy GitHub link')
@@ -41,22 +34,13 @@ return {
                 map('<leader>go', function()
                     gitlinker.get_buf_range_url('n', { action_callback = require('gitlinker.actions').open_in_browser })
                 end, 'Open in browser')
-                map(']g', function()
-                    gs.prev_hunk()
-                    vim.cmd 'normal! zz'
-                end, 'Previous hunk')
-                map('[g', function()
-                    gs.next_hunk()
-                    vim.cmd 'normal! zz'
-                end, 'Next hunk')
+                map('[g', gs.prev_hunk, 'Previous hunk')
+                map(']g', gs.next_hunk, 'Next hunk')
                 map('<leader>gR', gs.reset_buffer, 'Reset buffer')
                 map('<leader>gb', gs.blame_line, 'Blame line')
                 map('<leader>gp', gs.preview_hunk, 'Preview hunk')
                 map('<leader>gr', gs.reset_hunk, 'Reset hunk')
                 map('<leader>gs', gs.stage_hunk, 'Stage hunk')
-                map('<leader>gh', function()
-                    gs.setloclist(0, 'all')
-                end, 'Hunks')
                 map('<leader>gl', function()
                     require('float_term').float_term('lazygit', {
                         size = { width = 0.85, height = 0.8 },

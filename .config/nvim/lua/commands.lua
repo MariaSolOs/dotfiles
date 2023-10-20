@@ -34,12 +34,16 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('VimEnter', {
-    group = vim.api.nvim_create_augroup('mariasolos/gx_with_plugins', { clear = true }),
-    desc = 'Open plugin repos with gx',
+    group = vim.api.nvim_create_augroup('mariasolos/dotfiles_setup', { clear = true }),
+    desc = 'Special dotfiles setup',
     callback = function()
-        if vim.fn.getcwd() ~= vim.fn.stdpath 'config' then
+        if vim.env.SCROLLBACK_PAGE or not vim.startswith(vim.fn.getcwd(), vim.env.XDG_CONFIG_HOME) then
             return
         end
+
+        -- Configure git environment.
+        vim.env.GIT_WORK_TREE = vim.env.HOME
+        vim.env.GIT_DIR = vim.env.HOME .. '/.cfg'
 
         vim.keymap.set('n', 'gx', function()
             local file = vim.fn.expand '<cfile>' --[[@as string]]

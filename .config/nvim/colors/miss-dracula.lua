@@ -36,6 +36,7 @@ local colors = {
     selection = '#3C4148',
     transparent_black = '#1E1F29',
     transparent_blue = '#19272C',
+    transparent_green = '#22372c',
     transparent_red = '#342231',
     transparent_yellow = '#202624',
     visual = '#3E4452',
@@ -315,10 +316,15 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     Whitespace = { fg = '#292d32' },
 
     -- Diffs.
-    DiffAdd = { fg = colors.bright_green, bold = true },
-    DiffChange = { fg = colors.orange, bold = true },
-    DiffDelete = { fg = colors.bright_red, bold = true },
-    DiffText = { fg = colors.bright_white, bold = true },
+    DiffAdd = { fg = colors.green, bg = colors.transparent_green },
+    DiffChange = { fg = colors.yellow, bg = colors.transparent_yellow },
+    DiffDelete = { fg = colors.red, bg = colors.transparent_red },
+    DiffText = { fg = colors.bright_white, bg = colors.transparent_black },
+    DiffviewFolderSign = { fg = colors.cyan },
+    DiffviewNonText = { fg = colors.lilac },
+    diffAdded = { fg = colors.bright_green, bold = true },
+    diffChanged = { fg = colors.bright_yellow, bold = true },
+    diffRemoved = { fg = colors.bright_red, bold = true },
 
     -- Command line.
     MoreMsg = { fg = colors.bright_white, bold = true },

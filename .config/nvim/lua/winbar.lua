@@ -5,11 +5,16 @@ local M = {}
 --- Window bar that shows the current file path (in a fancy way).
 ---@return string
 function M.render()
-    -- Replace slashes by arrows.
-    local separator = ' %#WinbarSeparator# '
-
     -- Get the path and expand variables.
     local path = vim.fs.normalize(vim.fn.expand '%:p' --[[@as string]])
+
+    -- No special styling for diff views.
+    if vim.startswith(path, 'diffview') then
+        return string.format('%%#Winbar#%s', path)
+    end
+
+    -- Replace slashes by arrows.
+    local separator = ' %#WinbarSeparator# '
 
     local prefix, prefix_path = '', ''
 

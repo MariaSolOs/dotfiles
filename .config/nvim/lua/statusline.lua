@@ -205,6 +205,8 @@ function M.filetype_component()
 
     -- Special icons for some filetypes.
     local special_icons = {
+        DiffviewFileHistory = { icons.misc.git, 'Number' },
+        DiffviewFiles = { icons.misc.git, 'Number' },
         DressingInput = { '󰍩', 'Comment' },
         DressingSelect = { '', 'Comment' },
         OverseerForm = { '󰦬', 'Special' },
@@ -213,8 +215,8 @@ function M.filetype_component()
         dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
         dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
         fzf = { '', 'Special' },
-        gitcommit = { '', 'Conditional' },
-        gitrebase = { '', 'Conditional' },
+        gitcommit = { icons.misc.git, 'Number' },
+        gitrebase = { icons.misc.git, 'Number' },
         kitty_scrollback = { '󰄛', 'Conditional' },
         lazy = { icons.symbol_kinds.Method, 'Special' },
         lazyterm = { '', 'Special' },
