@@ -42,17 +42,7 @@ end
 ---@param bufnr number
 local function render(bufnr)
     local line = vim.api.nvim_win_get_cursor(0)[1] - 1
-    local diagnostics = vim.diagnostic.get(bufnr, { lnum = line })
-
-    -- If there are hints in the current line, don't show yet another lightbulb.
-    if
-        vim.iter(diagnostics):any(function(diag)
-            return diag.severity == vim.diagnostic.severity.HINT
-        end)
-    then
-        update_extmark(bufnr, nil)
-        return
-    end
+    local diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr, line)
 
     local params = vim.lsp.util.make_range_params()
     params.context = {
