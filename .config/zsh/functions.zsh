@@ -24,8 +24,9 @@ function buildnvim() {
     # Merge the latest changes.
     git merge upstream/master
 
-    # Clear the cache.
+    # Clear the previous build.
     make distclean
+    rm -rf "$HOME/nvim"
 
     # Go back to the given commit or HEAD.
     local commit="${1:-HEAD}"
