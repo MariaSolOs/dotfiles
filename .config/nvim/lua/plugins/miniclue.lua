@@ -83,8 +83,10 @@ return {
                     -- Leader/movement groups.
                     { mode = 'n', keys = '<leader>b', desc = '+buffers' },
                     { mode = 'n', keys = '<leader>c', desc = '+code' },
+                    { mode = 'x', keys = '<leader>c', desc = '+code' },
                     { mode = 'n', keys = '<leader>d', desc = '+debug' },
                     { mode = 'n', keys = '<leader>f', desc = '+find' },
+                    { mode = 'x', keys = '<leader>f', desc = '+find' },
                     { mode = 'n', keys = '<leader>g', desc = '+git' },
                     { mode = 'x', keys = '<leader>g', desc = '+git' },
                     { mode = 'n', keys = '<leader>o', desc = '+overseer' },
@@ -100,7 +102,6 @@ return {
                     macro_clues,
                     -- Clues for g mappings.
                     { mode = 'n', keys = "g'", desc = "Jump to mark (don't affect jumplist)" },
-                    { mode = 'n', keys = 'g#', desc = 'Search backwards word under cursor' },
                     { mode = 'n', keys = 'g*', desc = 'Search word under cursor' },
                     { mode = 'n', keys = 'gE', desc = 'Go backwards to end of previous WORD' },
                     { mode = 'n', keys = 'gT', desc = 'Go to previous tabpage' },
@@ -154,10 +155,21 @@ return {
                     delay = 500,
                     scroll_down = '<C-f>',
                     scroll_up = '<C-b>',
-                    config = {
-                        border = 'rounded',
-                        width = 40,
-                    },
+                    config = function(bufnr)
+                        local max_width = 0
+                        for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+                            max_width = math.max(max_width, vim.fn.strchars(line))
+                        end
+
+                        -- Keep some right padding.
+                        max_width = max_width + 2
+
+                        return {
+                            border = 'rounded',
+                            -- Dynamic width capped at 45.
+                            width = math.min(45, max_width),
+                        }
+                    end,
                 },
             }
         end,
