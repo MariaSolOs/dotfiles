@@ -23,9 +23,6 @@ export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
-# Set up the starshipt prompt.
-eval "$(starship init zsh)"
-
 # Functions for completion sources.
 fpath=($ZDOTDIR/func $fpath)
 fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
@@ -35,32 +32,13 @@ compinit
 # Use a completion menu.
 zstyle ':completion:*' menu select
 
-# Colorize completions using default ls colors. 
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-
 # Custom aliases.
 source "$ZDOTDIR/aliases.zsh"
 
 # Custom functions.
 source "$ZDOTDIR/functions.zsh"
 
-# Vim mode. After setting it up, load other plugins to avoid keymap conflicts.
-source "$ZDOTDIR/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
-function zvm_after_init() {
-  # Complete a single word with <Ctrl+Right>, and the full thing with <Ctrl+Space>.
-  bindkey '^[[1;5C' forward-word
-  bindkey '^ ' autosuggest-accept
-
-  # fzf.
-  source "$ZDOTDIR/fzf.zsh"
-
-  # Auto-suggestions.
-  source "$ZDOTDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
-
-  # Auto-close, delete and skip over matching delimiters.
-  source "$ZDOTDIR/zsh-autopair/autopair.zsh"
-  autopair-init
-}
-
-# Syntax highlighting (must be at the end of this file).
-source "$ZDOTDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+# Execute fish if it's not the parent process.
+if ! ps -p $PPID | grep -q fish; then
+  fish
+fi
