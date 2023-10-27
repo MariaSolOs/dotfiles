@@ -37,7 +37,8 @@ vim.api.nvim_create_autocmd('VimEnter', {
     group = vim.api.nvim_create_augroup('mariasolos/dotfiles_setup', { clear = true }),
     desc = 'Special dotfiles setup',
     callback = function()
-        if vim.env.SCROLLBACK_PAGE or not vim.startswith(vim.fn.getcwd(), vim.env.XDG_CONFIG_HOME) then
+        local ok, inside_dotfiles = pcall(vim.startswith, vim.fn.getcwd(), vim.env.XDG_CONFIG_HOME)
+        if vim.env.SCROLLBACK_PAGE or not ok or not inside_dotfiles then
             return
         end
 

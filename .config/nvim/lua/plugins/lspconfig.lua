@@ -27,7 +27,6 @@ return {
             local lspconfig = require 'lspconfig'
             local capabilities = require('lsp').client_capabilities
 
-            -- I like rounded borders ok??
             require('lspconfig.ui.windows').default_options.border = 'rounded'
 
             require('mason-lspconfig').setup {

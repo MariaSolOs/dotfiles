@@ -1,6 +1,3 @@
--- Make the leader a noop when not followed by something.
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
-
 -- Remap for dealing with word wrap and adding jumps to the jumplist.
 vim.keymap.set('n', 'j', [[(v:count > 1 ? 'm`' . v:count : 'g') . 'j']], { expr = true })
 vim.keymap.set('n', 'k', [[(v:count > 1 ? 'm`' . v:count : 'g') . 'k']], { expr = true })

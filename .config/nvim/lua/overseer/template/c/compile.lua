@@ -8,7 +8,7 @@ return {
             args = {
                 '-O',
                 '-Wall',
-                '-W',
+                '-Wextra',
                 '-pedantic',
                 vim.fn.expand '%:p',
                 '-o',

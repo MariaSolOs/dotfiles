@@ -176,6 +176,7 @@ local function add_inline_highlights(buf)
             ['^%s*(Return:)'] = '@text.title',
             ['^%s*(See also:)'] = '@text.title',
             ['{%S-}'] = '@parameter',
+            ['|%S-|'] = '@text.reference',
         } do
             local from = 1 ---@type integer?
             while from do

@@ -194,13 +194,13 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     ['@tag.attribute'] = { fg = colors.green },
     ['@tag.delimiter'] = { fg = colors.cyan },
     ['@text'] = { fg = colors.orange },
-    ['@text.emphasis'] = { fg = colors.yellow, italic = true }, -- italic
-    ['@text.literal'] = { fg = colors.yellow }, -- inline code
+    ['@text.emphasis'] = { fg = colors.yellow, italic = true },
+    ['@text.literal'] = { fg = colors.yellow },
     ['@text.reference'] = { fg = colors.orange, bold = true },
-    ['@text.strong'] = { fg = colors.orange, bold = true }, -- bold
-    ['@text.title'] = { fg = colors.pink, bold = true }, -- title
+    ['@text.strong'] = { fg = colors.orange, bold = true },
+    ['@text.title'] = { fg = colors.pink, bold = true },
     ['@text.underline'] = { fg = colors.orange },
-    ['@text.uri'] = { fg = colors.yellow, italic = true }, -- urls
+    ['@text.uri'] = { fg = colors.yellow, italic = true },
     ['@type'] = { fg = colors.bright_cyan },
     ['@type.builtin'] = { fg = colors.cyan, italic = true },
     ['@type.qualifier'] = { fg = colors.pink },
@@ -234,6 +234,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     ['@typeParameter'] = { fg = colors.cyan },
 
     -- LSP.
+    DiagnosticDeprecated = { strikethrough = true, fg = colors.fg },
     DiagnosticError = { fg = colors.red },
     DiagnosticHint = { fg = colors.cyan },
     DiagnosticInfo = { fg = colors.cyan },
@@ -255,7 +256,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     LspSignatureActiveParameter = { bold = true, underline = true, sp = colors.fg },
 
     -- Completions.
-    CmpItemAbbrDeprecated = { strikethrough = true },
+    CmpItemAbbrDeprecated = { link = 'DiagnosticDeprecated' },
     CmpItemAbbrMatch = { fg = colors.cyan, bg = 'NONE' },
     CmpItemMenu = { fg = colors.grey },
     CmpItemKind = { bg = 'NONE' },
