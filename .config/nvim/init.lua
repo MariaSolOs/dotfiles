@@ -26,9 +26,10 @@ vim.opt.rtp = vim.opt.rtp ^ lazypath
 local plugins = 'plugins'
 
 -- General setup.
-require 'settings'
-require 'keymaps'
+require 'autocmds'
 require 'commands'
+require 'keymaps'
+require 'settings'
 require 'statusline'
 
 -- Minimal plugins when just displaying the scrollback buffer.
