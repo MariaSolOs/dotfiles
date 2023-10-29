@@ -1,3 +1,8 @@
+# Nothing to do if not inside an interactive shell.
+if not status is-interactive
+    return 0
+end
+
 # Neovim.
 abbr -a nv nvim
 abbr -a nvconfig "cd $XDG_CONFIG_HOME/nvim && nvim"
@@ -13,19 +18,22 @@ abbr -a gm git merge
 abbr -a gp git push
 abbr -a gst git status
 
-if status is-interactive
-    # Remove the gretting message.
-    set -U fish_greeting
-
-    # Vi mode.
-    set -g fish_key_bindings fish_vi_key_bindings
-    set fish_cursor_default block
-    set fish_cursor_insert line
-    set fish_cursor_replace_one underscore
-
-    # Color theme.
-    fish_config theme choose "Dracula Official"
-
-    # Prompt.
-    starship init fish | source
+# Add completions from stuff installed with Homebrew.
+if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+    set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
 end
+
+# Remove the gretting message.
+set -U fish_greeting
+
+# Vi mode.
+set -g fish_key_bindings fish_vi_key_bindings
+set fish_cursor_default block
+set fish_cursor_insert line
+set fish_cursor_replace_one underscore
+
+# Color theme.
+fish_config theme choose "Dracula Official"
+
+# Prompt.
+starship init fish | source
