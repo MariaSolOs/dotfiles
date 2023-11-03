@@ -1,4 +1,6 @@
 -- Completion.
+-- TODO: Remove the vim.env.SNIPPET conditions when I'm done working
+-- on that.
 return {
     {
         'hrsh7th/nvim-cmp',
@@ -127,7 +129,11 @@ return {
                 },
                 snippet = {
                     expand = function(args)
-                        luasnip.lsp_expand(args.body)
+                        if vim.env.SNIPPET then
+                            vim.snippet.expand(args.body)
+                        else
+                            luasnip.lsp_expand(args.body)
+                        end
                     end,
                 },
                 window = {
@@ -161,7 +167,9 @@ return {
                             copilot.accept()
                         elseif cmp.visible() then
                             cmp.select_next_item()
-                        elseif luasnip.expand_or_locally_jumpable() then
+                        elseif vim.env.SNIPPET and vim.snippet.jumpable(1) then
+                            vim.snippet.jump(1)
+                        elseif not vim.env.SNIPPET and luasnip.expand_or_locally_jumpable() then
                             luasnip.expand_or_jump()
                         else
                             fallback()
@@ -170,7 +178,9 @@ return {
                     ['<S-Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item()
-                        elseif luasnip.expand_or_locally_jumpable(-1) then
+                        elseif vim.env.SNIPPET and vim.snippet.jumpable(-1) then
+                            vim.snippet.jump(-1)
+                        elseif not vim.env.SNIPPET and luasnip.expand_or_locally_jumpable(-1) then
                             luasnip.jump(-1)
                         else
                             fallback()
