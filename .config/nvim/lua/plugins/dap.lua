@@ -142,9 +142,6 @@ return {
             local dap = require 'dap'
             local dapui = require 'dapui'
 
-            -- Use kitty when launching stuff in another terminal.
-            dap.defaults.fallback.external_terminal = { command = 'kitty' }
-
             -- Automatically open the UI when a new debug session is created.
             dap.listeners.after.event_initialized['dapui_config'] = function()
                 dapui.open {}
