@@ -18,6 +18,11 @@ abbr -a gm git merge
 abbr -a gp git push
 abbr -a gst git status
 
+# Add completions from stuff installed with Homebrew.
+if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+    set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+end
+
 # Remove the gretting message.
 set -U fish_greeting
 
