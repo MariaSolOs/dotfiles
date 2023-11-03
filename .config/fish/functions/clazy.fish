@@ -1,4 +1,3 @@
-function clazy --wraps='lazygit --git-dir=/Users/majosolano/.cfg/ --work-tree=/Users/majosolano' --description 'alias clazy=lazygit --git-dir=/Users/majosolano/.cfg/ --work-tree=/Users/majosolano'
-  lazygit --git-dir=/Users/majosolano/.cfg/ --work-tree=/Users/majosolano $argv
-        
+function clazy --wraps='lazygit --git-dir="$HOME/.cfg" --work-tree="$HOME"' --description 'lazygit - Dotfiles'
+  lazygit --git-dir="$HOME/.cfg" --work-tree="$HOME" $argv
 end
