@@ -1,5 +1,5 @@
 -- Global variables.
-vim.g.projects_dir = vim.fn.expand '~/Code'
+vim.g.projects_dir = vim.env.HOME .. '/Code'
 vim.g.personal_projects_dir = vim.g.projects_dir .. '/Personal'
 
 -- Add binaries installed by mason.nvim to path.
