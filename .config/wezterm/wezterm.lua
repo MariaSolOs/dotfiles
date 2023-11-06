@@ -1,7 +1,5 @@
--- TODO: Add types (where is Folke pulling those from?)
-
 local wezterm = require 'wezterm'
-
+local act = wezterm.action
 local config = wezterm.config_builder()
 
 -- Support for undercurl, etc.
@@ -42,6 +40,12 @@ config.colors = {
     },
 }
 
+-- Inactive panes.
+config.inactive_pane_hsb = {
+    saturation = 0.6,
+    brightness = 0.6,
+}
+
 -- Remove extra space.
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 
@@ -55,8 +59,8 @@ config.cursor_thickness = 2
 config.hide_tab_bar_if_only_one_tab = true
 config.window_frame = {
     font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'DemiBold' }),
-    active_titlebar_bg = '#0E1419',
-    inactive_titlebar_bg = '#0E1419',
+    active_titlebar_bg = colors.bg,
+    inactive_titlebar_bg = colors.bg,
 }
 
 -- Fonts.
@@ -84,10 +88,28 @@ config.font_rules = {
 config.underline_position = -6
 config.underline_thickness = '250%'
 
+-- Keybindings.
+config.disable_default_key_bindings = true
 config.keys = {
-    -- Scrollback.
-    { key = 'k', mods = 'CTRL', action = wezterm.action.ScrollByPage(-0.5) },
-    { key = 'j', mods = 'CTRL', action = wezterm.action.ScrollByPage(0.5) },
+    { mods = 'CTRL|SHIFT', key = 'x', action = act.ActivateCopyMode },
+    { mods = 'CTRL|SHIFT', key = 'Enter', action = act.ToggleFullScreen },
+    { mods = 'CTRL|SHIFT', key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
+    { mods = 'CTRL|SHIFT', key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
+    { mods = 'CTRL|SHIFT', key = 'LeftArrow', action = act.ActivatePaneDirection 'Left' },
+    { mods = 'CTRL|SHIFT', key = 'RightArrow', action = act.ActivatePaneDirection 'Right' },
+    { mods = 'CTRL|SHIFT', key = 'UpArrow', action = act.ActivatePaneDirection 'Up' },
+    { mods = 'CTRL|SHIFT', key = 'DownArrow', action = act.ActivatePaneDirection 'Down' },
+    { mods = 'SUPER', key = '1', action = act.ActivateTab(0) },
+    { mods = 'SUPER', key = '2', action = act.ActivateTab(1) },
+    { mods = 'SUPER', key = '3', action = act.ActivateTab(2) },
+    { mods = 'SUPER', key = '4', action = act.ActivateTab(3) },
+    { mods = 'SUPER', key = '5', action = act.ActivateTab(4) },
+    { mods = 'SUPER', key = 'n', action = act.SpawnWindow },
+    { mods = 'SUPER', key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
+    { mods = 'SUPER', key = 'w', action = act.CloseCurrentPane { confirm = true } },
+    { mods = 'SUPER', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
+    { mods = 'CTRL', key = 'c', action = act.CopyTo 'Clipboard' },
+    { mods = 'CTRL', key = 'v', action = act.PasteFrom 'Clipboard' },
 }
 
 return config
