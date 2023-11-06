@@ -6,6 +6,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export PATH="$HOME/.cargo/bin:$PATH" # cargo
 export PATH="$HOME/nvim/bin:$PATH" # neovim
 export PATH="/usr/local/opt/tcl-tk/bin:$PATH" # tcl-tk
+export PATH="$HOME/Applications/WezTerm.app/Contents/MacOS:$PATH" # wezterm
 
 # Load nvm and set up bash completions.
 export NVM_DIR="$XDG_CONFIG_HOME/nvm"
