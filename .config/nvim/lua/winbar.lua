@@ -22,8 +22,7 @@ function M.render()
         ---@type table<string, string>
         local special_dirs = {
             CODE = vim.g.projects_dir,
-            -- stylua: ignore
-            DOTFILES = vim.fn.stdpath 'config' --[[@as string]],
+            DOTFILES = vim.env.XDG_CONFIG_HOME,
             HOME = vim.env.HOME,
             PERSONAL = vim.g.personal_projects_dir,
         }
