@@ -29,7 +29,7 @@ return {
                 callback = function(args)
                     local path = vim.api.nvim_buf_get_name(args.buf)
                     path = vim.fs.normalize(path)
-                    vim.b[args.buf].format_on_save = vim.iter({ vim.fn.stdpath 'config', vim.g.personal_projects_dir })
+                    vim.b[args.buf].format_on_save = vim.iter({ vim.env.XDG_CONFIG_HOME, vim.g.personal_projects_dir })
                         :any(function(folder)
                             return vim.startswith(path, vim.fs.normalize(folder))
                         end)
