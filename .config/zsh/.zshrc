@@ -13,11 +13,6 @@ setopt SHARE_HISTORY
 # Ignore duplicated commands history list.
 setopt hist_ignore_dups
 
-# Completion for kitty.
-if [[ "$TERM" == "xterm-kitty" ]]; then
-  kitty + complete setup zsh | source /dev/stdin
-fi
-
 # Python setup.
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"

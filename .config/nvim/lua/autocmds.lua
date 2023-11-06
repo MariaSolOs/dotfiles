@@ -10,7 +10,6 @@ vim.api.nvim_create_autocmd('FileType', {
         'query',
         'scratch',
         'spectre_panel',
-        'kitty_scrollback',
     },
     callback = function(args)
         vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = args.buf })
@@ -22,7 +21,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
     desc = 'Special dotfiles setup',
     callback = function()
         local ok, inside_dotfiles = pcall(vim.startswith, vim.fn.getcwd(), vim.env.XDG_CONFIG_HOME)
-        if vim.env.SCROLLBACK_PAGE or not ok or not inside_dotfiles then
+        if not ok or not inside_dotfiles then
             return
         end
 

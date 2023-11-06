@@ -31,21 +31,9 @@ require 'keymaps'
 require 'commands'
 require 'autocmds'
 require 'statusline'
-
--- Minimal plugins when just displaying the scrollback buffer.
-if vim.env.SCROLLBACK_PAGE then
-    require 'kitty_scrollback'
-    plugins = {
-        { 'folke/flash.nvim', import = 'plugins.flash', opts = { prompt = { enabled = false } } },
-        { 'itchyny/vim-highlighturl', import = 'plugins.highlighturl' },
-        { 'nvim-tree/nvim-web-devicons', import = 'plugins.nvim-web-devicons' },
-    }
-else
-    -- Load my extra goodies otherwise.
-    require 'winbar'
-    require 'lightbulb'
-    require 'marks'
-end
+require 'winbar'
+require 'lightbulb'
+require 'marks'
 
 -- Configure plugins.
 require('lazy').setup(plugins, {
