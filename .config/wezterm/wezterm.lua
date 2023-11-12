@@ -93,6 +93,7 @@ config.disable_default_key_bindings = true
 config.keys = {
     { mods = 'CTRL|SHIFT', key = 'x', action = act.ActivateCopyMode },
     { mods = 'CTRL|SHIFT', key = 'Enter', action = act.ToggleFullScreen },
+    { mods = 'CTRL|SHIFT', key = 'L', action = act.ShowDebugOverlay },
     { mods = 'CTRL|SHIFT', key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { mods = 'CTRL|SHIFT', key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { mods = 'CTRL|SHIFT', key = 'LeftArrow', action = act.ActivatePaneDirection 'Left' },
@@ -108,8 +109,8 @@ config.keys = {
     { mods = 'SUPER', key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
     { mods = 'SUPER', key = 'w', action = act.CloseCurrentPane { confirm = true } },
     { mods = 'SUPER', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
-    { mods = 'CTRL', key = 'c', action = act.CopyTo 'Clipboard' },
-    { mods = 'CTRL', key = 'v', action = act.PasteFrom 'Clipboard' },
+    { mods = 'SUPER', key = 'c', action = act.CopyTo 'Clipboard' },
+    { mods = 'SUPER', key = 'v', action = act.PasteFrom 'Clipboard' },
 }
 
 return config
