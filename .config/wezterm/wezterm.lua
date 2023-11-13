@@ -118,7 +118,7 @@ local process_icons = {
     nvim = icons.fa_code,
     zsh = icons.dev_terminal_badge,
 }
-wezterm.on('format-tab-title', function(tab, _, _, _, _, max_width)
+wezterm.on('format-tab-title', function(tab)
     -- Use the icon for the process, falling back to the process name.
     local process = string.gsub(tab.active_pane.foreground_process_name, '(.*[/\\])(.*)', '%2')
     process = process_icons[process] or process
@@ -130,9 +130,8 @@ wezterm.on('format-tab-title', function(tab, _, _, _, _, max_width)
     local cwd = tab.active_pane.current_working_dir
     cwd = cwd and string.format('%s ', cwd.file_path:gsub(os.getenv 'HOME', '~')) or ''
 
-    -- Return the title, making sure it fits.
-    local title = string.format('(%d %s) %s', tab.tab_index + 1, process, cwd)
-    return wezterm.truncate_right(title, max_width)
+    -- Format and return the title.
+    return string.format('(%d %s) %s', tab.tab_index + 1, process, cwd)
 end)
 
 return config
