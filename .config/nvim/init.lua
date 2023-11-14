@@ -34,7 +34,6 @@ require 'statusline'
 -- Extra goodies.
 require 'winbar'
 require 'lightbulb'
-require 'marks'
 
 -- Configure plugins.
 require('lazy').setup(plugins, {
