@@ -33,7 +33,6 @@ require 'autocmds'
 require 'statusline'
 require 'winbar'
 require 'lightbulb'
-require 'marks'
 
 -- Configure plugins.
 require('lazy').setup(plugins, {
