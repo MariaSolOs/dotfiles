@@ -1,9 +1,28 @@
-#
-# ~/.bashrc
-#
+# XDG base directories.
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 
-# If not running interactively, don't do anything.
+# Use neovim as the default editor.
+export EDITOR=nvim
+
+# Ripgrep.
+export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
+
+# fzf settings.
+export FZF_DEFAULT_OPTS="--color=fg:#f8f8f2,bg:#000000,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9,info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6,spinner:#a4ffff,header:#6272a4 \
+--cycle"
+
+# If not running interactively, stop here.
 [[ $- != *i* ]] && return
+
+# fzf setup.
+if [[ ! "$PATH" == *$HOME/.fzf/bin* ]]; then
+  PATH="${PATH:+${PATH}:}$HOME/.fzf/bin"
+fi
+source "$HOME/.fzf/shell/completion.bash"
+source "$HOME/.fzf/shell/key-bindings.bash"
 
 # Drop into fish if:
 # - The parent process isn't fish.

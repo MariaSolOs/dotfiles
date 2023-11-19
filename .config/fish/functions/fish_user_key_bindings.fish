@@ -10,4 +10,7 @@ function fish_user_key_bindings
     # Copy/paste.
     bind yy fish_clipboard_copy
     bind p fish_clipboard_paste
+
+    # fzf bindings.
+    fzf_key_bindings
 end
