@@ -57,12 +57,13 @@ config.cursor_thickness = 2
 config.hide_tab_bar_if_only_one_tab = true
 config.window_frame = {
     font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'DemiBold' }),
+    font_size = 8,
     active_titlebar_bg = colors.bg,
     inactive_titlebar_bg = colors.bg,
 }
 
 -- Fonts.
-config.font_size = 14
+config.font_size = 9
 config.cell_width = 0.9
 config.line_height = 1.2
 config.font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'Medium' })
@@ -111,6 +112,7 @@ config.keys = {
 }
 
 local process_icons = {
+    bash = icons.dev_terminal_badge,
     fish = icons.md_fish,
     lazygit = icons.dev_git_merge,
     -- TODO: Replace this icon by the neovim one when available in Nerd Fonts.

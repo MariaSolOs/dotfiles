@@ -31,5 +31,7 @@ set fish_cursor_replace_one underscore
 # Color theme.
 fish_config theme choose "Dracula Official"
 
-# Prompt.
-starship init fish | source
+# Set the prompt when inside Hyprland.
+if set -q HYPRLAND_INSTANCE_SIGNATURE
+    starship init fish | source
+end
