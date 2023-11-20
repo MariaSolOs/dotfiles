@@ -6,6 +6,9 @@ local config = wezterm.config_builder()
 -- Support for undercurl, etc.
 config.term = 'wezterm'
 
+-- Needed to avoid weird Hyprland crashes.
+config.front_end = 'OpenGL'
+
 -- Color theme.
 local colors = {
     bg = '#0E1419',
@@ -92,7 +95,7 @@ config.disable_default_key_bindings = true
 local mods = 'CTRL|SHIFT'
 config.keys = {
     { mods = mods, key = 'x', action = act.ActivateCopyMode },
-    { mods = mods, key = 'L', action = act.ShowDebugOverlay },
+    { mods = mods, key = 'd', action = act.ShowDebugOverlay },
     { mods = mods, key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 'h', action = act.ActivatePaneDirection 'Left' },
