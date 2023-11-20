@@ -88,27 +88,26 @@ config.underline_thickness = '250%'
 
 -- Keybindings.
 config.disable_default_key_bindings = true
+local mods = 'CTRL|SHIFT'
 config.keys = {
-    { mods = 'CTRL|SHIFT', key = 'x', action = act.ActivateCopyMode },
-    { mods = 'CTRL|SHIFT', key = 'Enter', action = act.ToggleFullScreen },
-    { mods = 'CTRL|SHIFT', key = 'L', action = act.ShowDebugOverlay },
-    { mods = 'CTRL|SHIFT', key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
-    { mods = 'CTRL|SHIFT', key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
-    { mods = 'CTRL|SHIFT', key = 'LeftArrow', action = act.ActivatePaneDirection 'Left' },
-    { mods = 'CTRL|SHIFT', key = 'RightArrow', action = act.ActivatePaneDirection 'Right' },
-    { mods = 'CTRL|SHIFT', key = 'UpArrow', action = act.ActivatePaneDirection 'Up' },
-    { mods = 'CTRL|SHIFT', key = 'DownArrow', action = act.ActivatePaneDirection 'Down' },
-    { mods = 'SUPER', key = '1', action = act.ActivateTab(0) },
-    { mods = 'SUPER', key = '2', action = act.ActivateTab(1) },
-    { mods = 'SUPER', key = '3', action = act.ActivateTab(2) },
-    { mods = 'SUPER', key = '4', action = act.ActivateTab(3) },
-    { mods = 'SUPER', key = '5', action = act.ActivateTab(4) },
-    { mods = 'SUPER', key = 'n', action = act.SpawnWindow },
-    { mods = 'SUPER', key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
-    { mods = 'SUPER', key = 'w', action = act.CloseCurrentPane { confirm = true } },
+    { mods = mods, key = 'x', action = act.ActivateCopyMode },
+    { mods = mods, key = 'L', action = act.ShowDebugOverlay },
+    { mods = mods, key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
+    { mods = mods, key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
+    { mods = mods, key = 'h', action = act.ActivatePaneDirection 'Left' },
+    { mods = mods, key = 'l', action = act.ActivatePaneDirection 'Right' },
+    { mods = mods, key = 'k', action = act.ActivatePaneDirection 'Up' },
+    { mods = mods, key = 'j', action = act.ActivatePaneDirection 'Down' },
+    { mods = mods, key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
+    { mods = mods, key = 'w', action = act.CloseCurrentPane { confirm = true } },
+    { mods = 'ALT', key = '1', action = act.ActivateTab(0) },
+    { mods = 'ALT', key = '2', action = act.ActivateTab(1) },
+    { mods = 'ALT', key = '3', action = act.ActivateTab(2) },
+    { mods = 'ALT', key = '4', action = act.ActivateTab(3) },
+    { mods = 'ALT', key = '5', action = act.ActivateTab(4) },
+    { mods = 'CTRL', key = 'c', action = act.CopyTo 'Clipboard' },
+    { mods = 'CTRL', key = 'v', action = act.PasteFrom 'Clipboard' },
     { mods = 'SUPER', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
-    { mods = 'SUPER', key = 'c', action = act.CopyTo 'Clipboard' },
-    { mods = 'SUPER', key = 'v', action = act.PasteFrom 'Clipboard' },
 }
 
 local process_icons = {
