@@ -118,7 +118,7 @@ local process_icons = {
     bash = icons.dev_terminal_badge,
     fish = icons.md_fish,
     lazygit = icons.dev_git_merge,
-    -- TODO: Replace this icon by the neovim one when available in Nerd Fonts.
+    -- TODO: Replace this icon by the neovim one when Wezterm bundles it.
     nvim = icons.fa_code,
     zsh = icons.dev_terminal_badge,
 }

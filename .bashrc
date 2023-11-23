@@ -4,8 +4,14 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
+# SSH agent.
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
 # Use neovim as the default editor.
 export EDITOR=nvim
+
+# Man pages.
+export MANPAGER='nvim +Man!'
 
 # Ripgrep.
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
