@@ -30,6 +30,11 @@ fi
 source "$HOME/.fzf/shell/completion.bash"
 source "$HOME/.fzf/shell/key-bindings.bash"
 
+# Start Hyprland on TTY1.
+if [[ "$(tty)" == "/dev/tty1" ]]; then
+    exec Hyprland
+fi
+
 # Drop into fish if:
 # - The parent process isn't fish.
 # - Not running a command like `bash -c 'echo foo'`.
