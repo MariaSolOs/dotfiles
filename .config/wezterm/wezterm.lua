@@ -92,11 +92,10 @@ config.underline_thickness = '250%'
 
 -- Keybindings.
 config.disable_default_key_bindings = true
-local mods = 'CTRL|SHIFT'
+local mods = 'ALT|SHIFT'
 config.keys = {
     { mods = mods, key = 'x', action = act.ActivateCopyMode },
     { mods = mods, key = 'd', action = act.ShowDebugOverlay },
-    { mods = mods, key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 'h', action = act.ActivatePaneDirection 'Left' },
     { mods = mods, key = 'l', action = act.ActivatePaneDirection 'Right' },
@@ -104,14 +103,14 @@ config.keys = {
     { mods = mods, key = 'j', action = act.ActivatePaneDirection 'Down' },
     { mods = mods, key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
     { mods = mods, key = 'w', action = act.CloseCurrentPane { confirm = true } },
+    { mods = mods, key = 'c', action = act.CopyTo 'Clipboard' },
+    { mods = mods, key = 'v', action = act.PasteFrom 'Clipboard' },
+    { mods = mods, key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
     { mods = 'ALT', key = '1', action = act.ActivateTab(0) },
     { mods = 'ALT', key = '2', action = act.ActivateTab(1) },
     { mods = 'ALT', key = '3', action = act.ActivateTab(2) },
     { mods = 'ALT', key = '4', action = act.ActivateTab(3) },
     { mods = 'ALT', key = '5', action = act.ActivateTab(4) },
-    { mods = 'CTRL', key = 'c', action = act.CopyTo 'Clipboard' },
-    { mods = 'CTRL', key = 'v', action = act.PasteFrom 'Clipboard' },
-    { mods = 'SUPER', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
 }
 
 local process_icons = {
@@ -120,7 +119,8 @@ local process_icons = {
     lazygit = icons.dev_git_merge,
     -- TODO: Replace this icon by the neovim one when Wezterm bundles it.
     nvim = icons.fa_code,
-    zsh = icons.dev_terminal_badge,
+    pacman = '󰮯',
+    paru = '󰮯',
 }
 wezterm.on('format-tab-title', function(tab)
     -- Use the icon for the process, falling back to the process name.
