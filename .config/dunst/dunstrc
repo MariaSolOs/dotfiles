@@ -26,7 +26,7 @@
     # Support for HTML markup.
     markup = full
 
-    # The format of the message.
+    # The default format of the message.
     format = "<i>%a: %s</i>\n%b"
 
     # Truncate long lines at the end.
@@ -34,57 +34,38 @@
 
     # Recursive icon lookup to avoid having to define all lookup paths.
     enable_recursive_icon_lookup = true
+    icon_theme = Papirus
 
-    # dmenu path.
-    # dmenu = /usr/bin/dmenu -p dunst:
+    # Keep icons small.
+    min_icon_size = 24
+    max_icon_size = 32
 
-    # Browser for opening urls in context menu.
-    # browser = /usr/bin/xdg-open
-
-    # Always run rule-defined scripts, even if the notification is suppressed
-    # always_run_script = true
-
-    # Define the title of the windows spawned by dunst
-    # title = Dunst
-
-    # Define the class of the windows spawned by dunst
-    # class = Dunst
-
-    # Ignore the dbus closeNotification message.
-    # Useful to enforce the timeout set by dunst configuration. Without this
-    # parameter, an application may close the notification sent before the
-    # user defined timeout.
-    # ignore_dbusclose = false
-
-    # Defines list of actions for each mouse event
-    # Possible values are:
-    # * none: Don't do anything.
-    # * do_action: Invoke the action determined by the action_name rule. If there is no
-    #              such action, open the context menu.
-    # * open_url: If the notification has exactly one url, open it. If there are multiple
-    #             ones, open the context menu.
-    # * close_current: Close current notification.
-    # * close_all: Close all notifications.
-    # * context: Open context menu for the notification.
-    # * context_all: Open context menu for all notifications.
-    # These values can be strung together for each mouse event, and
-    # will be executed in sequence.
-    mouse_left_click = close_current
-    mouse_middle_click = do_action, close_current
-    mouse_right_click = close_all
+    # Remove the progress bar border.
+    progress_bar_frame_width = 0
 
 # Notification rules.
 [urgency_low]
     background = "#31344F90"
     foreground = "#FFFFFF"
     timeout = 5
+
 [urgency_normal]
     background = "#31344F90"
     foreground = "#FFFFFF"
     timeout = 5
+
 [urgency_critical]
     background = "#E1129970"
     foreground = "#FFFFFF"
     timeout = 10
+
+[backlight]
+    appname = Backlight
+    format = "<b>%a</b>\n%b"
+    foreground = "#000000"
+    background = "#BCF4F595"
+    highlight = "#BCF4F5"
+    default_icon = brightnesssettings
+    timeout = 1
 
 # vim: ft=cfg
