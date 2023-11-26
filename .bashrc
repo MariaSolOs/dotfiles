@@ -17,7 +17,7 @@ export MANPAGER='nvim +Man!'
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 
 # fzf settings.
-export FZF_DEFAULT_OPTS="--color=fg:#f8f8f2,bg:#000000,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9,info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6,spinner:#a4ffff,header:#6272a4 \
+export FZF_DEFAULT_OPTS="--color=fg:#f8f8f2,bg:#0E1419,hl:#bd93f9,fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9,info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6,marker:#ff79c6,spinner:#a4ffff,header:#6272a4 \
 --cycle"
 
 # If not running interactively, stop here.
