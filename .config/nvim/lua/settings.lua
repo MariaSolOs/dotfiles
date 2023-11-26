@@ -11,7 +11,7 @@ vim.o.et = true
 
 -- Show whitespace.
 vim.opt.list = true
-vim.opt.listchars = { space = '⋅', trail = '⋅', tab = '  ' }
+vim.opt.listchars = { space = '⋅', trail = '⋅', tab = '  ↦' }
 
 -- Show line numbers.
 vim.wo.number = true
