@@ -121,6 +121,7 @@ local process_icons = {
     nvim = icons.fa_code,
     pacman = '󰮯',
     paru = '󰮯',
+    ['python3.11'] = icons.md_snake,
 }
 wezterm.on('format-tab-title', function(tab)
     -- Use the icon for the process, falling back to the process name.
