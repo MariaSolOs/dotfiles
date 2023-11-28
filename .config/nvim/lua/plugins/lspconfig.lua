@@ -10,6 +10,7 @@ return {
                 build = ':MasonUpdate',
                 opts = {
                     ensure_installed = {
+                        'black',
                         'codelldb',
                         'shellcheck',
                         'shfmt',

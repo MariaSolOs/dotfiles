@@ -7,6 +7,7 @@ return {
             notify_on_error = false,
             formatters_by_ft = {
                 lua = { 'stylua' },
+                python = { 'black' },
                 sh = { 'shfmt' },
             },
             format_on_save = function(bufnr)
