@@ -18,6 +18,7 @@ palette = {
     "purple": "#D0B5F3",
     "red": "#E95678",
     "fuchsia": "#E11299",
+    "yellow": "#F6F6B6",
 }
 
 # Background color of the completion widget category headers.
@@ -68,11 +69,32 @@ c.colors.hints.fg = palette["background-attention"]
 # Font color for the matched part of hints.
 c.colors.hints.match.fg = palette["fuchsia"]
 
+# Background color of the keyhint widget.
+c.colors.keyhint.bg = palette["background"]
+
+# Highlight color for keys to complete the current keychain.
+c.colors.keyhint.suffix.fg = palette["yellow"]
+
 # Background color of an error message.
 c.colors.messages.error.bg = palette["red"]
 
+# Border color of an error message.
+c.colors.messages.error.border = palette["red"]
+
 # Font color of an error message.
-c.colors.messages.error.fg = palette["foreground"]
+c.colors.messages.error.fg = palette["background-attention"]
+
+# Background color of an warning message.
+c.colors.messages.warning.bg = palette["orange"]
+
+# Border color of an warning message.
+c.colors.messages.warning.border = palette["orange"]
+
+# Font color of a warning message.
+c.colors.messages.warning.fg = palette["background-attention"]
+
+# Background color of prompts.
+c.colors.prompts.bg = palette["background"]
 
 # Background color of the statusbar in insert mode.
 c.colors.statusbar.insert.bg = palette["green"]
