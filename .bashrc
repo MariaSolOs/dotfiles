@@ -4,6 +4,9 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
+# Make sure this stuff is in the path.
+export PATH="$HOME/.local/bin:$PATH" # Local scripts.
+
 # SSH agent.
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
@@ -42,5 +45,5 @@ if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTI
   # Let fish whether it's a login shell.
   shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
 
-  exec fish $LOGIN_OPTION
+  exec fish "$LOGIN_OPTION"
 fi

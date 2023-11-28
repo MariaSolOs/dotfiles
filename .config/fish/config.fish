@@ -7,7 +7,8 @@ end
 abbr -a nv nvim
 abbr -a nvconfig "cd $XDG_CONFIG_HOME/nvim && nvim"
 
-# General git abbreviations.
+# Git abbreviations.
+abbr -a g git
 abbr -a ga git add
 abbr -a gb git branch
 abbr -a gc git commit --verbose
@@ -17,6 +18,11 @@ abbr -a gl git log
 abbr -a gm git merge
 abbr -a gp git push
 abbr -a gst git status
+
+# Linux maintenance.
+abbr -a p paru
+abbr -a s systemctl
+abbr -a j journalctl
 
 # Remove the gretting message.
 set -U fish_greeting
