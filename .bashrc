@@ -12,6 +12,10 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Use neovim as the default editor.
 export EDITOR=nvim
+export VISUAL=nvim
+
+# Colorful sudo prompt.
+SUDO_PROMPT="$(tput setaf 2 bold)Password: $(tput sgr0)" && export SUDO_PROMPT
 
 # Man pages.
 export MANPAGER='nvim +Man!'
