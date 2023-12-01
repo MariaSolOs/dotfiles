@@ -102,7 +102,7 @@ config.keys = {
     { mods = mods, key = 'k', action = act.ActivatePaneDirection 'Up' },
     { mods = mods, key = 'j', action = act.ActivatePaneDirection 'Down' },
     { mods = mods, key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
-    { mods = mods, key = 'w', action = act.CloseCurrentPane { confirm = true } },
+    { mods = mods, key = 'q', action = act.CloseCurrentPane { confirm = true } },
     { mods = mods, key = 'c', action = act.CopyTo 'Clipboard' },
     { mods = mods, key = 'v', action = act.PasteFrom 'Clipboard' },
     { mods = mods, key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
@@ -117,6 +117,7 @@ local process_icons = {
     bash = icons.dev_terminal_badge,
     fish = icons.md_fish,
     lazygit = icons.dev_git_merge,
+    lf = icons.fa_files_o,
     -- TODO: Replace this icon by the neovim one when Wezterm bundles it.
     nvim = icons.fa_code,
     pacman = '󰮯',
