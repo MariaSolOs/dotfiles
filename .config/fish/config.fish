@@ -3,9 +3,9 @@ if not status is-interactive
     return 0
 end
 
-# Neovim.
 abbr -a nv nvim
-abbr -a nvconfig "cd $XDG_CONFIG_HOME/nvim && nvim"
+
+abbr -a nvconfig "cd $XDG_CONFIG_HOME && nvim"
 
 # Git abbreviations.
 abbr -a g git
