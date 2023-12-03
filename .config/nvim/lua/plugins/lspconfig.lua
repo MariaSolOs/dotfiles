@@ -37,7 +37,6 @@ return {
                     'eslint',
                     'jsonls',
                     'lua_ls',
-                    'marksman',
                     'pyright',
                     'rust_analyzer',
                     'taplo',
