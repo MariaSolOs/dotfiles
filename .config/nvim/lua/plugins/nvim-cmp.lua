@@ -1,6 +1,4 @@
 -- Completion.
--- TODO: Remove the vim.env.SNIPPET conditions when I'm done working
--- on that.
 return {
     {
         'hrsh7th/nvim-cmp',
@@ -27,23 +25,6 @@ return {
                                 },
                             },
                         },
-                        snip_env = {
-                            -- Helper function for showing a snippet if the Treesitter node
-                            -- satisfies a given predicate.
-                            ts_show = function(pred)
-                                return function()
-                                    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-                                    local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col - 1 } })
-
-                                    -- Show the snippet if Treesitter bails.
-                                    if not ok or not node then
-                                        return true
-                                    end
-
-                                    return pred(node:type())
-                                end
-                            end,
-                        },
                     }
                 end,
                 config = function(_, opts)
@@ -60,15 +41,6 @@ return {
 
                     -- Load my snippets and the ones from VSCode.
                     require('luasnip.loaders.from_vscode').lazy_load()
-
-                    require('luasnip.loaders.from_lua').lazy_load {
-                        paths = {
-                            -- Load local snippets if present.
-                            vim.fn.getcwd() .. '/.luasnippets',
-                            -- Global snippets.
-                            vim.fn.stdpath 'config' .. '/luasnippets',
-                        },
-                    }
 
                     vim.api.nvim_create_autocmd('ModeChanged', {
                         group = vim.api.nvim_create_augroup('mariasolos/unlink_snippet', { clear = true }),
@@ -129,11 +101,7 @@ return {
                 },
                 snippet = {
                     expand = function(args)
-                        if vim.env.SNIPPET then
-                            vim.snippet.expand(args.body)
-                        else
-                            luasnip.lsp_expand(args.body)
-                        end
+                        luasnip.lsp_expand(args.body)
                     end,
                 },
                 window = {
