@@ -237,7 +237,7 @@ local function enhanced_float_handler(handler, focusable)
                 local from, to
                 from, to, url = vim.api.nvim_get_current_line():find '%[.-%]%((%S-)%)'
                 if from and col >= from and col <= to then
-                    vim.system({ 'open', url }, nil, function(res)
+                    vim.system({ 'xdg-open', url }, nil, function(res)
                         if res.code ~= 0 then
                             vim.notify('Failed to open URL' .. url, vim.log.levels.ERROR)
                         end
