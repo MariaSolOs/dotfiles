@@ -1,5 +1,4 @@
 local wezterm = require 'wezterm'
-local icons = wezterm.nerdfonts
 local act = wezterm.action
 local config = wezterm.config_builder()
 
@@ -10,7 +9,7 @@ config.term = 'wezterm'
 local colors = {
     bg = '#0E1419',
     black = '#000000',
-    grey = '#5C6370',
+    dark_lilac = '#6D5978',
     lilac = '#BAA0E8',
 }
 config.color_scheme = 'Dracula (Official)'
@@ -24,10 +23,10 @@ config.colors = {
         },
         inactive_tab = {
             bg_color = colors.black,
-            fg_color = colors.grey,
+            fg_color = colors.dark_lilac,
         },
         inactive_tab_hover = {
-            bg_color = colors.bg,
+            bg_color = colors.black,
             fg_color = colors.lilac,
         },
         new_tab = {
@@ -35,8 +34,8 @@ config.colors = {
             fg_color = colors.lilac,
         },
         new_tab_hover = {
-            bg_color = colors.bg,
-            fg_color = colors.lilac,
+            bg_color = colors.lilac,
+            fg_color = colors.black,
         },
     },
 }
@@ -114,20 +113,9 @@ config.keys = {
     { mods = 'SUPER', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
 }
 
-local process_icons = {
-    fish = icons.md_fish,
-    lazygit = icons.dev_git_merge,
-    -- TODO: Replace this icon by the neovim one when available in Nerd Fonts.
-    nvim = icons.fa_code,
-    zsh = icons.dev_terminal_badge,
-}
 wezterm.on('format-tab-title', function(tab)
-    -- Use the icon for the process, falling back to the process name.
+    -- Get the process name.
     local process = string.gsub(tab.active_pane.foreground_process_name, '(.*[/\\])(.*)', '%2')
-    process = process_icons[process] or process
-
-    -- When there's no process info, just show a laptop icon.
-    process = #process > 0 and process or icons.md_laptop
 
     -- Current working directory.
     local cwd = tab.active_pane.current_working_dir
