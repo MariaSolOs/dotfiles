@@ -1,5 +1,4 @@
 local wezterm = require 'wezterm'
-local icons = wezterm.nerdfonts
 local act = wezterm.action
 local config = wezterm.config_builder()
 
@@ -13,7 +12,7 @@ config.front_end = 'OpenGL'
 local colors = {
     bg = '#0E1419',
     black = '#000000',
-    grey = '#5C6370',
+    dark_lilac = '#6D5978',
     lilac = '#BAA0E8',
 }
 config.color_scheme = 'Dracula (Official)'
@@ -27,10 +26,10 @@ config.colors = {
         },
         inactive_tab = {
             bg_color = colors.black,
-            fg_color = colors.grey,
+            fg_color = colors.dark_lilac,
         },
         inactive_tab_hover = {
-            bg_color = colors.bg,
+            bg_color = colors.black,
             fg_color = colors.lilac,
         },
         new_tab = {
@@ -38,8 +37,8 @@ config.colors = {
             fg_color = colors.lilac,
         },
         new_tab_hover = {
-            bg_color = colors.bg,
-            fg_color = colors.lilac,
+            bg_color = colors.lilac,
+            fg_color = colors.black,
         },
     },
 }
@@ -96,6 +95,7 @@ local mods = 'ALT|SHIFT'
 config.keys = {
     { mods = mods, key = 'x', action = act.ActivateCopyMode },
     { mods = mods, key = 'd', action = act.ShowDebugOverlay },
+    { mods = mods, key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 'h', action = act.ActivatePaneDirection 'Left' },
     { mods = mods, key = 'l', action = act.ActivatePaneDirection 'Right' },
@@ -103,9 +103,9 @@ config.keys = {
     { mods = mods, key = 'j', action = act.ActivatePaneDirection 'Down' },
     { mods = mods, key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
     { mods = mods, key = 'q', action = act.CloseCurrentPane { confirm = true } },
-    { mods = mods, key = 'c', action = act.CopyTo 'Clipboard' },
-    { mods = mods, key = 'v', action = act.PasteFrom 'Clipboard' },
     { mods = mods, key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
+    { mods = 'CTRL', key = 'c', action = act.CopyTo 'Clipboard' },
+    { mods = 'CTRL', key = 'v', action = act.PasteFrom 'Clipboard' },
     { mods = 'ALT', key = '1', action = act.ActivateTab(0) },
     { mods = 'ALT', key = '2', action = act.ActivateTab(1) },
     { mods = 'ALT', key = '3', action = act.ActivateTab(2) },
@@ -113,24 +113,9 @@ config.keys = {
     { mods = 'ALT', key = '5', action = act.ActivateTab(4) },
 }
 
-local process_icons = {
-    bash = icons.dev_terminal_badge,
-    fish = icons.md_fish,
-    lazygit = icons.dev_git_merge,
-    lf = icons.fa_files_o,
-    -- TODO: Replace this icon by the neovim one when Wezterm bundles it.
-    nvim = icons.fa_code,
-    pacman = '󰮯',
-    paru = '󰮯',
-    ['python3.11'] = icons.md_snake,
-}
 wezterm.on('format-tab-title', function(tab)
-    -- Use the icon for the process, falling back to the process name.
+    -- Get the process name.
     local process = string.gsub(tab.active_pane.foreground_process_name, '(.*[/\\])(.*)', '%2')
-    process = process_icons[process] or process
-
-    -- When there's no process info, just show a laptop icon.
-    process = #process > 0 and process or icons.md_laptop
 
     -- Current working directory.
     local cwd = tab.active_pane.current_working_dir
