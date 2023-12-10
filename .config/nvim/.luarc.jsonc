@@ -15,6 +15,7 @@
       "lua/lsp.lua",
       // Include some plugins for API completion.
       "$XDG_DATA_HOME/nvim/lazy/alpha-nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/ccc.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/Comment.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/copilot.lua/lua",
       "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
@@ -25,7 +26,6 @@
       "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.bufremove/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
-      "$XDG_DATA_HOME/nvim/lazy/mini.extra/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.hipatterns/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-cmp/lua",
