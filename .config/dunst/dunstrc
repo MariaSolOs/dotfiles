@@ -34,10 +34,10 @@
 
     # Recursive icon lookup to avoid having to define all lookup paths.
     enable_recursive_icon_lookup = true
-    icon_theme = Papirus
+    icon_theme = Win10Sur
 
     # Keep icons small.
-    min_icon_size = 24
+    min_icon_size = 16
     max_icon_size = 32
 
     # Remove the progress bar border.
@@ -62,10 +62,10 @@
 [backlight]
     appname = Backlight
     format = "<b>%a</b>\n%b"
-    foreground = "#000000"
-    background = "#BCF4F595"
-    highlight = "#BCF4F5"
-    default_icon = brightnesssettings
+    foreground = "#363636"
+    background = "#A9ABAC90"
+    highlight = "#363636"
+    default_icon = display-brightness-medium-symbolic
     timeout = 1
 
 # vim: ft=cfg
