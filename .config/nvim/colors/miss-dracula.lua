@@ -336,6 +336,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
 
     -- Winbar styling.
     WinBar = { fg = colors.fg, bg = colors.transparent_black },
+    WinBarNC = { bg = colors.transparent_black },
     WinBarSeparator = { fg = colors.green, bg = colors.transparent_black },
     WinBarSpecial = { fg = colors.bright_magenta, bg = colors.transparent_black, italic = true },
 
