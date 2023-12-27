@@ -57,6 +57,9 @@ map <space> toggle
 # Backtick for going to a bookmark.
 map ` mark-load
 
+# Also use enter for opening files.
+map <enter> open
+
 # File creation.
 map o push %touch<space>
 cmd mkdir %mkdir -p "$@"
