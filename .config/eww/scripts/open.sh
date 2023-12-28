@@ -6,4 +6,4 @@ if [[ ! $(pidof eww) ]]; then
 fi
 
 # Open the widgets.
-eww open-many cal statusbar time
+eww open-many cal time

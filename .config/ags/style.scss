@@ -1,0 +1,31 @@
+// Color palette.
+$fuchsia: #E11299;
+$lilac: #D0B5F3;
+
+// Reset the default styling.
+* {
+    all: unset;
+}
+
+.box {
+    background-color: rgba($lilac, 0.3);
+    border: 1px solid $lilac;
+    border-radius: 4px;
+    border-width: 1px;
+    font-family: 'Cartograph CF';
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+}
+
+calendar {
+    padding: 2px;
+
+    &.highlight, &.button {
+        color: $lilac;
+    }
+
+    &:selected {
+        color: $fuchsia;
+    }
+}
