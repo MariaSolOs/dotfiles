@@ -6,6 +6,8 @@ return {
         opts = {
             notify_on_error = false,
             formatters_by_ft = {
+                javascript = { 'dprint' },
+                json = { 'dprint' },
                 lua = { 'stylua' },
                 python = { 'black' },
                 sh = { 'shfmt' },
