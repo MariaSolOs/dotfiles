@@ -73,9 +73,6 @@ return {
                     winopts = {
                         preview = { hidden = 'hidden' },
                     },
-                    actions = {
-                        ['ctrl-g'] = actions.toggle_ignore,
-                    },
                 },
                 grep = {
                     header_prefix = icons.misc.search .. ' ',

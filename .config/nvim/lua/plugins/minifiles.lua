@@ -17,9 +17,9 @@ local function map_split(buf_id, lhs, direction)
         end)
 
         minifiles.set_target_window(new_target_window)
+
         -- Go in and close the explorer.
-        minifiles.go_in()
-        minifiles.close()
+        minifiles.go_in { close_on_file = true }
     end
 
     vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = 'Split ' .. string.sub(direction, 12) })
