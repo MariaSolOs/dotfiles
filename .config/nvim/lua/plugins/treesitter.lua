@@ -59,7 +59,6 @@ return {
                 'typescript',
                 'vim',
                 'vimdoc',
-                'yuck',
             },
             highlight = {
                 enable = true,
