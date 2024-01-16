@@ -1,31 +1,50 @@
 // Color palette.
-$fuchsia: #E11299;
+$green: #97EDA2;
 $lilac: #D0B5F3;
+$pink: #E7A1D7;
+$yellow: #F6F6B6;
 
 // Reset the default styling.
-* {
-    all: unset;
-}
+* { all: unset; }
 
-.box {
-    background-color: rgba($lilac, 0.3);
-    border: 1px solid $lilac;
+// Statusbar boxes.
+%box {
     border-radius: 4px;
     border-width: 1px;
     font-family: 'Cartograph CF';
     font-size: 10px;
     font-weight: 600;
-    padding: 1px 5px;
+    padding: 0px 5px;
 }
 
+@mixin bordered-box($color) {
+    background-color: rgba($color, 0.3);
+    border: 1px solid $color;
+}
+
+.green-box {
+    @extend %box;
+    @include bordered-box($green);
+}
+
+.lilac-box {
+    @extend %box;
+    @include bordered-box($lilac);
+}
+
+.pink-box {
+    @extend %box;
+    @include bordered-box($pink);
+}
+
+.yellow-box {
+    @extend %box;
+    @include bordered-box($yellow);
+}
+
+// Calendar window.
 calendar {
     padding: 2px;
-
-    &.highlight, &.button {
-        color: $lilac;
-    }
-
-    &:selected {
-        color: $fuchsia;
-    }
+    &.highlight, &.button { color: $lilac; }
+    &:selected { color: $pink; }
 }

@@ -1,5 +1,6 @@
 import App from 'resource:///com/github/Aylur/ags/app.js';
-import { exec } from 'resource:///com/github/Aylur/ags/utils.js';
+import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
+import { exec, execAsync } from 'resource:///com/github/Aylur/ags/utils.js';
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import { Widget } from 'resource:///com/github/Aylur/ags/widget.js';
 
@@ -8,15 +9,13 @@ const scss = `${App.configDir}/style.scss`;
 const css = `${App.configDir}/style.css`;
 exec(`sass ${scss} ${css}`);
 
-// Current time.
-const time = new Variable('', {
-    poll: [1000, 'date +"%I:%M %p"', out => `󰅐 ${out}`],
-});
-
-// Current date.
-const date = new Variable('', {
-    poll: [1000, 'date +"%A, %B %d / %Y"', out => ` ${out}`],
-});
+/**
+ * Removes the double quotes from a string.
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+const unquoteString = str => str.replace(/"/g, '');
 
 // Whether the cursor is hovering the date box.
 const hoveringDate = new Variable(false);
@@ -27,30 +26,59 @@ export default {
         Widget.Window({
             name: 'statusbar',
             anchor: ['top', 'left', 'right'],
-            height_request: 16,
             margins: [2, 2, 1, 2],
             exclusivity: 'exclusive',
-            child: Widget.Box({
-                spacing: 2,
-                hpack: 'end',
-                children: [
-                    // Time box.
-                    Widget.Label({
-                        class_name: 'box',
-                        label: time.bind(),
+            child: Widget.CenterBox({
+                // Battery status.
+                start_widget: Widget.Box({
+                    class_name: Battery.bind('percent').transform(/** @return {string} */ p => {
+                        if (p < 20) return 'pink-box';
+                        if (p < 40) return 'yellow-box';
+                        return 'green-box';
                     }),
-                    // Date box.
-                    Widget.EventBox({
-                        child: Widget.Label({
-                            class_name: 'box',
-                            label: date.bind(),
+                    hpack: 'start',
+                    children: [
+                        Widget.Icon({
+                            icon: Battery.bind('percent').transform(p =>
+                                `battery-level-${Math.floor(p / 10) * 10}-symbolic`
+                            ),
                         }),
-                        setup: self =>
-                            self
-                                .on('enter-notify-event', () => hoveringDate.setValue(true))
-                                .on('leave-notify-event', () => hoveringDate.setValue(false)),
-                    }),
-                ],
+                        Widget.Label({
+                            label: Battery.bind('percent').transform(p => ` ${p.toFixed(0)}%`),
+                        }),
+                    ],
+                }),
+                end_widget: Widget.Box({
+                    spacing: 2,
+                    hpack: 'end',
+                    children: [
+                        // Time box.
+                        Widget.Label({
+                            class_name: 'lilac-box',
+                            setup: self =>
+                                self
+                                    .poll(1000, self =>
+                                        execAsync(['date', '+"%I:%M %p"'])
+                                            .then(date => self.label = `󰅐 ${unquoteString(date)}`)),
+                        }),
+                        // Date box. When hovering over it, the calendar is shown.
+                        Widget.EventBox({
+                            child: Widget.Label({
+                                class_name: 'lilac-box',
+                                setup: self =>
+                                    self
+                                        .poll(1000, self =>
+                                            execAsync(['date', '+"%A, %B %d / %Y"']).then(date =>
+                                                self.label = ` ${unquoteString(date)}`
+                                            )),
+                            }),
+                            setup: self =>
+                                self
+                                    .on('enter-notify-event', () => hoveringDate.setValue(true))
+                                    .on('leave-notify-event', () => hoveringDate.setValue(false)),
+                        }),
+                    ],
+                }),
             }),
         }),
         // Calendar window.
@@ -65,7 +93,7 @@ export default {
                     transition: 'slide_down',
                     transition_duration: 300,
                     child: Widget.Box({
-                        class_name: 'box',
+                        class_name: 'lilac-box',
                         child: Widget.Calendar({}),
                     }),
                 }),
