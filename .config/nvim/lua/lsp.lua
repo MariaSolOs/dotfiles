@@ -58,15 +58,7 @@ local function on_attach(client, bufnr)
 
     if client.supports_method(methods.textDocument_codeAction) then
         keymap('<leader>ca', function()
-            require('fzf-lua').lsp_code_actions {
-                winopts = {
-                    relative = 'cursor',
-                    width = 0.5,
-                    height = 0.6,
-                    row = 1,
-                    preview = { vertical = 'up:70%' },
-                },
-            }
+            keymap('<leader>ca', vim.lsp.buf.code_action, 'Code actions', { 'n', 'v' })
         end, 'Code actions', { 'n', 'v' })
     end
 
