@@ -8,6 +8,11 @@ function M.render()
     -- Get the path and expand variables.
     local path = vim.fs.normalize(vim.fn.expand '%:p' --[[@as string]])
 
+    -- No special styling for diff views.
+    if vim.startswith(path, 'diffview') then
+        return string.format('%%#Winbar#%s', path)
+    end
+
     -- Replace slashes by arrows.
     local separator = ' %#WinbarSeparator# '
 
@@ -33,7 +38,7 @@ function M.render()
         end
         if prefix ~= '' then
             path = path:gsub('^' .. prefix_path, '')
-            prefix = string.format('%%#WinBarSpecial#%s %s%s', folder_icon, prefix, separator)
+            prefix = string.format('%%#WinBarDir#%s %s%s', folder_icon, prefix, separator)
         end
     end
 

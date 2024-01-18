@@ -323,6 +323,8 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     DiffChange = { fg = colors.yellow, bg = colors.transparent_yellow },
     DiffDelete = { fg = colors.red, bg = colors.transparent_red },
     DiffText = { fg = colors.bright_white, bg = colors.transparent_black },
+    DiffviewFolderSign = { fg = colors.cyan },
+    DiffviewNonText = { fg = colors.lilac },
     diffAdded = { fg = colors.bright_green, bold = true },
     diffChanged = { fg = colors.bright_yellow, bold = true },
     diffRemoved = { fg = colors.bright_red, bold = true },
@@ -334,8 +336,9 @@ local groups = vim.tbl_extend('error', statusline_groups, {
 
     -- Winbar styling.
     WinBar = { fg = colors.fg, bg = colors.transparent_black },
+    WinBarDir = { fg = colors.bright_magenta, bg = colors.transparent_black, italic = true },
+    WinBarNC = { bg = colors.transparent_black },
     WinBarSeparator = { fg = colors.green, bg = colors.transparent_black },
-    WinBarSpecial = { fg = colors.bright_magenta, bg = colors.transparent_black, italic = true },
 
     -- Quickfix window.
     BqfPreviewRange = { fg = colors.bg, bg = colors.bright_magenta },
