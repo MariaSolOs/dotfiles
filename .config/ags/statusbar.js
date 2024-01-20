@@ -29,9 +29,7 @@ const StatusbarWindow = Widget.Window({
             }),
             hpack: 'start',
             children: [
-                Widget.Icon({
-                    icon: Battery.bind('percent').transform(p => `battery-level-${Math.ceil(p / 10) * 10}-symbolic`),
-                }),
+                Widget.Icon({ icon: Battery.bind('icon_name') }),
                 Widget.Label({
                     label: Battery.bind('percent').transform(p => ` ${p.toFixed(0)}%`),
                 }),
