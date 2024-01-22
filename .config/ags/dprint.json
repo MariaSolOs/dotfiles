@@ -1,8 +1,10 @@
 {
     "indentWidth": 4,
     "typescript": {
+        "arrowFunction.useParentheses": "force",
         "quoteStyle": "preferSingle",
-        "semiColons": "always"
+        "semiColons": "always",
+        "useBraces": "always"
     },
     "json": {
     },

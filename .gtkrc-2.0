@@ -3,7 +3,7 @@
 
 include "/home/mariasolos/.gtkrc-2.0.mine"
 gtk-theme-name="Catppuccin-Mocha-Standard-Pink-Dark"
-gtk-icon-theme-name="Papirus"
+gtk-icon-theme-name="Win10Sur"
 gtk-font-name="Hasklug Nerd Font Medium 9"
 gtk-cursor-theme-name="Bibata-Modern-Classic"
 gtk-cursor-theme-size=16

@@ -1,7 +1,7 @@
 import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
 import { execAsync } from 'resource:///com/github/Aylur/ags/utils.js';
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
-import { Widget } from 'resource:///com/github/Aylur/ags/widget.js';
+import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
 /**
  * Removes the double quotes from a string.
@@ -9,12 +9,12 @@ import { Widget } from 'resource:///com/github/Aylur/ags/widget.js';
  * @param {string} str
  * @returns {string}
  */
-const unquoteString = str => str.replace(/"/g, '');
+const unquoteString = (str) => str.replace(/"/g, '');
 
 // Whether the cursor is hovering the date box.
 const hoveringDate = new Variable(false);
 
-const StatusbarWindow = Widget.Window({
+const Statusbar = Widget.Window({
     name: 'statusbar',
     anchor: ['top', 'left', 'right'],
     margins: [2, 2, 1, 2],
@@ -22,16 +22,21 @@ const StatusbarWindow = Widget.Window({
     child: Widget.CenterBox({
         // Battery status. The pill's color depends on the level.
         start_widget: Widget.Box({
-            class_name: Battery.bind('percent').transform(/** @return {string} */ p => {
-                if (p < 20) return 'pink-box';
-                if (p < 40) return 'yellow-box';
+            class_name: Battery.bind('percent').transform(/** @return {string} */ (p) => {
+                if (p < 20) {
+                    return 'pink-box';
+                }
+                if (p < 40) {
+                    return 'yellow-box';
+                }
+
                 return 'green-box';
             }),
             hpack: 'start',
             children: [
                 Widget.Icon({ icon: Battery.bind('icon_name') }),
                 Widget.Label({
-                    label: Battery.bind('percent').transform(p => ` ${p.toFixed(0)}%`),
+                    label: Battery.bind('percent').transform((p) => ` ${p.toFixed(0)}%`),
                 }),
             ],
         }),
@@ -42,24 +47,24 @@ const StatusbarWindow = Widget.Window({
                 // Time box.
                 Widget.Label({
                     class_name: 'lilac-box',
-                    setup: self =>
+                    setup: (self) =>
                         self
-                            .poll(1000, self =>
+                            .poll(1000, (self) =>
                                 execAsync(['date', '+"%I:%M %p"'])
-                                    .then(date => self.label = `󰅐 ${unquoteString(date)}`)),
+                                    .then((date) => self.label = `󰅐 ${unquoteString(date)}`)),
                 }),
                 // Date box. When hovering over it, the calendar is shown.
                 Widget.EventBox({
                     child: Widget.Label({
                         class_name: 'lilac-box',
-                        setup: self =>
+                        setup: (self) =>
                             self
-                                .poll(1000, self =>
-                                    execAsync(['date', '+"%A, %B %d / %Y"']).then(date =>
+                                .poll(1000, (self) =>
+                                    execAsync(['date', '+"%A, %B %d / %Y"']).then((date) =>
                                         self.label = ` ${unquoteString(date)}`
                                     )),
                     }),
-                    setup: self =>
+                    setup: (self) =>
                         self
                             .on('enter-notify-event', () => hoveringDate.setValue(true))
                             .on('leave-notify-event', () => hoveringDate.setValue(false)),
@@ -69,12 +74,12 @@ const StatusbarWindow = Widget.Window({
     }),
 });
 
-const CalendarWindow = Widget.Window({
+const Calendar = Widget.Window({
     name: 'calendar',
     anchor: ['top', 'right'],
     margins: [2, 2, 0, 0],
     child: Widget.Box({
-        css: 'padding: 1px;', // HACK: For the animation to work an initial space allocation is needed.
+        css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
         child: Widget.Revealer({
             reveal_child: hoveringDate.bind(),
             transition: 'slide_down',
@@ -87,4 +92,4 @@ const CalendarWindow = Widget.Window({
     }),
 });
 
-export { CalendarWindow, StatusbarWindow };
+export { Calendar, Statusbar };

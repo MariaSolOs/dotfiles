@@ -1,8 +1,10 @@
 // Color palette.
+$blue: #BCF4F5;
 $green: #97EDA2;
 $lilac: #D0B5F3;
 $pink: #E7A1D7;
 $yellow: #F6F6B6;
+
 
 // Reset the default styling.
 * { all: unset; }
@@ -40,6 +42,21 @@ $yellow: #F6F6B6;
 .yellow-box {
     @extend %box;
     @include bordered-box($yellow);
+}
+
+.popup {
+    border-radius: 4px;
+    font-family: 'Cartograph CF';
+    font-size: 10px;
+    padding: 5px;
+    border: $blue 1px solid;
+    background-color: rgba($blue, 0.8);
+    color: #000;
+}
+
+.popup-title {
+    font-weight: 600;
+    font-style: italic;
 }
 
 // Calendar window.
