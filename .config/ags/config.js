@@ -1,8 +1,9 @@
 import App from 'resource:///com/github/Aylur/ags/app.js';
 import { exec } from 'resource:///com/github/Aylur/ags/utils.js';
 
-import { Popups } from './notifications.js';
-import { Calendar, Statusbar } from './statusbar.js';
+import { Popups } from './widgets/popups.js';
+import { Calendar, Statusbar } from './widgets/statusbar.js';
+import { SystemPopup } from './widgets/system-popup.js';
 
 // Global variables for use in `ags -r`.
 (async () => {
@@ -20,5 +21,6 @@ export default {
         Calendar,
         Popups,
         Statusbar,
+        SystemPopup,
     ],
 };

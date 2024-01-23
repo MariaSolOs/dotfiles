@@ -3,9 +3,11 @@ import { exec, execAsync } from 'resource:///com/github/Aylur/ags/utils.js';
 
 class BacklightService extends Service {
     static {
-        Service.register(this, {}, {
-            'brightness': ['float', 'rw'],
-        });
+        Service.register(
+            this,
+            { 'brightness-changed': ['float'] },
+            { 'brightness': ['float', 'rw'] },
+        );
     }
 
     #brightness = 0;
@@ -30,20 +32,8 @@ class BacklightService extends Service {
             .catch(console.error);
     }
 
-    notify() {
-        // Send a notification with the current brightness value.
-        execAsync([
-            'notify-send',
-            '-a',
-            'Backlight',
-            '-i',
-            'display-brightness-medium-symbolic',
-            '-r',
-            '1',
-            '-t',
-            '2000',
-            `${(this.#brightness * 100).toFixed(0)}%`,
-        ]).catch(console.error);
+    emitChange() {
+        this.emit('brightness-changed', this.#brightness);
     }
 
     constructor() {
