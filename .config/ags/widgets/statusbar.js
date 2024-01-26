@@ -1,4 +1,5 @@
 import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
+import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
 import { execAsync } from 'resource:///com/github/Aylur/ags/utils.js';
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
@@ -37,6 +38,15 @@ const Statusbar = Widget.Window({
                 Widget.Icon({ icon: Battery.bind('icon_name') }),
                 Widget.Label({
                     label: Battery.bind('percent').transform((p) => ` ${p.toFixed(0)}%`),
+                }),
+            ],
+        }),
+        center_widget: Widget.Box({
+            class_name: 'lilac-box',
+            children: [
+                Widget.Icon('laptop-symbolic'),
+                Widget.Label({
+                    label: Hyprland.active.workspace.bind('id').transform((id) => ` ${id}`),
                 }),
             ],
         }),
