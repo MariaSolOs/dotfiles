@@ -29,7 +29,7 @@ vim.o.linebreak = true
 vim.o.foldcolumn = '1'
 vim.o.foldlevelstart = 99
 vim.o.foldmethod = 'expr'
-vim.wo.foldtext = 'v:lua.vim.treesitter.foldtext()'
+vim.wo.foldtext = ''
 vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 -- UI characters.
