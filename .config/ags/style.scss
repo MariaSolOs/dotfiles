@@ -10,37 +10,36 @@ $yellow: #F6F6B6;
 * { all: unset; }
 
 // Statusbar boxes.
-%box {
-    border-radius: 4px;
-    border-width: 1px;
+status-box {
     font-family: 'Cartograph CF';
     font-size: 10px;
     font-weight: 600;
     padding: 0px 5px;
 }
 
-@mixin bordered-box($color) {
+@mixin bordered-box($color: $lilac) {
     background-color: rgba($color, 0.3);
     border: 1px solid $color;
+    border-radius: 4px;
 }
 
 .green-box {
-    @extend %box;
+    @extend status-box;
     @include bordered-box($green);
 }
 
 .lilac-box {
-    @extend %box;
-    @include bordered-box($lilac);
+    @extend status-box;
+    @include bordered-box();
 }
 
 .pink-box {
-    @extend %box;
+    @extend status-box;
     @include bordered-box($pink);
 }
 
 .yellow-box {
-    @extend %box;
+    @extend status-box;
     @include bordered-box($yellow);
 }
 

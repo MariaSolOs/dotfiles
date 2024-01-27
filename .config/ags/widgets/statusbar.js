@@ -1,8 +1,11 @@
+import App from 'resource:///com/github/Aylur/ags/app.js';
 import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
 import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
-import { execAsync } from 'resource:///com/github/Aylur/ags/utils.js';
-import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
+import { execAsync, timeout } from 'resource:///com/github/Aylur/ags/utils.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
+
+// Used for accounting for mouse movement when closing windows.
+const MOUSE_DELAY = 300;
 
 /**
  * Removes the double quotes from a string.
@@ -13,7 +16,10 @@ import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 const unquoteString = (str) => str.replace(/"/g, '');
 
 // Whether the cursor is hovering the date box.
-const hoveringDate = new Variable(false);
+let hoveringDate = false;
+
+// Whether the cursor is hovering the calendar.
+let hoveringCalendar = false;
 
 export const Statusbar = Widget.Window({
     name: 'statusbar',
@@ -23,7 +29,9 @@ export const Statusbar = Widget.Window({
     child: Widget.CenterBox({
         // Battery status. The pill's color depends on the level.
         start_widget: Widget.Box({
-            class_name: Battery.bind('percent').transform(/** @return {string} */ (p) => {
+            hpack: 'start',
+            // @ts-expect-error
+            class_name: Battery.bind('percent').transform((p) => {
                 if (p < 20) {
                     return 'pink-box';
                 }
@@ -33,7 +41,6 @@ export const Statusbar = Widget.Window({
 
                 return 'green-box';
             }),
-            hpack: 'start',
             children: [
                 Widget.Icon({ icon: Battery.bind('icon_name') }),
                 Widget.Label({
@@ -41,6 +48,7 @@ export const Statusbar = Widget.Window({
                 }),
             ],
         }),
+        // Number of the current Hyprland workspace.
         center_widget: Widget.Box({
             class_name: 'lilac-box',
             children: [
@@ -76,8 +84,22 @@ export const Statusbar = Widget.Window({
                     }),
                     setup: (self) =>
                         self
-                            .on('enter-notify-event', () => hoveringDate.setValue(true))
-                            .on('leave-notify-event', () => hoveringDate.setValue(false)),
+                            .on('enter-notify-event', () => {
+                                if (!hoveringCalendar) {
+                                    App.openWindow('calendar');
+                                }
+
+                                hoveringDate = true;
+                            })
+                            .on('leave-notify-event', () => {
+                                hoveringDate = false;
+
+                                timeout(MOUSE_DELAY, () => {
+                                    if (!hoveringCalendar) {
+                                        App.closeWindow('calendar');
+                                    }
+                                });
+                            }),
                 }),
             ],
         }),
@@ -88,16 +110,21 @@ export const Calendar = Widget.Window({
     name: 'calendar',
     anchor: ['top', 'right'],
     margins: [2, 2, 0, 0],
+    visible: false,
     child: Widget.Box({
-        css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
-        child: Widget.Revealer({
-            reveal_child: hoveringDate.bind(),
-            transition: 'slide_down',
-            transition_duration: 300,
-            child: Widget.Box({
-                class_name: 'lilac-box',
-                child: Widget.Calendar({}),
-            }),
+        class_name: 'lilac-box',
+        child: Widget.Calendar({
+            setup: (self) =>
+                self.on('enter-notify-event', () => hoveringCalendar = true)
+                    .on('leave-notify-event', () => {
+                        hoveringCalendar = false;
+
+                        timeout(MOUSE_DELAY, () => {
+                            if (!hoveringDate) {
+                                App.closeWindow('calendar');
+                            }
+                        });
+                    }),
         }),
     }),
 });

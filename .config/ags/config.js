@@ -5,8 +5,6 @@ import { Popups } from './widgets/popups.js';
 import { Calendar, Statusbar } from './widgets/statusbar.js';
 import { SystemPopup } from './widgets/system-popup.js';
 
-// TODO: Power menu for shutdown, reboot, etc.
-
 // Global variables for use in `ags -r`.
 (async () => {
     globalThis.backlight = (await import('./services/backlight.js')).default;
