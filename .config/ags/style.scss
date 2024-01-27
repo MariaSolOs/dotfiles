@@ -1,10 +1,10 @@
 // Color palette.
 $blue: #BCF4F5;
 $green: #97EDA2;
+$grey: #A9ABAC;
 $lilac: #D0B5F3;
 $pink: #E7A1D7;
 $yellow: #F6F6B6;
-
 
 // Reset the default styling.
 * { all: unset; }
@@ -62,7 +62,7 @@ $yellow: #F6F6B6;
 .system-popup {
     min-width: 80px;
     min-height: 80px;
-    color: $yellow;
+    color: $grey;
 }
 
 // Calendar window.

@@ -8,6 +8,7 @@ import { SystemPopup } from './widgets/system-popup.js';
 // Global variables for use in `ags -r`.
 (async () => {
     globalThis.backlight = (await import('./services/backlight.js')).default;
+    globalThis.audio = (await import('./services/audio.js')).default;
 })();
 
 // Compile the CSS and watch for changes.

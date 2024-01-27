@@ -15,7 +15,7 @@ const unquoteString = (str) => str.replace(/"/g, '');
 // Whether the cursor is hovering the date box.
 const hoveringDate = new Variable(false);
 
-const Statusbar = Widget.Window({
+export const Statusbar = Widget.Window({
     name: 'statusbar',
     anchor: ['top', 'left', 'right'],
     margins: [2, 2, 1, 2],
@@ -84,7 +84,7 @@ const Statusbar = Widget.Window({
     }),
 });
 
-const Calendar = Widget.Window({
+export const Calendar = Widget.Window({
     name: 'calendar',
     anchor: ['top', 'right'],
     margins: [2, 2, 0, 0],
@@ -101,5 +101,3 @@ const Calendar = Widget.Window({
         }),
     }),
 });
-
-export { Calendar, Statusbar };

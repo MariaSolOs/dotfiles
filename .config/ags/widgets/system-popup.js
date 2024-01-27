@@ -1,6 +1,7 @@
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
+import Audio from '../services/audio.js';
 import Backlight from '../services/backlight.js';
 
 // For debouncing the popup's auto-closing.
@@ -11,6 +12,21 @@ const icon = new Variable('');
 
 // The value of the progress circle.
 const value = new Variable(0);
+
+/**
+ * @param {number} newValue
+ * @param {string} newIcon
+ */
+const updateUI = (newValue, newIcon) => {
+    value.setValue(newValue);
+    icon.setValue(newIcon);
+
+    // Hide the popup after a second, unless the value is changed again.
+    if (closeTimeoutId) {
+        clearTimeout(closeTimeoutId);
+    }
+    closeTimeoutId = setTimeout(() => icon.setValue(''), 1000);
+};
 
 export const SystemPopup = Widget.Window({
     name: 'system-popup',
@@ -28,22 +44,44 @@ export const SystemPopup = Widget.Window({
                     size: 32,
                 }),
             }),
-            setup: (self) =>
-                // Display the brightness value when changing it.
+            setup: (self) => {
+                // Listen to changes in the screen brightness and volume.
                 self.hook(Backlight, (_, brightness) => {
                     if (!brightness) {
                         return;
                     }
 
-                    value.setValue(brightness);
-                    icon.setValue('display-brightness-medium-symbolic');
+                    updateUI(brightness, 'display-brightness-medium-symbolic');
+                }, 'brightness-changed');
 
-                    // Hide the popup after a second, unless the brightness is changed again.
-                    if (closeTimeoutId) {
-                        clearTimeout(closeTimeoutId);
+                self.hook(Audio, (_, volume) => {
+                    if (!volume) {
+                        return;
                     }
-                    closeTimeoutId = setTimeout(() => icon.setValue(''), 1000);
-                }, 'brightness-changed'),
+
+                    let icon = '';
+
+                    if (Audio.muted) {
+                        icon = 'muted';
+                        volume = 0;
+                    } else {
+                        /**
+                         * @type {Array<[number, string]>}
+                         */
+                        const icons = [
+                            [101, 'overamplified'],
+                            [67, 'high'],
+                            [34, 'medium'],
+                            [1, 'low'],
+                            [0, 'muted'],
+                        ];
+                        icon = icons.find(([threshold]) => threshold <= volume * 100)?.[1]
+                            || icon;
+                    }
+
+                    updateUI(volume, `audio-volume-${icon}-symbolic`);
+                }, 'audio-changed');
+            },
         }),
     }),
 });
