@@ -1,0 +1,20 @@
+configuration {
+    combi-display-format: " ({mode})  {text}";
+    combi-modes: "window,drun,run";
+    display-combi: "";
+    display-drun: " App";
+    display-filebrowser: " File";
+    display-run: " Run";
+    display-window: " Window";
+    font: "Hasklug Nerd Font Mono DemiBold 9";
+    modes: "window,drun,run";
+    show-icons: true;
+    window-format: "{t}";
+    window-thumbnail: true;
+
+    run, drun {
+        fallback-icon: "folder-script-symbolic";
+    }
+}
+
+@theme "miss-dracula.rasi"
