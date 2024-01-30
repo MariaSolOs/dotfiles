@@ -9,48 +9,46 @@ $yellow: #F6F6B6;
 // Reset the default styling.
 * { all: unset; }
 
-// Statusbar boxes.
-status-box {
+// Shared mixins.
+@mixin bordered-box($color: $lilac, $filled: true) {
+    @if $filled {
+        background-color: rgba($color, 0.3);
+    }
+
+    border: 1px solid $color;
+    border-radius: 4px;
+}
+
+// Status bar.
+%status-box {
     font-family: 'Cartograph CF';
     font-size: 10px;
     font-weight: 600;
     padding: 0px 5px;
 }
 
-@mixin bordered-box($color: $lilac) {
-    background-color: rgba($color, 0.3);
-    border: 1px solid $color;
-    border-radius: 4px;
+$status-colors: ('green': $green, 'grey': $grey, 'lilac': $lilac, 'pink': $pink, 'yellow': $yellow);
+@each $name, $color in $status-colors {
+    .#{$name}-box {
+        @extend %status-box;
+        @include bordered-box($color);
+    }
 }
 
-.green-box {
-    @extend status-box;
-    @include bordered-box($green);
+calendar {
+    padding: 2px;
+    &.highlight, &.button, &:selected { color: $lilac; }
 }
 
-.lilac-box {
-    @extend status-box;
-    @include bordered-box();
-}
-
-.pink-box {
-    @extend status-box;
-    @include bordered-box($pink);
-}
-
-.yellow-box {
-    @extend status-box;
-    @include bordered-box($yellow);
-}
-
+// Notification popups.
 .popup {
-    border-radius: 4px;
+    @include bordered-box($blue, false);
+
     font-family: 'Cartograph CF';
     font-size: 10px;
     padding: 5px;
-    border: $blue 1px solid;
-    background-color: rgba($blue, 0.6);
-    color: #000;
+    background-color: #00000090;
+    color: $blue;
 }
 
 .popup-title {
@@ -58,14 +56,14 @@ status-box {
     font-style: italic;
 }
 
+// Backlight/audio popups.
 .system-popup {
     min-width: 80px;
     min-height: 80px;
     color: $grey;
 }
 
-// Calendar window.
-calendar {
-    padding: 2px;
-    &.highlight, &.button, &:selected { color: $lilac; }
+// Dashboard.
+.dashboard-overlay {
+    @include bordered-box($lilac, false);
 }
