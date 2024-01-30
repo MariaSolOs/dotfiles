@@ -194,7 +194,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     ['@punctuation.delimiter'] = { fg = colors.fg },
     ['@string'] = { fg = colors.yellow },
     ['@string.escape'] = { fg = colors.cyan },
-    ['@string.regexp'] = { fg = colors.red },
+    ['@string.regexp'] = { fg = colors.bright_red },
     ['@string.special.symbol'] = { fg = colors.purple },
     ['@structure'] = { fg = colors.purple },
     ['@tag'] = { fg = colors.cyan },
