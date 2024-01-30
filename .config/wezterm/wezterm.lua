@@ -89,6 +89,9 @@ config.font_rules = {
 config.underline_position = -6
 config.underline_thickness = '250%'
 
+-- Disable automatic update notifications (I do this often anyway).
+config.check_for_updates = false
+
 -- Keybindings.
 config.disable_default_key_bindings = true
 local mods = 'ALT|SHIFT'
