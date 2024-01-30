@@ -39,30 +39,33 @@ export const Popups = Widget.Window({
                     icon = Widget.Icon({ icon, size: 16 });
                 }
 
-                return Widget.Box({
-                    class_name: 'popup',
-                    spacing: 4,
-                    children: [
-                        icon,
-                        Widget.Box({
-                            vertical: true,
-                            children: [
-                                Widget.Label({
-                                    label: popup.app_name,
-                                    justification: 'left',
-                                    hexpand: true,
-                                    xalign: 0,
-                                    class_name: 'popup-title',
-                                }),
-                                Widget.Label({
-                                    label: popup.summary,
-                                    justification: 'left',
-                                    hexpand: true,
-                                    xalign: 0,
-                                }),
-                            ],
-                        }),
-                    ],
+                return Widget.Button({
+                    on_clicked: () => popup.close(),
+                    child: Widget.Box({
+                        class_name: 'popup',
+                        spacing: 8,
+                        children: [
+                            icon,
+                            Widget.Box({
+                                vertical: true,
+                                children: [
+                                    Widget.Label({
+                                        label: popup.app_name,
+                                        justification: 'left',
+                                        hexpand: true,
+                                        xalign: 0,
+                                        class_name: 'popup-title',
+                                    }),
+                                    Widget.Label({
+                                        label: popup.summary,
+                                        justification: 'left',
+                                        hexpand: true,
+                                        xalign: 0,
+                                    }),
+                                ],
+                            }),
+                        ],
+                    }),
                 });
             })
         ),
