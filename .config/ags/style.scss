@@ -37,6 +37,7 @@ $status-colors: ('green': $green, 'grey': $grey, 'lilac': $lilac, 'pink': $pink,
 
 calendar {
     padding: 2px;
+
     &.highlight, &.button, &:selected { color: $lilac; }
 }
 
@@ -44,26 +45,65 @@ calendar {
 .popup {
     @include bordered-box($blue, false);
 
-    font-family: 'Cartograph CF';
-    font-size: 10px;
-    padding: 5px;
     background-color: #00000090;
     color: $blue;
+    font-family: 'Cartograph CF';
+    font-size: 11px;
+    padding: 8px;
 }
 
 .popup-title {
-    font-weight: 600;
     font-style: italic;
+    font-weight: 600;
 }
 
 // Backlight/audio popups.
 .system-popup {
-    min-width: 80px;
-    min-height: 80px;
     color: $grey;
+    min-height: 80px;
+    min-width: 80px;
 }
 
 // Dashboard.
 .dashboard-overlay {
     @include bordered-box($lilac, false);
+}
+
+// Application launcher.
+window#applauncher {
+    @include bordered-box($lilac, false);
+
+    background-color: #00000090;
+
+    .launcher-scrollable {
+        margin: 8px;
+
+        scrolledwindow {
+            min-height: 350px;
+            min-width: 300px;
+        }
+    }
+
+    entry {
+        @include bordered-box(#FFF);
+
+        padding: 4px;
+        margin-bottom: 8px;
+    }
+
+    button {
+        border-radius: 4px;
+        font-weight: 500;
+        padding: 2px;
+
+        &:focus {
+            background-color: #D0B5F330;
+        }
+
+        .app-description {
+            font-size: 10px;
+            font-style: italic;
+            color: $grey;
+        }
+    }
 }

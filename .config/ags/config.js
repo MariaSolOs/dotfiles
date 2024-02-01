@@ -1,6 +1,7 @@
 import App from 'resource:///com/github/Aylur/ags/app.js';
 import { exec, monitorFile } from 'resource:///com/github/Aylur/ags/utils.js';
 
+import { AppLauncher } from './widgets/applauncher.js';
 import { Popups } from './widgets/popups.js';
 import { Calendar, Statusbar } from './widgets/statusbar.js';
 import { SystemPopup } from './widgets/system-popup.js';
@@ -27,6 +28,7 @@ monitorFile(
 export default {
     style: css,
     windows: [
+        AppLauncher(),
         Calendar,
         Popups,
         Statusbar,
