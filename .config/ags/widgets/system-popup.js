@@ -4,6 +4,10 @@ import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 import Audio from '../services/audio.js';
 import Backlight from '../services/backlight.js';
 
+/**
+ * @typedef {Array<[number, string]>} Intensities
+ */
+
 // For debouncing the popup's auto-closing.
 let closeTimeoutId = null;
 
@@ -51,7 +55,15 @@ export const SystemPopup = Widget.Window({
                         return;
                     }
 
-                    updateUI(brightness, 'display-brightness-medium-symbolic');
+                    /** @type {Intensities} */
+                    const intensities = [
+                        [80, 'high'],
+                        [34, 'medium'],
+                        [1, 'low'],
+                    ];
+                    const intensity = intensities.find(([threshold]) => threshold <= brightness * 100)?.[1];
+
+                    updateUI(brightness, `display-brightness-${intensity}-symbolic`);
                 }, 'brightness-changed');
 
                 self.hook(Audio, (_, volume) => {
@@ -59,27 +71,25 @@ export const SystemPopup = Widget.Window({
                         return;
                     }
 
-                    let icon = '';
+                    let intensity = '';
 
                     if (Audio.muted) {
-                        icon = 'muted';
+                        intensity = 'muted';
                         volume = 0;
                     } else {
-                        /**
-                         * @type {Array<[number, string]>}
-                         */
-                        const icons = [
+                        /** @type {Intensities} */
+                        const intensities = [
                             [101, 'overamplified'],
                             [67, 'high'],
                             [34, 'medium'],
                             [1, 'low'],
                             [0, 'muted'],
                         ];
-                        icon = icons.find(([threshold]) => threshold <= volume * 100)?.[1]
-                            || icon;
+                        intensity = intensities.find(([threshold]) => threshold <= volume * 100)?.[1]
+                            || intensity;
                     }
 
-                    updateUI(volume, `audio-volume-${icon}-symbolic`);
+                    updateUI(volume, `audio-volume-${intensity}-symbolic`);
                 }, 'audio-changed');
             },
         }),
