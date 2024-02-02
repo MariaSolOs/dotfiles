@@ -89,7 +89,7 @@ export const AppLauncher = () => {
         // Filter out the list.
         on_change: ({ text }) =>
             apps.forEach((item) => {
-                item.visible = item.attribute.app.match(text);
+                item.visible = text ? item.attribute.app.match(text) : true;
             }),
     });
 
@@ -97,7 +97,7 @@ export const AppLauncher = () => {
         name: WINDOW_NAME,
         popup: true,
         visible: false,
-        focusable: true,
+        keymode: 'on-demand',
         child: Widget.Box({
             vertical: true,
             class_name: 'launcher-scrollable',

@@ -30,7 +30,6 @@ export const Statusbar = Widget.Window({
         // Battery status. The pill's color depends on the level.
         start_widget: Widget.Box({
             hpack: 'start',
-            // @ts-expect-error
             class_name: Battery.bind('percent').transform((p) => {
                 if (p < 20) {
                     return 'pink-box';
