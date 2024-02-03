@@ -20,18 +20,15 @@ $yellow: #F6F6B6;
 }
 
 // Status bar.
-%status-box {
-    font-family: 'Cartograph CF';
-    font-size: 10px;
-    font-weight: 600;
-    padding: 0px 5px;
-}
-
-$status-colors: ('green': $green, 'grey': $grey, 'lilac': $lilac, 'pink': $pink, 'yellow': $yellow);
+$status-colors: ('green': $green, 'lilac': $lilac, 'pink': $pink, 'yellow': $yellow);
 @each $name, $color in $status-colors {
-    .#{$name}-box {
-        @extend %status-box;
+    .#{$name}-status-box {
         @include bordered-box($color);
+
+        font-family: 'Cartograph CF';
+        font-size: 10px;
+        font-weight: 600;
+        padding: 0px 5px;
     }
 }
 

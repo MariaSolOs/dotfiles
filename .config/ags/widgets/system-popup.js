@@ -4,10 +4,6 @@ import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 import Audio from '../services/audio.js';
 import Backlight from '../services/backlight.js';
 
-/**
- * @typedef {Array<[number, string]>} Intensities
- */
-
 // For debouncing the popup's auto-closing.
 let closeTimeoutId = null;
 
@@ -30,6 +26,15 @@ const updateUI = (newValue, newIcon) => {
         clearTimeout(closeTimeoutId);
     }
     closeTimeoutId = setTimeout(() => icon.setValue(''), 1000);
+};
+
+/**
+ * @param {Array<[number, string]>} intensities
+ * @param {number} value
+ */
+const getIntensity = (intensities, value) => {
+    value *= 100;
+    return intensities.find(([threshold]) => threshold <= value)?.[1] || '';
 };
 
 export const SystemPopup = Widget.Window({
@@ -55,14 +60,7 @@ export const SystemPopup = Widget.Window({
                         return;
                     }
 
-                    /** @type {Intensities} */
-                    const intensities = [
-                        [80, 'high'],
-                        [34, 'medium'],
-                        [1, 'low'],
-                    ];
-                    const intensity = intensities.find(([threshold]) => threshold <= brightness * 100)?.[1];
-
+                    const intensity = getIntensity([[80, 'high'], [34, 'medium'], [1, 'low']], brightness);
                     updateUI(brightness, `display-brightness-${intensity}-symbolic`);
                 }, 'brightness-changed');
 
@@ -77,16 +75,10 @@ export const SystemPopup = Widget.Window({
                         intensity = 'muted';
                         volume = 0;
                     } else {
-                        /** @type {Intensities} */
-                        const intensities = [
-                            [101, 'overamplified'],
-                            [67, 'high'],
-                            [34, 'medium'],
-                            [1, 'low'],
-                            [0, 'muted'],
-                        ];
-                        intensity = intensities.find(([threshold]) => threshold <= volume * 100)?.[1]
-                            || intensity;
+                        intensity = getIntensity(
+                            [[101, 'overamplified'], [67, 'high'], [34, 'medium'], [1, 'low'], [0, 'muted']],
+                            volume,
+                        );
                     }
 
                     updateUI(volume, `audio-volume-${intensity}-symbolic`);

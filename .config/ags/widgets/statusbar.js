@@ -11,7 +11,6 @@ const MOUSE_DELAY = 300;
  * Removes the double quotes from a string.
  *
  * @param {string} str
- * @returns {string}
  */
 const unquoteString = (str) => str.replace(/"/g, '');
 
@@ -32,13 +31,13 @@ export const Statusbar = Widget.Window({
             hpack: 'start',
             class_name: Battery.bind('percent').transform((p) => {
                 if (p < 20) {
-                    return 'pink-box';
+                    return 'pink-status-box';
                 }
                 if (p < 40) {
-                    return 'yellow-box';
+                    return 'yellow-status-box';
                 }
 
-                return 'green-box';
+                return 'green-status-box';
             }),
             children: [
                 Widget.Icon({ icon: Battery.bind('icon_name') }),
@@ -49,7 +48,7 @@ export const Statusbar = Widget.Window({
         }),
         // Number of the current Hyprland workspace.
         center_widget: Widget.Box({
-            class_name: 'lilac-box',
+            class_name: 'lilac-status-box',
             children: [
                 Widget.Icon('laptop-symbolic'),
                 Widget.Label({
@@ -63,7 +62,7 @@ export const Statusbar = Widget.Window({
             children: [
                 // Time box.
                 Widget.Label({
-                    class_name: 'lilac-box',
+                    class_name: 'lilac-status-box',
                     setup: (self) =>
                         self
                             .poll(1000, (self) =>
@@ -73,7 +72,7 @@ export const Statusbar = Widget.Window({
                 // Date box. When hovering over it, the calendar is shown.
                 Widget.EventBox({
                     child: Widget.Label({
-                        class_name: 'lilac-box',
+                        class_name: 'lilac-status-box',
                         setup: (self) =>
                             self
                                 .poll(1000, (self) =>
@@ -111,7 +110,7 @@ export const Calendar = Widget.Window({
     margins: [2, 2, 0, 0],
     visible: false,
     child: Widget.Box({
-        class_name: 'lilac-box',
+        class_name: 'lilac-status-box',
         child: Widget.Calendar({
             setup: (self) =>
                 self.on('enter-notify-event', () => hoveringCalendar = true)
