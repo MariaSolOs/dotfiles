@@ -7,7 +7,7 @@ return {
         opts = {
             settings = {
                 tsserver_file_preferences = {
-                    includeInlayParameterNameHints = 'literals',
+                    includeInlayParameterNameHints = 'all',
                     includeInlayVariableTypeHints = true,
                     includeInlayFunctionLikeReturnTypeHints = true,
                 },
