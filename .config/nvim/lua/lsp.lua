@@ -133,6 +133,7 @@ end
 vim.diagnostic.config {
     virtual_text = {
         prefix = '',
+        spacing = 2,
         format = function(diagnostic)
             local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
             local message = vim.split(diagnostic.message, '\n')[1]
