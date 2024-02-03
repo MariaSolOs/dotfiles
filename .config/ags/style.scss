@@ -62,8 +62,22 @@ calendar {
 }
 
 // Dashboard.
-.dashboard-overlay {
-    @include bordered-box($lilac, false);
+window#dashboard {
+    font-family: 'Cartograph CF';
+
+    .dashboard-overlay {
+        @include bordered-box($lilac, false);
+
+        background-color: #000000BB;
+        min-height: 698px;
+        min-width: 1276px;
+    }
+
+    .power-box {
+        @include bordered-box($grey);
+
+        padding: 8px;
+    }
 }
 
 // Application launcher.
