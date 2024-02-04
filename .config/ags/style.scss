@@ -67,6 +67,7 @@ window#calendar {
 // Dashboard.
 window#dashboard {
     font-family: 'Cartograph CF';
+    font-size: 11px;
 
     .dashboard-overlay {
         @include bordered-box($lilac, false);
@@ -98,6 +99,7 @@ window#applauncher {
     @include bordered-box($lilac, false);
 
     background-color: $transparent-black;
+    font-size: 11px;
 
     .launcher-scrollable {
         margin: 8px;
