@@ -46,6 +46,7 @@ export const Popups = Widget.Window({
                             icon,
                             Widget.Box({
                                 vertical: true,
+                                spacing: 2,
                                 children: [[popup.app_name, 'popup-title'], [popup.summary, '']].map((
                                     [label, class_name],
                                 ) => Widget.Label({
