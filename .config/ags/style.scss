@@ -84,6 +84,11 @@ window#dashboard {
             padding: #{$padding}px;
 
             image { color: $color; }
+
+            button:hover {
+                font-weight: 800;
+                color: $color;
+            }
         }
     }
 }
