@@ -1,5 +1,6 @@
 import App from 'resource:///com/github/Aylur/ags/app.js';
 import Applications from 'resource:///com/github/Aylur/ags/service/applications.js';
+import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
 import { execAsync } from 'resource:///com/github/Aylur/ags/utils.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
@@ -13,7 +14,18 @@ const WINDOW_NAME = 'applauncher';
  * @param {App} app
  */
 const launchApp = (app) => {
+    app.frequency += 1;
+
     App.closeWindow(WINDOW_NAME);
+
+    // If the app is already open, focus its window.
+    const appClass = app.wm_class?.toLowerCase() || app.name.toLowerCase();
+    for (const client of Hyprland.clients) {
+        if (client.initialClass.toLowerCase().includes(appClass)) {
+            Hyprland.sendMessage(`dispatch focuswindow address:${client.address}`);
+            return;
+        }
+    }
 
     // Use Wezterm for opening terminal apps.
     const launchCommand = app.app.get_boolean('Terminal') ? 'wezterm -e' : 'sh -c';
@@ -22,7 +34,6 @@ const launchApp = (app) => {
     const executable = app.executable.split(' ')[0];
 
     execAsync(['hyprctl', 'dispatch', 'exec', `${launchCommand} ${executable}`]);
-    app.frequency += 1;
 };
 
 /**
