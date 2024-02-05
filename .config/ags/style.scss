@@ -57,6 +57,14 @@ window#calendar {
     font-weight: 600;
 }
 
+.popup-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    min-height: 16px;
+    min-width: 16px;
+}
+
 // Backlight/audio popups.
 .system-popup {
     color: $grey;
@@ -77,9 +85,13 @@ window#dashboard {
         min-width: 1276px;
     }
 
-    $dashboard-boxes: (('power' 8 $grey) ('weather' 10 $blue));
+    $dashboard-boxes: (
+        ('power' 8 $grey)
+        ('weather' 10 $blue)
+        ('mail' 10 $pink)
+    );
     @each $name, $padding, $color in $dashboard-boxes {
-        .#{$name}-dashboard-box {
+        .#{$name}-dashboard {
             @include bordered-box($color);
 
             padding: #{$padding}px;

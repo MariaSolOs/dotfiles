@@ -17,16 +17,12 @@ export const Popups = Widget.Window({
                 // If present, use the image as the icon.
                 if (popup.image) {
                     icon = Widget.Box({
-                        css: `
-                            background-image: url("${popup.image}");
-                            background-size: contain;
-                            background-repeat: no-repeat;
-                            background-position: center;
-                        `,
+                        class_name: 'popup-image',
+                        css: `background-image: url("${popup.image}");`,
                     });
                 } else {
                     // Else use the application's icon, or a fallback !.
-                    if (popup.app_entry && lookUpIcon(popup.app_entry)) {
+                    if (lookUpIcon(popup.app_entry)) {
                         icon = popup.app_entry;
                     } else if (lookUpIcon(popup.app_icon)) {
                         icon = popup.app_icon;

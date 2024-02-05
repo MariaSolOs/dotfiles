@@ -46,13 +46,16 @@ export const Statusbar = Widget.Window({
                 }),
             ],
         }),
-        // Number of the current Hyprland workspace.
+        // Name/number of the current Hyprland workspace.
         center_widget: Widget.Box({
             class_name: 'lilac-status-box',
             children: [
                 Widget.Icon('laptop-symbolic'),
                 Widget.Label({
-                    label: Hyprland.active.workspace.bind('id').transform((id) => ` ${id}`),
+                    setup: (self) =>
+                        self.hook(Hyprland.active.workspace, () => {
+                            self.label = ` ${Hyprland.active.workspace.name || Hyprland.active.workspace.id}`;
+                        }),
                 }),
             ],
         }),
