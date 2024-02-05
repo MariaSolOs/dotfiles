@@ -77,9 +77,13 @@ window#dashboard {
         min-width: 1276px;
     }
 
-    $dashboard-boxes: (('power' 8 $grey) ('weather' 10 $blue));
+    $dashboard-boxes: (
+        ('power' 8 $grey)
+        ('weather' 10 $blue)
+        ('mail' 10 $pink)
+    );
     @each $name, $padding, $color in $dashboard-boxes {
-        .#{$name}-dashboard-box {
+        .#{$name}-dashboard {
             @include bordered-box($color);
 
             padding: #{$padding}px;

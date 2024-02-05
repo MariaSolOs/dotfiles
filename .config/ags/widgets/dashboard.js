@@ -1,4 +1,5 @@
-import { exec, fetch, interval } from 'resource:///com/github/Aylur/ags/utils.js';
+import App from 'resource:///com/github/Aylur/ags/app.js';
+import { execAsync, fetch, interval } from 'resource:///com/github/Aylur/ags/utils.js';
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
@@ -91,15 +92,16 @@ export const Dashboard = Widget.Window({
                             interval(60 * 60 * 1000, getWeatherData);
                         },
                         vertical: true,
+                        vpack: 'center',
                         spacing: 10,
-                        class_name: 'weather-dashboard-box',
+                        class_name: 'weather-dashboard',
                         children: [
                             Widget.Icon({
                                 icon: weather.bind().transform(({ icon }) => `weather-${icon}-symbolic`),
                                 size: 58,
                             }),
                             Widget.Label({
-                                useMarkup: true,
+                                use_markup: true,
                                 label: weather.bind().transform(({ description }) =>
                                     `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${description.slice(1)}`
                                 ),
@@ -147,29 +149,53 @@ export const Dashboard = Widget.Window({
                             }),
                         ],
                     }),
-                    // Turning off, rebooting, etc.
                     Widget.Box({
                         vertical: true,
-                        vpack: 'center',
-                        spacing: 10,
-                        class_name: 'power-dashboard-box',
+                        spacing: 8,
                         children: [
-                            Widget.Icon({
-                                icon: 'system-shutdown-symbolic',
-                                size: 32,
-                            }),
+                            // Email button.
                             Widget.Box({
+                                class_name: 'mail-dashboard',
                                 vertical: true,
                                 spacing: 4,
                                 children: [
-                                    { label: 'Power Off', command: 'poweroff' },
-                                    { label: 'Reboot', command: 'reboot' },
-                                ].map(({ label, command }) =>
+                                    Widget.Icon({
+                                        icon: 'folder-mail-symbolic',
+                                        size: 48,
+                                    }),
                                     Widget.Button({
-                                        label,
-                                        on_clicked: () => exec(command),
-                                    })
-                                ),
+                                        label: 'Email',
+                                        on_clicked: () => {
+                                            App.closeWindow('dashboard');
+                                            execAsync(['hyprctl', 'dispatch', 'workspace', 'name:email']);
+                                        },
+                                    }),
+                                ],
+                            }),
+                            // Turning off, rebooting, etc.
+                            Widget.Box({
+                                vertical: true,
+                                spacing: 4,
+                                class_name: 'power-dashboard',
+                                children: [
+                                    Widget.Icon({
+                                        icon: 'system-shutdown-symbolic',
+                                        size: 48,
+                                    }),
+                                    Widget.Box({
+                                        vertical: true,
+                                        spacing: 4,
+                                        children: [
+                                            { label: 'Power Off', command: 'poweroff' },
+                                            { label: 'Reboot', command: 'reboot' },
+                                        ].map(({ label, command }) =>
+                                            Widget.Button({
+                                                label,
+                                                on_clicked: () => execAsync(command),
+                                            })
+                                        ),
+                                    }),
+                                ],
                             }),
                         ],
                     }),
