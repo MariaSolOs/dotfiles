@@ -1,4 +1,5 @@
 local diagnostic_icons = require('icons').diagnostics
+local ellipsis = require('icons').misc.ellipsis
 local methods = vim.lsp.protocol.Methods
 
 local M = {}
@@ -283,7 +284,7 @@ vim.lsp.handlers[methods.textDocument_inlayHint] = function(err, result, ctx, co
         result = vim.iter.map(function(hint)
             local label = hint.label ---@type string
             if label:len() >= 30 then
-                label = label:sub(1, 29) .. '…'
+                label = label:sub(1, 29) .. ellipsis
             end
             hint.label = label
             return hint
