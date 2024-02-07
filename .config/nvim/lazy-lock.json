@@ -50,4 +50,3 @@
   "vim-sleuth": { "branch": "master", "commit": "1cc4557420f215d02c4d2645a748a816c220e99b" },
   "vscode-js-debug": { "branch": "main", "commit": "acd9b48589ce98b515131e44c756a9341398012c" },
   "yanky.nvim": { "branch": "main", "commit": "7c5cbf0122ff2dfbb6a92f14885894f65949cc8b" }
-}
