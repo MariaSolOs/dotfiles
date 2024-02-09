@@ -318,9 +318,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     DapUIWinSelect = { fg = colors.bright_cyan, bold = true },
     NvimDapVirtualText = { fg = colors.lavender, underline = true },
 
-    -- Make whitespace less prominent.
-    Whitespace = { fg = '#292d32' },
-
     -- Diffs.
     DiffAdd = { fg = colors.green, bg = colors.transparent_green },
     DiffChange = { fg = colors.yellow, bg = colors.transparent_yellow },

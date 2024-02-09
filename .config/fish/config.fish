@@ -5,9 +5,11 @@ end
 
 # Neovim.
 abbr -a nv nvim
-abbr -a nvconfig "cd $XDG_CONFIG_HOME/nvim && nvim"
+abbr -a nvo --set-cursor "cd % && nvim"
+abbr -a nvp nvim +Man!
 
-# General git abbreviations.
+# Git abbreviations.
+abbr -a g git
 abbr -a ga git add
 abbr -a gb git branch
 abbr -a gc git commit --verbose

@@ -57,17 +57,7 @@ local function on_attach(client, bufnr)
     end, 'Next error')
 
     if client.supports_method(methods.textDocument_codeAction) then
-        keymap('<leader>ca', function()
-            require('fzf-lua').lsp_code_actions {
-                winopts = {
-                    relative = 'cursor',
-                    width = 0.6,
-                    height = 0.6,
-                    row = 1,
-                    preview = { vertical = 'up:70%' },
-                },
-            }
-        end, 'Code actions', { 'n', 'v' })
+        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code actions', { 'n', 'v' })
     end
 
     if client.supports_method(methods.textDocument_rename) then
@@ -141,6 +131,7 @@ end
 vim.diagnostic.config {
     virtual_text = {
         prefix = '',
+        spacing = 2,
         format = function(diagnostic)
             local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
             local message = vim.split(diagnostic.message, '\n')[1]

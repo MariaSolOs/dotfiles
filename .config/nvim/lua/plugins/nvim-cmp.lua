@@ -101,7 +101,11 @@ return {
                 },
                 snippet = {
                     expand = function(args)
-                        luasnip.lsp_expand(args.body)
+                        if vim.env.SNIPPET then
+                            vim.snippet.expand(args.body)
+                        else
+                            luasnip.lsp_expand(args.body)
+                        end
                     end,
                 },
                 window = {

@@ -25,7 +25,7 @@ vim.opt.rtp = vim.opt.rtp ^ lazypath
 ---@type LazySpec
 local plugins = 'plugins'
 
--- General setup (order matters here).
+-- General setup and goodies (order matters here).
 require 'settings'
 require 'keymaps'
 require 'commands'
