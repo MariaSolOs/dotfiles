@@ -90,11 +90,11 @@ config.underline_thickness = '250%'
 
 -- Keybindings.
 config.disable_default_key_bindings = true
-local mods = 'SUPER|SHIFT'
+local mods = 'ALT|SHIFT'
 config.keys = {
     { mods = mods, key = 'x', action = act.ActivateCopyMode },
     { mods = mods, key = 'd', action = act.ShowDebugOverlay },
-    { mods = mods, key = 'Enter', action = act.ToggleFullScreen },
+    { mods = mods, key = 'a', action = act.ToggleFullScreen },
     { mods = mods, key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 'h', action = act.ActivatePaneDirection 'Left' },
@@ -102,15 +102,15 @@ config.keys = {
     { mods = mods, key = 'k', action = act.ActivatePaneDirection 'Up' },
     { mods = mods, key = 'j', action = act.ActivatePaneDirection 'Down' },
     { mods = mods, key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
-    { mods = mods, key = 'w', action = act.CloseCurrentPane { confirm = true } },
-    { mods = 'SUPER', key = '1', action = act.ActivateTab(0) },
-    { mods = 'SUPER', key = '2', action = act.ActivateTab(1) },
-    { mods = 'SUPER', key = '3', action = act.ActivateTab(2) },
-    { mods = 'SUPER', key = '4', action = act.ActivateTab(3) },
-    { mods = 'SUPER', key = '5', action = act.ActivateTab(4) },
-    { mods = 'SUPER', key = 'c', action = act.CopyTo 'Clipboard' },
-    { mods = 'SUPER', key = 'v', action = act.PasteFrom 'Clipboard' },
-    { mods = 'SUPER', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
+    { mods = mods, key = 'q', action = act.CloseCurrentPane { confirm = true } },
+    { mods = 'ALT', key = '1', action = act.ActivateTab(0) },
+    { mods = 'ALT', key = '2', action = act.ActivateTab(1) },
+    { mods = 'ALT', key = '3', action = act.ActivateTab(2) },
+    { mods = 'ALT', key = '4', action = act.ActivateTab(3) },
+    { mods = 'ALT', key = '5', action = act.ActivateTab(4) },
+    { mods = 'ALT', key = 'c', action = act.CopyTo 'Clipboard' },
+    { mods = 'ALT', key = 'v', action = act.PasteFrom 'Clipboard' },
+    { mods = 'ALT', key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
 }
 
 wezterm.on('format-tab-title', function(tab)
