@@ -1,1 +1,1 @@
-/home/mariasolos/.fzf/shell/key-bindings.fish
+/usr/share/fzf/shell/key-bindings.fish

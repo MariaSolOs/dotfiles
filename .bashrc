@@ -35,11 +35,7 @@ export GRIM_DEFAULT_DIR="$XDG_PICTURES_DIR/Screenshots"
 [[ $- != *i* ]] && return
 
 # fzf setup.
-if [[ ! "$PATH" == *$HOME/.fzf/bin* ]]; then
-  PATH="${PATH:+${PATH}:}$HOME/.fzf/bin"
-fi
-source "$HOME/.fzf/shell/completion.bash"
-source "$HOME/.fzf/shell/key-bindings.bash"
+source "/usr/share/fzf/shell/key-bindings.bash"
 
 # Start Hyprland on TTY1.
 if [[ "$(tty)" == "/dev/tty1" ]]; then
