@@ -5,9 +5,6 @@ local config = wezterm.config_builder()
 -- Support for undercurl, etc.
 config.term = 'wezterm'
 
--- Needed to avoid weird Hyprland crashes.
-config.front_end = 'OpenGL'
-
 -- Color theme.
 local colors = {
     bg = '#0E1419',
@@ -59,13 +56,13 @@ config.cursor_thickness = 2
 config.hide_tab_bar_if_only_one_tab = true
 config.window_frame = {
     font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'DemiBold' }),
-    font_size = 8,
+    font_size = 9,
     active_titlebar_bg = colors.bg,
     inactive_titlebar_bg = colors.bg,
 }
 
 -- Fonts.
-config.font_size = 9
+config.font_size = 10
 config.cell_width = 0.9
 config.line_height = 1.2
 config.font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'Medium' })
