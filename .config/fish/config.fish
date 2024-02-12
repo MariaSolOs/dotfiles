@@ -21,7 +21,7 @@ abbr -a gp git push
 abbr -a gst git status
 
 # Linux maintenance.
-abbr -a p paru
+abbr -a --position anywhere d dnf
 abbr -a s systemctl
 abbr -a j journalctl
 
