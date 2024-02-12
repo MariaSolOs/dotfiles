@@ -50,7 +50,7 @@ export const SystemPopup = Widget.Window({
                 rounded: true,
                 child: Widget.Icon({
                     icon: icon.bind(),
-                    size: 32,
+                    size: 58,
                 }),
             }),
             setup: (self) => {
