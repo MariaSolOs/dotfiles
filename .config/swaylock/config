@@ -1,8 +1,8 @@
-effect-blur=7x5
-font-size=42
+color=0E1419
+font-size=56
 font=Cartograph CF Italic
 ignore-empty-password
-indicator-radius=70
+indicator-radius=100
 indicator-thickness=1
 inside-clear-color=A7DFEF
 inside-color=00000000
@@ -12,5 +12,4 @@ key-hl-color=00000000
 line-color=00000000
 line-uses-inside
 ring-color=00000000
-screenshots
 separator-color=00000000
