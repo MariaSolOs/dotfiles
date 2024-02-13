@@ -48,13 +48,21 @@ window#calendar {
     background-color: $transparent-black;
     color: $blue;
     font-family: 'Cartograph CF';
-    font-size: 11px;
+    font-size: 12px;
     padding: 8px;
 }
 
 .popup-title {
     font-style: italic;
     font-weight: 600;
+}
+
+.popup-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    min-height: 18px;
+    min-width: 18px;
 }
 
 // Backlight/audio popups.

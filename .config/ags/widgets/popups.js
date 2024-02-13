@@ -17,12 +17,8 @@ export const Popups = Widget.Window({
                 // If present, use the image as the icon.
                 if (popup.image) {
                     icon = Widget.Box({
-                        css: `
-                            background-image: url("${popup.image}");
-                            background-size: contain;
-                            background-repeat: no-repeat;
-                            background-position: center;
-                        `,
+                        class_name: 'popup-image',
+                        css: ` background-image:url("${popup.image}");`,
                     });
                 } else {
                     // Else use the application's icon, or a fallback !.
@@ -34,7 +30,7 @@ export const Popups = Widget.Window({
                         icon = 'emblem-important-symbolic';
                     }
 
-                    icon = Widget.Icon({ icon, size: 16 });
+                    icon = Widget.Icon({ icon, size: 18 });
                 }
 
                 return Widget.Button({
