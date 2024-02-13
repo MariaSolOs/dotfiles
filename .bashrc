@@ -7,6 +7,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 
 # Make sure this stuff is in the path.
 export PATH="$HOME/.local/bin:$PATH" # Local scripts.
+export PATH="$HOME/.dprint/bin:$PATH" # dprint.
 
 # SSH agent.
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
