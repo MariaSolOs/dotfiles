@@ -8,7 +8,7 @@ return {
             local icons = require 'icons'
 
             -- Add some extra padding at the top.
-            dashboard.opts.layout[1].val = 5
+            dashboard.opts.layout[1].val = 7
 
             local header = [[
                 ███╗   ██╗ ██████╗ ████████╗     █████╗     ██████╗ ██╗   ██╗ ██████╗
