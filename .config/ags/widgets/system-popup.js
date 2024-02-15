@@ -25,6 +25,7 @@ const updateUI = (newValue, newIcon) => {
     if (closeTimeoutId) {
         clearTimeout(closeTimeoutId);
     }
+
     closeTimeoutId = setTimeout(() => icon.setValue(''), 1000);
 };
 
@@ -47,7 +48,7 @@ export const SystemPopup = Widget.Window({
             child: Widget.CircularProgress({
                 class_name: 'system-popup',
                 value: value.bind(),
-                rounded: true,
+                rounded: value.bind().transform((value) => value > 0),
                 child: Widget.Icon({
                     icon: icon.bind(),
                     size: 58,
@@ -72,7 +73,7 @@ export const SystemPopup = Widget.Window({
                     let intensity = '';
 
                     if (Audio.muted) {
-                        intensity = 'muted';
+                        intensity = 'muted-blocking';
                         volume = 0;
                     } else {
                         intensity = getIntensity(

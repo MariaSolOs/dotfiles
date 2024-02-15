@@ -40,6 +40,7 @@ class AudioService extends Service {
         }
 
         if (Audio.speaker) {
+            this.muted = false;
             Audio.speaker.volume = this.#volume = percent;
             this.changed('volume');
         }
