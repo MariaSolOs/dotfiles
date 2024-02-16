@@ -41,6 +41,13 @@ window#calendar {
     }
 }
 
+tooltip {
+    @include bordered-box($lilac, false);
+
+    background-color: $transparent-black;
+    font-size: 11px;
+}
+
 // Notification popups.
 .popup {
     @include bordered-box($blue, false);

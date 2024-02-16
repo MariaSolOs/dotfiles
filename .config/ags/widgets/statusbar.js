@@ -1,6 +1,7 @@
 import App from 'resource:///com/github/Aylur/ags/app.js';
 import Battery from 'resource:///com/github/Aylur/ags/service/battery.js';
 import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
+import Network from 'resource:///com/github/Aylur/ags/service/network.js';
 import { execAsync, timeout } from 'resource:///com/github/Aylur/ags/utils.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
@@ -26,23 +27,40 @@ export const Statusbar = Widget.Window({
     margins: [2, 2, 1, 2],
     exclusivity: 'exclusive',
     child: Widget.CenterBox({
-        // Battery status. The pill's color depends on the level.
         start_widget: Widget.Box({
-            hpack: 'start',
-            class_name: Battery.bind('percent').transform((p) => {
-                if (p < 20) {
-                    return 'pink-status-box';
-                }
-                if (p < 40) {
-                    return 'yellow-status-box';
-                }
-
-                return 'green-status-box';
-            }),
+            spacing: 2,
             children: [
-                Widget.Icon({ icon: Battery.bind('icon_name') }),
-                Widget.Label({
-                    label: Battery.bind('percent').transform((p) => ` ${p.toFixed(0)}%`),
+                // Battery status. The pill's color depends on the level.
+                Widget.Box({
+                    hpack: 'start',
+                    class_name: Battery.bind('percent').transform((p) => {
+                        let color = 'green';
+                        if (p < 20) {
+                            color = 'pink';
+                        } else if (p < 40) {
+                            color = 'yellow';
+                        }
+
+                        return `${color}-status-box`;
+                    }),
+                    children: [
+                        Widget.Icon({ icon: Battery.bind('icon_name') }),
+                        Widget.Label({
+                            label: Battery.bind('percent').transform((p) => ` ${p.toFixed(0)}%`),
+                        }),
+                    ],
+                }),
+                Widget.Box({
+                    class_name: Network.wifi.bind('enabled').transform((enabled) =>
+                        `${enabled ? 'green' : 'red'}-status-box`
+                    ),
+                    children: [
+                        Widget.Icon({
+                            icon: Network.wifi.bind('icon_name'),
+                            size: 13,
+                            tooltip_text: Network.wifi.bind('ssid').transform((ssid) => `SSID: ${ssid || 'unknown'}`),
+                        }),
+                    ],
                 }),
             ],
         }),
