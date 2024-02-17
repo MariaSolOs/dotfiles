@@ -75,7 +75,15 @@ local function on_attach(client, bufnr)
     end
 
     if client.supports_method(methods.textDocument_signatureHelp) then
-        keymap('<C-k>', vim.lsp.buf.signature_help, 'Signature help', 'i')
+        keymap('<C-k>', function()
+            -- Close the completion menu first (if open).
+            local cmp = require 'cmp'
+            if cmp.visible() then
+                cmp.close()
+            end
+
+            vim.lsp.buf.signature_help()
+        end, 'Signature help', 'i')
     end
 
     if client.supports_method(methods.textDocument_documentHighlight) then
