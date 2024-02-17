@@ -11,6 +11,9 @@ function fish_user_key_bindings
     bind yy fish_clipboard_copy
     bind p fish_clipboard_paste
 
+    # Replace !! by the previous command.
+    bind -M insert ! bind_bang
+
     # fzf bindings.
     fzf_key_bindings
 end
