@@ -103,7 +103,6 @@ config.keys = {
     { mods = mods, key = 'j', action = act.ActivatePaneDirection 'Down' },
     { mods = mods, key = 't', action = act.SpawnTab 'CurrentPaneDomain' },
     { mods = mods, key = 'q', action = act.CloseCurrentPane { confirm = true } },
-    { mods = mods, key = 'f', action = act.Search 'CurrentSelectionOrEmptyString' },
     { mods = mods, key = 'y', action = act.CopyTo 'Clipboard' },
     { mods = mods, key = 'p', action = act.PasteFrom 'Clipboard' },
     { mods = 'ALT', key = '1', action = act.ActivateTab(0) },
