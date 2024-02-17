@@ -14,8 +14,6 @@ const WINDOW_NAME = 'applauncher';
  * @param {App} app
  */
 const launchApp = (app) => {
-    app.frequency += 1;
-
     App.closeWindow(WINDOW_NAME);
 
     // If the app is already open, focus its window.
@@ -27,13 +25,19 @@ const launchApp = (app) => {
         }
     }
 
+    app.frequency += 1;
+
+    let executable = app.executable
+        .split(/\s+/)
+        .filter((str) => !str.startsWith('%') && !str.startsWith('@'))
+        .join(' ');
+
     // Use Wezterm for opening terminal apps.
-    const launchCommand = app.app.get_boolean('Terminal') ? 'wezterm -e' : 'sh -c';
+    if (app.app.get_boolean('Terminal')) {
+        executable = `wezterm -e ${executable}`;
+    }
 
-    // Use the first word of the executable to handle cases like "nvim %F".
-    const executable = app.executable.split(' ')[0];
-
-    execAsync(['hyprctl', 'dispatch', 'exec', `${launchCommand} ${executable}`]);
+    execAsync(executable);
 };
 
 /**
