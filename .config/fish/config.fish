@@ -22,7 +22,7 @@ abbr -a gst git status
 
 # Linux maintenance.
 abbr -a --position anywhere d dnf
-abbr -a s systemctl
+abbr -a --position anywhere s systemctl
 abbr -a j journalctl
 
 # Remove the gretting message.
