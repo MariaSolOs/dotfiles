@@ -27,7 +27,15 @@ return {
             { '<leader>fg', '<cmd>FzfLua live_grep_glob<cr>', desc = 'Grep' },
             { '<leader>fg', '<cmd>FzfLua grep_visual<cr>', desc = 'Grep', mode = 'x' },
             { '<leader>fh', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
-            { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
+            {
+                '<leader>fr',
+                function()
+                    -- Read from ShaDa to include files that were already deleted from the buffer list.
+                    vim.cmd 'rshada!'
+                    require('fzf-lua').oldfiles()
+                end,
+                desc = 'Recently opened files',
+            },
         },
         opts = function()
             local actions = require 'fzf-lua.actions'

@@ -97,6 +97,12 @@ vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEn
     end,
 })
 
+vim.api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
+    group = vim.api.nvim_create_augroup('mariasolos/wshada_on_buf_delete', { clear = true }),
+    desc = 'Write to ShaDa when deleting/wiping out buffers',
+    command = 'wshada',
+})
+
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = vim.api.nvim_create_augroup('mariasolos/yank_highlight', { clear = true }),
     desc = 'Highlight on yank',
