@@ -74,8 +74,6 @@ return {
             local winhighlight = 'Normal:Normal,FloatBorder:Normal,CursorLine:Visual,Search:None'
 
             return {
-                -- Disable preselect. On enter, the first thing will be used if nothing
-                -- is selected.
                 preselect = cmp.PreselectMode.None,
                 formatting = {
                     fields = { 'kind', 'abbr', 'menu' },
@@ -122,7 +120,6 @@ return {
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
                     ['<cr>'] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
-                        select = true,
                     },
                     -- Explicitly request completions.
                     ['<C-Space>'] = cmp.mapping.complete(),
