@@ -14,6 +14,9 @@ function fish_user_key_bindings
     # Replace !! by the previous command.
     bind -M insert ! bind_bang
 
+    # Use <C-Slash> to clear the line.
+    bind -M insert \c_ kill-whole-line repaint
+
     # fzf bindings.
     fzf_key_bindings
 end
