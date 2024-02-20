@@ -93,8 +93,9 @@ window#dashboard {
     }
 
     $dashboard-boxes: (
-        ('power' 8 $grey)
+        ('date' 10 $grey)
         ('weather' 10 $blue)
+        ('power' 8 $grey)
         ('mail' 10 $pink)
     );
     @each $name, $padding, $color in $dashboard-boxes {
@@ -111,6 +112,14 @@ window#dashboard {
             }
         }
     }
+}
+
+.dashboard-weekday {
+    font-size: 60px;
+}
+
+.dashboard-date {
+    font-size: 20px;
 }
 
 // Application launcher.

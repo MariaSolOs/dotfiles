@@ -4,6 +4,7 @@ import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
 import secret from '../secret.js';
+import { unquoteString } from '../utils.js';
 
 const weather = new Variable({
     description: '',
@@ -70,6 +71,31 @@ const getWeatherData = async () => {
 const timeToDateString = (time) =>
     new Date(time * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
+const DateBox = () => {
+    const weekdayLabel = Widget.Label({ class_name: 'dashboard-date' });
+    const dayLabel = Widget.Label({ class_name: 'dashboard-weekday' });
+    const dateLabel = Widget.Label({ class_name: 'dashboard-date' });
+
+    return Widget.Box({
+        class_name: 'date-dashboard',
+        hpack: 'end',
+        vertical: true,
+        setup: (self) =>
+            self
+                .poll(1000, () =>
+                    execAsync(['date', '+"%A %b %d %Y"']).then((date) => {
+                        const [weekday, month, day, year] = unquoteString(date).split(
+                            ' ',
+                        );
+
+                        weekdayLabel.label = weekday;
+                        dayLabel.label = day;
+                        dateLabel.label = `${month} ${year}`;
+                    })),
+        children: [weekdayLabel, dayLabel, dateLabel],
+    });
+};
+
 export const Dashboard = Widget.Window({
     name: 'dashboard',
     visible: false,
@@ -85,63 +111,74 @@ export const Dashboard = Widget.Window({
                 vpack: 'center',
                 spacing: 8,
                 children: [
-                    // The current weather in Seattle.
                     Widget.Box({
-                        setup: () => {
-                            // Update the weather every hour.
-                            interval(60 * 60 * 1000, getWeatherData);
-                        },
                         vertical: true,
                         vpack: 'center',
-                        spacing: 10,
-                        class_name: 'weather-dashboard',
+                        spacing: 8,
                         children: [
-                            Widget.Icon({
-                                icon: weather.bind().transform(({ icon }) => `weather-${icon}-symbolic`),
-                                size: 58,
-                            }),
-                            Widget.Label({
-                                use_markup: true,
-                                label: weather.bind().transform(({ description }) =>
-                                    `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${description.slice(1)}`
-                                ),
-                            }),
+                            // Simple date box.
+                            DateBox(),
+                            // The current weather in Seattle.
                             Widget.Box({
-                                spacing: 16,
+                                setup: () => {
+                                    // Update the weather every hour.
+                                    interval(60 * 60 * 1000, getWeatherData);
+                                },
+                                vertical: true,
+                                vpack: 'center',
+                                spacing: 10,
+                                class_name: 'weather-dashboard',
                                 children: [
-                                    Widget.Box({
-                                        vertical: true,
-                                        spacing: 4,
-                                        children: [
-                                            Widget.Label({
-                                                xalign: 0,
-                                                label: weather.bind().transform(({ temperature }) =>
-                                                    `${temperature.toFixed(0)}°C`
-                                                ),
-                                            }),
-                                            Widget.Label({
-                                                xalign: 0,
-                                                label: weather.bind().transform(({ feelsLike }) =>
-                                                    `Feels like: ${feelsLike.toFixed(0)}°C`
-                                                ),
-                                            }),
-                                        ],
+                                    Widget.Icon({
+                                        icon: weather.bind().transform(({ icon }) => `weather-${icon}-symbolic`),
+                                        size: 58,
+                                    }),
+                                    Widget.Label({
+                                        use_markup: true,
+                                        label: weather.bind().transform(({ description }) =>
+                                            `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${
+                                                description.slice(1)
+                                            }`
+                                        ),
                                     }),
                                     Widget.Box({
-                                        vertical: true,
-                                        spacing: 4,
+                                        spacing: 16,
                                         children: [
-                                            Widget.Label({
-                                                xalign: 0,
-                                                label: weather.bind().transform(({ sunrise }) =>
-                                                    `Sunrise: ${timeToDateString(sunrise)}`
-                                                ),
+                                            Widget.Box({
+                                                vertical: true,
+                                                spacing: 4,
+                                                children: [
+                                                    Widget.Label({
+                                                        xalign: 0,
+                                                        label: weather.bind().transform(({ temperature }) =>
+                                                            `${temperature.toFixed(0)}°C`
+                                                        ),
+                                                    }),
+                                                    Widget.Label({
+                                                        xalign: 0,
+                                                        label: weather.bind().transform(({ feelsLike }) =>
+                                                            `Feels like: ${feelsLike.toFixed(0)}°C`
+                                                        ),
+                                                    }),
+                                                ],
                                             }),
-                                            Widget.Label({
-                                                xalign: 0,
-                                                label: weather.bind().transform(({ sunset }) =>
-                                                    `Sunset: ${timeToDateString(sunset)}`
-                                                ),
+                                            Widget.Box({
+                                                vertical: true,
+                                                spacing: 4,
+                                                children: [
+                                                    Widget.Label({
+                                                        xalign: 0,
+                                                        label: weather.bind().transform(({ sunrise }) =>
+                                                            `Sunrise: ${timeToDateString(sunrise)}`
+                                                        ),
+                                                    }),
+                                                    Widget.Label({
+                                                        xalign: 0,
+                                                        label: weather.bind().transform(({ sunset }) =>
+                                                            `Sunset: ${timeToDateString(sunset)}`
+                                                        ),
+                                                    }),
+                                                ],
                                             }),
                                         ],
                                     }),
@@ -152,6 +189,7 @@ export const Dashboard = Widget.Window({
                     Widget.Box({
                         vertical: true,
                         spacing: 8,
+                        vpack: 'center',
                         children: [
                             // Email button.
                             Widget.Box({
