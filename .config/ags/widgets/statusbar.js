@@ -5,15 +5,10 @@ import Network from 'resource:///com/github/Aylur/ags/service/network.js';
 import { execAsync, timeout } from 'resource:///com/github/Aylur/ags/utils.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
+import { unquoteString } from '../utils.js';
+
 // Used for accounting for mouse movement when closing windows.
 const MOUSE_DELAY = 300;
-
-/**
- * Removes the double quotes from a string.
- *
- * @param {string} str
- */
-const unquoteString = (str) => str.replace(/"/g, '');
 
 // Whether the cursor is hovering the date box.
 let hoveringDate = false;
