@@ -49,7 +49,7 @@ tooltip {
 }
 
 // Notification popups.
-.popup {
+.notif {
     @include bordered-box($blue, false);
 
     background-color: $transparent-black;
@@ -59,12 +59,12 @@ tooltip {
     padding: 8px;
 }
 
-.popup-title {
+.notif-title {
     font-style: italic;
     font-weight: 600;
 }
 
-.popup-image {
+.notif-image {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;

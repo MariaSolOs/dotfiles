@@ -3,7 +3,7 @@ import { exec, monitorFile } from 'resource:///com/github/Aylur/ags/utils.js';
 
 import { AppLauncher } from './widgets/applauncher.js';
 import { Dashboard } from './widgets/dashboard.js';
-import { Popups } from './widgets/popups.js';
+import { NotificationPopups } from './widgets/notification-popups.js';
 import { Calendar, Statusbar } from './widgets/statusbar.js';
 import { SystemPopup } from './widgets/system-popup.js';
 
@@ -32,7 +32,7 @@ export default {
         AppLauncher(),
         Calendar,
         Dashboard,
-        Popups,
+        NotificationPopups,
         Statusbar,
         SystemPopup,
     ],

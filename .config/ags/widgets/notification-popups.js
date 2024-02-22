@@ -1,8 +1,8 @@
 import Notifications from 'resource:///com/github/Aylur/ags/service/notifications.js';
-import { lookUpIcon } from 'resource:///com/github/Aylur/ags/utils.js';
+import { lookUpIcon, timeout } from 'resource:///com/github/Aylur/ags/utils.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
-export const Popups = Widget.Window({
+export const NotificationPopups = Widget.Window({
     name: 'notifications',
     anchor: ['bottom', 'right'],
     margins: [0, 2, 2, 0],
@@ -10,22 +10,22 @@ export const Popups = Widget.Window({
         css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
         vertical: true,
         spacing: 2,
-        children: Notifications.bind('popups').as((popups) =>
-            popups.slice(0, 15).map((popup) => {
+        children: Notifications.bind('notifications').as((notifs) =>
+            notifs.slice(0, 15).map((notif) => {
                 let icon;
 
                 // If present, use the image as the icon.
-                if (popup.image) {
+                if (notif.image) {
                     icon = Widget.Box({
-                        class_name: 'popup-image',
-                        css: ` background-image:url("${popup.image}");`,
+                        class_name: 'notif-image',
+                        css: ` background-image:url("${notif.image}");`,
                     });
                 } else {
                     // Else use the application's icon, or a fallback !.
-                    if (popup.app_entry && lookUpIcon(popup.app_entry)) {
-                        icon = popup.app_entry;
-                    } else if (lookUpIcon(popup.app_icon)) {
-                        icon = popup.app_icon;
+                    if (notif.app_entry && lookUpIcon(notif.app_entry)) {
+                        icon = notif.app_entry;
+                    } else if (lookUpIcon(notif.app_icon)) {
+                        icon = notif.app_icon;
                     } else {
                         icon = 'emblem-important-symbolic';
                     }
@@ -34,16 +34,18 @@ export const Popups = Widget.Window({
                 }
 
                 return Widget.Button({
-                    on_clicked: () => popup.close(),
+                    // Close the notification after 5 seconds.
+                    setup: () => timeout(5000, () => notif.close()),
+                    on_clicked: () => notif.close(),
                     child: Widget.Box({
-                        class_name: 'popup',
+                        class_name: 'notif',
                         spacing: 8,
                         children: [
                             icon,
                             Widget.Box({
                                 vertical: true,
                                 spacing: 2,
-                                children: [[popup.app_name, 'popup-title'], [popup.summary, '']].map((
+                                children: [[notif.app_name, 'notif-title'], [notif.summary, '']].map((
                                     [label, class_name],
                                 ) => Widget.Label({
                                     label,
