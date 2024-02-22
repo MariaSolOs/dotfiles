@@ -43,12 +43,12 @@ export const SystemPopup = Widget.Window({
     child: Widget.Box({
         css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
         child: Widget.Revealer({
-            reveal_child: icon.bind().transform((icon) => !!icon),
+            reveal_child: icon.bind().as((icon) => !!icon),
             transition: 'crossfade',
             child: Widget.CircularProgress({
                 class_name: 'system-popup',
                 value: value.bind(),
-                rounded: value.bind().transform((value) => value > 0),
+                rounded: value.bind().as((value) => value > 0),
                 child: Widget.Icon({
                     icon: icon.bind(),
                     size: 58,

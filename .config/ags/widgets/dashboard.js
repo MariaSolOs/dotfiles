@@ -130,12 +130,12 @@ export const Dashboard = Widget.Window({
                                 class_name: 'weather-dashboard',
                                 children: [
                                     Widget.Icon({
-                                        icon: weather.bind().transform(({ icon }) => `weather-${icon}-symbolic`),
+                                        icon: weather.bind().as(({ icon }) => `weather-${icon}-symbolic`),
                                         size: 58,
                                     }),
                                     Widget.Label({
                                         use_markup: true,
-                                        label: weather.bind().transform(({ description }) =>
+                                        label: weather.bind().as(({ description }) =>
                                             `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${
                                                 description.slice(1)
                                             }`
@@ -150,13 +150,13 @@ export const Dashboard = Widget.Window({
                                                 children: [
                                                     Widget.Label({
                                                         xalign: 0,
-                                                        label: weather.bind().transform(({ temperature }) =>
+                                                        label: weather.bind().as(({ temperature }) =>
                                                             `${temperature.toFixed(0)}°C`
                                                         ),
                                                     }),
                                                     Widget.Label({
                                                         xalign: 0,
-                                                        label: weather.bind().transform(({ feelsLike }) =>
+                                                        label: weather.bind().as(({ feelsLike }) =>
                                                             `Feels like: ${feelsLike.toFixed(0)}°C`
                                                         ),
                                                     }),
@@ -168,13 +168,13 @@ export const Dashboard = Widget.Window({
                                                 children: [
                                                     Widget.Label({
                                                         xalign: 0,
-                                                        label: weather.bind().transform(({ sunrise }) =>
+                                                        label: weather.bind().as(({ sunrise }) =>
                                                             `Sunrise: ${timeToDateString(sunrise)}`
                                                         ),
                                                     }),
                                                     Widget.Label({
                                                         xalign: 0,
-                                                        label: weather.bind().transform(({ sunset }) =>
+                                                        label: weather.bind().as(({ sunset }) =>
                                                             `Sunset: ${timeToDateString(sunset)}`
                                                         ),
                                                     }),

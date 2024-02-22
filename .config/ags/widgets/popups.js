@@ -10,7 +10,7 @@ export const Popups = Widget.Window({
         css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
         vertical: true,
         spacing: 2,
-        children: Notifications.bind('popups').transform((popups) =>
+        children: Notifications.bind('popups').as((popups) =>
             popups.slice(0, 15).map((popup) => {
                 let icon;
 

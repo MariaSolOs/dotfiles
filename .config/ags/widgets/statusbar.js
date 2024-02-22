@@ -28,7 +28,7 @@ export const Statusbar = Widget.Window({
                 // Battery status. The pill's color depends on the level.
                 Widget.Box({
                     hpack: 'start',
-                    class_name: Battery.bind('percent').transform((p) => {
+                    class_name: Battery.bind('percent').as((p) => {
                         let color = 'green';
                         if (p < 20) {
                             color = 'pink';
@@ -41,19 +41,19 @@ export const Statusbar = Widget.Window({
                     children: [
                         Widget.Icon({ icon: Battery.bind('icon_name') }),
                         Widget.Label({
-                            label: Battery.bind('percent').transform((p) => ` ${p.toFixed(0)}%`),
+                            label: Battery.bind('percent').as((p) => ` ${p.toFixed(0)}%`),
                         }),
                     ],
                 }),
                 Widget.Box({
-                    class_name: Network.wifi.bind('enabled').transform((enabled) =>
+                    class_name: Network.wifi.bind('enabled').as((enabled) =>
                         `${enabled ? 'green' : 'red'}-status-box`
                     ),
                     children: [
                         Widget.Icon({
                             icon: Network.wifi.bind('icon_name'),
                             size: 13,
-                            tooltip_text: Network.wifi.bind('ssid').transform((ssid) => `SSID: ${ssid || 'unknown'}`),
+                            tooltip_text: Network.wifi.bind('ssid').as((ssid) => `SSID: ${ssid || 'unknown'}`),
                         }),
                     ],
                 }),
