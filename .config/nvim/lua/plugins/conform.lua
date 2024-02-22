@@ -6,20 +6,26 @@ return {
         opts = {
             notify_on_error = false,
             formatters_by_ft = {
-                javascript = { 'dprint' },
-                json = { 'dprint' },
                 lua = { 'stylua' },
                 python = { 'black' },
                 sh = { 'shfmt' },
             },
             format_on_save = function(bufnr)
-                if vim.b[bufnr].format_on_save then
-                    return {
-                        timeout_ms = 500,
-                        -- Filetypes to use LSP formatting for.
-                        lsp_fallback = vim.tbl_contains({ 'c', 'json', 'jsonc', 'rust' }, vim.bo[bufnr].filetype),
-                    }
+                if not vim.b[bufnr].format_on_save then
+                    return
                 end
+
+                local res = { timeout_ms = 500 }
+                local filetype = vim.bo[bufnr].filetype
+
+                -- Only format JavaScript if dprint is available.
+                if filetype == 'javascript' and require('conform').get_formatter_info('dprint', bufnr).available then
+                    res.lsp_fallback = true
+                else
+                    res.lsp_fallback = vim.tbl_contains({ 'c', 'json', 'jsonc', 'rust' }, filetype)
+                end
+
+                return res
             end,
         },
         init = function()

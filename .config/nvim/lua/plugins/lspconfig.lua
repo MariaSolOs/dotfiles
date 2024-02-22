@@ -34,6 +34,7 @@ return {
                 ensure_installed = {
                     'bashls',
                     'cssls',
+                    'dprint',
                     'eslint',
                     'jsonls',
                     'lua_ls',
