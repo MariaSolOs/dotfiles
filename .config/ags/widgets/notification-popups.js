@@ -34,6 +34,11 @@ export const NotificationPopups = Widget.Window({
                     icon = Widget.Icon({ icon, size: 18 });
                 }
 
+                const labels = [`<b><i>${notif.app_name}</i></b>`, `<i>${notif.summary}</i>`];
+                if (notif.body) {
+                    labels.push(notif.body);
+                }
+
                 return Widget.Button({
                     // Close the notification after 5 seconds.
                     setup: () => timeout(5000, () => notif.close()),
@@ -45,16 +50,17 @@ export const NotificationPopups = Widget.Window({
                             icon,
                             Widget.Box({
                                 vertical: true,
-                                spacing: 2,
-                                children: [[notif.app_name, 'notif-title'], [notif.summary, '']].map((
-                                    [label, class_name],
-                                ) => Widget.Label({
-                                    label,
-                                    class_name,
-                                    hexpand: true,
-                                    xalign: 0,
-                                    justification: 'left',
-                                })),
+                                children: labels.map((label) =>
+                                    Widget.Label({
+                                        label,
+                                        use_markup: true,
+                                        hexpand: true,
+                                        xalign: 0,
+                                        justification: 'left',
+                                        truncate: 'end',
+                                        width_chars: 35,
+                                    })
+                                ),
                             }),
                         ],
                     }),
