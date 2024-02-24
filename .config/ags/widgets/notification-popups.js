@@ -6,6 +6,7 @@ export const NotificationPopups = Widget.Window({
     name: 'notifications',
     anchor: ['bottom', 'right'],
     margins: [0, 2, 2, 0],
+    layer: 'overlay',
     child: Widget.Box({
         css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
         vertical: true,

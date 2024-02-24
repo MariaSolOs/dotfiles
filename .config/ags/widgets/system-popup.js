@@ -40,6 +40,7 @@ const getIntensity = (intensities, value) => {
 
 export const SystemPopup = Widget.Window({
     name: 'system-popup',
+    layer: 'overlay',
     child: Widget.Box({
         css: 'padding: 1px;', // HACK: See https://aylur.github.io/ags-docs/config/common-issues/#window-doesnt-show-up.
         child: Widget.Revealer({
