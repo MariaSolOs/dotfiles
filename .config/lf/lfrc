@@ -66,5 +66,5 @@ cmd mkdir %mkdir -p "$@"
 map O push %mkdir<space>
 
 # Trash.
-cmd trash %trash-put $fx
+cmd trash %trash-put "$fx"
 map d trash
