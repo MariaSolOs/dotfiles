@@ -16,10 +16,9 @@ set tabstop 4
 # Remove the username and hostname from the prompt.
 set promptfmt "\033[34;1m%d\033[0m\033[1m%f\033[0m"
 
-# Use bat as a previewer.
-# TODO: Handle images and non-previewable files.
+# Use kitty for previewing images, and bat for everything else.
 set previewer ~/.config/lf/preview.sh
-map i $~/.config/lf/preview.sh $f
+set cleaner ~/.config/lf/preview-clean.sh
 
 # Remove the underline from right panes and underline parent directories.
 set cursorpreviewfmt ""
@@ -35,15 +34,16 @@ cmd open ${{
 }}
 
 # Remove mappings I don't use.
-map <up>
 map <down>
-map <left>
-map <right>
-map <pgup>
-map <pgdn>
-map <home>
 map <end>
+map <home>
+map <left>
+map <pgdn>
+map <pgup>
+map <right>
+map <up>
 map ?
+map i
 
 # Copy/add to the cut buffer.
 map c cut
