@@ -95,10 +95,11 @@ export const AppLauncher = () => {
 
     const entry = Widget.Entry({
         hexpand: true,
-        // Launch the first item on Enter.
+        // Launch the first visible item on Enter.
         on_accept: () => {
-            if (apps[0]) {
-                launchApp(apps[0].attribute.app);
+            const app = apps.find((app) => app.visible);
+            if (app) {
+                launchApp(app.attribute.app);
             }
         },
         // Filter out the list.
