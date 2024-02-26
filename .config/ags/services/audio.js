@@ -25,10 +25,7 @@ class AudioService extends Service {
     }
 
     set muted(muted) {
-        if (Audio.speaker) {
-            Audio.speaker.is_muted = this.#muted = muted;
-            this.changed('muted');
-        }
+        Audio.speaker.is_muted = this.#muted = muted;
     }
 
     set volume(percent) {
@@ -39,11 +36,8 @@ class AudioService extends Service {
             percent = 1;
         }
 
-        if (Audio.speaker) {
-            this.muted = false;
-            Audio.speaker.volume = this.#volume = percent;
-            this.changed('volume');
-        }
+        this.muted = false;
+        Audio.speaker.volume = this.#volume = percent;
     }
 
     emitChange() {
@@ -53,8 +47,8 @@ class AudioService extends Service {
     constructor() {
         super();
 
-        this.#muted = Audio.speaker?.is_muted || false;
-        this.#volume = Audio.speaker?.volume || 0;
+        this.#muted = Audio.speaker.is_muted;
+        this.#volume = Audio.speaker.volume;
     }
 }
 

@@ -27,7 +27,6 @@ class BacklightService extends Service {
         execAsync(`brightnessctl s ${percent * 100}% -q`)
             .then(() => {
                 this.#brightness = percent;
-                this.changed('brightness');
             })
             .catch(console.error);
     }
