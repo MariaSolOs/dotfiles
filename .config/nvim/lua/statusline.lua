@@ -211,6 +211,7 @@ function M.filetype_component()
         DressingSelect = { '', 'Comment' },
         OverseerForm = { '󰦬', 'Special' },
         OverseerList = { '󰦬', 'Special' },
+        ['ccc-ui'] = { '', 'Comment' },
         dapui_breakpoints = { icons.misc.bug, 'DapUIRestart' },
         dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
         dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
