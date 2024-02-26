@@ -10,10 +10,10 @@ import { unquoteString } from '../utils.js';
 // Used for accounting for mouse movement when closing windows.
 const MOUSE_DELAY = 300;
 
-// Whether the cursor is hovering the date box.
+// Whether the cursor is hovering over the date box.
 let hoveringDate = false;
 
-// Whether the cursor is hovering the calendar.
+// Whether the cursor is hovering over the calendar.
 let hoveringCalendar = false;
 
 export const Statusbar = Widget.Window({
@@ -46,9 +46,7 @@ export const Statusbar = Widget.Window({
                     ],
                 }),
                 Widget.Box({
-                    class_name: Network.wifi.bind('enabled').as((enabled) =>
-                        `${enabled ? 'green' : 'red'}-status-box`
-                    ),
+                    class_name: Network.wifi.bind('enabled').as((enabled) => `${enabled ? 'green' : 'red'}-status-box`),
                     children: [
                         Widget.Icon({
                             icon: Network.wifi.bind('icon_name'),

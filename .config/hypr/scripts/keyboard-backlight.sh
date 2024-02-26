@@ -7,7 +7,7 @@ function keyboardbacklight() {
 	local current
 	current=$(brightnessctl --device=$device get)
 
-	# Set the new brightness value, increasing by ~25%.
+	# Set the new brightness value, increasing it by ~25%.
 	brightnessctl --device=$device set $(((current + 64) % 256))
 }
 

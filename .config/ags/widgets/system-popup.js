@@ -7,7 +7,7 @@ import Backlight from '../services/backlight.js';
 // For debouncing the popup's auto-closing.
 let closeTimeoutId = null;
 
-// The current icon of the system popup.
+// The current icon of the popup.
 const icon = new Variable('');
 
 // The value of the progress circle.

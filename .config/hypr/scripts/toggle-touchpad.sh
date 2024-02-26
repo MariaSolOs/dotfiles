@@ -16,12 +16,10 @@ function toggletouchpad() {
 
 	local icon message newsettingvalue
 	if [ -z "$settingvalue" ]; then
-		# The touchpad is disabled:
 		icon='enabled'
 		message='Enabling'
 		newsettingvalue=1
 	else
-		# The touchpad is enabled:
 		icon='disabled'
 		message='Disabling'
 		newsettingvalue=0

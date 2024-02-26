@@ -40,7 +40,7 @@ export const NotificationPopups = Widget.Window({
                 }
 
                 return Widget.Button({
-                    // Close the notification after 5 seconds.
+                    // Autoclose the notification after 5 seconds.
                     setup: () => timeout(5000, () => notif.close()),
                     on_clicked: () => notif.close(),
                     child: Widget.Box({
