@@ -28,7 +28,7 @@ set cursorparentfmt "\033[4m"
 cmd open ${{
     case $(file --mime-type -Lb $f) in
         text/*) nvim $fx;;
-        image/*) chromium --new-window $fx;;
+        image/*) chromium-browser --new-window $fx;;
         *) for f in $fx; do xdg-open $f > /dev/null 2> /dev/null & done;;
     esac
 }}
