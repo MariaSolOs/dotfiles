@@ -383,6 +383,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     FzfLuaBorder = { fg = colors.comment },
     FzfLuaHeaderBind = { fg = colors.lavender },
     FzfLuaHeaderText = { fg = colors.pink },
+    FzfLuaLiveSym = { fg = colors.fuchsia },
     FzfLuaPreviewTitle = { fg = colors.fg },
     FzfLuaSearch = { bg = colors.transparent_red },
 
