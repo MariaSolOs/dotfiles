@@ -28,6 +28,7 @@ function buildnvim() {
     git merge upstream/master
 
     # Clear the previous build.
+    sudo rm -rf /usr/local/share/nvim
     make distclean
 
     # Go back to the given commit or HEAD.
