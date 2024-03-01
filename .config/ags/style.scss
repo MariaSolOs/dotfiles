@@ -89,9 +89,10 @@ window#dashboard {
 
     $dashboard-boxes: (
         ('date' 10 $grey)
-        ('weather' 10 $blue)
-        ('power' 8 $grey)
+        ('keyboard' 10 $green)
         ('mail' 10 $pink)
+        ('power' 8 $grey)
+        ('weather' 10 $blue)
     );
     @each $name, $padding, $color in $dashboard-boxes {
         .#{$name}-dashboard {

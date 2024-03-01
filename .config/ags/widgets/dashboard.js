@@ -1,10 +1,13 @@
 import App from 'resource:///com/github/Aylur/ags/app.js';
+import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
 import { execAsync, fetch, interval } from 'resource:///com/github/Aylur/ags/utils.js';
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 
 import secret from '../secret.js';
 import { unquoteString } from '../utils.js';
+
+const WINDOW_NAME = 'dashboard';
 
 const weather = new Variable({
     description: '',
@@ -66,6 +69,17 @@ const getWeatherData = async () => {
 };
 
 /**
+ * @param {import('resource:///com/github/Aylur/ags/widget.js').Button} button
+ */
+const updateKeyboardLayout = (button) => {
+    execAsync(
+        'bash -c "hyprctl devices -j | jq -r \'.keyboards[] | select(.main) | .active_keymap\'"',
+    ).then((layout) => {
+        button.label = layout.includes('intl') ? 'US (intl) -> US' : 'US -> US (intl)';
+    });
+};
+
+/**
  * @param {number} time
  */
 const timeToDateString = (time) =>
@@ -97,7 +111,7 @@ const DateBox = () => {
 };
 
 export const Dashboard = Widget.Window({
-    name: 'dashboard',
+    name: WINDOW_NAME,
     visible: false,
     keymode: 'on-demand',
     popup: true,
@@ -136,8 +150,7 @@ export const Dashboard = Widget.Window({
                                     Widget.Label({
                                         use_markup: true,
                                         label: weather.bind().as(({ description }) =>
-                                            `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${
-                                                description.slice(1)
+                                            `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${description.slice(1)
                                             }`
                                         ),
                                     }),
@@ -191,6 +204,27 @@ export const Dashboard = Widget.Window({
                         spacing: 8,
                         vpack: 'center',
                         children: [
+                            // Keyboard button, used to toggle the keyboard layout.
+                            Widget.Box({
+                                class_name: 'keyboard-dashboard',
+                                vertical: true,
+                                spacing: 4,
+                                children: [
+                                    Widget.Icon({
+                                        icon: 'preferences-desktop-keyboard-shortcuts-symbolic',
+                                        size: 48,
+                                    }),
+                                    Widget.Button({
+                                        setup: (self) => {
+                                            updateKeyboardLayout(self);
+                                            Hyprland.connect('keyboard-layout', () => updateKeyboardLayout(self));
+                                        },
+                                        on_clicked: () => {
+                                            execAsync(['hyprctl', 'switchxkblayout', 'keyd-virtual-keyboard', 'next']);
+                                        },
+                                    }),
+                                ],
+                            }),
                             // Email button.
                             Widget.Box({
                                 class_name: 'mail-dashboard',
@@ -204,7 +238,7 @@ export const Dashboard = Widget.Window({
                                     Widget.Button({
                                         label: 'Email',
                                         on_clicked: () => {
-                                            App.closeWindow('dashboard');
+                                            App.closeWindow(WINDOW_NAME);
                                             execAsync(['hyprctl', 'dispatch', 'workspace', 'name:email']);
                                         },
                                     }),

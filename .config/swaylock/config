@@ -1,6 +1,7 @@
 color=0E1419
 font-size=56
 font=Cartograph CF Italic
+hide-keyboard-layout
 ignore-empty-password
 indicator-radius=100
 indicator-thickness=1
