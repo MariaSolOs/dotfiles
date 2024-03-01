@@ -2,6 +2,9 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 local config = wezterm.config_builder()
 
+-- TODO: Remove this when https://github.com/wez/wezterm/issues/5067 is fixed.
+config.enable_wayland = false
+
 -- Support for undercurl, etc.
 config.term = 'wezterm'
 
@@ -56,15 +59,15 @@ config.cursor_thickness = 2
 config.hide_tab_bar_if_only_one_tab = true
 config.window_frame = {
     font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'DemiBold' }),
-    font_size = 9,
+    font_size = config.enable_wayland and 9 or 18,
     active_titlebar_bg = colors.bg,
     inactive_titlebar_bg = colors.bg,
 }
 
 -- Fonts.
-config.font_size = 10
+config.font_size = config.enable_wayland and 10 or 20
 config.cell_width = 0.9
-config.line_height = 1.2
+config.line_height = config.enable_wayland and 1.2 or 1.25
 config.font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'Medium' })
 config.font_rules = {
     {
