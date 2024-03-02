@@ -219,9 +219,8 @@ export const Dashboard = Widget.Window({
                                             updateKeyboardLayout(self);
                                             Hyprland.connect('keyboard-layout', () => updateKeyboardLayout(self));
                                         },
-                                        on_clicked: () => {
-                                            execAsync(['hyprctl', 'switchxkblayout', 'keyd-virtual-keyboard', 'next']);
-                                        },
+                                        on_clicked: () =>
+                                            Hyprland.messageAsync('switchxkblayout keyd-virtual-keyboard next'),
                                     }),
                                 ],
                             }),
@@ -239,7 +238,7 @@ export const Dashboard = Widget.Window({
                                         label: 'Email',
                                         on_clicked: () => {
                                             App.closeWindow(WINDOW_NAME);
-                                            execAsync(['hyprctl', 'dispatch', 'workspace', 'name:email']);
+                                            Hyprland.messageAsync('dispatch workspace name:email');
                                         },
                                     }),
                                 ],

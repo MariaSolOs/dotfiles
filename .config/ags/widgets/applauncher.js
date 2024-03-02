@@ -13,15 +13,14 @@ const WINDOW_NAME = 'applauncher';
 /**
  * @param {App} app
  */
-const launchApp = (app) => {
+const launchApp = async (app) => {
     App.closeWindow(WINDOW_NAME);
 
     // If the app is already open, focus its window.
     const appClass = app.wm_class?.toLowerCase() || app.name.toLowerCase();
     for (const client of Hyprland.clients) {
         if (client.initialClass.toLowerCase().includes(appClass)) {
-            Hyprland.sendMessage(`dispatch focuswindow address:${client.address}`);
-            return;
+            return Hyprland.messageAsync(`dispatch focuswindow address:${client.address}`);
         }
     }
 
@@ -37,7 +36,7 @@ const launchApp = (app) => {
         executable = `wezterm -e ${executable}`;
     }
 
-    execAsync(executable);
+    return execAsync(executable);
 };
 
 /**
