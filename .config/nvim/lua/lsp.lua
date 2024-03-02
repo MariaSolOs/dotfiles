@@ -11,14 +11,7 @@ M.client_capabilities = function()
         'force',
         vim.lsp.protocol.make_client_capabilities(),
         -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
-        require('cmp_nvim_lsp').default_capabilities(),
-        {
-            workspace = {
-                -- PERF: didChangeWatchedFiles is too slow.
-                -- TODO: Remove this when https://github.com/neovim/neovim/issues/23291#issuecomment-1686709265 is fixed.
-                didChangeWatchedFiles = { dynamicRegistration = false },
-            },
-        }
+        require('cmp_nvim_lsp').default_capabilities()
     )
 end
 

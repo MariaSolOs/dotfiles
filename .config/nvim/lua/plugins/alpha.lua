@@ -1,4 +1,5 @@
 -- Start dashboard.
+-- TODO: Remove this and use the vanilla :intro when https://github.com/neovim/neovim/issues/27266 gets fixed.
 return {
     {
         'goolord/alpha-nvim',
