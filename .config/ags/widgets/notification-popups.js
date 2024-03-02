@@ -12,7 +12,7 @@ export const NotificationPopups = Widget.Window({
         vertical: true,
         spacing: 2,
         children: Notifications.bind('notifications').as((notifs) =>
-            notifs.slice(0, 15).map((notif) => {
+            notifs.slice(0, 5).map((notif) => {
                 let icon;
 
                 // If present, use the image as the icon.
