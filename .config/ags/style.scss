@@ -83,8 +83,8 @@ window#dashboard {
         @include bordered-box($lilac, false);
 
         background-color: $transparent-black;
-        min-height: 918px;
-        min-width: 1506px;
+        min-height: 330px;
+        min-width: 520px;
     }
 
     $dashboard-boxes: (
