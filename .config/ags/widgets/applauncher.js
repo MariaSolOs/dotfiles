@@ -36,6 +36,12 @@ const launchApp = async (app) => {
         executable = `wezterm -e ${executable}`;
     }
 
+    // Turn off fullscreen mode before launching new apps.
+    const fullscreen = await execAsync('bash -c "hyprctl activewindow -j | jq .fullscreen"');
+    if (fullscreen === 'true') {
+        await Hyprland.messageAsync('dispatch fullscreen 0');
+    }
+
     return execAsync(executable);
 };
 
