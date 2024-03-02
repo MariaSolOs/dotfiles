@@ -170,6 +170,11 @@ local last_diagnostic_component = ''
 --- Diagnostic counts in the current buffer.
 ---@return string
 function M.diagnostics_component()
+    -- Lazy uses diagnostic icons, but those aren't errors per se.
+    if vim.bo.filetype == 'lazy' then
+        return ''
+    end
+
     -- Use the last computed value if in insert mode.
     if vim.startswith(vim.api.nvim_get_mode().mode, 'i') then
         return last_diagnostic_component
