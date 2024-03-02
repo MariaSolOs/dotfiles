@@ -33,7 +33,6 @@ return {
                 },
             },
         },
-        event = 'VeryLazy',
         version = false,
         build = ':TSUpdate',
         opts = {
