@@ -16,7 +16,7 @@ M.client_capabilities = function()
 end
 
 --- Sets up LSP keymaps and autocommands for the given buffer.
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@param bufnr integer
 local function on_attach(client, bufnr)
     ---@param lhs string
