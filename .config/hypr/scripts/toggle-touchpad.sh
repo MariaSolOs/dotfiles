@@ -1,36 +1,38 @@
 #!/usr/bin/env bash
 
 function toggletouchpad() {
-	local setting='device:apple-internal-keyboard-/-trackpad-1:enabled'
-	local settingfile='/tmp/toggle-touchpad-notification-id'
+	# Disable shell expansion.
+	# shellcheck disable=SC2016
+	local setting='$TOUCHPAD_ENABLED'
 
-	if [ -f $settingfile ]; then
-		notificationid=$(cat $settingfile)
-	else
-		notificationid=0
+	# For storing the notification ID and current value.
+	local statusfile='/tmp/toggle-touchpad-status'
+
+	# Read the current status (if any).
+	local notificationid=0
+	local enabled=true
+	if [ -f $statusfile ]; then
+		notificationid=$(cat $statusfile | cut -d ' ' -f 1)
+		enabled=$(cat $statusfile | cut -d ' ' -f 2)
 	fi
 
-	# Check if the touchpad is enabled.
-	local settingvalue
-	settingvalue=$(hyprctl getoption $setting | rg 'int: 1')
-
-	local icon message newsettingvalue
-	if [ -z "$settingvalue" ]; then
-		icon='enabled'
-		message='Enabling'
-		newsettingvalue=1
-	else
+	local icon message
+	if [ "$enabled" == true ]; then
 		icon='disabled'
 		message='Disabling'
-		newsettingvalue=0
+		enabled=false
+	else
+		icon='enabled'
+		message='Enabling'
+		enabled=true
 	fi
 
-	# Notify and save the new ID.
+	# Notify and save the new status.
 	notificationid=$(notify-send -p -r "$notificationid" -i "touchpad-$icon-symbolic" -a "hyprland" "$message touchpad...")
-	echo "$notificationid" >$settingfile
+	echo "$notificationid $enabled" >$statusfile
 
 	# Change the Hyprland setting.
-	hyprctl keyword $setting $newsettingvalue
+	hyprctl keyword $setting $enabled -r
 }
 
 toggletouchpad
