@@ -16,6 +16,8 @@ return {
                     },
                 },
             },
+            -- Autocompletion.
+            'mfussenegger/nvim-lsp-compl',
         },
         config = function()
             local lspconfig = require 'lspconfig'

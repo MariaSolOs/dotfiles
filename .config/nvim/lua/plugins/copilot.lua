@@ -10,7 +10,7 @@ return {
                 auto_trigger = true,
                 -- Use alt to interact with Copilot.
                 keymap = {
-                    -- Disable the built-in mapping, we'll configure it in nvim-cmp.
+                    -- Disable the built-in mapping, we'll configure it together with completion.
                     accept = false,
                     accept_word = '<M-w>',
                     accept_line = '<M-l>',
@@ -22,7 +22,6 @@ return {
             filetypes = { markdown = true },
         },
         config = function(_, opts)
-            local cmp = require 'cmp'
             local copilot = require 'copilot.suggestion'
             local luasnip = require 'luasnip'
 
@@ -38,12 +37,18 @@ return {
             end
 
             -- Hide suggestions when the completion menu is open.
-            cmp.event:on('menu_opened', function()
-                set_trigger(false)
-            end)
-            cmp.event:on('menu_closed', function()
-                set_trigger(not luasnip.expand_or_locally_jumpable())
-            end)
+            vim.api.nvim_create_autocmd('CompleteChanged', {
+                desc = 'Hide Copilot suggestions when the completion menu is visible',
+                callback = function()
+                    set_trigger(false)
+                end,
+            })
+            vim.api.nvim_create_autocmd('CompleteDone', {
+                desc = 'Re-enable Copilot suggestions when completion ends',
+                callback = function()
+                    set_trigger(not luasnip.expand_or_locally_jumpable())
+                end,
+            })
 
             vim.api.nvim_create_autocmd('User', {
                 desc = 'Disable Copilot inside snippets',
