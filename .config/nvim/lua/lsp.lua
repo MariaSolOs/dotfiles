@@ -51,9 +51,7 @@ local function on_attach(client, bufnr)
     end, 'Next error')
 
     if client.supports_method(methods.textDocument_codeAction) then
-        keymap('<leader>ca', function()
-            keymap('<leader>ca', vim.lsp.buf.code_action, 'Code actions', { 'n', 'v' })
-        end, 'Code actions', { 'n', 'v' })
+        keymap('<leader>ca', vim.lsp.buf.code_action, 'Code actions', { 'n', 'v' })
     end
 
     if client.supports_method(methods.textDocument_rename) then
