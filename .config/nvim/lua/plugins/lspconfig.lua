@@ -9,13 +9,6 @@ return {
                 cmd = 'Mason',
                 build = ':MasonUpdate',
                 opts = {
-                    ensure_installed = {
-                        'black',
-                        'codelldb',
-                        'shellcheck',
-                        'shfmt',
-                        'stylua',
-                    },
                     ui = {
                         border = 'rounded',
                         width = 0.7,
