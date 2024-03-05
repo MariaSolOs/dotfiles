@@ -86,7 +86,10 @@ return {
                                     and client.workspace_folders[1].name
                                 if
                                     not path
-                                    or not (vim.uv.fs_stat(path .. '/.luarc.lua') or vim.uv.fs_stat(path .. '/.luarc'))
+                                    or not (
+                                        vim.uv.fs_stat(path .. '/.luarc.json')
+                                        or vim.uv.fs_stat(path .. '/.luarc.jsonc')
+                                    )
                                 then
                                     client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
                                         Lua = {
