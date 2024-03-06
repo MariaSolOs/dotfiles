@@ -39,9 +39,6 @@ return {
                         end
                     end, { desc = 'Select choice' })
 
-                    -- Load my snippets and the ones from VSCode.
-                    require('luasnip.loaders.from_vscode').lazy_load()
-
                     vim.api.nvim_create_autocmd('ModeChanged', {
                         group = vim.api.nvim_create_augroup('mariasolos/unlink_snippet', { clear = true }),
                         desc = 'Cancel the snippet session when leaving insert mode',
