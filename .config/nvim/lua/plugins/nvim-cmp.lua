@@ -117,8 +117,6 @@ return {
                     ['<cr>'] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
                     },
-                    -- Explicitly request completions.
-                    ['<C-Space>'] = cmp.mapping.complete(),
                     ['/'] = cmp.mapping.close(),
                     -- Overload tab to accept Copilot suggestions.
                     ['<Tab>'] = cmp.mapping(function(fallback)
