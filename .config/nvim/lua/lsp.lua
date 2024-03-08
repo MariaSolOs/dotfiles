@@ -103,8 +103,6 @@ local function on_attach(client, bufnr)
 
     keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
-    keymap('K', vim.lsp.buf.hover, 'Hover')
-
     keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
     keymap('<leader>fS', function()
         -- Disable the grep switch header.
