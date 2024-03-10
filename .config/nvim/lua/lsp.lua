@@ -10,7 +10,8 @@ M.client_capabilities = function()
     return vim.tbl_deep_extend(
         'force',
         vim.lsp.protocol.make_client_capabilities(),
-        require('lsp_compl').capabilities()
+        -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
+        require('cmp_nvim_lsp').default_capabilities()
     )
 end
 
@@ -20,84 +21,12 @@ end
 local function on_attach(client, bufnr)
     ---@param lhs string
     ---@param rhs string|function
-    ---@param opts string|table
+    ---@param desc string
     ---@param mode? string|string[]
-    local function keymap(lhs, rhs, opts, mode)
-        opts = type(opts) == 'string' and { desc = opts }
-            or vim.tbl_extend('error', opts --[[@as table]], { buffer = bufnr })
+    local function keymap(lhs, rhs, desc, mode)
         mode = mode or 'n'
-        vim.keymap.set(mode, lhs, rhs, opts)
+        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
-
-    --- @param keys string
-    local function feedkeys(keys)
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
-    end
-
-    local function pumvisible()
-        return tonumber(vim.fn.pumvisible()) ~= 0
-    end
-
-    -- Disable the automatic signature popups.
-    if client.supports_method(methods.textDocument_signatureHelp) then
-        client.server_capabilities.signatureHelpProvider.triggerCharacters = {}
-    end
-    vim.lsp.commands['editor.action.triggerParameterHints'] = function() end
-
-    -- Initialize completion and set up keybindings.
-    local lsp_compl = require 'lsp_compl'
-    ---@diagnostic disable-next-line: param-type-mismatch
-    lsp_compl.attach(client, bufnr)
-    keymap('<cr>', function()
-        return lsp_compl.accept_pum() and '<C-y>' or '<cr>'
-    end, { expr = true }, 'i')
-    keymap('/', function()
-        return pumvisible() and '<C-e>' or '/'
-    end, { expr = true }, 'i')
-    keymap('<C-n>', function()
-        if pumvisible() then
-            feedkeys '<C-n>'
-        else
-            if next(vim.lsp.get_clients { bufnr = 0 }) then
-                lsp_compl.trigger_completion()
-            else
-                if vim.bo.omnifunc == '' then
-                    feedkeys '<C-x><C-n>'
-                else
-                    feedkeys '<C-x><C-o>'
-                end
-            end
-        end
-    end, 'Trigger/select next completion', 'i')
-    keymap('<C-b>', '<C-x><C-n>', { desc = 'Buffer completions' }, 'i')
-    keymap('<Tab>', function()
-        local copilot = require 'copilot.suggestion'
-        local luasnip = require 'luasnip'
-
-        if copilot.is_visible() then
-            copilot.accept()
-        elseif pumvisible() then
-            feedkeys '<C-n>'
-        elseif luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
-        else
-            feedkeys '<Tab>'
-        end
-    end, {}, { 'i', 's' })
-    keymap('<S-Tab>', function()
-        local luasnip = require 'luasnip'
-
-        if pumvisible() then
-            feedkeys '<C-p>'
-        elseif luasnip.expand_or_locally_jumpable(-1) then
-            luasnip.jump(-1)
-        else
-            feedkeys '<S-Tab>'
-        end
-    end, {}, { 'i', 's' })
-
-    -- Inside a snippet, use backspace to remove the placeholder.
-    keymap('<BS>', '<C-o>s', {}, 's')
 
     keymap('gr', '<cmd>FzfLua lsp_references<cr>', 'Go to references')
 
@@ -137,8 +66,9 @@ local function on_attach(client, bufnr)
     if client.supports_method(methods.textDocument_signatureHelp) then
         keymap('<C-k>', function()
             -- Close the completion menu first (if open).
-            if pumvisible() then
-                feedkeys '<C-e>'
+            local cmp = require 'cmp'
+            if cmp.visible() then
+                cmp.close()
             end
 
             vim.lsp.buf.signature_help()
