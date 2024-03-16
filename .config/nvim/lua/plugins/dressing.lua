@@ -41,11 +41,6 @@ return {
                         winopts = { height = 0.35, width = 0.3 }
                     end
 
-                    -- Add a colon to the prompt if it doesn't have one.
-                    if opts.prompt and not opts.prompt:match ':%s*$' then
-                        opts.prompt = opts.prompt .. ': '
-                    end
-
                     -- Fallback to fzf-lua.
                     return {
                         backend = 'fzf_lua',
