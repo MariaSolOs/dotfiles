@@ -1,0 +1,32 @@
+[core]
+	editor = nvim
+	pager = delta
+
+[delta]
+	navigate = true
+	syntax-theme = Dracula
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[init]
+	defaultBranch = main
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = diff3
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[user]
+	name = Maria José Solano
+	email = majosolano99@gmail.com

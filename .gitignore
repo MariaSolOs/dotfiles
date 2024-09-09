@@ -1,0 +1,5 @@
+# Bare repo with dotfiles.
+/.cfg/
+
+# Mac specifics:
+.DS_Store

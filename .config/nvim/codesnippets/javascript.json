@@ -1,0 +1,142 @@
+{
+    "Log to the console": {
+        "prefix": "log",
+        "body": [
+            "console.log($1);"
+        ],
+        "description": "Log to the console"
+    },
+    "Throw Exception": {
+        "prefix": "throw",
+        "body": [
+            "throw new Error(\"$1\");"
+        ],
+        "description": "Throw Exception"
+    },
+    "For Loop": {
+        "prefix": "for",
+        "body": [
+            "for (let ${1:i} = 0; ${1:i} < ${2:array}.length; ${1:i}++) {",
+            "    $0",
+            "}"
+        ],
+        "description": "For Loop"
+    },
+    "For-Each Loop using =>": {
+        "prefix": "foreach =>",
+        "body": [
+            "${1:array}.forEach(${2:element} => {",
+            "    $0",
+            "});"
+        ],
+        "description": "For-Each Loop using =>"
+    },
+    "For-Of Loop": {
+        "prefix": "forof",
+        "body": [
+            "for (const ${1:element} of ${2:object}) {",
+            "    $TM_SELECTED_TEXT$0",
+            "}"
+        ],
+        "description": "For-Of Loop"
+    },
+    "For-Await-Of Loop": {
+        "prefix": "forawaitof",
+        "body": [
+            "for await (const ${1:element} of ${2:object}) {",
+            "    $0",
+            "}"
+        ],
+        "description": "For-Await-Of Loop"
+    },
+    "Function Statement": {
+        "prefix": "function",
+        "body": [
+            "function ${1:name}($2) {",
+            "    $0",
+            "}"
+        ],
+        "description": "Function Statement"
+    },
+    "If Statement": {
+        "prefix": "if",
+        "body": [
+            "if (${1:condition}) {",
+            "    $0",
+            "}"
+        ],
+        "description": "If Statement"
+    },
+    "If-Else Statement": {
+        "prefix": "ifelse",
+        "body": [
+            "if (${1:condition}) {",
+            "    $2",
+            "} else {",
+            "    $0",
+            "}"
+        ],
+        "description": "If-Else Statement"
+    },
+    "Switch Statement": {
+        "prefix": "switch",
+        "body": [
+            "switch (${1:key}) {",
+            "    case ${2:value}:",
+            "        $0",
+            "        break;",
+            "",
+            "    default:",
+            "        break;",
+            "}"
+        ],
+        "description": "Switch Statement"
+    },
+    "While Statement": {
+        "prefix": "while",
+        "body": [
+            "while (${1:condition}) {",
+            "    $0",
+            "}"
+        ],
+        "description": "While Statement"
+    },
+    "Do-While Statement": {
+        "prefix": "dowhile",
+        "body": [
+            "do {",
+            "    $0",
+            "} while (${1:condition});"
+        ],
+        "description": "Do-While Statement"
+    },
+    "Try-Catch Statement": {
+        "prefix": "trycatch",
+        "body": [
+            "try {",
+            "    $0",
+            "} catch (${1:error}) {",
+            "    ",
+            "}"
+        ],
+        "description": "Try-Catch Statement"
+    },
+    "Set Timeout Function": {
+        "prefix": "settimeout",
+        "body": [
+            "setTimeout(() => {",
+            "    $0",
+            "}, ${1:timeout});"
+        ],
+        "description": "Set Timeout Function"
+    },
+    "Set Interval Function": {
+        "prefix": "setinterval",
+        "body": [
+            "setInterval(() => {",
+            "    $0",
+            "}, ${1:interval});"
+        ],
+        "description": "Set Interval Function"
+    }
+}
