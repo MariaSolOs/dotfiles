@@ -1,0 +1,7 @@
+# Generated stuff.
+/*.css*
+/node_modules/
+/types
+
+# API keys etc.
+secret.js
