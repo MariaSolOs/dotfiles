@@ -88,6 +88,9 @@ config.font_rules = {
 config.underline_position = -6
 config.underline_thickness = '250%'
 
+-- Disable automatic update notifications (I do this often anyway).
+config.check_for_updates = false
+
 -- Keybindings.
 local function pane_navigation_action(direction, fallback_direction)
     return wezterm.action_callback(function(win, pane)
@@ -101,7 +104,6 @@ local mods = 'ALT|SHIFT'
 config.keys = {
     { mods = mods, key = 'x', action = act.ActivateCopyMode },
     { mods = mods, key = 'd', action = act.ShowDebugOverlay },
-    { mods = mods, key = 'Enter', action = act.ToggleFullScreen },
     { mods = mods, key = 'v', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 's', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { mods = mods, key = 'h', action = pane_navigation_action('Left', 'Prev') },
@@ -121,6 +123,10 @@ config.keys = {
     { mods = 'ALT', key = '4', action = act.ActivateTab(3) },
     { mods = 'ALT', key = '5', action = act.ActivateTab(4) },
 }
+-- I just need to toggle fullscreen on Mac. On Linux I use the window manager.
+if wezterm.target_triple == 'aarch64-apple-darwin' then
+    table.insert(config.keys, { mods = mods, key = 'Enter', action = act.ToggleFullScreen })
+end
 
 wezterm.on('format-tab-title', function(tab)
     -- Get the process name.
