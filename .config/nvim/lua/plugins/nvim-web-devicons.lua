@@ -12,11 +12,6 @@ return {
                     cterm_color = '16',
                     name = 'Scheme',
                 },
-                ['.chezmoiignore'] = {
-                    icon = '',
-                    color = '#526CFE',
-                    name = 'Chezmoiignore',
-                },
             },
         },
     },
