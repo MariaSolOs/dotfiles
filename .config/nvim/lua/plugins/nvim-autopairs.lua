@@ -10,8 +10,13 @@ return {
 
             npairs.setup()
 
-            -- Autoclosing angle-brackets for Rust.
-            npairs.add_rule(Rule('<', '>', 'rust'):with_pair(conds.before_regex '%a+'):with_move(function(opts)
+            -- Autoclosing angle-brackets.
+            npairs.add_rule(Rule('<', '>', {
+                -- Avoid conflicts with nvim-ts-autotag.
+                '-html',
+                '-javascriptreact',
+                '-typescriptreact',
+            }):with_pair(conds.before_regex('%a+:?:?$', 3)):with_move(function(opts)
                 return opts.char == '>'
             end))
         end,
