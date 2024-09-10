@@ -13,7 +13,7 @@ return {
                 openai = function()
                     return require('codecompanion.adapters').extend('openai', {
                         env = {
-                            api_key = 'cmd:gpg --decrypt ~/.open_ai_key.gpg 2>/dev/null',
+                            api_key = 'cmd:bws secret get f3a6ad3d-2382-45f2-9dc6-b1e7001e769c | jq -r .value',
                         },
                         schema = {
                             model = {
