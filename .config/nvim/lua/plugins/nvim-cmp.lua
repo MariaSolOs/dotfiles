@@ -173,7 +173,17 @@ return {
                 sources = cmp.config.sources({
                     -- keyword_length = 2 to not show completions with single letter identifiers.
                     { name = 'nvim_lsp', keyword_length = 2 },
-                    { name = 'luasnip' },
+                    {
+                        name = 'luasnip',
+                        -- Don't show snippet completions in comments or strings.
+                        entry_filter = function()
+                            local ctx = require 'cmp.config.context'
+                            local in_string = ctx.in_syntax_group 'String' or ctx.in_treesitter_capture 'string'
+                            local in_comment = ctx.in_syntax_group 'Comment' or ctx.in_treesitter_capture 'comment'
+
+                            return not in_string and not in_comment
+                        end,
+                    },
                 }, {
                     {
                         name = 'buffer',
