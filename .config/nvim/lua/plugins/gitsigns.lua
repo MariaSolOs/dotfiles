@@ -28,25 +28,28 @@ return {
                 ---@param lhs string
                 ---@param rhs function
                 ---@param desc string
-                local function map(lhs, rhs, desc)
+                local function nmap(lhs, rhs, desc)
                     vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
                 end
-                map('<leader>go', function()
+                nmap('<leader>go', function()
                     gitlinker.get_buf_range_url('n', { action_callback = require('gitlinker.actions').open_in_browser })
                 end, 'Open in browser')
-                map('[g', gs.prev_hunk, 'Previous hunk')
-                map(']g', gs.next_hunk, 'Next hunk')
-                map('<leader>gR', gs.reset_buffer, 'Reset buffer')
-                map('<leader>gb', gs.blame_line, 'Blame line')
-                map('<leader>gp', gs.preview_hunk, 'Preview hunk')
-                map('<leader>gr', gs.reset_hunk, 'Reset hunk')
-                map('<leader>gs', gs.stage_hunk, 'Stage hunk')
-                map('<leader>gl', function()
+                nmap('[g', gs.prev_hunk, 'Previous hunk')
+                nmap(']g', gs.next_hunk, 'Next hunk')
+                nmap('<leader>gR', gs.reset_buffer, 'Reset buffer')
+                nmap('<leader>gb', gs.blame_line, 'Blame line')
+                nmap('<leader>gp', gs.preview_hunk, 'Preview hunk')
+                nmap('<leader>gr', gs.reset_hunk, 'Reset hunk')
+                nmap('<leader>gs', gs.stage_hunk, 'Stage hunk')
+                nmap('<leader>gl', function()
                     require('float_term').float_term('lazygit', {
                         size = { width = 0.85, height = 0.8 },
                         cwd = vim.b.gitsigns_status_dict.root,
                     })
                 end, 'Lazygit')
+
+                -- Text object:
+                vim.keymap.set({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<cr>')
             end,
         },
     },
