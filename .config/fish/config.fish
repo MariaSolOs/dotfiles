@@ -3,6 +3,9 @@ if not status is-interactive
     return 0
 end
 
+# Figure out which operating system we're in.
+set -l os (uname)
+
 # Neovim.
 abbr -a nv nvim
 abbr -a nvo --set-cursor "cd % && nvim"
@@ -21,11 +24,15 @@ abbr -a gp git push
 abbr -a gst git status
 
 # System maintenance.
-abbr -a --position anywhere b brew
 abbr -a --position anywhere s sudo
+if test "$os" = Darwin
+    abbr -a --position anywhere b brew
+else if test "$os" = Linux
+    abbr -a j journalctl
+end
 
 # Add completions from stuff installed with Homebrew.
-if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+if test \( "$os" = Darwin \) -a \( -d (brew --prefix)"/share/fish/vendor_completions.d" \)
     set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
 end
 
@@ -43,4 +50,11 @@ set fish_cursor_replace_one underscore
 fish_config theme choose "Dracula Official"
 
 # Prompt.
-starship init fish | source
+if test "$os" = Darwin
+    starship init fish | source
+else if test "$os" = Linux
+    # Set the prompt when inside Hyprland.
+    if set -q HYPRLAND_INSTANCE_SIGNATURE
+        starship init fish | source
+    end
+end
