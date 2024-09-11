@@ -9,7 +9,7 @@ return {
                 '<leader>cr',
                 function()
                     local grug = require 'grug-far'
-                    grug.grug_far {
+                    grug.open {
                         transient = true,
                         keymaps = { help = '?' },
                     }
