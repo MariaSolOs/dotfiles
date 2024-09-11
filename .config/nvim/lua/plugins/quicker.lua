@@ -25,6 +25,19 @@ return {
                 desc = 'Toggle loclist list',
             },
             {
+                '<leader>xd',
+                function()
+                    local quicker = require 'quicker'
+
+                    if quicker.is_open() then
+                        quicker.close()
+                    else
+                        vim.diagnostic.setqflist()
+                    end
+                end,
+                desc = 'Toggle diagnostics',
+            },
+            {
                 '>',
                 function()
                     require('quicker').expand { before = 2, after = 2, add_to_existing = true }
