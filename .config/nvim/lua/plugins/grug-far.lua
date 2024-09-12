@@ -6,7 +6,7 @@ return {
         cmd = 'GrugFar',
         keys = {
             {
-                '<leader>cr',
+                '<leader>cg',
                 function()
                     local grug = require 'grug-far'
                     grug.open {
