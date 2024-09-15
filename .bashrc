@@ -9,6 +9,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 
 # Make sure this stuff is in the path.
+export PATH="$HOME/.cargo/bin:$PATH" # Cargo
 export PATH="$HOME/.local/bin:$PATH" # Local scripts
 
 # Use neovim as the default editor.
@@ -34,13 +35,13 @@ export GRIM_DEFAULT_DIR="$XDG_PICTURES_DIR/Screenshots"
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 
-# Cargo setup.
-. "$HOME/.cargo/env"
-
 # Start Hyprland on TTY1.
 if [[ "$(tty)" == "/dev/tty1" ]]; then
     exec Hyprland
 fi
+
+# Set up Node version manager:
+source /usr/share/nvm/init-nvm.sh
 
 # Drop into fish if:
 # - The parent process isn't fish.
