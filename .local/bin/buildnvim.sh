@@ -64,7 +64,7 @@ EOF
 
     # Build.
     make CMAKE_BUILD_TYPE=RelWithDebInfo
-    make install
+    sudo make install
 
     # Remove the patched changes.
     git checkout .
