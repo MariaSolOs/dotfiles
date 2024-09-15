@@ -17,5 +17,3 @@ function fish_user_key_bindings
     # Use <C-Slash> to clear the line.
     bind -M insert \c_ kill-whole-line repaint
 end
-
-fzf_key_bindings

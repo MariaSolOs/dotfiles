@@ -48,6 +48,9 @@ set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 
+# fzf shell integration:
+fzf --fish | source
+
 # Color theme.
 fish_config theme choose "Dracula Official"
 
