@@ -5,11 +5,11 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_PICTURES_DIR="$HOME/Pictures"
 export XDG_STATE_HOME="$HOME/.local/state"
 
+# SSH-ing.
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+
 # Make sure this stuff is in the path.
 export PATH="$HOME/.local/bin:$PATH" # Local scripts
-
-# SSH agent.
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Use neovim as the default editor.
 export EDITOR=nvim
