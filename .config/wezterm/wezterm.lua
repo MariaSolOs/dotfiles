@@ -1,6 +1,10 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
 local config = wezterm.config_builder()
+local on_mac = wezterm.target_triple == 'aarch64-apple-darwin'
+
+-- TODO: Remove this eventually (?)
+config.enable_wayland = false
 
 -- Support for undercurl, etc.
 config.term = 'wezterm'
@@ -59,14 +63,15 @@ config.cursor_thickness = 2
 config.hide_tab_bar_if_only_one_tab = true
 config.window_frame = {
     font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'DemiBold' }),
+    font_size = on_mac and 12 or 18,
     active_titlebar_bg = colors.bg,
     inactive_titlebar_bg = colors.bg,
 }
 
 -- Fonts.
-config.font_size = 14
+config.font_size = on_mac and 14 or 20
 config.cell_width = 0.9
-config.line_height = 1.2
+config.line_height = on_mac and 1.2 or 1.25
 config.font = wezterm.font('Hasklug Nerd Font Mono', { weight = 'Medium' })
 config.font_rules = {
     {
@@ -124,7 +129,7 @@ config.keys = {
     { mods = 'ALT', key = '5', action = act.ActivateTab(4) },
 }
 -- I just need to toggle fullscreen on Mac. On Linux I use the window manager.
-if wezterm.target_triple == 'aarch64-apple-darwin' then
+if on_mac then
     table.insert(config.keys, { mods = mods, key = 'Enter', action = act.ToggleFullScreen })
 end
 
