@@ -16,7 +16,7 @@ let hoveringCalendar = false;
 export const Statusbar = Widget.Window({
     name: 'statusbar',
     anchor: ['top', 'left', 'right'],
-    margins: [2, 2, 1, 2],
+    margins: [2, 5, 1, 5],
     exclusivity: 'exclusive',
     child: Widget.CenterBox({
         start_widget: Widget.Box({
