@@ -29,6 +29,7 @@ if test "$os" = Darwin
     abbr -a --position anywhere b brew
 else if test "$os" = Linux
     abbr -a j journalctl
+    abbr -a pc --position anywhere pacman
 end
 
 # Add completions from stuff installed with Homebrew.
