@@ -12,6 +12,10 @@
 	process = git-lfs filter-process
 	required = true
 
+[filter "gitignore"]
+	clean = "sed '/#gitignore$/d'"
+	smudge = cat
+
 [init]
 	defaultBranch = main
 
