@@ -64,6 +64,9 @@ const getWeatherData = async () => {
     }
 };
 
+/**
+ * @param {import('types/widgets/button.d.ts').Button} button
+ */
 const updateKeyboardLayout = (button) => {
     Utils.execAsync(
         'bash -c "hyprctl devices -j | jq -r \'.keyboards[] | select(.main) | .active_keymap\'"',

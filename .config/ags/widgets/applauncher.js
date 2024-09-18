@@ -1,7 +1,7 @@
 const WINDOW_NAME = 'applauncher';
 
 /**
- * @typedef {import('resource:///com/github/Aylur/ags/service/applications.js').Application} App
+ * @typedef {import('types/service/applications').Application} App
  */
 
 /**
