@@ -3,6 +3,10 @@ return {
     {
         'mfussenegger/nvim-jdtls',
         ft = 'java',
+        -- I only need this on Mac.
+        enabled = function()
+            return vim.uv.os_uname().sysname == 'Darwin'
+        end,
         config = function()
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'java',
