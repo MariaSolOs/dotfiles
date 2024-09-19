@@ -189,18 +189,27 @@ return {
                         name = 'buffer',
                         keyword_length = 3,
                         option = {
-                            -- Buffer completions from all visible buffers.
+                            -- Buffer completions from all visible buffers (that aren't huge).
                             get_bufnrs = function()
-                                return vim.iter(vim.api.nvim_list_wins())
-                                    :map(function(win)
-                                        return vim.api.nvim_win_get_buf(win)
-                                    end)
-                                    :totable()
+                                local bufs = {}
+
+                                for _, win in ipairs(vim.api.nvim_list_wins()) do
+                                    local buf = vim.api.nvim_win_get_buf(win)
+                                    local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+                                    if ok and stats and stats.size < (250 * 1024) then
+                                        table.insert(bufs, buf)
+                                    end
+                                end
+
+                                return bufs
                             end,
                         },
                     },
                 }),
                 sorting = defaults.sorting,
+                performance = {
+                    max_view_entries = 10,
+                },
             }
         end,
         config = function(_, opts)
