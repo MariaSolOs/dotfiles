@@ -13,6 +13,17 @@
         "typeRoots": [
             "./types"
         ],
+        "types": [
+            "ags",
+            "app",
+            "client",
+            "main",
+            "overrides",
+            "service",
+            "utils",
+            "variable",
+            "widget"
+        ],
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "noEmit": true
