@@ -125,9 +125,15 @@ vim.diagnostic.config {
                 ['Lua Syntax Check.'] = 'lua',
             }
 
-            local source = special_sources[diagnostic.source] or diagnostic.source
-            local icon = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
-            return string.format('%s %s[%s] ', icon, source, diagnostic.code)
+            local message = diagnostic_icons[vim.diagnostic.severity[diagnostic.severity]]
+            if diagnostic.source then
+                message = string.format('%s %s', message, special_sources[diagnostic.source] or diagnostic.source)
+            end
+            if diagnostic.code then
+                message = string.format('%s[%s]', message, diagnostic.code)
+            end
+
+            return message .. ' '
         end,
     },
     float = {
