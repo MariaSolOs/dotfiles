@@ -27,9 +27,9 @@ const launchApp = async (app) => {
         .filter((str) => !str.startsWith('%') && !str.startsWith('@'))
         .join(' ');
 
-    // Use Wezterm for opening terminal apps.
+    // Use kitty for opening terminal apps.
     if (app.app.get_boolean('Terminal')) {
-        executable = `wezterm -e ${executable}`;
+        executable = `kitty -e ${executable}`;
     }
 
     // Turn off fullscreen mode before launching new apps.
