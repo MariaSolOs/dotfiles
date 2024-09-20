@@ -1,5 +1,19 @@
 const notifications = await Service.import('notifications');
 
+/**
+ * @param {string} label
+ */
+const notifLabel = (label) =>
+    Widget.Label({
+        label,
+        use_markup: true,
+        hexpand: true,
+        xalign: 0,
+        justification: 'left',
+        truncate: 'end',
+        width_chars: 35,
+    });
+
 export const NotificationPopups = Widget.Window({
     name: 'notifications',
     anchor: ['bottom', 'right'],
@@ -48,17 +62,7 @@ export const NotificationPopups = Widget.Window({
                             icon,
                             Widget.Box({
                                 vertical: true,
-                                children: labels.map((label) =>
-                                    Widget.Label({
-                                        label,
-                                        use_markup: true,
-                                        hexpand: true,
-                                        xalign: 0,
-                                        justification: 'left',
-                                        truncate: 'end',
-                                        width_chars: 35,
-                                    })
-                                ),
+                                children: labels.map(notifLabel),
                             }),
                         ],
                     }),
