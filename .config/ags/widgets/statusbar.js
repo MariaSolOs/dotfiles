@@ -1,8 +1,9 @@
-import { unquoteString } from '../utils.js';
+import { capitalize, unquoteString } from '../utils.js';
 
+const battery = await Service.import('battery');
 const hyprland = await Service.import('hyprland');
 const network = await Service.import('network');
-const battery = await Service.import('battery');
+const powerProfiles = await Service.import('powerprofiles');
 
 // Used for accounting for mouse movement when closing windows.
 const MOUSE_DELAY = 300;
@@ -44,11 +45,18 @@ export const Statusbar = Widget.Window({
                 }),
                 Widget.Box({
                     class_name: network.wifi.bind('enabled').as((enabled) => `${enabled ? 'green' : 'red'}-status-box`),
+                    child: Widget.Icon({
+                        icon: network.wifi.bind('icon_name'),
+                        size: 13,
+                        tooltip_text: network.wifi.bind('ssid').as((ssid) => `SSID: ${ssid || 'unknown'}`),
+                    }),
+                }),
+                Widget.Box({
+                    class_name: 'green-status-box',
                     children: [
-                        Widget.Icon({
-                            icon: network.wifi.bind('icon_name'),
-                            size: 13,
-                            tooltip_text: network.wifi.bind('ssid').as((ssid) => `SSID: ${ssid || 'unknown'}`),
+                        Widget.Icon('power-statistics-symbolic'),
+                        Widget.Label({
+                            label: powerProfiles.bind('active_profile').as((profile) => ` ${capitalize(profile)}`),
                         }),
                     ],
                 }),

@@ -46,7 +46,7 @@ class AudioService extends Service {
     constructor() {
         super();
 
-        this.#muted = audio.speaker.is_muted;
+        this.#muted = !!audio.speaker.is_muted;
         this.#volume = audio.speaker.volume;
     }
 }

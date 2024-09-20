@@ -1,5 +1,5 @@
 import secret from '../secret.js';
-import { unquoteString } from '../utils.js';
+import { capitalize, unquoteString } from '../utils.js';
 
 const hyprland = await Service.import('hyprland');
 
@@ -140,7 +140,7 @@ export const Dashboard = Widget.Window({
                             Widget.Label({
                                 use_markup: true,
                                 label: weather.bind().as(({ description }) =>
-                                    `<i>In Seattle:</i> ${description.charAt(0).toUpperCase()}${description.slice(1)}`
+                                    `<i>In Seattle:</i> ${capitalize(description)}`
                                 ),
                             }),
                             Widget.Box({
