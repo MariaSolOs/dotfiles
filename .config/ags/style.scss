@@ -45,6 +45,7 @@ tooltip {
     @include bordered-box($lilac, false);
 
     background-color: $transparent-black;
+    font-family: 'Cartograph CF Italic';
     font-size: 11px;
 }
 
@@ -72,44 +73,6 @@ tooltip {
     color: $grey;
     min-height: 120px;
     min-width: 120px;
-}
-
-// Dashboard.
-window#dashboard {
-    font-family: 'Cartograph CF';
-    font-size: 16px;
-
-    $dashboard-boxes: (
-        ('date' 10 $yellow)
-        ('keyboard' 10 $green)
-        ('mail' 10 $pink)
-        ('power' 8 $grey)
-        ('weather' 10 $blue)
-    );
-    @each $name, $padding, $color in $dashboard-boxes {
-        .#{$name}-dashboard {
-            @include bordered-box($color, false);
-
-            background-color: $transparent-black;
-            padding: #{$padding}px;
-
-            image { color: $color; }
-
-            color: $color;
-
-            button:hover {
-                font-weight: 800;
-            }
-        }
-    }
-}
-
-.dashboard-weekday {
-    font-size: 76px;
-}
-
-.dashboard-date {
-    font-size: 26px;
 }
 
 // Application launcher.
@@ -147,5 +110,45 @@ window#applauncher {
             font-style: italic;
             color: $grey;
         }
+    }
+}
+
+// Bottom dock.
+window#dock {
+    @include bordered-box($lilac, false);
+
+    background-color: $transparent-black;
+    
+    .center-box {
+        padding: 0 2px;
+    }
+
+    .dock-box {
+        @include bordered-box(#FFF);
+
+        margin: 4px 2px;
+        padding: 2px;
+    }
+
+    button:hover {
+        color: $pink;
+        background-color: rgba($pink, 0.3);
+        border-color: $pink;
+    }
+}
+
+.dock-menu {
+    @include bordered-box($lilac, false);
+
+    background-color: $transparent-black;
+    font-size: 12px;
+    padding: 4px 8px;
+
+    menuitem {
+        padding: 2px 0;
+    }
+
+    menuitem:hover {
+        font-weight: 800;
     }
 }

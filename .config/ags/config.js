@@ -1,5 +1,5 @@
 import { AppLauncher } from './widgets/applauncher.js';
-import { Dashboard } from './widgets/dashboard.js';
+import { Dock } from './widgets/dock.js';
 import { NotificationPopups } from './widgets/notification-popups.js';
 import { Calendar, Statusbar } from './widgets/statusbar.js';
 import { SystemPopup } from './widgets/system-popup.js';
@@ -28,7 +28,7 @@ App.config({
     windows: [
         await AppLauncher(),
         Calendar,
-        Dashboard,
+        Dock,
         NotificationPopups,
         Statusbar,
         SystemPopup,
