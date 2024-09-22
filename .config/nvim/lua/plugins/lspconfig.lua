@@ -146,6 +146,8 @@ return {
                     },
                 },
             })
+
+            configure_server 'zls'
         end,
     },
 }
