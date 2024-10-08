@@ -32,7 +32,7 @@ return {
 
                     -- Configure the data directory for the project.
                     local fname = vim.api.nvim_buf_get_name(args.buf)
-                    local root_dir = require('lspconfig.server_configurations.jdtls').default_config.root_dir(fname)
+                    local root_dir = require('lspconfig.configs.jdtls').default_config.root_dir(fname)
                     local project_name = root_dir and vim.fs.basename(root_dir)
                     if project_name then
                         vim.list_extend(cmd, {
