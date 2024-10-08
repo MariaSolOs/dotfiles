@@ -94,7 +94,7 @@ local function on_attach(client, bufnr)
                     end,
                 })
             end
-        end, { buffer = bufnr })
+        end, { buffer = bufnr, desc = 'Toggle inlay hints' })
     end
 end
 
