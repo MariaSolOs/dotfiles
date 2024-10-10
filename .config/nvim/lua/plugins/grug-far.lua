@@ -14,7 +14,7 @@ return {
                         keymaps = { help = '?' },
                     }
                 end,
-                desc = 'Search and replace',
+                desc = 'GrugFar',
                 mode = { 'n', 'v' },
             },
         },
