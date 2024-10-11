@@ -51,9 +51,12 @@ return {
         },
         init = function()
             ---@diagnostic disable-next-line: duplicate-set-field
-            vim.ui.select = function(...)
-                require('lazy').load { plugins = { 'dressing.nvim' } }
-                return vim.ui.select(...)
+            vim.ui.select = function(items, opts, on_choice)
+                -- Don't show the picker if there's nothing to pick.
+                if #items > 0 then
+                    require('lazy').load { plugins = { 'dressing.nvim' } }
+                    return vim.ui.select(items, opts, on_choice)
+                end
             end
             ---@diagnostic disable-next-line: duplicate-set-field
             vim.ui.input = function(...)
