@@ -43,6 +43,7 @@ return {
                 'fish',
                 'gitcommit',
                 'html',
+                'java',
                 'javascript',
                 'json',
                 'json5',
