@@ -1,0 +1,52 @@
+# Font configuration:
+font-family = "Hasklug Nerd Font Mono Med"
+font-family-italic = "Cartograph CF Italic"
+font-size = 10
+adjust-cell-width = -5%
+adjust-cell-height = 20%
+adjust-underline-position = 6
+adjust-underline-thickness = 100%
+adjust-cursor-thickness = 150%
+
+# Color theme:
+theme = Dracula
+background = 0E1419
+
+# Cursor:
+cursor-color = F8F8F2
+
+# Key bindings:
+keybind = alt+one=goto_tab:1
+keybind = alt+two=goto_tab:2
+keybind = alt+three=goto_tab:3
+keybind = alt+four=goto_tab:4
+keybind = alt+five=goto_tab:5
+keybind = alt+shift+t=new_tab
+keybind = alt+shift+comma=reload_config
+keybind = alt+shift+q=close_surface
+keybind = alt+shift+i=inspector:toggle
+keybind = alt+equal=increase_font_size:1
+keybind = alt+minus=decrease_font_size:1
+keybind = alt+zero=reset_font_size
+keybind = alt+shift+v=new_split:right
+keybind = alt+shift+s=new_split:down
+keybind = alt+shift+k=goto_split:top
+keybind = alt+shift+j=goto_split:bottom
+keybind = alt+shift+h=goto_split:left
+keybind = alt+shift+l=goto_split:right
+keybind = ctrl+c=copy_to_clipboard
+# TODO: Figure out how to use the scrollback.
+keybind = alt+shift+b=write_scrollback_file:open
+keybind = alt+shift+j=write_scrollback_file:paste
+
+# Use the colors from my configuration for the window theme:
+window-theme = ghostty
+
+# Let me close stuff in peace:
+confirm-close-surface = false
+
+# Use a simple titlebar:
+gtk-titlebar = false
+
+# Make tabs use only the space they need:
+gtk-wide-tabs = false
