@@ -32,9 +32,6 @@ compinit
 # Use a completion menu.
 zstyle ':completion:*' menu select
 
-# Custom aliases.
-source "$ZDOTDIR/aliases.zsh"
-
 # Execute fish if it's not the parent process.
 if ! ps -p $PPID | grep -q fish; then
   fish
