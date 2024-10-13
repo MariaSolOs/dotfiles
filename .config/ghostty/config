@@ -34,7 +34,7 @@ keybind = alt+shift+k=goto_split:top
 keybind = alt+shift+j=goto_split:bottom
 keybind = alt+shift+h=goto_split:left
 keybind = alt+shift+l=goto_split:right
-keybind = ctrl+c=copy_to_clipboard
+keybind = alt+shift+c=copy_to_clipboard
 # TODO: Figure out how to use the scrollback.
 keybind = alt+shift+b=write_scrollback_file:open
 keybind = alt+shift+j=write_scrollback_file:paste
