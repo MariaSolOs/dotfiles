@@ -135,6 +135,11 @@ window#dock {
         background-color: rgba($pink, 0.3);
         border-color: $pink;
     }
+
+    .system-info {
+        color: $grey;
+        margin: 0 8px;
+    }
 }
 
 .dock-menu {
