@@ -1,8 +1,8 @@
 -- Completion.
 return {
     {
-        'yioneko/nvim-cmp',
-        branch = 'perf',
+        'iguanacucumber/magazine.nvim',
+        name = 'nvim-cmp',
         dependencies = {
             {
                 'L3MON4D3/LuaSnip',
@@ -218,7 +218,7 @@ return {
             -- Override the documentation handler to remove the redundant detail section.
             ---@diagnostic disable-next-line: duplicate-set-field
             require('cmp.entry').get_documentation = function(self)
-                local item = self:get_completion_item()
+                local item = self.completion_item
 
                 if item.documentation then
                     return vim.lsp.util.convert_input_to_markdown_lines(item.documentation)
