@@ -54,8 +54,8 @@ export const SystemPopup = Widget.Window({
             }),
             setup: (self) => {
                 // Listen to changes in the screen brightness and volume.
-                self.hook(Backlight, (_, brightness) => {
-                    if (!brightness) {
+                self.hook(Backlight, (_, brightness, userTriggered) => {
+                    if (!brightness || !userTriggered) {
                         return;
                     }
 
@@ -63,8 +63,8 @@ export const SystemPopup = Widget.Window({
                     updateUI(brightness, `display-brightness-${intensity}-symbolic`);
                 }, 'brightness-changed');
 
-                self.hook(Audio, (_, volume) => {
-                    if (!volume) {
+                self.hook(Audio, (_, volume, userTriggered) => {
+                    if (!volume || !userTriggered) {
                         return;
                     }
 

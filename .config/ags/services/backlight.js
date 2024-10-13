@@ -2,7 +2,7 @@ class BacklightService extends Service {
     static {
         Service.register(
             this,
-            { 'brightness-changed': ['float'] },
+            { 'brightness-changed': ['float', 'boolean'] },
             { 'brightness': ['float', 'rw'] },
         );
     }
@@ -28,14 +28,18 @@ class BacklightService extends Service {
             .catch(console.error);
     }
 
-    emitChange() {
-        this.emit('brightness-changed', this.#brightness);
+    emitChange(userTriggered = true) {
+        this.emit('brightness-changed', this.#brightness, userTriggered);
     }
 
     constructor() {
         super();
 
-        this.#brightness = Number(Utils.exec('brightnessctl g')) / Number(Utils.exec('brightnessctl m'));
+        // Emit change after half a second.
+        Utils.timeout(500, () => {
+            this.#brightness = Number(Utils.exec('brightnessctl g')) / Number(Utils.exec('brightnessctl m'));
+            this.emitChange(false);
+        });
     }
 }
 

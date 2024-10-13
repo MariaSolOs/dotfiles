@@ -4,7 +4,7 @@ class AudioService extends Service {
     static {
         Service.register(
             this,
-            { 'audio-changed': ['float'] },
+            { 'audio-changed': ['float', 'boolean'] },
             {
                 'muted': ['boolean', 'rw'],
                 'volume': ['float', 'rw'],
@@ -39,15 +39,20 @@ class AudioService extends Service {
         audio.speaker.volume = this.#volume = percent;
     }
 
-    emitChange() {
-        this.emit('audio-changed', this.#volume);
+    emitChange(userTriggered = true) {
+        this.emit('audio-changed', this.#volume, userTriggered);
     }
 
     constructor() {
         super();
 
         this.#muted = !!audio.speaker.is_muted;
-        this.#volume = audio.speaker.volume;
+
+        // Emit change after half a second.
+        Utils.timeout(500, () => {
+            this.#volume = audio.speaker.volume;
+            this.emitChange(false);
+        });
     }
 }
 
