@@ -5,30 +5,41 @@ import Gdk from 'gi://Gdk';
 
 const hyprland = await Service.import('hyprland');
 
-/**
- * @param {string} icon
- * @param {string} tooltip_text
- * @param {import('types/service.js').Connectable} service
- * @param {string} service_event
- */
-const SystemInfo = (icon, tooltip_text, service, service_event) =>
-    Widget.Box({
-        spacing: 4,
-        class_name: 'system-info',
-        children: [
-            Widget.Icon({ icon, size: 32, tooltip_text }),
-            Widget.Label({
-                setup: (self) => {
-                    self.hook(service, (_, value) => {
-                        if (value === undefined) {
-                            return;
-                        }
-                        self.label = `${(value * 100).toFixed()}%`;
-                    }, service_event);
-                },
-            }),
-        ],
-    });
+const BacklightInfo = Widget.Box({
+    spacing: 4,
+    class_name: 'system-info',
+    children: [
+        Widget.Icon({ icon: 'display-brightness-medium-symbolic', size: 32, tooltip_text: 'Screen backlight' }),
+        Widget.Label({
+            setup: (self) => {
+                self.hook(Backlight, (_, value) => {
+                    if (value === undefined) {
+                        return;
+                    }
+                    self.label = `${(value * 100).toFixed()}%`;
+                }, 'brightness-changed');
+            },
+        }),
+    ],
+});
+
+const VolumeInfo = Widget.Box({
+    spacing: 4,
+    class_name: 'system-info',
+    children: [
+        Widget.Icon({ icon: 'audio-volume-high-symbolic', size: 32, tooltip_text: 'Volume' }),
+        Widget.Label({
+            setup: (self) => {
+                self.hook(Audio, (_, value) => {
+                    if (value === undefined) {
+                        return;
+                    }
+                    self.label = Audio.muted ? 'Muted' : `${(value * 100).toFixed()}%`;
+                }, 'audio-changed');
+            },
+        }),
+    ],
+});
 
 const KeyboardButton = Widget.Button({
     class_name: 'dock-box',
@@ -91,18 +102,10 @@ export const Dock = Widget.Window({
     margins: [1, 2],
     child: Widget.CenterBox({
         class_name: 'center_box',
-        start_widget: Widget.Box({
-            children: [
-                SystemInfo('display-brightness-medium-symbolic', 'Screen backlight', Backlight, 'brightness-changed'),
-                SystemInfo('audio-volume-high-symbolic', 'Volume', Audio, 'audio-changed'),
-            ],
-        }),
+        start_widget: Widget.Box({ children: [BacklightInfo, VolumeInfo] }),
         end_widget: Widget.Box({
             hpack: 'end',
-            children: [
-                KeyboardButton,
-                ShutdownButton(),
-            ],
+            children: [KeyboardButton, ShutdownButton()],
         }),
     }),
 });
