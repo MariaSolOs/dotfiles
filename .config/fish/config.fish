@@ -3,6 +3,11 @@ if not status is-interactive
     return 0
 end
 
+# Set up Ghostty's shell integration.
+if test -n "$GHOSTTY_RESOURCES_DIR"
+    source $GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
+end
+
 # Figure out which operating system we're in.
 set -l os (uname)
 
