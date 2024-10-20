@@ -14,6 +14,7 @@ background = 0E1419
 
 # Cursor:
 cursor-color = F8F8F2
+cursor-style-blink = false
 
 # Key bindings:
 keybind = alt+one=goto_tab:1
