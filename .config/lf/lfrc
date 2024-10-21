@@ -1,0 +1,70 @@
+# Show hidden files.
+set hidden
+
+# Show the size of files.
+set info size
+
+# Show the number of items inside directories.
+set dircounts
+
+# Icons!
+set icons
+
+# Use a 4-space tab.
+set tabstop 4
+
+# Remove the username and hostname from the prompt.
+set promptfmt "\033[34;1m%d\033[0m\033[1m%f\033[0m"
+
+# Use kitty for previewing images, and bat for everything else.
+set previewer ~/.config/lf/preview.sh
+set cleaner ~/.config/lf/preview-clean.sh
+
+# Remove the underline from right panes and underline parent directories.
+set cursorpreviewfmt ""
+set cursorparentfmt "\033[4m"
+
+# Synchronous opening.
+cmd open ${{
+    case $(file --mime-type -Lb $f) in
+        text/*) nvim $fx;;
+        image/*) chromium-browser --new-window $fx;;
+        *) for f in $fx; do xdg-open $f > /dev/null 2> /dev/null & done;;
+    esac
+}}
+
+# Remove mappings I don't use.
+map <down>
+map <end>
+map <home>
+map <left>
+map <pgdn>
+map <pgup>
+map <right>
+map <up>
+map ?
+map i
+
+# Copy/add to the cut buffer.
+map c cut
+
+# Clear the files in the copy/cut buffer.
+map <esc> clear
+
+# Remove the default move after toggling.
+map <space> toggle
+
+# Backtick for going to a bookmark.
+map ` mark-load
+
+# Also use enter for opening files.
+map <enter> open
+
+# File creation.
+map o push %touch<space>
+cmd mkdir %mkdir -p "$@"
+map O push %mkdir<space>
+
+# Trash.
+cmd trash %trash-put "$fx"
+map d trash
