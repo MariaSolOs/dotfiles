@@ -1,6 +1,17 @@
 -- NOTE: Ordered alphabetically by group name.
 
 vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('mariasolos/big_file', { clear = true }),
+    desc = 'Disable features in big files',
+    pattern = 'bigfile',
+    callback = function(args)
+        vim.schedule(function()
+            vim.bo[args.buf].syntax = vim.filetype.match { buf = args.buf } or ''
+        end)
+    end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('mariasolos/close_with_q', { clear = true }),
     desc = 'Close with <q>',
     pattern = {
@@ -83,8 +94,7 @@ vim.api.nvim_create_autocmd('FileType', {
         local bufnr = args.buf
 
         -- Because of perf, just use indentation for folding in huge files.
-        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
-        if not ok or not stats or stats.size > (250 * 1024) then
+        if vim.bo[bufnr].filetype == 'bigfile' then
             vim.wo[0][0].foldmethod = 'indent'
             return
         end
