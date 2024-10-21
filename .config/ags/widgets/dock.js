@@ -41,6 +41,15 @@ const VolumeInfo = Widget.Box({
     ],
 });
 
+const LocationInfo = Widget.Label({
+    class_name: 'dock-timezone',
+    setup: (self) => {
+        Utils.execAsync("bash -c \"timedatectl | rg 'Time zone: ([^ ]+)' -r '$1'\"").then((timezone) => {
+            self.label = `  ${timezone}`;
+        });
+    },
+});
+
 const KeyboardButton = Widget.Button({
     class_name: 'dock-box',
     child: Widget.Icon({
@@ -102,7 +111,7 @@ export const Dock = Widget.Window({
     margins: [1, 2],
     child: Widget.CenterBox({
         class_name: 'center_box',
-        start_widget: Widget.Box({ children: [BacklightInfo, VolumeInfo] }),
+        start_widget: Widget.Box({ children: [BacklightInfo, VolumeInfo, LocationInfo] }),
         end_widget: Widget.Box({
             hpack: 'end',
             children: [KeyboardButton, ShutdownButton()],

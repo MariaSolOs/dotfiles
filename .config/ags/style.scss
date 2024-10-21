@@ -140,6 +140,13 @@ window#dock {
         color: $grey;
         margin: 0 8px;
     }
+
+    .dock-timezone {
+        font-family: 'Cartograph CF';
+        font-style: italic;
+        color: $pink;
+        margin-left: 16px;
+    }
 }
 
 .dock-menu {
