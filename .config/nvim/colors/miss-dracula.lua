@@ -350,6 +350,9 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     GitSignsAdd = { fg = colors.bright_green },
     GitSignsChange = { fg = colors.cyan },
     GitSignsDelete = { fg = colors.bright_red },
+    GitSignsStagedAdd = { fg = colors.orange },
+    GitSignsStagedChange = { fg = colors.orange },
+    GitSignsStagedDelete = { fg = colors.orange },
 
     -- Bufferline.
     BufferLineBufferSelected = { bg = colors.bg, underline = true, sp = colors.purple },

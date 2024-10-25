@@ -1,4 +1,5 @@
-local sign_icon = require('icons').misc.vertical_bar
+local solid_bar = require('icons').misc.vertical_bar
+local dashed_bar = require('icons').misc.dashed_bar
 
 -- Adds git releated signs to the gutter, as well as utilities for managing changes.
 return {
@@ -7,12 +8,20 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {
             signs = {
-                add = { text = sign_icon },
-                untracked = { text = sign_icon },
-                change = { text = sign_icon },
-                delete = { text = sign_icon },
-                topdelete = { text = sign_icon },
-                changedelete = { text = sign_icon },
+                add = { text = solid_bar },
+                untracked = { text = solid_bar },
+                change = { text = solid_bar },
+                delete = { text = solid_bar },
+                topdelete = { text = solid_bar },
+                changedelete = { text = solid_bar },
+            },
+            signs_staged = {
+                add = { text = dashed_bar },
+                untracked = { text = dashed_bar },
+                change = { text = dashed_bar },
+                delete = { text = dashed_bar },
+                topdelete = { text = dashed_bar },
+                changedelete = { text = dashed_bar },
             },
             preview_config = { border = 'rounded' },
             on_attach = function(bufnr)

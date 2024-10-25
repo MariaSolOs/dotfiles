@@ -53,6 +53,7 @@ M.misc = {
     git = '',
     search = '',
     vertical_bar = '│',
+    dashed_bar = '┊',
 }
 
 return M
