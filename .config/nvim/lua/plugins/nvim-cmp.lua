@@ -91,8 +91,9 @@ return {
                     })
                 end,
             },
-            'hrsh7th/cmp-buffer',
-            'hrsh7th/cmp-nvim-lsp',
+            { 'iguanacucumber/mag-nvim-lsp', name = 'cmp-nvim-lsp', opts = {} },
+            { 'iguanacucumber/mag-buffer', name = 'cmp-buffer' },
+            { 'https://codeberg.org/FelipeLema/cmp-async-path', name = 'async_path' },
             'hrsh7th/cmp-path',
             'saadparwaiz1/cmp_luasnip',
         },
@@ -153,7 +154,7 @@ return {
                 mapping = cmp.mapping.preset.insert {
                     ['<C-f>'] = cmp.mapping.complete {
                         config = {
-                            sources = { { name = 'path' } },
+                            sources = { { name = 'async_path' } },
                         },
                     },
                     ['<cr>'] = cmp.mapping.confirm {
