@@ -24,10 +24,11 @@ return {
             -- Buffer navigation.
             { '[b', '<cmd>BufferLineCyclePrev<cr>', desc = 'Previous buffer' },
             { ']b', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
+            { '<leader>bp', '<cmd>BufferLinePick<cr>', desc = 'Pick a buffer to open' },
             { '<leader>bc', '<cmd>BufferLinePickClose<cr>', desc = 'Select a buffer to close' },
             { '<leader>bl', '<cmd>BufferLineCloseLeft<cr>', desc = 'Close buffers to the left' },
-            { '<leader>bo', '<cmd>BufferLinePick<cr>', desc = 'Select a buffer to open' },
             { '<leader>br', '<cmd>BufferLineCloseRight<cr>', desc = 'Close buffers to the right' },
+            { '<leader>bo', '<cmd>BufferLineCloseOthers<cr>', desc = 'Close other buffers' },
         },
     },
 }
