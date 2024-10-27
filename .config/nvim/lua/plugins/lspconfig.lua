@@ -30,7 +30,17 @@ return {
                 },
             })
 
-            configure_server('eslint', { settings = { format = false } })
+            configure_server('eslint', {
+                settings = { format = false },
+                on_attach = function(_, bufnr)
+                    vim.keymap.set(
+                        'n',
+                        '<leader>ce',
+                        '<cmd>EslintFixAll<cr>',
+                        { desc = 'Fix all ESLint errors', buffer = bufnr }
+                    )
+                end,
+            })
 
             configure_server('jsonls', {
                 settings = {
