@@ -4,12 +4,9 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
-
 # Make sure this stuff is in the path.
 export PATH="$HOME/.cargo/bin:$PATH" # cargo
 export PATH="$HOME/nvim/bin:$PATH" # neovim
-export PATH="/usr/local/opt/tcl-tk/bin:$PATH" # tcl-tk
-export PATH="$HOME/Applications/WezTerm.app/Contents/MacOS:$PATH" # wezterm
 export PATH="$HOME/.local/bin:$PATH" # Local scripts.
 
 # zsh configuration.
