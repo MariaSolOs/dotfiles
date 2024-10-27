@@ -85,7 +85,7 @@ config.font_rules = {
     },
     {
         italic = true,
-        font = wezterm.font 'Cartograph CF Italic',
+        font = wezterm.font('Cartograph CF', { style = 'Italic' }),
     },
 }
 
