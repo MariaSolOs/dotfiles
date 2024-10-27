@@ -6,12 +6,10 @@ gui:
   theme:
     activeBorderColor:
       - magenta
-      - bold
     selectedLineBgColor:
       - black
     selectedRangeBgColor:
       - black
-      - bold
     unstagedChangesColor:
       - yellow
   border: rounded
