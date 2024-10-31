@@ -64,20 +64,6 @@ return {
                 'theHamsta/nvim-dap-virtual-text',
                 opts = { virt_text_pos = 'eol' },
             },
-            -- JS/TS debugging.
-            {
-                'mxsdev/nvim-dap-vscode-js',
-                enabled = false,
-                opts = {
-                    debugger_path = vim.fn.stdpath 'data' .. '/lazy/vscode-js-debug',
-                    adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
-                },
-            },
-            {
-                'microsoft/vscode-js-debug',
-                enabled = false,
-                build = 'npm i && npm run compile vsDebugServerBundle && rm -rf out && mv -f dist out',
-            },
             -- Lua adapter.
             {
                 'jbyuki/one-small-step-for-vimkind',
@@ -186,7 +172,6 @@ return {
             -- Add configurations from launch.json
             require('dap.ext.vscode').load_launchjs(nil, {
                 ['codelldb'] = { 'c' },
-                ['pwa-node'] = { 'typescript', 'javascript' },
             })
         end,
     },
