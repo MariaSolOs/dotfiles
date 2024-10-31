@@ -112,6 +112,16 @@ return {
                 },
             })
 
+            configure_server('stylelint_lsp', {
+                settings = {
+                    stylelintplus = {
+                        -- Lint on save instead of on type.
+                        validateOnSave = true,
+                        validateOnType = false,
+                    },
+                },
+            })
+
             configure_server('taplo', {
                 settings = {
                     -- Use the defaults that the VSCode extension uses: https://github.com/tamasfe/taplo/blob/2e01e8cca235aae3d3f6d4415c06fd52e1523934/editors/vscode/package.json
