@@ -185,62 +185,26 @@ local function add_inline_highlights(buf)
     end
 end
 
---- LSP handler that adds extra inline highlights, keymaps, and window options.
---- Code inspired from `noice`.
----@param handler fun(err: any, result: any, ctx: any, config: any): integer?, integer?
----@param focusable boolean
----@return fun(err: any, result: any, ctx: any, config: any)
-local function enhanced_float_handler(handler, focusable)
-    return function(err, result, ctx, config)
-        local bufnr, winnr = handler(
-            err,
-            result,
-            ctx,
-            vim.tbl_deep_extend('force', config or {}, {
-                border = 'rounded',
-                focusable = focusable,
-                max_height = math.floor(vim.o.lines * 0.5),
-                max_width = math.floor(vim.o.columns * 0.4),
-            })
-        )
-
-        if not bufnr or not winnr then
-            return
-        end
-
-        -- Conceal everything.
-        vim.wo[winnr].concealcursor = 'n'
-
-        -- Extra highlights.
-        add_inline_highlights(bufnr)
-
-        -- Add keymaps for opening links.
-        if focusable and not vim.b[bufnr].markdown_keys then
-            vim.keymap.set('n', 'K', function()
-                -- Vim help links.
-                local url = (vim.fn.expand '<cWORD>' --[[@as string]]):match '|(%S-)|'
-                if url then
-                    return vim.cmd.help(url)
-                end
-
-                -- Markdown links.
-                local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-                local from, to
-                from, to, url = vim.api.nvim_get_current_line():find '%[.-%]%((%S-)%)'
-                if from and col >= from and col <= to then
-                    vim.system({ 'xdg-open', url }, nil, function(res)
-                        if res.code ~= 0 then
-                            vim.notify('Failed to open URL' .. url, vim.log.levels.ERROR)
-                        end
-                    end)
-                end
-            end, { buffer = bufnr, silent = true })
-            vim.b[bufnr].markdown_keys = true
-        end
-    end
+local hover = vim.lsp.buf.hover
+---@diagnostic disable-next-line: duplicate-set-field
+vim.lsp.buf.hover = function()
+    return hover {
+        border = 'rounded',
+        focusable = true,
+        max_height = math.floor(vim.o.lines * 0.5),
+        max_width = math.floor(vim.o.columns * 0.4),
+    }
 end
-vim.lsp.handlers[methods.textDocument_hover] = enhanced_float_handler(vim.lsp.handlers.hover, true)
-vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(vim.lsp.handlers.signature_help, false)
+
+local signature_help = vim.lsp.buf.signature_help
+---@diagnostic disable-next-line: duplicate-set-field
+vim.lsp.buf.signature_help = function()
+    return signature_help {
+        border = 'rounded',
+        max_height = math.floor(vim.o.lines * 0.5),
+        max_width = math.floor(vim.o.columns * 0.4),
+    }
+end
 
 --- HACK: Override `vim.lsp.util.stylize_markdown` to use Treesitter.
 ---@param bufnr integer
