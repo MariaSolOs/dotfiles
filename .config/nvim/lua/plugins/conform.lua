@@ -1,36 +1,33 @@
 -- Formatting.
--- TODO: I still don't feel like I've configured this correctly.
--- Wait to get a reply in https://github.com/stevearc/conform.nvim/issues/565.
-local lang_settings = {
-    c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
-    javascript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-    json = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
-    jsonc = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
-    lua = { 'stylua' },
-    rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
-    sh = { 'shfmt' },
-    typescript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-}
 return {
     {
         'stevearc/conform.nvim',
         event = 'BufWritePre',
         opts = {
             notify_on_error = false,
-            formatters_by_ft = lang_settings,
+            formatters_by_ft = {
+                c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
+                javascript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                json = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
+                jsonc = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
+                lua = { 'stylua' },
+                rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
+                sh = { 'shfmt' },
+                typescript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+            },
             format_on_save = function(bufnr)
                 -- Don't format when minifiles is open, since that triggers the "confirm without
                 -- synchronization" message.
                 if vim.g.minifiles_active then
-                    return
+                    return nil
                 end
 
                 -- Stop if we haven't configured the buffer for auto-formatting.
                 if not vim.b[bufnr].format_on_save then
-                    return
+                    return nil
                 end
 
-                return lang_settings[vim.bo[bufnr].ft]
+                return {}
             end,
         },
         init = function()
