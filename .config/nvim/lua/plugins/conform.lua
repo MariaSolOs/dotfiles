@@ -1,14 +1,23 @@
 -- Formatting.
+-- TODO: I still don't feel like I've configured this correctly.
+-- Wait to get a reply in https://github.com/stevearc/conform.nvim/issues/565.
+local lang_settings = {
+    c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
+    javascript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+    json = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
+    jsonc = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
+    lua = { 'stylua' },
+    rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
+    sh = { 'shfmt' },
+    typescript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+}
 return {
     {
         'stevearc/conform.nvim',
-        event = { 'LspAttach', 'BufWritePre' },
+        event = 'BufWritePre',
         opts = {
             notify_on_error = false,
-            formatters_by_ft = {
-                lua = { 'stylua' },
-                sh = { 'shfmt' },
-            },
+            formatters_by_ft = lang_settings,
             format_on_save = function(bufnr)
                 -- Don't format when minifiles is open, since that triggers the "confirm without
                 -- synchronization" message.
@@ -16,24 +25,12 @@ return {
                     return
                 end
 
+                -- Stop if we haven't configured the buffer for auto-formatting.
                 if not vim.b[bufnr].format_on_save then
                     return
                 end
 
-                local res = { timeout_ms = 500 }
-                local filetype = vim.bo[bufnr].filetype
-
-                -- Only format JS/TS if dprint is available.
-                if
-                    vim.tbl_contains({ 'typescript', 'javascript' }, filetype)
-                    and require('conform').get_formatter_info('dprint', bufnr).available
-                then
-                    res.lsp_format = 'fallback'
-                else
-                    res.lsp_format = vim.tbl_contains({ 'c', 'json', 'jsonc', 'rust' }, filetype) and 'fallback' or nil
-                end
-
-                return res
+                return lang_settings[vim.bo[bufnr].ft]
             end,
         },
         init = function()
