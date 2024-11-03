@@ -1,5 +1,5 @@
 # Make the font a bit larger on mac:
-font-size = 14
+font-size = 13
 
 # Title bar font:
 window-title-font-family = "Hasklug Nerd Font Mono Med"
