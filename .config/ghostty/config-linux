@@ -1,0 +1,10 @@
+# Use the colors from my configuration for the window theme:
+window-theme = ghostty
+
+# Use a simple titlebar:
+gtk-titlebar = false
+
+# Make tabs use only the space they need:
+gtk-wide-tabs = false
+
+# vim set ft=conf

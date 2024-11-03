@@ -1,7 +1,6 @@
 # Font configuration:
 font-family = "Hasklug Nerd Font Mono Med"
 font-family-italic = "Cartograph CF Italic"
-font-size = 10
 adjust-cell-width = -5%
 adjust-cell-height = 20%
 adjust-underline-position = 6
@@ -41,14 +40,9 @@ keybind = alt+shift+l=goto_split:right
 keybind = alt+shift+c=copy_to_clipboard
 keybind = alt+shift+b=write_screen_file:paste
 
-# Use the colors from my configuration for the window theme:
-window-theme = ghostty
-
 # Let me close stuff in peace:
 confirm-close-surface = false
 
-# Use a simple titlebar:
-gtk-titlebar = false
-
-# Make tabs use only the space they need:
-gtk-wide-tabs = false
+# Include OS-specific configurations.
+config-file = ?config-macos
+# config-file = ?config-linux
