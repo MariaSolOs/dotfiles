@@ -42,6 +42,7 @@ return {
                 'cpp',
                 'fish',
                 'gitcommit',
+                'graphql',
                 'html',
                 'java',
                 'javascript',
