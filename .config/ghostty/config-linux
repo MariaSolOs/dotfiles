@@ -1,3 +1,6 @@
+# Smaller font size on Linux.
+font-size = 10
+
 # Use the colors from my configuration for the window theme:
 window-theme = ghostty
 
