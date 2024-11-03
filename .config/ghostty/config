@@ -4,7 +4,7 @@ font-family-italic = "Cartograph CF Italic"
 adjust-cell-width = -5%
 adjust-cell-height = 20%
 adjust-underline-position = 6
-adjust-underline-thickness = 100%
+adjust-underline-thickness = 40%
 adjust-cursor-thickness = 150%
 
 # Color theme:
