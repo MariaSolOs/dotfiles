@@ -31,6 +31,13 @@ return {
             })
 
             configure_server('eslint', {
+                filetypes = {
+                    'graphql',
+                    'javascript',
+                    'javascriptreact',
+                    'typescript',
+                    'typescriptreact',
+                },
                 settings = { format = false },
                 on_attach = function(_, bufnr)
                     vim.keymap.set(
