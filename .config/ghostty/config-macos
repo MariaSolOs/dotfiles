@@ -13,4 +13,7 @@ macos-window-shadow = false
 # Stop Ghostty when I close everything.
 quit-after-last-window-closed = true
 
+# This is done automatically by Hyprland on Linux so using this here.
+mouse-hide-while-typing = true
+
 # vim: set ft=conf
