@@ -258,6 +258,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     DiagnosticVirtualTextWarn = { fg = colors.yellow, bg = colors.transparent_yellow },
     DiagnosticWarn = { fg = colors.yellow },
     LspCodeLens = { fg = colors.cyan },
+    LspFloatWinBorder = { fg = colors.comment },
     LspInlayHint = { fg = colors.lavender, italic = true },
     LspReferenceRead = { bg = colors.transparent_blue },
     LspReferenceText = {},
@@ -387,6 +388,9 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     MiniHipatternsHack = { fg = colors.bg, bg = colors.orange, bold = true },
     MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
     MiniHipatternsTodo = { fg = colors.bg, bg = colors.cyan, bold = true },
+
+    -- Notifications.
+    MiniNotifyBorder = { fg = colors.comment },
 
     -- Overseeer.
     OverseerComponent = { link = '@keyword' },
