@@ -16,7 +16,6 @@
       // Include some plugins for API completion.
       "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",
       "$XDG_DATA_HOME/nvim/lazy/ccc.nvim/lua",
-      "$XDG_DATA_HOME/nvim/lazy/codecompanion.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/conform.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/fzf-lua/lua",
