@@ -343,7 +343,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     WinBarSeparator = { fg = colors.green, bg = colors.transparent_black },
 
     -- Quickfix window.
-    BqfPreviewRange = { fg = colors.bg, bg = colors.bright_magenta },
     QuickFixLine = { italic = true, bg = colors.transparent_red },
 
     -- Gitsigns.
