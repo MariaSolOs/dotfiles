@@ -28,6 +28,7 @@
       "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.hipatterns/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.notify/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-autopairs/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-cmp/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap-ui/lua",
