@@ -8,12 +8,14 @@ return {
             formatters_by_ft = {
                 c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
                 javascript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                javascriptreact = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
                 json = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
                 jsonc = { name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
                 lua = { 'stylua' },
                 rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
                 sh = { 'shfmt' },
                 typescript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                typescriptreact = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
             },
             format_on_save = function()
                 -- Don't format when minifiles is open, since that triggers the "confirm without
