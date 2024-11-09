@@ -32,6 +32,9 @@ export FZF_DEFAULT_OPTS="--color=fg:#f8f8f2,bg:#0e1419,hl:#e11299,fg+:#f8f8f2,bg
 # Set the screenshots directory.
 export GRIM_DEFAULT_DIR="$XDG_PICTURES_DIR/Screenshots"
 
+# Don't let Ghostty mess up with the cursor.
+export GHOSTTY_SHELL_INTEGRATION_NO_CURSOR=1
+
 # If not running interactively, stop here.
 [[ $- != *i* ]] && return
 

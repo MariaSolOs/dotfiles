@@ -15,9 +15,6 @@ background = 0E1419
 cursor-color = F8F8F2
 cursor-style-blink = false
 
-# Don't mess up with the cursor.
-shell-integration-features = no-cursor
-
 # Key bindings:
 keybind = alt+one=goto_tab:1
 keybind = alt+two=goto_tab:2
