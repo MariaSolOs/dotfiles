@@ -28,7 +28,6 @@ require 'keymaps'
 require 'commands'
 require 'autocmds'
 require 'statusline'
-require 'winbar'
 require 'lsp'
 
 -- Configure plugins.
