@@ -217,7 +217,6 @@ function M.filetype_component()
 
     -- Special icons for some filetypes.
     local special_icons = {
-        codecompanion = { '󰚩', 'Special' },
         DressingInput = { '󰍩', 'Comment' },
         DressingSelect = { '', 'Comment' },
         OverseerForm = { '󰦬', 'Special' },
