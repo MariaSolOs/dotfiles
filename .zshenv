@@ -23,6 +23,9 @@ export VISUAL="$EDITOR"
 # Disable Apple's save/restore mechanism.
 export SHELL_SESSIONS_DISABLE=1
 
+# Don't let Ghostty mess up with the cursor.
+export GHOSTTY_SHELL_INTEGRATION_NO_CURSOR=1
+
 # Ripgrep.
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 
