@@ -10,6 +10,7 @@ local function close()
 end
 
 -- Breadcrumbs.
+-- TODO: Remove local patch if https://github.com/Bekaboo/dropbar.nvim/issues/118#issuecomment-2466934491 gets addressed.
 return {
     {
         'Bekaboo/dropbar.nvim',
@@ -34,6 +35,10 @@ return {
             return {
                 icons = {
                     kinds = { symbols = symbol_icons },
+                    ui = {
+                        -- Add a bit of more space.
+                        bar = { separator = '  ' },
+                    },
                 },
                 bar = {
                     update_events = {

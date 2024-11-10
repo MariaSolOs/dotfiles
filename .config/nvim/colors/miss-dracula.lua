@@ -340,6 +340,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     -- Winbar styling.
     DropBarMenuCurrentContext = { link = 'Normal' },
     DropBarMenuHoverEntry = { link = 'Visual' },
+    DropbarIconUISeparator = { fg = colors.green },
     WinBar = { fg = colors.fg, bg = colors.transparent_black },
     WinBarNC = { bg = colors.transparent_black },
 
