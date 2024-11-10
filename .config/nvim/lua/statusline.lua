@@ -226,6 +226,8 @@ function M.filetype_component()
         dapui_breakpoints = { icons.misc.bug, 'DapUIRestart' },
         dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
         dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
+        dropbar_menu = { '󰮫', 'Special' },
+        dropbar_menu_fzf = { '󰮫', 'Special' },
         fzf = { '', 'Special' },
         gitcommit = { icons.misc.git, 'Number' },
         gitrebase = { icons.misc.git, 'Number' },
