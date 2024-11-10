@@ -389,9 +389,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
     MiniHipatternsTodo = { fg = colors.bg, bg = colors.cyan, bold = true },
 
-    -- Notifications.
-    MiniNotifyBorder = { fg = colors.comment },
-
     -- Overseeer.
     OverseerComponent = { link = '@keyword' },
 
