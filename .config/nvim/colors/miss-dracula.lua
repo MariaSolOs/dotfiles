@@ -338,11 +338,10 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     MsgSeparator = { fg = colors.lilac },
 
     -- Winbar styling.
-    DropBarMenuCurrentContext = { link = 'Normal' },
-    DropBarMenuHoverEntry = { link = 'Visual' },
-    DropbarIconUISeparator = { fg = colors.green },
     WinBar = { fg = colors.fg, bg = colors.transparent_black },
     WinBarNC = { bg = colors.transparent_black },
+    WinBarDir = { fg = colors.bright_magenta, bg = colors.transparent_black, italic = true },
+    WinBarSeparator = { fg = colors.green, bg = colors.transparent_black },
 
     -- Quickfix window.
     QuickFixLine = { italic = true, bg = colors.transparent_red },
