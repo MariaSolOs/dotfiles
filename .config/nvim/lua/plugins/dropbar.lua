@@ -10,7 +10,6 @@ local function close()
 end
 
 -- Breadcrumbs.
--- TODO: Remove local patch if https://github.com/Bekaboo/dropbar.nvim/issues/118#issuecomment-2466934491 gets addressed.
 return {
     {
         'Bekaboo/dropbar.nvim',
