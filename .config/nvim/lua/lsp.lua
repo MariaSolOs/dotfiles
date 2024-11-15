@@ -155,36 +155,6 @@ vim.diagnostic.handlers.virtual_text = {
     hide = hide_handler,
 }
 
-local md_namespace = vim.api.nvim_create_namespace 'mariasolos/lsp_float'
-
---- Adds extra inline highlights to the given buffer.
----@param buf integer
-local function add_inline_highlights(buf)
-    for l, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
-        for pattern, hl_group in pairs {
-            ['@%S+'] = '@parameter',
-            ['^%s*(Parameters:)'] = '@text.title',
-            ['^%s*(Return:)'] = '@text.title',
-            ['^%s*(See also:)'] = '@text.title',
-            ['{%S-}'] = '@parameter',
-            ['|%S-|'] = '@text.reference',
-        } do
-            local from = 1 ---@type integer?
-            while from do
-                local to
-                from, to = line:find(pattern, from)
-                if from then
-                    vim.api.nvim_buf_set_extmark(buf, md_namespace, l - 1, from - 1, {
-                        end_col = to,
-                        hl_group = hl_group,
-                    })
-                end
-                from = to and to + 1 or nil
-            end
-        end
-    end
-end
-
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.hover = function()
@@ -219,8 +189,6 @@ vim.lsp.util.stylize_markdown = function(bufnr, contents, opts)
     vim.bo[bufnr].filetype = 'markdown'
     vim.treesitter.start(bufnr)
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, contents)
-
-    add_inline_highlights(bufnr)
 
     return contents
 end
