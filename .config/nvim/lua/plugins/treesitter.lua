@@ -74,7 +74,11 @@ return {
                     node_decremental = '<bs>',
                 },
             },
-            indent = { enable = true },
+            indent = {
+                enable = true,
+                -- Treesitter unindents Yaml lists for some reason.
+                disable = { 'yaml' },
+            },
         },
         config = function(_, opts)
             local toggle_inc_selection_group =
