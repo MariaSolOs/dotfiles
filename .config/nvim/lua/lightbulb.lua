@@ -42,11 +42,18 @@ end
 --- Queries the LSP servers for code actions and updates the lightbulb
 --- accordingly.
 ---@param bufnr number
-local function render(bufnr)
+---@param client vim.lsp.Client
+local function render(bufnr, client)
+    local winnr = vim.api.nvim_get_current_win()
+    if vim.api.nvim_win_get_buf(winnr) ~= bufnr then
+        return
+    end
+
     local line = vim.api.nvim_win_get_cursor(0)[1] - 1
     local diagnostics = vim.lsp.diagnostic.from(vim.diagnostic.get(bufnr, { lnum = line }))
 
-    local params = vim.lsp.util.make_range_params()
+    ---@type lsp.CodeActionParams
+    local params = vim.lsp.util.make_range_params(winnr, client.offset_encoding)
     params.context = {
         diagnostics = diagnostics,
         triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Automatic,
@@ -64,14 +71,15 @@ end
 -- I don't fully understand how this works, kind of just copy-pasted it
 -- from lspsaga.
 ---@param bufnr number
-local function update(bufnr)
+---@param client vim.lsp.Client
+local function update(bufnr, client)
     timer:stop()
     update_extmark(updated_bufnr)
     timer:start(100, 0, function()
         timer:stop()
         vim.schedule(function()
             if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_get_current_buf() == bufnr then
-                render(bufnr)
+                render(bufnr, client)
             end
         end)
     end)
@@ -83,7 +91,7 @@ end
 M.attach_lightbulb = function(bufnr, client_id)
     local client = vim.lsp.get_client_by_id(client_id)
 
-    if not client or not client.supports_method(code_action_method) then
+    if not client or not client:supports_method(code_action_method) then
         return
     end
 
@@ -98,7 +106,7 @@ M.attach_lightbulb = function(bufnr, client_id)
         desc = 'Update lightbulb when moving the cursor in normal/visual mode',
         buffer = bufnr,
         callback = function()
-            update(bufnr)
+            update(bufnr, client)
         end,
     })
 
