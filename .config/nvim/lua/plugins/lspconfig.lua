@@ -87,7 +87,7 @@ return {
                                 },
                             },
                         })
-                        client.notify(
+                        client:notify(
                             vim.lsp.protocol.Methods.workspace_didChangeConfiguration,
                             { settings = client.config.settings }
                         )

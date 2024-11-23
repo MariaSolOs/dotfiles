@@ -42,14 +42,14 @@ local function on_attach(client, bufnr)
         vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
 
-    if client.supports_method(methods.textDocument_definition) then
+    if client:supports_method(methods.textDocument_definition) then
         keymap('gD', '<cmd>FzfLua lsp_definitions<cr>', 'Peek definition')
         keymap('gd', function()
             require('fzf-lua').lsp_definitions { jump_to_single_result = true }
         end, 'Go to definition')
     end
 
-    if client.supports_method(methods.textDocument_signatureHelp) then
+    if client:supports_method(methods.textDocument_signatureHelp) then
         keymap('<C-k>', function()
             -- Close the completion menu first (if open).
             local cmp = require 'cmp'
@@ -61,7 +61,7 @@ local function on_attach(client, bufnr)
         end, 'Signature help', 'i')
     end
 
-    if client.supports_method(methods.textDocument_documentHighlight) then
+    if client:supports_method(methods.textDocument_documentHighlight) then
         local under_cursor_highlights_group =
             vim.api.nvim_create_augroup('mariasolos/cursor_highlights', { clear = false })
         vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
@@ -78,7 +78,7 @@ local function on_attach(client, bufnr)
         })
     end
 
-    if client.supports_method(methods.textDocument_inlayHint) then
+    if client:supports_method(methods.textDocument_inlayHint) then
         vim.keymap.set('n', '<leader>ci', function()
             -- Toggle the hints:
             local enabled = vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
