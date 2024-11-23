@@ -22,9 +22,10 @@ function M.render()
         ---@type table<string, string>
         local special_dirs = {
             CODE = vim.g.projects_dir,
-            GIT = '/Volumes/git',
             DOTFILES = vim.env.XDG_CONFIG_HOME,
+            GIT = vim.g.work_projects_dir,
             HOME = vim.env.HOME,
+            PALANTIR = vim.g.work_projects_dir .. '/Palantir',
             PERSONAL = vim.g.personal_projects_dir,
         }
         for dir_name, dir_path in pairs(special_dirs) do
