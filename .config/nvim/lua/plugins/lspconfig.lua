@@ -5,8 +5,6 @@ return {
         dependencies = {
             -- LSP wrapper for vtsls.
             'yioneko/nvim-vtsls',
-            -- Manage global and project-local settings.
-            { 'folke/neoconf.nvim', opts = {} },
         },
         config = function()
             require('lspconfig.ui.windows').default_options.border = 'rounded'
