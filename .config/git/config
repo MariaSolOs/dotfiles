@@ -12,8 +12,8 @@
 	process = git-lfs filter-process
 	required = true
 
-[filter "gitignore"]
-	clean = "sed '/#gitignore$/d'"
+[filter "git-ignore"]
+	clean = "sed '/#\\s*git-ignore$/d'"
 	smudge = cat
 
 [init]
