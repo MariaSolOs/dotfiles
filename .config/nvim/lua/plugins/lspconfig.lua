@@ -16,6 +16,7 @@ return {
             configure_server 'cssls'
             configure_server 'dprint'
             configure_server 'html'
+            configure_server 'zls'
 
             configure_server('clangd', {
                 cmd = {
@@ -51,7 +52,6 @@ return {
                 settings = {
                     json = {
                         validate = { enable = true },
-                        format = { enable = true },
                     },
                 },
                 -- Lazy-load schemas.
@@ -172,7 +172,6 @@ return {
                 },
             })
 
-            configure_server 'zls'
         end,
     },
 }
