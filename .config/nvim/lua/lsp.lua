@@ -234,7 +234,9 @@ function M.configure_server(server, settings)
         )
     end
 
-    require('lspconfig')[server].setup(vim.tbl_deep_extend('error', { capabilities = capabilities() }, settings or {}))
+    require('lspconfig')[server].setup(
+        vim.tbl_deep_extend('error', { capabilities = capabilities(), silent = true }, settings or {})
+    )
 end
 
 return M
