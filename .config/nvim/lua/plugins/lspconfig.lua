@@ -172,6 +172,22 @@ return {
                 },
             })
 
+            configure_server('yamlls', {
+                settings = {
+                    yaml = {
+                        -- Using the schemastore plugin instead.
+                        schemastore = {
+                            enable = false,
+                            url = '',
+                        },
+                    },
+                },
+                -- Lazy-load schemas.
+                on_new_config = function(config)
+                    config.settings.yaml.schemas = config.settings.yaml.schemas or {}
+                    vim.list_extend(config.settings.yaml.schemas, require('schemastore').yaml.schemas())
+                end,
+            })
         end,
     },
 }
