@@ -24,6 +24,8 @@ return {
                 highlighter = {
                     auto_enable = true,
                     filetypes = colored_fts,
+                    -- LSP causes the highlights to not cover the correct range.
+                    lsp = false,
                 },
             }
         end,
