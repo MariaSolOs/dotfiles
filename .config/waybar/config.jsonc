@@ -7,13 +7,15 @@
     // Module order:
     "modules-left": [
         "battery",
-        "network"
+        "network",
+        "power-profiles-daemon"
     ],
+
 
     // Module configuration:
     "battery": {
         "format": "{icon}  {capacity}%",
-        "format-plugged": "  {capacity}%",
+        "format-charging": "  {capacity}%",
         "format-icons": ["", "", "", "", ""],
         "interval": 30,
         "states": {
@@ -24,15 +26,15 @@
 
     "network": {
         "format": "{ifname}",
-        "format-disconnected": "??", 
-        "format-ethernet": "{ipaddr}/{cidr} 󰊗",
+        "format-disconnected": "?",
+        "format-ethernet": " ",
         "format-wifi": " ",
         "on-click": "hyprctl dispatch exec '[float; size 800 600] kitty nmtui'",
-        "tooltip-format": "{ifname} via {gwaddr} 󰊗",
+        "tooltip-format": "{ifname} via {gwaddr}",
         "tooltip-format-disconnected": "Disconnected",
-        "tooltip-format-ethernet": "{ifname} ",
-        "tooltip-format-wifi": "{essid} ({signalStrength}%)  "
-    }
+        "tooltip-format-ethernet": "{ifname}",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)"
+    },
 
 //     // Choose the order of the modules
 //     "modules-left": [
@@ -214,4 +216,15 @@
 //             "hibernate": "systemctl hibernate"
 //         }
 //     }
+    "power-profiles-daemon": {
+        "format": "{icon}  {profile}",
+        "tooltip": false,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "󰞍",
+            "power-saver": ""
+        }
+    },
+
 }

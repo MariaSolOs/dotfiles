@@ -23,23 +23,27 @@ window#waybar { all: unset; }
     border-radius: 4px;
 }
 
-$battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.plugged': $blue);
+// Modules:
+$battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.charging': $blue);
 @each $class, $color in $battery-colors {
     #battery#{$class} {
         @include bordered-box($color);
+
         font-weight: 600;
         padding: 0 4px;
     }
 }
 
-#network {
+#network, #power-profiles-daemon {
     @include bordered-box($green);
+
     padding: 0 8px;
 }
 
 // Dark purple tooltips!
 tooltip {
     @include bordered-box($lilac, false);
+
     background-color: $transparent-black;
     font-style: italic;
     font-size: 11px;
