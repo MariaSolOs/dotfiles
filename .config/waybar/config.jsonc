@@ -11,6 +11,10 @@
         "power-profiles-daemon"
     ],
 
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
+
     "modules-right": [
         "clock",
         "clock#date"
@@ -50,7 +54,6 @@
             "power-saver": ""
         }
     },
-
 
     "clock": {
         "format": "󰅐  {:%I:%M %p}",

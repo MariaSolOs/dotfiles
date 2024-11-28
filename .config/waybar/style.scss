@@ -1,7 +1,6 @@
 // Color palette:
 $blue: #BCF4F5;
 $green: #97EDA2;
-$grey: #A9ABAC;
 $lilac: #D0B5F3;
 $pink: #E7A1D7;
 $transparent-black: #000000CC;
@@ -40,6 +39,20 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     padding: 0 8px;
 }
 
+#workspaces {
+    @include bordered-box($lilac);
+}
+
+#workspaces button {
+    border-radius: 4px;
+    min-height: 18px;
+    padding: 0 4px;
+}
+
+#workspaces button.active {
+    color: $pink;
+    font-weight: bold;
+}
 
 #clock {
     @include bordered-box($lilac);
