@@ -48,7 +48,7 @@ return {
                         vim.notify('No tasks found', vim.log.levels.WARN)
                     else
                         overseer.run_action(tasks[1], 'restart')
-                        overseer.open()
+                        overseer.open { enter = false }
                     end
                 end,
                 desc = 'Restart last task',
@@ -60,7 +60,7 @@ return {
 
                     overseer.run_template({}, function(task)
                         if task then
-                            overseer.open()
+                            overseer.open { enter = false }
                         end
                     end)
                 end,
