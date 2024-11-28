@@ -40,6 +40,13 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     padding: 0 8px;
 }
 
+
+#clock {
+    @include bordered-box($lilac);
+
+    padding: 0 4px;
+}
+
 // Dark purple tooltips!
 tooltip {
     @include bordered-box($lilac, false);
