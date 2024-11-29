@@ -1,7 +1,7 @@
 import { AppLauncher } from './widgets/applauncher.js';
 import { Dock } from './widgets/dock.js';
 import { NotificationPopups } from './widgets/notification-popups.js';
-import { Calendar, Statusbar } from './widgets/statusbar.js';
+// import { Calendar, Statusbar } from './widgets/statusbar.js';
 import { SystemPopup } from './widgets/system-popup.js';
 
 // Global variables for use in `ags -r`.
@@ -27,10 +27,10 @@ App.config({
     style: css,
     windows: [
         await AppLauncher(),
-        Calendar,
+        // Calendar,
         Dock,
         NotificationPopups,
-        Statusbar,
+        // Statusbar,
         SystemPopup,
     ],
 });
