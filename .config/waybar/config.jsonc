@@ -56,7 +56,7 @@
     },
 
     "clock": {
-        "format": "󰅐  {:%I:%M %p}",
+        "format": "<span color='#E7A1D7'>󰅐</span> {:%I:%M %p}",
         "tooltip": false
     },
 
