@@ -33,6 +33,16 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     }
 }
 
+#clock {
+    @include bordered-box($lilac);
+
+    padding: 0 4px;
+}
+
+#language {
+    padding-right: 8px;
+}
+
 #network, #power-profiles-daemon {
     @include bordered-box($green);
 
@@ -54,10 +64,11 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     font-weight: bold;
 }
 
-#clock {
-    @include bordered-box($lilac);
+// Dock:
+window#waybar.dock {
+    @include bordered-box($lilac, false);
 
-    padding: 0 4px;
+    background-color: $transparent-black;
 }
 
 // Dark purple tooltips!

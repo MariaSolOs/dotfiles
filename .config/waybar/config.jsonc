@@ -1,73 +1,96 @@
 // TODO: Replace kitty commands to use ghostty.
-{
-    // General bar options.
-    "margin": "4 4 0",
-    "spacing": 2,
+[
+    {
+        // General bar options:
+        "margin": "4 4 0",
+        "name": "statusbar",
+        "spacing": 2,
 
-    // Module order:
-    "modules-left": [
-        "battery",
-        "network",
-        "power-profiles-daemon"
-    ],
+        // Module order:
+        "modules-left": [
+            "battery",
+            "network",
+            "power-profiles-daemon"
+        ],
 
-    "modules-center": [
-        "hyprland/workspaces"
-    ],
+        "modules-center": [
+            "hyprland/workspaces"
+        ],
 
-    "modules-right": [
-        "clock",
-        "clock#date"
-    ],
+        "modules-right": [
+            "clock",
+            "clock#date"
+        ],
 
-    // Module configuration:
-    "battery": {
-        "format": "{icon}  {capacity}%",
-        "format-charging": "  {capacity}%",
-        "format-icons": ["", "", "", "", ""],
-        "interval": 30,
-        "states": {
-            "warning": 40,
-            "critical": 20
-        }
-    },
-
-    "network": {
-        "format": "{ifname}",
-        "format-disconnected": "?",
-        "format-ethernet": " ",
-        "format-wifi": " ",
-        "on-click": "hyprctl dispatch exec '[float; size 800 600] kitty nmtui'",
-        "tooltip-format": "{ifname} via {gwaddr}",
-        "tooltip-format-disconnected": "Disconnected",
-        "tooltip-format-ethernet": "{ifname}",
-        "tooltip-format-wifi": "{essid} ({signalStrength}%)"
-    },
-
-    "power-profiles-daemon": {
-        "format": "{icon}  {profile}",
-        "tooltip": false,
-        "format-icons": {
-            "default": "",
-            "performance": "",
-            "balanced": "󰞍",
-            "power-saver": ""
-        }
-    },
-
-    "clock": {
-        "format": "<span color='#E7A1D7'>󰅐</span> {:%I:%M %p}",
-        "tooltip": false
-    },
-
-    "clock#date": {
-        "format": "{:%A, %B %d / %Y}",
-        "tooltip-format": "{calendar}",
-        "calendar": {
-            "format": {
-                "months": "<span color='#D0B5F3'>{}</span>",
-                "today": "<span color='#D0B5F3'>{}</span>"
+        // Module configuration:
+        "battery": {
+            "format": "{icon}  {capacity}%",
+            "format-charging": "  {capacity}%",
+            "format-icons": ["", "", "", "", ""],
+            "interval": 30,
+            "states": {
+                "critical": 20,
+                "warning": 40
             }
+        },
+
+        "network": {
+            "format": "{ifname}",
+            "format-disconnected": "?",
+            "format-ethernet": " ",
+            "format-wifi": " ",
+            "on-click": "hyprctl dispatch exec '[float; size 800 600] kitty nmtui'",
+            "tooltip-format": "{ifname} via {gwaddr}",
+            "tooltip-format-disconnected": "Disconnected",
+            "tooltip-format-ethernet": "{ifname}",
+            "tooltip-format-wifi": "{essid} ({signalStrength}%)"
+        },
+
+        "power-profiles-daemon": {
+            "format": "{icon}  {profile}",
+            "format-icons": {
+                "default": "",
+                "performance": "",
+                "balanced": "󰞍",
+                "power-saver": ""
+            },
+            "tooltip": false
+        },
+
+        "clock": {
+            "format": "<span color='#E7A1D7'>󰅐</span> {:%I:%M %p}",
+            "tooltip": false
+        },
+
+        "clock#date": {
+            "calendar": {
+                "format": {
+                    "months": "<span color='#D0B5F3'>{}</span>",
+                    "today": "<span color='#D0B5F3'>{}</span>"
+                }
+            },
+            "format": "{:%A, %B %d / %Y}",
+            "tooltip-format": "{calendar}"
+        }
+    },
+    {
+        // General bar options:
+        "exclusive": false,
+        "height": 34,
+        "margin": "0 2 2",
+        "name": "dock",
+        "position": "bottom",
+        "spacing": 2,
+
+        "modules-right": [
+            "hyprland/language"
+        ],
+
+        "hyprland/language": {
+            // HACK: Using the workaround from https://github.com/Alexays/Waybar/issues/3676#issuecomment-2497447121.
+            "format-": "<span color='#E7A1D7'></span>  English (intl)",
+            "format-en": "<span color='#E7A1D7'></span>  English (US)",
+            "on-click": "hyprctl switchxkblayout current next"
         }
     }
-}
+]
