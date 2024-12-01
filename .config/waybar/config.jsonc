@@ -12,11 +12,9 @@
             "network",
             "power-profiles-daemon"
         ],
-
         "modules-center": [
             "hyprland/workspaces"
         ],
-
         "modules-right": [
             "clock",
             "clock#date"
@@ -33,7 +31,6 @@
                 "warning": 40
             }
         },
-
         "network": {
             "format": "{ifname}",
             "format-disconnected": "?",
@@ -45,7 +42,6 @@
             "tooltip-format-ethernet": "{ifname}",
             "tooltip-format-wifi": "{essid} ({signalStrength}%)"
         },
-
         "power-profiles-daemon": {
             "format": "{icon}  {profile}",
             "format-icons": {
@@ -56,12 +52,10 @@
             },
             "tooltip": false
         },
-
         "clock": {
             "format": "<span color='#E7A1D7'>󰅐</span> {:%I:%M %p}",
             "tooltip": false
         },
-
         "clock#date": {
             "calendar": {
                 "format": {
@@ -80,12 +74,24 @@
         "margin": "0 2 2",
         "name": "dock",
         "position": "bottom",
-        "spacing": 2,
+        "spacing": 16,
 
+        // Module order:
         "modules-right": [
-            "hyprland/language"
+            "hyprland/language",
+            "custom/power"
         ],
 
+        "custom/power": {
+            "format": "⏻",
+            "menu": "on-click",
+            "menu-actions": {
+                "poweroff": "poweroff",
+                "reboot": "reboot"
+            },
+            "menu-file": "$XDG_CONFIG_HOME/waybar/power_menu.xml",
+            "tooltip": false
+        },
         "hyprland/language": {
             // HACK: Using the workaround from https://github.com/Alexays/Waybar/issues/3676#issuecomment-2497447121.
             "format-": "<span color='#E7A1D7'></span>  English (intl)",

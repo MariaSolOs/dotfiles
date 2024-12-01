@@ -28,7 +28,6 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     #battery#{$class} {
         @include bordered-box($color);
 
-        font-weight: 600;
         padding: 0 4px;
     }
 }
@@ -39,8 +38,9 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     padding: 0 4px;
 }
 
-#language {
-    padding-right: 8px;
+#custom-power {
+    color: $pink;
+    margin-right: 16px;
 }
 
 #network, #power-profiles-daemon {
@@ -72,10 +72,14 @@ window#waybar.dock {
 }
 
 // Dark purple tooltips!
-tooltip {
+tooltip, menu {
     @include bordered-box($lilac, false);
 
     background-color: $transparent-black;
     font-style: italic;
     font-size: 11px;
+}
+
+menuitem:hover {
+    font-weight: bold;
 }
