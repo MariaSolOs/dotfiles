@@ -96,11 +96,6 @@ local function on_attach(client, bufnr)
             end
         end, { buffer = bufnr, desc = 'Toggle inlay hints' })
     end
-
-    if client:supports_method(methods.textDocument_foldingRange) then
-        vim.wo.foldmethod = 'expr'
-        vim.wo.foldexpr = 'v:lua.vim.lsp.foldexpr()'
-    end
 end
 
 -- Define the diagnostic signs.

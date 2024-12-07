@@ -29,7 +29,6 @@ vim.o.linebreak = true
 vim.o.foldcolumn = '1'
 vim.o.foldlevelstart = 99
 vim.wo.foldtext = ''
-vim.wo.foldmethod = 'indent' -- This is the default, but I set it to LSP if available.
 
 -- UI characters.
 vim.opt.fillchars = {
