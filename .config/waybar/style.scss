@@ -1,5 +1,6 @@
 // Color palette:
 $blue: #BCF4F5;
+$fuchsia: #E11299;
 $green: #97EDA2;
 $lilac: #D0B5F3;
 $pink: #E7A1D7;
@@ -65,6 +66,16 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
 #workspaces button.active {
     color: $pink;
     font-weight: bold;
+}
+
+#custom-notifications {
+    @include bordered-box($lilac);
+
+    padding: 0 4px;
+
+    &.notification, &.dnd-notification, &.dnd-inhibited-notification {
+        @include bordered-box($fuchsia);
+    }
 }
 
 // Dock:

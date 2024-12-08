@@ -13,7 +13,8 @@
             "power-profiles-daemon"
         ],
         "modules-center": [
-            "hyprland/workspaces"
+            "hyprland/workspaces",
+            "custom/notifications"
         ],
         "modules-right": [
             "clock",
@@ -51,6 +52,24 @@
                 "power-saver": ""
             },
             "tooltip": false
+        },
+        "custom/notifications": {
+            "format": "{icon}",
+            "format-icons": {
+                "notification": "<sup></sup>",
+                "none": " ",
+                "dnd-notification": "<sup></sup>",
+                "dnd-none": " ",
+                "inhibited-notification": "<sup></sup>",
+                "inhibited-none": " ",
+                "dnd-inhibited-notification": "<sup></sup>",
+                "dnd-inhibited-none": " "
+            },
+            "return-type": "json",
+            "exec-if": "which swaync-client",
+            "exec": "swaync-client -swb",
+            "on-click": "swaync-client -t -sw",
+            "escape": true
         },
         "clock": {
             "format": "<span color='#E7A1D7'>󰅐</span> {:%I:%M %p}",
