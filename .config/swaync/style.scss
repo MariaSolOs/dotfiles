@@ -137,3 +137,21 @@ $font-family: 'Cartograph CF';
         background: rgba($grey, 0.8);
     }
 }
+
+.widget-backlight, .widget-volume {
+    border: 1px solid $grey;
+    border-radius: $border-radius;
+    margin: 8px;
+    padding: 8px;
+
+    contents {
+        background: rgba($pink, 0.3);
+        border-radius: 12px;
+    }
+
+    slider {
+        background: $pink;
+        border-radius: 100%;
+        padding: 4px;
+    }
+}

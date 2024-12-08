@@ -4,4 +4,22 @@
     "positionY": "bottom",
     "notification-icon-size": 32,
     "notification-window-width": 400,
+
+    "widgets": [
+        "title",
+        "dnd",
+        "backlight",
+        "volume",
+        "notifications"
+    ],
+
+    "widget-config": {
+        "backlight": {
+            "label": "Backlight: ",
+            "device": "amdgpu_bl1"
+        },
+        "volume": {
+            "label": "Volume: "
+        }
+    }
 }
