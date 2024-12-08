@@ -62,12 +62,12 @@ $font-family: 'Cartograph CF';
 
     &:not(.collapsed) {
         border: 1px solid $blue;
-    }
 
-    button {
-        @include with-hover-transition($blue);
+        button {
+            @include with-hover-transition($blue);
 
-        border-radius: 100%;
+            border-radius: 100%;
+        }
     }
 }
 
