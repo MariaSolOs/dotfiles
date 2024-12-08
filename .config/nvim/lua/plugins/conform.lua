@@ -17,7 +17,7 @@ return {
                 typescript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
                 typescriptreact = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
                 -- For filetypes without a formatter:
-                ['_'] = { 'trim_whitespace' },
+                ['_'] = { 'trim_whitespace', 'trim_newlines' },
             },
             format_on_save = function()
                 -- Don't format when minifiles is open, since that triggers the "confirm without
