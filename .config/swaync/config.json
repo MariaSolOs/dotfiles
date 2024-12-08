@@ -1,0 +1,7 @@
+{
+    "$schema": "/etc/xdg/swaync/configSchema.json",
+
+    "positionY": "bottom",
+    "notification-icon-size": 32,
+    "notification-window-width": 400,
+}

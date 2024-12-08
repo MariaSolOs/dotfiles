@@ -1,0 +1,113 @@
+// Color palette:
+$blue: #BCF4F5;
+$green: #97EDA2;
+$grey: #A9ABAC;
+$pink: #E7A1D7;
+$transparent-black: #000000CC;
+
+// Consistent styling:
+$border-radius: 4px;
+$font-family: 'Cartograph CF';
+
+// Shared mixins:
+@mixin with-hover-transition {
+    color: $grey;
+
+    &:hover {
+        color: black;
+        background-color: $grey;
+        transition: background 300ms ease-in-out;
+    }
+}
+
+// It's just easier to reset everything and start from scratch:
+* { all: unset; }
+
+// Notifications:
+.notification-row { padding: 4px; }
+
+.notification {
+    background-color: $transparent-black;
+    border-radius: $border-radius;
+    border-style: solid;
+    border-width: 1px;
+    font-family: $font-family;
+    font-size: 12px;
+    padding: 6px;
+
+    &.low, &.normal {
+        border-color: $blue;
+        color: $blue;
+    }
+    &.critical {
+        border-color: $pink;
+        color: $pink;
+    }
+}
+
+.text-box {
+    margin-left: 8px;
+
+    .summary {
+        font-size: 13px;
+        font-weight: bold;
+    }
+}
+
+.close-button {
+    @include with-hover-transition;
+
+    border-radius: 100%;
+    margin: 2px 2px 0 0;
+}
+
+// Notification center:
+.control-center {
+    background-color: $transparent-black;
+    border: 2px solid white;
+    border-radius: $border-radius;
+    font-family: $font-family;
+
+    .text-box {
+        margin-right: 20px;
+    }
+
+    .control-center-list-placeholder {
+        opacity: 0.5;
+    }
+}
+
+.widget-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 8px;
+
+    button {
+        @include with-hover-transition;
+
+        border: 1px solid $grey;
+        border-radius: $border-radius;
+        font-size: 12px;
+        padding: 4px;
+    }
+}
+
+.widget-dnd {
+    color: $grey;
+    font-style: italic;
+    margin: 0 8px;
+
+    switch {
+        border: 1px solid $grey;
+        border-radius: 12px;
+    }
+
+    switch:checked {
+        background: rgba($grey, 0.5);
+    }
+
+    switch slider {
+        border-radius: 12px;
+        background: rgba($grey, 0.8);
+    }
+}
