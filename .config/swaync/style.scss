@@ -10,12 +10,12 @@ $border-radius: 4px;
 $font-family: 'Cartograph CF';
 
 // Shared mixins:
-@mixin with-hover-transition {
-    color: $grey;
+@mixin with-hover-transition($color: $grey) {
+    color: $color;
 
     &:hover {
         color: black;
-        background-color: $grey;
+        background-color: $color;
         transition: background 300ms ease-in-out;
     }
 }
@@ -54,6 +54,27 @@ $font-family: 'Cartograph CF';
     }
 }
 
+// Stacked notifications:
+.notification-group {
+    border-radius: $border-radius;
+    color: $blue;
+    padding: 4px;
+
+    &:not(.collapsed) {
+        border: 1px solid $blue;
+    }
+
+    button {
+        @include with-hover-transition($blue);
+
+        border-radius: 100%;
+    }
+}
+
+.notification-group-headers {
+    font-style: italic;
+}
+
 .close-button {
     @include with-hover-transition;
 
@@ -67,6 +88,10 @@ $font-family: 'Cartograph CF';
     border: 2px solid white;
     border-radius: $border-radius;
     font-family: $font-family;
+
+    .notification-group {
+        margin: 0 6px;
+    }
 
     .text-box {
         margin-right: 20px;
