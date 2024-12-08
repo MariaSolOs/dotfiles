@@ -100,6 +100,7 @@ $font-family: 'Cartograph CF';
     switch {
         border: 1px solid $grey;
         border-radius: 12px;
+        color: transparent;
     }
 
     switch:checked {
