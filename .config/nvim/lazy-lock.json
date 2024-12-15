@@ -17,6 +17,7 @@
   "grug-far.nvim": { "branch": "main", "commit": "3707c4fb6ac982a1ca013c1b3bffa8e396f775cc" },
   "indent-blankline.nvim": { "branch": "master", "commit": "259357fa4097e232730341fa60988087d189193a" },
   "lazy.nvim": { "branch": "main", "commit": "ee64abc76be2b237b95d241a924b0323005b868a" },
+  "markdown-preview.nvim": { "branch": "master", "commit": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee" },
   "mini-git": { "branch": "main", "commit": "f75ae3855f595e55e1a8a96521ffa01012632b28" },
   "mini.ai": { "branch": "main", "commit": "31c149067d38b97720d2a179619f7745a0006ecc" },
   "mini.bufremove": { "branch": "main", "commit": "285bdac9596ee7375db50c0f76ed04336dcd2685" },
