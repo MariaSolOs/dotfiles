@@ -2,9 +2,9 @@
 
 # Change the volume according to the input flag.
 if [[ "$1" == "--dec" ]]; then
-    pactl set-sink-volume 0 -10%
+    pamixer -d 5
 elif [[ "$1" == "--inc" ]]; then
-    pactl set-sink-volume 0 +10%
+    pamixer -i 5
 elif [[ "$1" == "--toggle-mut" ]]; then
-    pactl set-sink-mute 0 toggle
+    pamixer -t
 fi
