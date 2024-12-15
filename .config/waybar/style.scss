@@ -53,6 +53,12 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     padding: 0 8px;
 }
 
+#pulseaudio {
+    @include bordered-box($blue);
+
+    padding: 0 6px;
+}
+
 #workspaces {
     @include bordered-box($lilac);
 }

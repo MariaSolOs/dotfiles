@@ -10,6 +10,7 @@
         "modules-left": [
             "battery",
             "network",
+            "pulseaudio",
             "power-profiles-daemon"
         ],
         "modules-center": [
@@ -31,6 +32,10 @@
                 "critical": 20,
                 "warning": 40
             }
+        },
+        "pulseaudio": {
+            "format": "  {volume}%",
+            "format-muted": " "
         },
         "network": {
             "format": "{ifname}",
