@@ -11,7 +11,6 @@ return {
             },
             search = {
                 exclude = {
-                    'cmp_menu',
                     'flash_prompt',
                     'qf',
                     function(win)
