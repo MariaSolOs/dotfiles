@@ -50,11 +50,13 @@ local function on_attach(client, bufnr)
     end
 
     if client:supports_method(methods.textDocument_signatureHelp) then
+        local blink_window = require 'blink.cmp.completion.windows.menu'
+        local blink = require 'blink.cmp'
+
         keymap('<C-k>', function()
             -- Close the completion menu first (if open).
-            local cmp = require 'cmp'
-            if cmp.visible() then
-                cmp.close()
+            if blink_window.win:is_open() then
+                blink.hide()
             end
 
             vim.lsp.buf.signature_help()
@@ -221,21 +223,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 --- Configures the given server with its settings and applying the regular
---- client capabilities (+ the completion ones from nvim-cmp).
+--- client capabilities (+ the completion ones from blink.cmp).
 ---@param server string
 ---@param settings? table
 function M.configure_server(server, settings)
-    local function capabilities()
-        return vim.tbl_deep_extend(
-            'force',
-            vim.lsp.protocol.make_client_capabilities(),
-            -- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
-            require('cmp_nvim_lsp').default_capabilities()
-        )
-    end
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
 
     require('lspconfig')[server].setup(
-        vim.tbl_deep_extend('error', { capabilities = capabilities(), silent = true }, settings or {})
+        vim.tbl_deep_extend('error', { capabilities = capabilities, silent = true }, settings or {})
     )
 end
 
