@@ -1,0 +1,90 @@
+configuration {
+    // Enable (in addition to combi):
+    // - window: Switch between windows
+    // - run: Launch apps from $PATH
+    // - drun: Launch apps based on desktop files
+    combi-modes: "window,run,drun";
+    modes: "combi,window,run,drun";
+
+    // Font configuration:
+    font: "Hasklug Nerd Font Mono Med 10";
+
+    // Icon theme:
+    icon-theme: "Win10Sur";
+
+    // Show app icons in the drun and window modes.
+    show-icons: true;
+
+    // Show the enabled modes at the bottom.
+    sidebar-mode: true;
+
+    // Incluce thumbnails (if available) in the window switcher.
+    window-thumbnail: true;
+}
+
+// Theme overrides:
+* {
+    blue: #BCF4F5;
+    lavender: #6272A4;
+    lilac: #D0B5F3;
+    transparent-black: #000000CC;
+}
+
+window {
+    background-color: @transparent-black;
+    border: 2px;
+    border-color: @lilac;
+    border-radius: 4px;
+}
+
+prompt {
+    text-color: @lilac;
+    text-transform: bold italic;
+}
+
+entry {
+    blink: false;
+    placeholder: "";
+    text-color: white;
+}
+
+num-rows, num-filtered-rows {
+    color: @lavender;
+}
+
+listview {
+    scrollbar: false;
+}
+
+element normal.normal,
+element normal.urgent,
+element normal.active,
+element alternate.normal,
+element alternate.urgent,
+element alternate.active {
+    background-color: @transparent-black;
+    color: white;
+}
+
+element selected.normal,
+element selected.urgent,
+element selected.active {
+    background-color: @transparent-black;
+    border: 1px;
+    border-color: @blue;
+    border-radius: 2px;
+    color: @blue;
+}
+
+button {
+    border: 1px;
+    border-color: @lavender;
+    border-radius: 2px;
+    color: @lavender;
+}
+
+button.selected {
+    background-color: @transparent-black;
+    border-color: white;
+    color: white;
+}

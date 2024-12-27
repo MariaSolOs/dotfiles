@@ -54,6 +54,7 @@ return {
                 'markdown_inline',
                 'python',
                 'query',
+                'rasi',
                 'regex',
                 'rust',
                 'scss',
