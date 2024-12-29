@@ -39,10 +39,5 @@ vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-S-s>', '<esc>:wa<cr>', { desc = 'Exit insert mode and save all changes.' })
 
--- Execute macro over a visual region.
-vim.keymap.set('x', '@', function()
-    return ':norm @' .. vim.fn.getcharstr() .. '<cr>'
-end, { expr = true })
-
 -- Add a semicolon at the end of the line.
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })
