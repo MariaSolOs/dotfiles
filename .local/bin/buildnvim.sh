@@ -28,8 +28,9 @@ function buildnvim() {
     git merge upstream/master
 
     # Clear the previous build.
-    sudo rm -rf /usr/local/share/nvim
-    sudo make distclean
+    local install_dir="$HOME/.nvim"
+    rm -rf "$install_dir"
+    make distclean
 
     # Go back to the given commit or HEAD.
     local commit="${1:-HEAD}"
@@ -54,15 +55,14 @@ index 5ccfb24b8..d3978d511 100644
 -      symbol = schar_from_ascii('>');
 +      symbol = schar_from_ascii(' ');
      }
- 
+
      if (out_buffer) {
 EOF
     git apply "$patch_file"
     rm -f "$patch_file"
 
     # Build.
-    make CMAKE_BUILD_TYPE=RelWithDebInfo
-    sudo make install
+    make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX="$install_dir" install
 
     # Remove the patched changes.
     git checkout .

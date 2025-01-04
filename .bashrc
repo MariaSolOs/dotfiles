@@ -9,6 +9,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 
 # Make sure this stuff is in the path.
+export PATH="$HOME/.nvim/bin:$PATH" # Neovim
 export PATH="$HOME/.cargo/bin:$PATH" # Cargo
 export PATH="$HOME/.local/bin:$PATH" # Local scripts
 
