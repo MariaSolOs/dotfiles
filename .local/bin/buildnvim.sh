@@ -7,8 +7,6 @@ function buildnvim() {
     local nvim_dir="$HOME/Code/neovim"
     [ ! -d "$nvim_dir" ] && echo "Silly girl, you haven't cloned neovim..." && return
 
-    printf '\n========== NEOVIM DIRECTORY: %s ==========\n' "$nvim_dir"
-
     # Go to the neovim directory.
     cd "$nvim_dir" || { printf '\n========== COULD NOT CD TO NEOVIM DIRECTORY ==========\n' && return; }
 
