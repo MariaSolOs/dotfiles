@@ -82,7 +82,9 @@ vim.api.nvim_create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEn
 
         -- Redraw here to avoid having to first write something for the line numbers to update.
         if args.event == 'CmdlineEnter' then
-            vim.cmd.redraw()
+            if not vim.tbl_contains({ '@', '-' }, vim.v.event.cmdtype) then
+                vim.cmd.redraw()
+            end
         end
     end,
 })
