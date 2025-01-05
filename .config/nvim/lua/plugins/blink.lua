@@ -7,7 +7,7 @@ return {
         opts = {
             keymap = {
                 ['<CR>'] = { 'accept', 'fallback' },
-                ['/'] = { 'hide', 'fallback' },
+                ['<C-\\>'] = { 'hide', 'fallback' },
                 ['<C-n>'] = { 'select_next', 'show' },
                 ['<Tab>'] = { 'select_next', 'fallback' },
                 ['<C-p>'] = { 'select_prev' },
