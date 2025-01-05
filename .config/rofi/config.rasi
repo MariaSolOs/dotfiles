@@ -53,7 +53,12 @@ num-rows, num-filtered-rows {
 }
 
 listview {
+    border: none;
     scrollbar: false;
+}
+
+element {
+    padding: 2px;
 }
 
 element normal.normal,
@@ -62,7 +67,7 @@ element normal.active,
 element alternate.normal,
 element alternate.urgent,
 element alternate.active {
-    background-color: @transparent-black;
+    background-color: transparent;
     color: white;
 }
 
