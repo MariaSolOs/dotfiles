@@ -21,5 +21,13 @@
         "volume": {
             "label": "Volume: "
         }
+    },
+
+    "scripts": {
+        "open-mail": {
+            "app-name": "Thunderbird",
+            "exec": "hyprctl dispatch workspace email",
+            "run-on": "action"
+        }
     }
 }
