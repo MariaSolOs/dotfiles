@@ -292,6 +292,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     BlinkCmpKindValue = { link = '@variable.member' },
     BlinkCmpKindVariable = { link = '@variable' },
     BlinkCmpLabelDeprecated = { link = 'DiagnosticDeprecated' },
+    BlinkCmpLabelDescription = { fg = colors.grey, italic = true },
     BlinkCmpMenu = { bg = colors.bg },
     BlinkCmpMenuBorder = { bg = colors.bg },
 
