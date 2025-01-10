@@ -34,7 +34,7 @@ return {
             completion = {
                 list = {
                     -- Insert items while navigating the completion list.
-                    selection = 'auto_insert',
+                    selection = { preselect = false, auto_insert = true },
                     max_items = 10,
                 },
                 menu = {
@@ -45,6 +45,7 @@ return {
                     window = { border = 'rounded' },
                 },
             },
+            snippets = { preset = 'default' },
             sources = {
                 -- Disable command line completion:
                 cmdline = {},
