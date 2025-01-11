@@ -3,6 +3,9 @@ local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
+-- Enable inlay hints initially (and disable if needed with my ToggleInlayHints command).
+vim.g.inlay_hints = true
+
 --- Sets up LSP keymaps and autocommands for the given buffer.
 ---@param client vim.lsp.Client
 ---@param bufnr integer
@@ -80,23 +83,37 @@ local function on_attach(client, bufnr)
         })
     end
 
-    if client:supports_method(methods.textDocument_inlayHint) then
-        vim.keymap.set('n', '<leader>ci', function()
-            -- Toggle the hints:
-            local enabled = vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
-            vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+    if client:supports_method(methods.textDocument_inlayHint) and vim.g.inlay_hints then
+        local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
 
-            -- If toggling them on, turn them back off when entering insert mode.
-            if not enabled then
-                vim.api.nvim_create_autocmd('InsertEnter', {
-                    buffer = bufnr,
-                    once = true,
-                    callback = function()
-                        vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
-                    end,
-                })
-            end
-        end, { buffer = bufnr, desc = 'Toggle inlay hints' })
+        -- Initial inlay hint display.
+        -- Idk why but without the delay inlay hints aren't displayed at the very start.
+        vim.defer_fn(function()
+            local mode = vim.api.nvim_get_mode().mode
+            vim.lsp.inlay_hint.enable(mode == 'n' or mode == 'v', { bufnr = bufnr })
+        end, 500)
+
+        vim.api.nvim_create_autocmd('InsertEnter', {
+            group = inlay_hints_group,
+            desc = 'Enable inlay hints',
+            buffer = bufnr,
+            callback = function()
+                if vim.g.inlay_hints then
+                    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+                end
+            end,
+        })
+
+        vim.api.nvim_create_autocmd('InsertLeave', {
+            group = inlay_hints_group,
+            desc = 'Disable inlay hints',
+            buffer = bufnr,
+            callback = function()
+                if vim.g.inlay_hints then
+                    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                end
+            end,
+        })
     end
 end
 
