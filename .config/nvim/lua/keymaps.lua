@@ -43,11 +43,5 @@ vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
 vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-S-s>', '<esc>:wa<cr>', { desc = 'Exit insert mode and save all changes.' })
 
--- Insert the snippet content in register s.
-vim.keymap.set('i', '<C-r>s', function()
-    local snippet = vim.fn.getreg 's'
-    vim.snippet.expand(snippet)
-end, { desc = 'Insert on-the-fly snippet' })
-
 -- Add a semicolon at the end of the line.
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })

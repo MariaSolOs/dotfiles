@@ -35,6 +35,16 @@ return {
 
                     local winopts = { height = 0.6, width = 0.5 }
 
+                    -- Smaller menu for snippet choices.
+                    if opts.kind == 'luasnip' then
+                        opts.prompt = 'Snippet choice: '
+                        winopts = {
+                            relative = 'cursor',
+                            height = 0.35,
+                            width = 0.3,
+                        }
+                    end
+
                     -- Fallback to fzf-lua.
                     return {
                         backend = 'fzf_lua',
