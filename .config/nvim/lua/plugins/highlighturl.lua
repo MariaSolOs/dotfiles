@@ -11,7 +11,6 @@ return {
                 pattern = {
                     'fzf',
                     'lazyterm',
-                    'spectre_panel',
                 },
                 command = 'call highlighturl#disable_local()',
             })
