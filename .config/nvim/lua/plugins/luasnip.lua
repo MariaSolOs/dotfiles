@@ -32,6 +32,11 @@ return {
                             virt_text_pos = 'inline',
                         },
                     },
+                    [types.choiceNode] = {
+                        active = {
+                            virt_text = { { '(snippet) choice node', 'LspInlayHint' } },
+                        },
+                    },
                 },
             }
         end,
