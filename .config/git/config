@@ -1,10 +1,5 @@
 [core]
 	editor = nvim
-	pager = delta
-
-[delta]
-	navigate = true
-	syntax-theme = Dracula
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
