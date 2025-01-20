@@ -81,7 +81,7 @@ return {
                 -- Configuration for specific commands.
                 files = {
                     winopts = {
-                        preview = { hidden = 'hidden' },
+                        preview = { hidden = true },
                     },
                 },
                 grep = {
@@ -101,7 +101,7 @@ return {
                 oldfiles = {
                     include_current_session = true,
                     winopts = {
-                        preview = { hidden = 'hidden' },
+                        preview = { hidden = true },
                     },
                 },
             }
