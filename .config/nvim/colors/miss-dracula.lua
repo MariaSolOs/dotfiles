@@ -383,6 +383,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     FzfLuaLiveSym = { fg = colors.fuchsia },
     FzfLuaPreviewTitle = { fg = colors.fg },
     FzfLuaSearch = { bg = colors.transparent_red },
+    FzfLuaLivePrompt = { link = 'Normal' },
 
     -- TODOs and notes.
     MiniHipatternsHack = { fg = colors.bg, bg = colors.orange, bold = true },
