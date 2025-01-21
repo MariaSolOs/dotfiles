@@ -3,8 +3,8 @@ local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
--- Enable inlay hints initially (and disable if needed with my ToggleInlayHints command).
-vim.g.inlay_hints = true
+-- Disable inlay hints initially (and enable if needed with my ToggleInlayHints command).
+vim.g.inlay_hints = false
 
 --- Sets up LSP keymaps and autocommands for the given buffer.
 ---@param client vim.lsp.Client
