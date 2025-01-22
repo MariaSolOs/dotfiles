@@ -30,11 +30,7 @@ vim.keymap.set('n', '<leader>tn', '<cmd>tab split<cr>', { desc = 'New tab page' 
 vim.keymap.set('n', '<leader>to', '<cmd>tabonly<cr>', { desc = 'Close other tab pages' })
 
 -- Poweful <esc>.
-vim.keymap.set({ 'i', 's', 'n' }, '<esc>', function()
-    vim.cmd 'noh'
-    vim.snippet.stop()
-    return '<esc>'
-end, { desc = 'Escape, clear hlsearch, and stop snippet session', expr = true })
+vim.keymap.set({ 'i', 'n' }, '<esc>', '<cmd>noh<cr><esc>', { desc = 'Escape and clear hlsearch' })
 
 -- Make U opposite to u.
 vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
