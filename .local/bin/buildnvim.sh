@@ -42,10 +42,10 @@ function buildnvim() {
     local patch_file="$nvim_dir/foldcolumn.patch"
     cat <<'EOF' > "$patch_file"
 diff --git a/src/nvim/drawline.c b/src/nvim/drawline.c
-index 5ccfb24b8..d3978d511 100644
+index 5196d5c9f4..ba336713cf 100644
 --- a/src/nvim/drawline.c
 +++ b/src/nvim/drawline.c
-@@ -436,10 +436,8 @@ void fill_foldcolumn(win_T *wp, foldinfo_T foldinfo, linenr_T lnum, int attr, in
+@@ -443,10 +443,8 @@ void fill_foldcolumn(win_T *wp, foldinfo_T foldinfo, linenr_T lnum, int attr, in
        symbol = wp->w_p_fcs_chars.foldopen;
      } else if (first_level == 1) {
        symbol = wp->w_p_fcs_chars.foldsep;
@@ -56,7 +56,7 @@ index 5ccfb24b8..d3978d511 100644
 +      symbol = schar_from_ascii(' ');
      }
 
-     if (out_buffer) {
+     int vcol = i >= level ? -1 : (i == closedcol - 1 && closed) ? -2 : -3;
 EOF
     git apply "$patch_file"
     rm -f "$patch_file"
