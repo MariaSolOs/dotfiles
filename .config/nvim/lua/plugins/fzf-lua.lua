@@ -70,7 +70,6 @@ return {
                 winopts = {
                     height = 0.7,
                     width = 0.55,
-                    title_flags = false,
                     preview = {
                         scrollbar = false,
                         layout = 'vertical',
