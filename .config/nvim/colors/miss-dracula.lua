@@ -328,9 +328,11 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     DiffChange = { fg = colors.yellow, bg = colors.transparent_yellow },
     DiffDelete = { fg = colors.red, bg = colors.transparent_red },
     DiffText = { fg = colors.bright_white, bg = colors.transparent_black },
+    DiffviewNonText = { fg = colors.lilac },
     diffAdded = { fg = colors.bright_green, bold = true },
     diffChanged = { fg = colors.bright_yellow, bold = true },
     diffRemoved = { fg = colors.bright_red, bold = true },
+    DiffviewFolderSign = { fg = colors.cyan },
 
     -- Command line.
     MoreMsg = { fg = colors.bright_white, bold = true },

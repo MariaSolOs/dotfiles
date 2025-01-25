@@ -217,6 +217,7 @@ function M.filetype_component()
 
     -- Special icons for some filetypes.
     local special_icons = {
+        DiffviewFiles = { icons.misc.git, 'Number' },
         DressingInput = { '󰍩', 'Comment' },
         DressingSelect = { '', 'Comment' },
         OverseerForm = { '󰦬', 'Special' },
@@ -233,6 +234,7 @@ function M.filetype_component()
         lazyterm = { '', 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
         qf = { icons.misc.search, 'Conditional' },
+        DiffviewFileHistory = { icons.misc.git, 'Number' },
     }
 
     local filetype = vim.bo.filetype
