@@ -28,6 +28,14 @@ return {
                 local gitlinker = require 'gitlinker'
                 local gs = package.loaded.gitsigns
 
+                -- Register the leader group with miniclue.
+                vim.b[bufnr].miniclue_config = {
+                    clues = {
+                        { mode = 'n', keys = '<leader>g', desc = '+git' },
+                        { mode = 'x', keys = '<leader>g', desc = '+git' },
+                    },
+                }
+
                 -- Gitlinker doesn't add descriptions.
                 local miniclue = require 'mini.clue'
                 miniclue.set_mapping_desc('n', '<leader>gc', 'Copy GitHub link')
