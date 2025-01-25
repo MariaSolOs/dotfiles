@@ -122,8 +122,8 @@ return {
 
                         return {
                             border = 'rounded',
-                            -- Dynamic width capped at 45.
-                            width = math.min(45, max_width),
+                            -- Dynamic width capped at 70.
+                            width = math.min(70, max_width),
                         }
                     end,
                 },
