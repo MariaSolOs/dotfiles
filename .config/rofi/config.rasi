@@ -81,6 +81,10 @@ element selected.active {
     color: @blue;
 }
 
+mode-switcher {
+    padding: 1px;
+}
+
 button {
     border: 1px;
     border-color: @lavender;
