@@ -57,22 +57,6 @@ return {
                     require 'luasnip.extras.select_choice'()
                 end
             end, { desc = 'Select choice' })
-
-            vim.api.nvim_create_autocmd('ModeChanged', {
-                group = vim.api.nvim_create_augroup('mariasolos/unlink_snippet', { clear = true }),
-                desc = 'Cancel the snippet session when leaving insert mode',
-                pattern = { 's:n', 'i:*' },
-                callback = function(args)
-                    if
-                        luasnip.session
-                        and luasnip.session.current_nodes[args.buf]
-                        and not luasnip.session.jump_active
-                        and not luasnip.choice_active()
-                    then
-                        luasnip.unlink_current()
-                    end
-                end,
-            })
             ---@diagnostic enable: undefined-field
         end,
     },
