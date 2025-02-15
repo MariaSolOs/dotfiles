@@ -30,9 +30,9 @@ return {
                 },
             },
             snippets = { preset = 'luasnip' },
+            -- Disable command line completion:
+            cmdline = { enabled = false },
             sources = {
-                -- Disable command line completion:
-                cmdline = {},
                 -- Disable snippet completions inside comments and strings:
                 default = function()
                     local sources = { 'lsp', 'path', 'buffer' }
