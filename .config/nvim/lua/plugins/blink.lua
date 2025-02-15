@@ -33,9 +33,9 @@ return {
             sources = {
                 -- Disable command line completion:
                 cmdline = {},
-                -- Disable path and snippet completions inside comments and strings:
+                -- Disable snippet completions inside comments and strings:
                 default = function()
-                    local sources = { 'lsp', 'buffer' }
+                    local sources = { 'lsp', 'path', 'buffer' }
                     local ok, node = pcall(vim.treesitter.get_node)
 
                     if
@@ -44,7 +44,6 @@ return {
                         and not vim.tbl_contains({ 'string', 'comment', 'line_comment', 'block_comment' }, node:type())
                     then
                         table.insert(sources, 'snippets')
-                        table.insert(sources, 'path')
                     end
 
                     return sources
