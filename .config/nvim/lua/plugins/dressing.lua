@@ -45,6 +45,11 @@ return {
                         }
                     end
 
+                    -- Smaller menu for messages from LSP select requests.
+                    if opts.kind == 'lsp_message' then
+                        winopts = { height = 0.3, width = 0.3 }
+                    end
+
                     -- Fallback to fzf-lua.
                     return {
                         backend = 'fzf_lua',
