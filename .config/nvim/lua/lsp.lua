@@ -48,7 +48,7 @@ local function on_attach(client, bufnr)
     if client:supports_method(methods.textDocument_definition) then
         keymap('gD', '<cmd>FzfLua lsp_definitions<cr>', 'Peek definition')
         keymap('gd', function()
-            require('fzf-lua').lsp_definitions { jump_to_single_result = true }
+            require('fzf-lua').lsp_definitions { jump1 = true }
         end, 'Go to definition')
     end
 
