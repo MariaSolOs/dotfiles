@@ -8,25 +8,6 @@ return {
             select = {
                 trim_prompt = false,
                 get_config = function(opts)
-                    if opts.kind == 'codeaction' then
-                        -- Cute and compact code action menu.
-                        return {
-                            backend = 'builtin',
-                            builtin = {
-                                relative = 'cursor',
-                                max_height = 0.33,
-                                min_height = 5,
-                                max_width = 0.40,
-                                mappings = { ['q'] = 'Close' },
-                                win_options = {
-                                    -- Same UI as the input field.
-                                    winhighlight = 'FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle,MatchParen:Ignore',
-                                    winblend = 5,
-                                },
-                            },
-                        }
-                    end
-
                     local winopts = { height = 0.6, width = 0.5 }
 
                     -- Smaller menu for snippet choices.

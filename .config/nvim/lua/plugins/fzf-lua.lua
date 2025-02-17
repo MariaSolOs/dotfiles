@@ -96,6 +96,10 @@ return {
                     symbols = {
                         symbol_icons = icons.symbol_kinds,
                     },
+                    code_actions = {
+                        previewer = 'codeaction_native',
+                        preview_pager = "delta --width=$COLUMNS --hunk-header-style='omit' --file-style='omit' --diff-so-fancy",
+                    },
                 },
                 oldfiles = {
                     include_current_session = true,
