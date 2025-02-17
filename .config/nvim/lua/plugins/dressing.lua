@@ -1,16 +1,10 @@
 -- Select and input UI.
+-- TODO: Replace this with something else now that the plugin got archived.
 return {
     {
         'stevearc/dressing.nvim',
         lazy = true,
         opts = {
-            input = {
-                win_options = {
-                    -- Use a purple-ish border.
-                    winhighlight = 'FloatBorder:LspFloatWinBorder',
-                    winblend = 5,
-                },
-            },
             select = {
                 trim_prompt = false,
                 get_config = function(opts)
@@ -68,13 +62,6 @@ return {
                 if #items > 0 then
                     return vim.ui.select(items, opts, on_choice)
                 end
-            end
-            ---@diagnostic disable-next-line: duplicate-set-field
-            vim.ui.input = function(...)
-                if not package.loaded['dressing.nvim'] then
-                    require('lazy').load { plugins = { 'dressing.nvim' } }
-                end
-                return vim.ui.input(...)
             end
         end,
     },
