@@ -21,15 +21,7 @@ local function on_attach(client, bufnr)
 
     require('lightbulb').attach_lightbulb(bufnr, client.id)
 
-    keymap('gra', function()
-        require('fzf-lua').lsp_code_actions {
-            winopts = {
-                width = 0.55,
-                height = 0.55,
-                preview = { vertical = 'up:70%' },
-            },
-        }
-    end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
+    keymap('gra', '<cmd>FzfLua lsp_code_actions<cr>', 'vim.lsp.buf.code_action()', { 'n', 'x' })
 
     keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
 

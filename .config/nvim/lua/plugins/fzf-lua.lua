@@ -78,6 +78,9 @@ return {
                     },
                 },
                 defaults = { git_icons = false },
+                previewers = {
+                    codeaction = { toggle_behavior = 'extend' },
+                },
                 -- Configuration for specific commands.
                 files = {
                     winopts = {
@@ -98,8 +101,15 @@ return {
                         symbol_icons = icons.symbol_kinds,
                     },
                     code_actions = {
-                        previewer = 'codeaction_native',
-                        preview_pager = "delta --width=$COLUMNS --hunk-header-style='omit' --file-style='omit' --diff-so-fancy",
+                        winopts = {
+                            width = 0.33,
+                            height = 0.5,
+                            relative = 'cursor',
+                            preview = {
+                                hidden = true,
+                                vertical = 'down:60%',
+                            },
+                        },
                     },
                 },
                 oldfiles = {
