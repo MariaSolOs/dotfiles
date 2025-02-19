@@ -29,7 +29,7 @@ local function on_attach(client, bufnr)
                 preview = { vertical = 'up:70%' },
             },
         }
-    end, 'vim.lsp.buf.code_action()')
+    end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
 
     keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
 
