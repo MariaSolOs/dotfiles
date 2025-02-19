@@ -65,6 +65,7 @@ return {
                     fzf = {
                         ['alt-s'] = 'toggle',
                         ['alt-a'] = 'toggle-all',
+                        ['ctrl-i'] = 'toggle-preview',
                     },
                 },
                 winopts = {
