@@ -218,8 +218,6 @@ function M.filetype_component()
     -- Special icons for some filetypes.
     local special_icons = {
         DiffviewFiles = { icons.misc.git, 'Number' },
-        DressingInput = { '󰍩', 'Comment' },
-        DressingSelect = { '', 'Comment' },
         OverseerForm = { '󰦬', 'Special' },
         OverseerList = { '󰦬', 'Special' },
         ['ccc-ui'] = { '', 'Comment' },
