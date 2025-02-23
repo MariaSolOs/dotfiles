@@ -47,3 +47,8 @@ vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-S-s>', '<esc>:wa<cr>', { desc = 'Exit
 
 -- Quickly go to the end of the line while in insert mode.
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })
+
+-- Floating terminal.
+vim.keymap.set({ 'n', 't' }, '<leader>T', function()
+    require('float_term').float_term('fish', { cwd = vim.fn.expand '%:p:h' })
+end, { desc = 'Toggle floating terminal' })
