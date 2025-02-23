@@ -47,10 +47,12 @@ local function on_attach(client, bufnr)
     end, 'Next error')
 
     if client:supports_method(methods.textDocument_definition) then
-        keymap('gD', '<cmd>FzfLua lsp_definitions<cr>', 'Peek definition')
         keymap('gd', function()
             require('fzf-lua').lsp_definitions { jump1 = true }
         end, 'Go to definition')
+        keymap('gD', function()
+            require('fzf-lua').lsp_definitions { jump1 = false }
+        end, 'Peek definition')
     end
 
     if client:supports_method(methods.textDocument_signatureHelp) then
