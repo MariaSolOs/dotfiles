@@ -1,6 +1,6 @@
 local M = {}
 
----@type LazyFloat
+---@type LazyFloat?
 local terminal = nil
 
 --- Opens an interactive floating terminal.
