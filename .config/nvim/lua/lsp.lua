@@ -23,7 +23,9 @@ local function on_attach(client, bufnr)
 
     keymap('gra', '<cmd>FzfLua lsp_code_actions<cr>', 'vim.lsp.buf.code_action()', { 'n', 'x' })
 
-    keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
+    keymap('grr', function()
+        require('fzf-lua').lsp_references { jump1 = false }
+    end, 'vim.lsp.buf.references()')
 
     keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
