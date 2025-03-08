@@ -7,10 +7,6 @@ function fish_user_key_bindings
     bind \cp up-or-search
     bind \cn down-or-search
 
-    # Copy/paste.
-    bind yy fish_clipboard_copy
-    bind p fish_clipboard_paste
-
     # Replace !! by the previous command.
     bind -M insert ! bind_bang
 
