@@ -388,6 +388,11 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     FzfLuaPreviewTitle = { fg = colors.fg },
     FzfLuaSearch = { bg = colors.transparent_red },
 
+    -- Nicer sign column highlights for grug-far.
+    GrugFarResultsChangeIndicator = { link = 'Changed' },
+    GrugFarResultsRemoveIndicator = { link = 'Removed' },
+    GrugFarResultsAddIndicator = { link = 'Added' },
+
     -- TODOs and notes.
     MiniHipatternsHack = { fg = colors.bg, bg = colors.orange, bold = true },
     MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
