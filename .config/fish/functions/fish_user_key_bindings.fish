@@ -6,6 +6,10 @@ function fish_user_key_bindings
     # Make sure ctrl-n still works in insert mode.
     bind -M insert ctrl-n down-or-search
 
+    # Copy/paste.
+    bind yy fish_clipboard_copy
+    bind p fish_clipboard_paste
+
     # Replace !! by the previous command.
     bind -M insert ! bind_bang
 end
