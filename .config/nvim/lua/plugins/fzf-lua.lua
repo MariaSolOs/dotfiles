@@ -102,12 +102,12 @@ return {
                     },
                     code_actions = {
                         winopts = {
-                            width = 0.33,
-                            height = 0.5,
+                            width = 70,
+                            height = 20,
                             relative = 'cursor',
                             preview = {
                                 hidden = true,
-                                vertical = 'down:60%',
+                                vertical = 'down:50%',
                             },
                         },
                     },
