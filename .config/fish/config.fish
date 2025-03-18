@@ -20,7 +20,7 @@ abbr -a nvp nvim +Man!
 abbr -a g git
 abbr -a ga git add
 abbr -a gb git branch
-abbr -a gc git commit --verbose
+abbr -a gc git commit
 abbr -a gco git checkout
 abbr -a gf git fetch
 abbr -a gl lazygit
