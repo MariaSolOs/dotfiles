@@ -6,8 +6,11 @@ return {
         opts = {
             jump = { nohlsearch = true },
             prompt = {
-                -- Place the prompt above the statusline.
-                win_config = { row = -3 },
+                win_config = {
+                    border = 'none',
+                    -- Place the prompt above the statusline.
+                    row = -3,
+                },
             },
             search = {
                 exclude = {
