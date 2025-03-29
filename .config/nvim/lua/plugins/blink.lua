@@ -21,13 +21,7 @@ return {
                     selection = { preselect = false, auto_insert = true },
                     max_items = 10,
                 },
-                menu = {
-                    border = 'rounded',
-                },
-                documentation = {
-                    auto_show = true,
-                    window = { border = 'rounded' },
-                },
+                documentation = { auto_show = true },
             },
             snippets = { preset = 'luasnip' },
             -- Disable command line completion:
