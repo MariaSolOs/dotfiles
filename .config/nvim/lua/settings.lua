@@ -40,6 +40,9 @@ vim.opt.fillchars = {
     msgsep = '─',
 }
 
+-- Use rounded borders for floating windows.
+vim.o.winborder = 'rounded'
+
 -- Sync clipboard between the OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
 
