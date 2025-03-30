@@ -89,6 +89,11 @@ return {
                 },
                 grep = {
                     header_prefix = icons.misc.search .. ' ',
+                    rg_glob_fn = function(query, opts)
+                        local regex, flags = query:match(string.format('^(.*)%s(.*)$', opts.glob_separator))
+                        -- Return the original query if there's no separator.
+                        return (regex or query), flags
+                    end,
                 },
                 helptags = {
                     actions = {
