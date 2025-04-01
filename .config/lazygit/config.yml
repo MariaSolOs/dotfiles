@@ -1,4 +1,6 @@
 notARepository: 'quit'
+git:
+  overrideGpg: true
 os:
   editPreset: nvim
 gui:
