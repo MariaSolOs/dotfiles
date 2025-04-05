@@ -40,7 +40,7 @@ function buildnvim() {
     # Apply my fold column patch.
     printf '\n========== APPLYING FOLDCOLUMN PATCH... ==========\n'
     local patch_file="$nvim_dir/foldcolumn.patch"
-    cat <<'EOF' > "$patch_file"
+    cat <<'EOF' >"$patch_file"
 diff --git a/src/nvim/drawline.c b/src/nvim/drawline.c
 index 5196d5c9f4..ba336713cf 100644
 --- a/src/nvim/drawline.c
