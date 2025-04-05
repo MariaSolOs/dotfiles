@@ -64,9 +64,6 @@ return {
                         cwd = vim.b.gitsigns_status_dict.root,
                     })
                 end, 'Lazygit')
-
-                -- Text object:
-                vim.keymap.set({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<cr>')
             end,
         },
     },
