@@ -10,7 +10,7 @@ return {
         config = function()
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'java',
-                callback = function(args)
+                callback = function()
                     local cmd = {
                         'java',
                         '-Declipse.application=org.eclipse.jdt.ls.core.id1',
@@ -31,8 +31,7 @@ return {
                     }
 
                     -- Configure the data directory for the project.
-                    local fname = vim.api.nvim_buf_get_name(args.buf)
-                    local root_dir = require('lspconfig.configs.jdtls').default_config.root_dir(fname)
+                    local root_dir = vim.fs.root(0, 'build.gradle') or vim.fs.root(0, 'settings.gradle')
                     local project_name = root_dir and vim.fs.basename(root_dir)
                     if project_name then
                         vim.list_extend(cmd, {

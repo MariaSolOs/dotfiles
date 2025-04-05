@@ -118,6 +118,25 @@ local function on_attach(client, bufnr)
             end,
         })
     end
+
+    -- Add "Fix all" command for ESLint.
+    if client.name == 'eslint' then
+        vim.keymap.set('n', '<leader>ce', function()
+            if not client then
+                return
+            end
+
+            client:request(vim.lsp.protocol.Methods.workspace_executeCommand, {
+                command = 'eslint.applyAllFixes',
+                arguments = {
+                    {
+                        uri = vim.uri_from_bufnr(bufnr),
+                        version = vim.lsp.util.buf_versions[bufnr],
+                    },
+                },
+            }, nil, bufnr)
+        end, { desc = 'Fix all ESLint errors', buffer = bufnr })
+    end
 end
 
 -- Define the diagnostic signs.
@@ -221,17 +240,236 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
---- Configures the given server with its settings and applying the regular
---- client capabilities (+ the completion ones from blink.cmp).
----@param server string
----@param settings? table
-function M.configure_server(server, settings)
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+-- Set up LSP servers.
+vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
+    once = true,
+    callback = function()
+        ---@param name string
+        ---@param config vim.lsp.Config
+        local function configure_server(name, config)
+            vim.lsp.config(name, config)
+            vim.lsp.enable(name)
+        end
 
-    require('lspconfig')[server].setup(
-        vim.tbl_deep_extend('error', { capabilities = capabilities, silent = true }, settings or {})
-    )
-end
+        -- Install with: npm i -g bash-language-server
+        -- Also uses shellcheck for diagnostics and shfmt for formatting.
+        configure_server('bashls', {
+            cmd = { 'bash-language-server', 'start' },
+            filetypes = { 'bash', 'sh', 'zsh' },
+        })
+
+        -- Install with: npm i -g vscode-langservers-extracted
+        configure_server('cssls', {
+            cmd = { 'vscode-css-language-server', '--stdio' },
+            filetypes = { 'css', 'scss', 'less' },
+            settings = {
+                css = { validate = true },
+                scss = { validate = true },
+                less = { validate = true },
+            },
+        })
+        configure_server('eslint', {
+            cmd = { 'vscode-eslint-language-server', '--stdio' },
+            filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'graphql' },
+            root_markers = { '.eslintrc', '.eslintrc.js', '.eslintrc.json', 'eslint.config.js', 'eslint.config.mjs' },
+            -- Using roughly the same defaults as VS Code: https://github.com/microsoft/vscode-eslint/blob/c0e753713ea9935667e849d91e549adbff213e7e/client/src/client.ts#L676
+            settings = {
+                validate = 'on',
+                packageManager = 'npm',
+                useESLintClass = false,
+                experimental = { useFlatConfig = false },
+                codeActionOnSave = { enable = false, mode = 'all' },
+                format = false,
+                quiet = false,
+                onIgnoredFiles = 'off',
+                options = {},
+                rulesCustomizations = {},
+                run = 'onType',
+                problems = { shortenToSingleLine = false },
+                nodePath = '',
+                codeAction = {
+                    disableRuleComment = { enable = true, location = 'separateLine' },
+                    showDocumentation = { enable = true },
+                },
+            },
+            ---@type table<string, lsp.Handler>
+            handlers = {
+                ['eslint/openDoc'] = function(_, params)
+                    vim.ui.open(params.url)
+                    return {}
+                end,
+                ['eslint/probeFailed'] = function()
+                    vim.notify('LSP[eslint]: Probe failed.', vim.log.levels.WARN)
+                end,
+                ['eslint/noLibrary'] = function()
+                    vim.notify('LSP[eslint]: Unable to load ESLint library.', vim.log.levels.WARN)
+                end,
+            },
+        })
+        configure_server('html', {
+            cmd = { 'vscode-html-language-server', '--stdio' },
+            filetypes = { 'html' },
+            embeddedLanguages = { css = true, javascript = true },
+        })
+        configure_server('jsonls', {
+            cmd = { 'vscode-json-language-server', '--stdio' },
+            filetypes = { 'json', 'jsonc' },
+            settings = {
+                json = {
+                    validate = { enable = true },
+                    schemas = require('schemastore').json.schemas(),
+                },
+            },
+        })
+
+        -- Install with
+        -- mac: brew install dprint
+        -- Arch: paru -S dprint
+        configure_server('dprint', {
+            cmd = { 'dprint', 'lsp' },
+            filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'jsonc', 'graphql' },
+        })
+
+        -- Install with
+        -- mac: brew install llvm
+        -- Arch: TODO
+        configure_server('clangd', {
+            cmd = {
+                'clangd',
+                '--clang-tidy',
+                '--header-insertion=iwyu',
+                '--completion-style=detailed',
+                '--fallback-style=none',
+                '--function-arg-placeholders=false',
+            },
+            filetypes = { 'c', 'cpp' },
+            root_markers = { '.clangd' },
+        })
+
+        -- Install with
+        -- mac: brew install lua-language-server
+        -- Arch: TODO
+        configure_server('lua_ls', {
+            cmd = { 'lua-language-server' },
+            filetypes = { 'lua' },
+            root_markers = { '.luarc.json', '.luarc.jsonc' },
+            -- NOTE: These will be merged with the configuration file.
+            settings = {
+                Lua = {
+                    completion = { callSnippet = 'Replace' },
+                    -- Using stylua for formatting.
+                    format = { enable = false },
+                    hint = {
+                        enable = true,
+                        arrayIndex = 'Disable',
+                    },
+                    runtime = {
+                        version = 'LuaJIT',
+                    },
+                    workspace = {
+                        checkThirdParty = false,
+                        library = {
+                            vim.env.VIMRUNTIME,
+                            '${3rd}/luv/library',
+                        },
+                    },
+                },
+            },
+        })
+
+        -- Install with: rustup component add rust-analyzer
+        configure_server('rust_analyzer', {
+            cmd = { 'rust-analyzer' },
+            filetypes = { 'rust' },
+            root_markers = { 'Cargo.toml', 'rust-project.json' },
+            settings = {
+                ['rust-analyzer'] = {
+                    inlayHints = {
+                        -- These are a bit too much.
+                        chainingHints = { enable = false },
+                    },
+                },
+            },
+        })
+
+        -- Install with: npm i -g stylelint-lsp
+        configure_server('stylelint_lsp', {
+            cmd = { 'stylelint-lsp', '--stdio' },
+            filetypes = { 'css', 'less', 'scss' },
+            root_markers = { '.stylelintrc', '.stylelintrc.js', '.stylelintrc.json', 'stylelint.config.js' },
+            settings = {
+                stylelintplus = {
+                    -- Lint on save instead of on type.
+                    validateOnSave = true,
+                    validateOnType = false,
+                },
+            },
+        })
+
+        -- Install with: cargo install --features lsp --locked taplo-cli
+        configure_server('taplo', {
+            cmd = { 'taplo', 'lsp', 'stdio' },
+            filetypes = { 'toml' },
+            settings = {
+                -- Use the defaults that the VSCode extension uses: https://github.com/tamasfe/taplo/blob/2e01e8cca235aae3d3f6d4415c06fd52e1523934/editors/vscode/package.json
+                taplo = {
+                    configFile = { enabled = true },
+                    schema = {
+                        enabled = true,
+                        catalogs = { 'https://www.schemastore.org/api/json/catalog.json' },
+                        cache = {
+                            memoryExpiration = 60,
+                            diskExpiration = 600,
+                        },
+                    },
+                },
+            },
+        })
+
+        -- Install with: npm i -g add yaml-language-server
+        configure_server('yamlls', {
+            cmd = { 'yaml-language-server', '--stdio' },
+            filetypes = { 'yaml' },
+            settings = {
+                yaml = {
+                    -- Using the schemastore plugin for schemas.
+                    schemastore = { enable = false, url = '' },
+                    schemas = require('schemastore').yaml.schemas(),
+                },
+            },
+        })
+
+        local jsts_settings = {
+            suggest = { completeFunctionCalls = true },
+            inlayHints = {
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = 'literals' },
+                variableTypes = { enabled = true },
+            },
+        }
+        -- Install with: @vtsls/language-server
+        configure_server('vtsls', {
+            cmd = { 'vtsls', '--stdio' },
+            filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+            root_markers = { 'tsconfig.json', 'jsonconfig.json' },
+            settings = {
+                typescript = jsts_settings,
+                javascript = jsts_settings,
+                vtsls = {
+                    -- Automatically use workspace version of TypeScript lib on startup.
+                    autoUseWorkspaceTsdk = true,
+                    experimental = {
+                        -- Inlay hint truncation.
+                        maxInlayHintLength = 30,
+                        -- For completion performance.
+                        completion = {
+                            enableServerSideFuzzyMatch = true,
+                        },
+                    },
+                },
+            },
+        })
+    end,
+})
 
 return M
