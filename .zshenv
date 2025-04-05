@@ -24,7 +24,7 @@ export VISUAL="$EDITOR"
 export SHELL_SESSIONS_DISABLE=1
 
 # Don't let Ghostty mess up with the cursor.
-export GHOSTTY_SHELL_INTEGRATION_NO_CURSOR=1
+export GHOSTTY_SHELL_FEATURES="title,sudo"
 
 # Ripgrep.
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
