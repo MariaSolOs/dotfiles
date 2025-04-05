@@ -16,7 +16,6 @@ return {
             configure_server 'cssls'
             configure_server 'dprint'
             configure_server 'html'
-            configure_server 'zls'
 
             configure_server('clangd', {
                 cmd = {
