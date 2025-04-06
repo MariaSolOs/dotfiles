@@ -332,7 +332,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
 
         -- Install with
         -- mac: brew install llvm
-        -- Arch: TODO
+        -- Arch: pacman -S clang
         configure_server('clangd', {
             cmd = {
                 'clangd',
@@ -348,7 +348,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
 
         -- Install with
         -- mac: brew install lua-language-server
-        -- Arch: TODO
+        -- Arch: pacman -S lua-language-server
         configure_server('lua_ls', {
             cmd = { 'lua-language-server' },
             filetypes = { 'lua' },
