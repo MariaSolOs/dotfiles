@@ -31,7 +31,7 @@ return {
                     }
 
                     -- Configure the data directory for the project.
-                    local root_dir = vim.fs.root(0, 'build.gradle') or vim.fs.root(0, 'settings.gradle')
+                    local root_dir = vim.fs.root(0, { 'gradlew', '.git' })
                     local project_name = root_dir and vim.fs.basename(root_dir)
                     if project_name then
                         vim.list_extend(cmd, {
