@@ -293,6 +293,13 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
                     showDocumentation = { enable = true },
                 },
             },
+            before_init = function(params, config)
+                -- Set the workspace folder setting for correct search of tsconfig.json files etc.
+                config.settings.workspaceFolder = {
+                    uri = params.rootPath,
+                    name = vim.fn.fnamemodify(params.rootPath, ':t'),
+                }
+            end,
             ---@type table<string, lsp.Handler>
             handlers = {
                 ['eslint/openDoc'] = function(_, params)
