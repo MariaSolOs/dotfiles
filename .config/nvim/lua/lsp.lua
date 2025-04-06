@@ -272,10 +272,10 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
             cmd = { 'vscode-eslint-language-server', '--stdio' },
             filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'graphql' },
             root_markers = { '.eslintrc', '.eslintrc.js', '.eslintrc.json', 'eslint.config.js', 'eslint.config.mjs' },
-            -- Using roughly the same defaults as VS Code: https://github.com/microsoft/vscode-eslint/blob/c0e753713ea9935667e849d91e549adbff213e7e/client/src/client.ts#L676
+            -- Using roughly the same defaults as nvim-lspconfig: https://github.com/neovim/nvim-lspconfig/blob/d3ad666b7895f958d088cceb6f6c199672c404fe/lua/lspconfig/configs/eslint.lua#L70
             settings = {
                 validate = 'on',
-                packageManager = 'npm',
+                packageManager = nil,
                 useESLintClass = false,
                 experimental = { useFlatConfig = false },
                 codeActionOnSave = { enable = false, mode = 'all' },
@@ -287,6 +287,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
                 run = 'onType',
                 problems = { shortenToSingleLine = false },
                 nodePath = '',
+                workingDirectory = { mode = 'location' },
                 codeAction = {
                     disableRuleComment = { enable = true, location = 'separateLine' },
                     showDocumentation = { enable = true },
