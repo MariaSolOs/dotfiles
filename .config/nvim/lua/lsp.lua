@@ -308,9 +308,11 @@ vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
                 end,
                 ['eslint/probeFailed'] = function()
                     vim.notify('LSP[eslint]: Probe failed.', vim.log.levels.WARN)
+                    return {}
                 end,
                 ['eslint/noLibrary'] = function()
                     vim.notify('LSP[eslint]: Unable to load ESLint library.', vim.log.levels.WARN)
+                    return {}
                 end,
             },
         })
