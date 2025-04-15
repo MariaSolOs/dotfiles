@@ -13,6 +13,7 @@ return {
                 jsonc = { 'prettier', stop_on_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'prefer' },
                 less = { 'prettier' },
                 lua = { 'stylua' },
+                markdown = { 'prettier' },
                 rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
                 scss = { 'prettier' },
                 sh = { 'shfmt' },
