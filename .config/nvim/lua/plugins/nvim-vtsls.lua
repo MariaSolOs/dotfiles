@@ -2,6 +2,6 @@
 return {
     {
         'yioneko/nvim-vtsls',
-        ft = { 'typescript', 'javascript' },
+        ft = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' },
     },
 }
