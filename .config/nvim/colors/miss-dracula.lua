@@ -393,11 +393,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     GrugFarResultsRemoveIndicator = { link = 'Removed' },
     GrugFarResultsAddIndicator = { link = 'Added' },
 
-    -- TODOs and notes.
-    MiniHipatternsHack = { fg = colors.bg, bg = colors.orange, bold = true },
-    MiniHipatternsNote = { fg = colors.bg, bg = colors.bright_green, bold = true },
-    MiniHipatternsTodo = { fg = colors.bg, bg = colors.cyan, bold = true },
-
     -- Overseeer.
     OverseerComponent = { link = '@keyword' },
 
