@@ -90,15 +90,17 @@ local function on_attach(client, bufnr)
         vim.lsp.document_color.enable(true, bufnr)
     end
 
-    if client:supports_method(methods.textDocument_inlayHint) and vim.g.inlay_hints then
+    if client:supports_method(methods.textDocument_inlayHint) then
         local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
 
-        -- Initial inlay hint display.
-        -- Idk why but without the delay inlay hints aren't displayed at the very start.
-        vim.defer_fn(function()
-            local mode = vim.api.nvim_get_mode().mode
-            vim.lsp.inlay_hint.enable(mode == 'n' or mode == 'v', { bufnr = bufnr })
-        end, 500)
+        if vim.g.inlay_hints then
+            -- Initial inlay hint display.
+            -- Idk why but without the delay inlay hints aren't displayed at the very start.
+            vim.defer_fn(function()
+                local mode = vim.api.nvim_get_mode().mode
+                vim.lsp.inlay_hint.enable(mode == 'n' or mode == 'v', { bufnr = bufnr })
+            end, 500)
+        end
 
         vim.api.nvim_create_autocmd('InsertEnter', {
             group = inlay_hints_group,
