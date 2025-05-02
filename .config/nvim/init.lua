@@ -61,3 +61,6 @@ require('lazy').setup(plugins, {
         },
     },
 })
+
+-- Enable the new experimental command-line features.
+require('vim._extui').enable {}
