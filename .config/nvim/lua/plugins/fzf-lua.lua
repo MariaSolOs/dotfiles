@@ -16,6 +16,9 @@ return {
                             width = 0.5,
                             preview = { vertical = 'up:70%' },
                         },
+                        fzf_opts = {
+                            ['--layout'] = 'reverse',
+                        },
                     }
                 end,
                 desc = 'Grep current buffer',
@@ -42,7 +45,7 @@ return {
             local actions = require 'fzf-lua.actions'
 
             return {
-                { 'border-fused' },
+                { 'border-fused', 'hide' },
                 -- Make stuff better combine with the editor.
                 fzf_colors = {
                     bg = { 'bg', 'Normal' },
