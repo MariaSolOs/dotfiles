@@ -42,7 +42,7 @@ return {
             local actions = require 'fzf-lua.actions'
 
             return {
-                { 'border-fused', 'hide' },
+                { 'border-fused' },
                 -- Make stuff better combine with the editor.
                 fzf_colors = {
                     bg = { 'bg', 'Normal' },
