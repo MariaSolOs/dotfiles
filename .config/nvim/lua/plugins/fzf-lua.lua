@@ -6,7 +6,7 @@ return {
         'ibhagwan/fzf-lua',
         cmd = 'FzfLua',
         keys = {
-            { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last command' },
+            { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last fzf command' },
             {
                 '<leader>fb',
                 function()
