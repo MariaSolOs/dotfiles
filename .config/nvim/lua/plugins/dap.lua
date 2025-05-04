@@ -24,39 +24,14 @@ return {
     {
         'mfussenegger/nvim-dap',
         dependencies = {
-            -- Fancy UI for the debugger
-            'nvim-neotest/nvim-nio',
             {
-                'rcarriga/nvim-dap-ui',
-                keys = {
-                    {
-                        '<leader>de',
-                        function()
-                            -- Calling this twice to open and jump into the window.
-                            require('dapui').eval()
-                            require('dapui').eval()
-                        end,
-                        desc = 'Evaluate expression',
-                    },
-                },
+                'igorlfs/nvim-dap-view',
                 opts = {
-                    icons = {
-                        collapsed = arrows.right,
-                        current_frame = arrows.right,
-                        expanded = arrows.down,
+                    winbar = {
+                        sections = { 'scopes', 'breakpoints', 'threads', 'exceptions', 'repl', 'console' },
+                        default_section = 'scopes',
                     },
-                    floating = { border = 'rounded' },
-                    layouts = {
-                        {
-                            elements = {
-                                { id = 'stacks', size = 0.30 },
-                                { id = 'breakpoints', size = 0.20 },
-                                { id = 'scopes', size = 0.50 },
-                            },
-                            position = 'left',
-                            size = 40,
-                        },
-                    },
+                    windows = { height = 18 },
                 },
             },
             -- Virtual text.
@@ -129,17 +104,20 @@ return {
         },
         config = function()
             local dap = require 'dap'
-            local dapui = require 'dapui'
+            local dv = require 'dap-view'
 
             -- Automatically open the UI when a new debug session is created.
-            dap.listeners.after.event_initialized['dapui_config'] = function()
-                dapui.open {}
+            dap.listeners.before.attach['dap-view-config'] = function()
+                dv.open()
             end
-            dap.listeners.before.event_terminated['dapui_config'] = function()
-                dapui.close {}
+            dap.listeners.before.launch['dap-view-config'] = function()
+                dv.open()
             end
-            dap.listeners.before.event_exited['dapui_config'] = function()
-                dapui.close {}
+            dap.listeners.before.event_terminated['dap-view-config'] = function()
+                dv.close()
+            end
+            dap.listeners.before.event_exited['dap-view-config'] = function()
+                dv.close()
             end
 
             -- Use overseer for running preLaunchTask and postDebugTask.

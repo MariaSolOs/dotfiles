@@ -217,14 +217,13 @@ function M.filetype_component()
 
     -- Special icons for some filetypes.
     local special_icons = {
+        DiffviewFileHistory = { icons.misc.git, 'Number' },
         DiffviewFiles = { icons.misc.git, 'Number' },
         OverseerForm = { '󰦬', 'Special' },
         OverseerList = { '󰦬', 'Special' },
         ['ccc-ui'] = { '', 'Comment' },
+        ['dap-view'] = { icons.misc.bug, 'DapUIRestart' },
         ['grug-far'] = { icons.misc.search, 'Constant' },
-        dapui_breakpoints = { icons.misc.bug, 'DapUIRestart' },
-        dapui_scopes = { icons.misc.bug, 'DapUIRestart' },
-        dapui_stacks = { icons.misc.bug, 'DapUIRestart' },
         fzf = { '', 'Special' },
         gitcommit = { icons.misc.git, 'Number' },
         gitrebase = { icons.misc.git, 'Number' },
@@ -232,7 +231,6 @@ function M.filetype_component()
         lazyterm = { '', 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
         qf = { icons.misc.search, 'Conditional' },
-        DiffviewFileHistory = { icons.misc.git, 'Number' },
     }
 
     local filetype = vim.bo.filetype
