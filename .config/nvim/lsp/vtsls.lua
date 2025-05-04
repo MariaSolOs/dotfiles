@@ -1,4 +1,4 @@
--- Install with: @vtsls/language-server
+-- Install with: npm i -g @vtsls/language-server
 
 local jsts_settings = {
     suggest = { completeFunctionCalls = true },
