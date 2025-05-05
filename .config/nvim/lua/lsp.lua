@@ -46,6 +46,8 @@ local function on_attach(client, bufnr)
         vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
 
+    vim.lsp.document_color.enable(true, bufnr)
+
     if client:supports_method(methods.textDocument_definition) then
         keymap('gd', function()
             require('fzf-lua').lsp_definitions { jump1 = true }
@@ -84,10 +86,6 @@ local function on_attach(client, bufnr)
             buffer = bufnr,
             callback = vim.lsp.buf.clear_references,
         })
-    end
-
-    if client:supports_method(methods.textDocument_documentColor) then
-        vim.lsp.document_color.enable(true, bufnr)
     end
 
     if client:supports_method(methods.textDocument_inlayHint) then
