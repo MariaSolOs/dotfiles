@@ -30,7 +30,6 @@
       "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.hipatterns/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-autopairs/lua",
-      "$XDG_DATA_HOME/nvim/lazy/nvim-dap-ui/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-web-devicons/lua",
       "$XDG_DATA_HOME/nvim/lazy/overseer.nvim/lua/overseer/init.lua",
