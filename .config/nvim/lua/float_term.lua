@@ -4,7 +4,7 @@ local M = {}
 local terminal = nil
 
 --- Opens an interactive floating terminal.
----@param cmd? string
+---@param cmd? string[]|string
 ---@param opts? LazyCmdOptions
 function M.float_term(cmd, opts)
     opts = vim.tbl_deep_extend('force', {
