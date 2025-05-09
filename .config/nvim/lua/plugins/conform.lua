@@ -36,6 +36,10 @@ return {
 
                 return {}
             end,
+            formatters = {
+                -- Require a Prettier configuration file to format.
+                prettier = { require_cwd = true },
+            },
         },
         init = function()
             -- Use conform for gq.
