@@ -16,6 +16,9 @@ return {
                     dismiss = '<C-/>',
                 },
             },
+            filetypes = {
+                markdown = true,
+            },
         },
     },
 }
