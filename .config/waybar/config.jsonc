@@ -94,7 +94,6 @@
     },
     {
         // General bar options:
-        "exclusive": false,
         "height": 34,
         "margin": "0 2 2",
         "name": "dock",
