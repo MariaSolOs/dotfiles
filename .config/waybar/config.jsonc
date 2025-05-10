@@ -102,11 +102,18 @@
         "spacing": 16,
 
         // Module order:
+        "modules-left": [
+            "wlr/taskbar"
+        ],
         "modules-right": [
             "hyprland/language",
             "custom/power"
         ],
 
+        "wlr/taskbar": {
+            "icon-size": 22,
+            "on-click": "activate"
+        },
         "hyprland/language": {
             // HACK: Using the workaround from https://github.com/Alexays/Waybar/issues/3676#issuecomment-2497447121.
             "format-": "<span color='#E7A1D7'></span>  English (intl)",
