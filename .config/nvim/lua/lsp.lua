@@ -21,7 +21,11 @@ local function on_attach(client, bufnr)
 
     require('lightbulb').attach_lightbulb(bufnr, client.id)
 
-    keymap('gra', '<cmd>FzfLua lsp_code_actions<cr>', 'vim.lsp.buf.code_action()', { 'n', 'x' })
+    keymap('gra', function()
+        -- Use "silent" to avoid the warning about `vim.ui.select` not being registered with fzf-lua.
+        -- I do this dynamically when first calling `vim.ui.select`.
+        require('fzf-lua').lsp_code_actions { silent = true }
+    end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
 
     keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
 
