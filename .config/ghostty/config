@@ -45,4 +45,4 @@ confirm-close-surface = false
 
 # Include OS-specific configurations.
 config-file = ?config-macos
-# config-file = ?config-linux
+config-file = ?config-linux
