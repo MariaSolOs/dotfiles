@@ -3,6 +3,9 @@
 # Inserts a blank line between shell prompts.
 add_newline = true
 
+# Timeout for commands (in milliseconds).
+command_timeout = 700
+
 [directory]
 truncation_length = 5
 
