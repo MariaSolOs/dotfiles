@@ -30,6 +30,7 @@ require 'commands'
 require 'autocmds'
 require 'statusline'
 require 'winbar'
+require 'marks'
 require 'lsp'
 
 -- Configure plugins.
