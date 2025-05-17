@@ -17,6 +17,10 @@ cursor-style-blink = false
 cursor-text = 000000
 shell-integration-features = no-cursor
 
+# Splits:
+unfocused-split-opacity = 0.4
+split-divider-color = A7DFEF
+
 # Key bindings:
 keybind = alt+one=goto_tab:1
 keybind = alt+two=goto_tab:2
