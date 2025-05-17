@@ -15,6 +15,11 @@ return {
                             height = 0.6,
                             width = 0.5,
                             preview = { vertical = 'up:70%' },
+                            -- Disable Treesitter highlighting for the matches.
+                            treesitter = {
+                                enabled = false,
+                                fzf_colors = { ['fg'] = { 'fg', 'CursorLine' }, ['bg'] = { 'bg', 'Normal' } },
+                            },
                         },
                         fzf_opts = {
                             ['--layout'] = 'reverse',
