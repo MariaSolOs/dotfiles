@@ -10,7 +10,7 @@ return {
             {
                 '<leader>fb',
                 function()
-                    require('fzf-lua').lgrep_curbuf {
+                    require('fzf-lua').blines {
                         winopts = {
                             height = 0.6,
                             width = 0.5,
@@ -21,7 +21,8 @@ return {
                         },
                     }
                 end,
-                desc = 'Grep current buffer',
+                desc = 'Buffer lines',
+                mode = { 'n', 'x' },
             },
             { '<leader>fc', '<cmd>FzfLua highlights<cr>', desc = 'Highlights' },
             { '<leader>fd', '<cmd>FzfLua lsp_document_diagnostics<cr>', desc = 'Document diagnostics' },
