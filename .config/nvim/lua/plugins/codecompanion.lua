@@ -18,11 +18,11 @@ return {
                     inline = {
                         keymaps = {
                             accept_change = {
-                                modes = { n = '<leader>ca' },
+                                modes = { n = '<leader>ay' },
                                 description = 'Accept the suggested change',
                             },
                             reject_change = {
-                                modes = { n = '<leader>cr' },
+                                modes = { n = '<leader>an' },
                                 description = 'Reject the suggested change',
                             },
                         },
