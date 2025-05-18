@@ -3,8 +3,6 @@ return {
     {
         'stevearc/overseer.nvim',
         opts = {
-            -- Add my custom tasks.
-            templates = { 'builtin', 'gradle.eslint' },
             -- Setup DAP later when lazy-loading the plugin.
             dap = false,
             task_list = {
