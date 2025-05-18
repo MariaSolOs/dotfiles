@@ -86,6 +86,8 @@ return {
                 },
                 clues = {
                     -- Leader/movement groups.
+                    { mode = 'n', keys = '<leader>a', desc = '+ai' },
+                    { mode = 'x', keys = '<leader>a', desc = '+ai' },
                     { mode = 'n', keys = '<leader>b', desc = '+buffers' },
                     { mode = 'n', keys = '<leader>c', desc = '+code' },
                     { mode = 'x', keys = '<leader>c', desc = '+code' },
