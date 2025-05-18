@@ -115,7 +115,7 @@ function M.dap_component()
         return nil
     end
 
-    return string.format('%%#%s#%s  %s', M.get_or_create_hl 'DapUIRestart', icons.misc.bug, require('dap').status())
+    return string.format('%%#%s#%s  %s', M.get_or_create_hl 'Special', icons.misc.bug, require('dap').status())
 end
 
 ---@type table<string, string?>
@@ -222,7 +222,7 @@ function M.filetype_component()
         OverseerForm = { '󰦬', 'Special' },
         OverseerList = { '󰦬', 'Special' },
         ['ccc-ui'] = { '', 'Comment' },
-        ['dap-view'] = { icons.misc.bug, 'DapUIRestart' },
+        ['dap-view'] = { icons.misc.bug, 'Special' },
         ['grug-far'] = { icons.misc.search, 'Constant' },
         fzf = { '', 'Special' },
         gitcommit = { icons.misc.git, 'Number' },
