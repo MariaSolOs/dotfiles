@@ -13,6 +13,11 @@ end
 
 vim.api.nvim_set_decoration_provider(ns, {
     on_win = function(_, _, bufnr, top_row, bot_row)
+        -- Only enable mark signs for buffers with a filename.
+        if vim.api.nvim_buf_get_name(bufnr) == '' then
+            return
+        end
+
         vim.api.nvim_buf_clear_namespace(bufnr, ns, top_row, bot_row)
 
         local current_file = vim.api.nvim_buf_get_name(bufnr)
