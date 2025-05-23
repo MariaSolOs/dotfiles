@@ -7,6 +7,7 @@ return {
             -- The panel is useless.
             panel = { enabled = false },
             suggestion = {
+                hide_during_completion = false,
                 keymap = {
                     accept = '<C-.>',
                     accept_word = '<M-w>',
