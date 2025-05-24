@@ -29,3 +29,6 @@
 [user]
 	name = Maria José Solano
 	email = majosolano99@gmail.com
+
+[advice]
+	skippedCherryPicks = false
