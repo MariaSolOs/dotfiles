@@ -26,6 +26,7 @@
       "$XDG_DATA_HOME/nvim/lazy/mini.bufremove/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
       "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.splitjoin/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-autopairs/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap-view/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
