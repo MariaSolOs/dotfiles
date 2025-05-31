@@ -107,7 +107,7 @@ function M.git_component()
 
     local component = string.format(' %s', head)
 
-    local num_hunks = #require('gitsigns').get_hunks()
+    local num_hunks = #(require('gitsigns').get_hunks() or {})
     if num_hunks > 0 then
         component = component .. string.format(' (#Hunks: %d)', num_hunks)
     end
