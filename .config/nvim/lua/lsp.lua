@@ -62,13 +62,10 @@ local function on_attach(client, bufnr)
     end
 
     if client:supports_method(methods.textDocument_signatureHelp) then
-        local blink_window = require 'blink.cmp.completion.windows.menu'
-        local blink = require 'blink.cmp'
-
         keymap('<C-k>', function()
             -- Close the completion menu first (if open).
-            if blink_window.win:is_open() then
-                blink.hide()
+            if require('blink.cmp.completion.windows.menu').win:is_open() then
+                require('blink.cmp').hide()
             end
 
             vim.lsp.buf.signature_help()
