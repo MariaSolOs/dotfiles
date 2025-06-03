@@ -127,6 +127,8 @@ return {
                         },
                     },
                 },
+                -- Remove the dashed line between diagnostic items.
+                diagnostics = { multiline = 1 },
                 oldfiles = {
                     include_current_session = true,
                     winopts = {
