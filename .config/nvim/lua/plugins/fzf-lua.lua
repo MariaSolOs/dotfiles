@@ -31,7 +31,6 @@ return {
             },
             { '<leader>fc', '<cmd>FzfLua highlights<cr>', desc = 'Highlights' },
             { '<leader>fd', '<cmd>FzfLua lsp_document_diagnostics<cr>', desc = 'Document diagnostics' },
-            { '<leader>fD', '<cmd>FzfLua lsp_workspace_diagnostics<cr>', desc = 'Workspace diagnostics' },
             { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'Find files' },
             { '<leader>fg', '<cmd>FzfLua live_grep<cr>', desc = 'Grep' },
             { '<leader>fg', '<cmd>FzfLua grep_visual<cr>', desc = 'Grep', mode = 'x' },

@@ -32,10 +32,6 @@ local function on_attach(client, bufnr)
     keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
 
     keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
-    keymap('<leader>fS', function()
-        -- Disable the grep switch header.
-        require('fzf-lua').lsp_live_workspace_symbols { no_header_i = true }
-    end, 'Workspace symbols')
 
     keymap('[d', function()
         vim.diagnostic.jump { count = -1 }
