@@ -16,7 +16,6 @@ return {
         },
         opts = {
             -- Disable folding.
-            -- TODO: Pick up my fix from https://github.com/MagicDuck/grug-far.nvim/pull/510.
             folding = { enabled = false },
             -- Don't numerate the result list.
             resultLocation = { showNumberLabel = false },
