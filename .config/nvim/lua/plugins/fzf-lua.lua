@@ -126,8 +126,16 @@ return {
                         },
                     },
                 },
-                -- Remove the dashed line between diagnostic items.
-                diagnostics = { multiline = 1 },
+                diagnostics = {
+                    -- Remove the dashed line between diagnostic items.
+                    multiline = 1,
+                    diag_icons = {
+                        icons.diagnostics.ERROR,
+                        icons.diagnostics.WARN,
+                        icons.diagnostics.INFO,
+                        icons.diagnostics.HINT,
+                    },
+                },
                 oldfiles = {
                     include_current_session = true,
                     winopts = {
