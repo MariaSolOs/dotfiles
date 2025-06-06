@@ -10,8 +10,6 @@ gui:
       - magenta
     selectedLineBgColor:
       - black
-    selectedRangeBgColor:
-      - black
     unstagedChangesColor:
       - yellow
   border: rounded
