@@ -42,7 +42,11 @@ end, { desc = 'Escape, clear hlsearch, and stop snippet session', expr = true })
 vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo' })
 
 -- Escape and save changes.
-vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes.' })
+vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-s>', '<esc>:w<cr>', { desc = 'Exit insert mode and save changes' })
+vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-S-s>', function()
+    vim.g.skip_formatting = true
+    return '<esc>:w<cr>'
+end, { desc = 'Exit insert mode and save changes (without formatting)', expr = true })
 
 -- Quickly go to the end of the line while in insert mode.
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })
