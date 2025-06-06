@@ -68,8 +68,6 @@ return {
                         ['<C-/>'] = 'toggle-help',
                         ['<C-a>'] = 'toggle-fullscreen',
                         ['<C-i>'] = 'toggle-preview',
-                        ['<C-f>'] = 'preview-page-down',
-                        ['<C-b>'] = 'preview-page-up',
                     },
                     fzf = {
                         ['alt-s'] = 'toggle',
