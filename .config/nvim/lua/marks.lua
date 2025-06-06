@@ -5,7 +5,7 @@ local ns = vim.api.nvim_create_namespace 'mariasolos/marks'
 ---@param bufnr integer
 ---@param mark vim.fn.getmarklist.ret.item
 local function decor_mark(bufnr, mark)
-    vim.api.nvim_buf_set_extmark(bufnr, ns, mark.pos[2] - 1, 0, {
+    pcall(vim.api.nvim_buf_set_extmark, bufnr, ns, mark.pos[2] - 1, 0, {
         sign_text = mark.mark:sub(2),
         sign_hl_group = 'DiagnosticSignOk',
     })
