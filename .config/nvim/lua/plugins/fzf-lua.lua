@@ -133,6 +133,25 @@ return {
                         icons.diagnostics.INFO,
                         icons.diagnostics.HINT,
                     },
+                    actions = {
+                        ['ctrl-e'] = {
+                            fn = function(_, opts)
+                                -- If not filtering by severity, show all diagnostics.
+                                if opts.severity_only then
+                                    opts.severity_only = nil
+                                else
+                                    -- Else only show errors.
+                                    opts.severity_only = vim.diagnostic.severity.ERROR
+                                end
+                                require('fzf-lua').resume(opts)
+                            end,
+                            noclose = true,
+                            desc = 'toggle-all-only-errors',
+                            header = function(opts)
+                                return opts.severity_only and 'show all' or 'show only errors'
+                            end,
+                        },
+                    },
                 },
                 oldfiles = {
                     include_current_session = true,
