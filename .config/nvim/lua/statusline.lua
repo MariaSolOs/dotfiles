@@ -105,7 +105,14 @@ function M.git_component()
         return ''
     end
 
-    return string.format(' %s', head)
+    local component = string.format(' %s', head)
+
+    local num_hunks = #(require('gitsigns').get_hunks() or {})
+    if num_hunks > 0 then
+        component = component .. string.format(' (#Hunks: %d)', num_hunks)
+    end
+
+    return component
 end
 
 --- The current debugging status (if any).
