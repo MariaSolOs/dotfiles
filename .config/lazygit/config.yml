@@ -27,5 +27,5 @@ customCommands:
         title: Commit summary
         initialValue: ''
     description: Commit changes without pre-commit hook
-    command: git commit -n -m "{{index .PromptResponses 0}}"
+    command: git commit -n -m '{{index .PromptResponses 0}}'
     context: files
