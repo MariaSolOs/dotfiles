@@ -122,11 +122,11 @@ return {
                 end,
             })
 
-            -- HACK: Notify LSPs that a file got renamed.
+            -- HACK: Notify LSPs that a file got renamed or moved.
             -- Borrowed this from snacks.nvim.
             vim.api.nvim_create_autocmd('User', {
                 desc = 'Notify LSPs that a file was renamed',
-                pattern = 'MiniFilesActionRename',
+                pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
                 callback = function(args)
                     local changes = {
                         files = {
