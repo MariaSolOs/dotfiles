@@ -126,7 +126,7 @@ return {
             -- Borrowed this from snacks.nvim.
             vim.api.nvim_create_autocmd('User', {
                 desc = 'Notify LSPs that a file was renamed',
-                pattern = { "MiniFilesActionRename", "MiniFilesActionMove" },
+                pattern = { 'MiniFilesActionRename', 'MiniFilesActionMove' },
                 callback = function(args)
                     local changes = {
                         files = {
