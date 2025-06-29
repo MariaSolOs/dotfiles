@@ -77,9 +77,6 @@ return {
                     },
                 },
                 defaults = { git_icons = false },
-                previewers = {
-                    codeaction = { toggle_behavior = 'extend' },
-                },
                 -- Configuration for specific commands.
                 files = {
                     winopts = {
@@ -103,17 +100,6 @@ return {
                 lsp = {
                     symbols = {
                         symbol_icons = icons.symbol_kinds,
-                    },
-                    code_actions = {
-                        winopts = {
-                            width = 70,
-                            height = 20,
-                            relative = 'cursor',
-                            preview = {
-                                hidden = true,
-                                vertical = 'down:50%',
-                            },
-                        },
                     },
                 },
                 diagnostics = {
