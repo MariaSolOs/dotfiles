@@ -154,6 +154,12 @@ return {
                                 height = 0.35,
                                 width = 0.3,
                             }
+                        elseif ui_opts.kind == 'color_presentation' then
+                            ui_opts.winopts = {
+                                relative = 'cursor',
+                                height = 0.35,
+                                width = 0.3,
+                            }
                         else
                             ui_opts.winopts = { height = 0.5, width = 0.4 }
                         end
