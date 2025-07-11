@@ -21,6 +21,12 @@ local function on_attach(client, bufnr)
 
     require('lightbulb').attach_lightbulb(bufnr, client.id)
 
+    vim.lsp.document_color.enable(true, bufnr)
+
+    keymap('grc', function()
+        vim.lsp.document_color.color_presentation()
+    end, 'vim.lsp.document_color.color_presentation()', { 'n', 'x' })
+
     keymap('gra', function()
         require('tiny-code-action').code_action()
     end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
