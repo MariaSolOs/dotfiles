@@ -24,6 +24,7 @@ return {
                 changedelete = { text = dashed_bar },
             },
             preview_config = { border = 'rounded' },
+            current_line_blame = true,
             gh = true,
             on_attach = function(bufnr)
                 local gitlinker = require 'gitlinker'
