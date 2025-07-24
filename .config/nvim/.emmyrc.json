@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "workspace": {
+    "checkThirdParty": false,
+    "library": [
+      "$VIMRUNTIME/lua",
+      "${3rd}/luv/library",
+      "lua/float_term.lua",
+      "lua/icons.lua",
+      "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",
+      "$XDG_DATA_HOME/nvim/lazy/blink.cmp/lua",
+      "$XDG_DATA_HOME/nvim/lazy/codecompanion.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/diffview.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/fzf-lua/lua",
+      "$XDG_DATA_HOME/nvim/lazy/gitlinker.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/grug-far.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/lazy.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.ai/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.bufremove/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.clue/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.files/lua",
+      "$XDG_DATA_HOME/nvim/lazy/mini.splitjoin/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-autopairs/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-dap-view/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-jdtls/lua",
+      "$XDG_DATA_HOME/nvim/lazy/nvim-treesitter-context/lua",
+      "$XDG_DATA_HOME/nvim/lazy/overseer.nvim/lua/overseer/init.lua",
+      "$XDG_DATA_HOME/nvim/lazy/quicker.nvim/lua"
+    ]
+  }
+}
