@@ -27,7 +27,6 @@ return {
             current_line_blame = true,
             gh = true,
             on_attach = function(bufnr)
-                local gitlinker = require 'gitlinker'
                 local gs = package.loaded.gitsigns
 
                 -- Register the leader group with miniclue.
@@ -38,11 +37,6 @@ return {
                     },
                 }
 
-                -- Gitlinker doesn't add descriptions.
-                local miniclue = require 'mini.clue'
-                miniclue.set_mapping_desc('n', '<leader>gc', 'Copy GitHub link')
-                miniclue.set_mapping_desc('v', '<leader>gc', 'Copy GitHub link')
-
                 -- Mappings.
                 ---@param lhs string
                 ---@param rhs function
@@ -50,9 +44,6 @@ return {
                 local function nmap(lhs, rhs, desc)
                     vim.keymap.set('n', lhs, rhs, { desc = desc, buffer = bufnr })
                 end
-                nmap('<leader>go', function()
-                    gitlinker.get_buf_range_url('n', { action_callback = require('gitlinker.actions').open_in_browser })
-                end, 'Open in browser')
                 nmap('[g', gs.prev_hunk, 'Previous hunk')
                 nmap(']g', gs.next_hunk, 'Next hunk')
                 nmap('<leader>gR', gs.reset_buffer, 'Reset buffer')

@@ -334,6 +334,9 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     GitSignsStagedChange = { fg = colors.orange },
     GitSignsStagedDelete = { fg = colors.orange },
 
+    -- Gitlinker.
+    NvimGitLinkerHighlightTextObject = { link = 'Visual' },
+
     -- Bufferline.
     BufferLineBufferSelected = { bg = colors.bg, underline = true, sp = colors.purple },
     BufferLineFill = { bg = colors.bg },
