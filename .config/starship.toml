@@ -22,8 +22,5 @@ symbol = ' '
 [gradle]
 symbol = ' '
 
-[kotlin]
-symbol = ' '
-
 [package]
 disabled = true
