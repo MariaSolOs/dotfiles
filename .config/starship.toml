@@ -4,7 +4,7 @@
 add_newline = true
 
 # Timeout for commands (in milliseconds).
-command_timeout = 700
+command_timeout = 1000
 
 [directory]
 truncation_length = 5
