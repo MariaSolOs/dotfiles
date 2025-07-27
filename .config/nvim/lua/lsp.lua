@@ -21,11 +21,14 @@ local function on_attach(client, bufnr)
 
     require('lightbulb').attach_lightbulb(bufnr, client.id)
 
+    -- Don't check for the capability here to allow dynamic registration of the request.
     vim.lsp.document_color.enable(true, bufnr)
 
-    keymap('grc', function()
-        vim.lsp.document_color.color_presentation()
-    end, 'vim.lsp.document_color.color_presentation()', { 'n', 'x' })
+    if client:supports_method(methods.textDocument_documentColor) then
+        keymap('grc', function()
+            vim.lsp.document_color.color_presentation()
+        end, 'vim.lsp.document_color.color_presentation()', { 'n', 'x' })
+    end
 
     keymap('gra', function()
         require('tiny-code-action').code_action()
