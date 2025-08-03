@@ -44,6 +44,7 @@ return {
                 'gitcommit',
                 'graphql',
                 'html',
+                'hyprlang',
                 'java',
                 'javascript',
                 'json',
