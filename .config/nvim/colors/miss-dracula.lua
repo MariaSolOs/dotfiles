@@ -329,6 +329,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     -- Gitsigns.
     GitSignsAdd = { fg = colors.bright_green },
     GitSignsChange = { fg = colors.cyan },
+    GitSignsCurrentLineBlame = { fg = colors.lavender },
     GitSignsDelete = { fg = colors.bright_red },
     GitSignsStagedAdd = { fg = colors.orange },
     GitSignsStagedChange = { fg = colors.orange },
