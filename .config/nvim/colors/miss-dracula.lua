@@ -257,7 +257,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     DiagnosticVirtualTextInfo = { fg = colors.cyan, bg = colors.transparent_blue },
     DiagnosticVirtualTextWarn = { fg = colors.yellow, bg = colors.transparent_yellow },
     DiagnosticWarn = { fg = colors.yellow },
-    LspCodeLens = { fg = colors.cyan },
+    LspCodeLens = { fg = colors.cyan, underline = true },
     LspFloatWinBorder = { fg = colors.comment },
     LspInlayHint = { fg = colors.lavender, italic = true },
     LspReferenceRead = { bg = colors.transparent_blue },
