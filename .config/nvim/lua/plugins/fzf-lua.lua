@@ -10,7 +10,7 @@ return {
             {
                 '<leader>fb',
                 function()
-                    require('fzf-lua').blines {
+                    local opts = {
                         winopts = {
                             height = 0.6,
                             width = 0.5,
@@ -25,8 +25,18 @@ return {
                             ['--layout'] = 'reverse',
                         },
                     }
+
+                    -- Use grep when in normal mode and blines in visual mode since the formal doesn't support
+                    -- searching inside visual selections.
+                    -- See https://github.com/ibhagwan/fzf-lua/issues/2051
+                    local mode = vim.api.nvim_get_mode().mode
+                    if vim.startswith(mode, 'n') then
+                        require('fzf-lua').lgrep_curbuf(opts)
+                    else
+                        require('fzf-lua').blines(opts)
+                    end
                 end,
-                desc = 'Buffer lines',
+                desc = 'Search current buffer',
                 mode = { 'n', 'x' },
             },
             { '<leader>fc', '<cmd>FzfLua highlights<cr>', desc = 'Highlights' },
