@@ -9,6 +9,11 @@ $transparent-black: #000000CC;
 $border-radius: 4px;
 $font-family: 'Cartograph CF';
 
+// Override some global variables:
+:root {
+    --notification-icon-size: 32px;
+}
+
 // Shared mixins:
 @mixin with-hover-transition($color: $grey) {
     color: $color;
