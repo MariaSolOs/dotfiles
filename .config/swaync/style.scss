@@ -102,6 +102,12 @@ $font-family: 'Cartograph CF';
         margin-right: 20px;
     }
 
+    .control-center-list {
+        .notification {
+            margin: 0 2px 4px;
+        }
+    }
+
     .control-center-list-placeholder {
         opacity: 0.5;
     }
