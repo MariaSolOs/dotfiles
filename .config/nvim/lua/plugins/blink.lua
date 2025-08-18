@@ -22,6 +22,7 @@ return {
                     max_items = 10,
                 },
                 documentation = { auto_show = true },
+                menu = { scrollbar = false },
             },
             snippets = { preset = 'luasnip' },
             -- Disable command line completion:
