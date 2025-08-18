@@ -26,7 +26,7 @@ return {
                         },
                     }
 
-                    -- Use grep when in normal mode and blines in visual mode since the formal doesn't support
+                    -- Use grep when in normal mode and blines in visual mode since the former doesn't support
                     -- searching inside visual selections.
                     -- See https://github.com/ibhagwan/fzf-lua/issues/2051
                     local mode = vim.api.nvim_get_mode().mode
