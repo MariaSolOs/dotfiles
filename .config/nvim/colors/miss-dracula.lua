@@ -379,6 +379,9 @@ local groups = vim.tbl_extend('error', statusline_groups, {
 
     -- Links.
     HighlightUrl = { underline = true, fg = colors.neon_cyan, sp = colors.neon_cyan },
+
+    -- CodeCompanion.
+    CodeCompanionInlineDiffHint = { link = 'LspCodeLens' },
 })
 
 for group, opts in pairs(groups) do
