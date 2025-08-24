@@ -12,6 +12,7 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 export PATH="$HOME/.nvim/bin:$PATH"  # Neovim
 export PATH="$HOME/.cargo/bin:$PATH" # Cargo
 export PATH="$HOME/.local/bin:$PATH" # Local scripts
+export PATH="$HOME/go/bin:$PATH"     # Go binaries.
 
 # Use neovim as the default editor.
 export EDITOR=nvim
