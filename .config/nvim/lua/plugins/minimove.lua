@@ -1,7 +1,7 @@
 -- Moving selections.
 return {
     {
-        'echasnovski/mini.move',
+        'nvim-mini/mini.move',
         event = 'BufReadPre',
         opts = {},
     },

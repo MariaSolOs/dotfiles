@@ -1,7 +1,7 @@
 -- Split/join blocks of code.
 return {
     {
-        'echasnovski/mini.splitjoin',
+        'nvim-mini/mini.splitjoin',
         keys = {
             {
                 '<leader>cj',

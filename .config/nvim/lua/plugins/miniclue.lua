@@ -1,7 +1,7 @@
 -- Remember my mappings.
 return {
     {
-        'echasnovski/mini.clue',
+        'nvim-mini/mini.clue',
         event = 'VeryLazy',
         opts = function()
             local miniclue = require 'mini.clue'

@@ -1,7 +1,7 @@
 -- Save the window layout when closing a buffer.
 return {
     {
-        'echasnovski/mini.bufremove',
+        'nvim-mini/mini.bufremove',
         opts = {},
         keys = {
             {
