@@ -6,7 +6,6 @@ return {
         'ibhagwan/fzf-lua',
         cmd = 'FzfLua',
         keys = {
-            { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last fzf command' },
             {
                 '<leader>fb',
                 function()
@@ -39,6 +38,7 @@ return {
                 desc = 'Search current buffer',
                 mode = { 'n', 'x' },
             },
+            { '<leader>fB', '<cmd>FzfLua buffers<cr>', desc = 'Buffers' },
             { '<leader>fc', '<cmd>FzfLua highlights<cr>', desc = 'Highlights' },
             { '<leader>fd', '<cmd>FzfLua lsp_document_diagnostics<cr>', desc = 'Document diagnostics' },
             { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'Find files' },
@@ -46,6 +46,7 @@ return {
             { '<leader>fg', '<cmd>FzfLua grep_visual<cr>', desc = 'Grep', mode = 'x' },
             { '<leader>fh', '<cmd>FzfLua help_tags<cr>', desc = 'Help' },
             { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
+            { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last fzf command' },
             { 'z=', '<cmd>FzfLua spell_suggest<cr>', desc = 'Spelling suggestions' },
         },
         opts = function()
