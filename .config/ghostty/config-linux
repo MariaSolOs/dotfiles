@@ -3,9 +3,5 @@ font-size = 10
 
 # Use the colors from my configuration for the window theme:
 window-theme = ghostty
-gtk-adwaita = false
-
-# Use a simple titlebar:
-gtk-titlebar = false
 
 # vim set ft=conf
