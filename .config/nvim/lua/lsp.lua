@@ -19,6 +19,19 @@ local function on_attach(client, bufnr)
         vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
+    keymap('[d', function()
+        vim.diagnostic.jump { count = -1 }
+    end, 'Previous diagnostic')
+    keymap(']d', function()
+        vim.diagnostic.jump { count = 1 }
+    end, 'Next diagnostic')
+    keymap('[e', function()
+        vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR }
+    end, 'Previous error')
+    keymap(']e', function()
+        vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
+    end, 'Next error')
+
     if client:supports_method(methods.textDocument_codeAction) then
         require('lightbulb').attach_lightbulb(bufnr, client)
 
@@ -35,24 +48,17 @@ local function on_attach(client, bufnr)
         end, 'vim.lsp.document_color.color_presentation()', { 'n', 'x' })
     end
 
-    keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
+    if client:supports_method(methods.textDocument_references) then
+        keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
+    end
 
-    keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
+    if client:supports_method(methods.textDocument_typeDefinition) then
+        keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
+    end
 
-    keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
-
-    keymap('[d', function()
-        vim.diagnostic.jump { count = -1 }
-    end, 'Previous diagnostic')
-    keymap(']d', function()
-        vim.diagnostic.jump { count = 1 }
-    end, 'Next diagnostic')
-    keymap('[e', function()
-        vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR }
-    end, 'Previous error')
-    keymap(']e', function()
-        vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
-    end, 'Next error')
+    if client:supports_method(methods.textDocument_documentSymbol) then
+        keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
+    end
 
     if client:supports_method(methods.textDocument_definition) then
         keymap('gd', function()
