@@ -19,20 +19,21 @@ local function on_attach(client, bufnr)
         vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
-    require('lightbulb').attach_lightbulb(bufnr, client.id)
+    if client:supports_method(methods.textDocument_codeAction) then
+        require('lightbulb').attach_lightbulb(bufnr, client)
+
+        keymap('gra', function()
+            require('tiny-code-action').code_action()
+        end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
+    end
 
     -- Don't check for the capability here to allow dynamic registration of the request.
     vim.lsp.document_color.enable(true, bufnr)
-
     if client:supports_method(methods.textDocument_documentColor) then
         keymap('grc', function()
             vim.lsp.document_color.color_presentation()
         end, 'vim.lsp.document_color.color_presentation()', { 'n', 'x' })
     end
-
-    keymap('gra', function()
-        require('tiny-code-action').code_action()
-    end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
 
     keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
 
