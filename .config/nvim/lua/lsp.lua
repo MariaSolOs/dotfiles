@@ -132,15 +132,15 @@ local function on_attach(client, bufnr)
         })
     end
 
-    -- Add "Fix all" command for ESLint.
-    if client.name == 'eslint' then
-        vim.keymap.set('n', '<leader>ce', function()
+    -- Add "Fix all" command for linters.
+    if client.name == 'eslint' or client.name == 'stylelint_lsp' then
+        vim.keymap.set('n', '<leader>cl', function()
             if not client then
                 return
             end
 
             client:request(vim.lsp.protocol.Methods.workspace_executeCommand, {
-                command = 'eslint.applyAllFixes',
+                command = client.name == 'eslint' and 'eslint.applyAllFixes' or 'stylelint.applyAutoFixes',
                 arguments = {
                     {
                         uri = vim.uri_from_bufnr(bufnr),
@@ -148,7 +148,10 @@ local function on_attach(client, bufnr)
                     },
                 },
             }, nil, bufnr)
-        end, { desc = 'Fix all ESLint errors', buffer = bufnr })
+        end, {
+            desc = string.format('Fix all %s errors', client.name == 'eslint' and 'ESLint' or 'Stylelint'),
+            buffer = bufnr,
+        })
     end
 end
 
