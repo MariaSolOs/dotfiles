@@ -27,15 +27,15 @@ function buildnvim() {
     # Merge the latest changes.
     git merge upstream/master
 
-    # Clear the previous build.
-    local install_dir="$HOME/.nvim"
-    rm -rf "$install_dir"
-    make distclean
-
     # Go back to the given commit or HEAD.
     local commit="${1:-HEAD}"
     printf '\n========== CHECKING OUT COMMIT %s... ==========\n' "$commit"
     git reset --hard "$commit"
+
+    # Clear the previous build.
+    local install_dir="$HOME/.nvim"
+    rm -rf "$install_dir"
+    make distclean
 
     # Apply my fold column patch.
     printf '\n========== APPLYING FOLDCOLUMN PATCH... ==========\n'
