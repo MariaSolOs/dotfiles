@@ -12,11 +12,14 @@ vim.g.inlay_hints = false
 local function on_attach(client, bufnr)
     ---@param lhs string
     ---@param rhs string|function
-    ---@param desc string
+    ---@param opts string|vim.keymap.set.Opts
     ---@param mode? string|string[]
-    local function keymap(lhs, rhs, desc, mode)
+    local function keymap(lhs, rhs, opts, mode)
         mode = mode or 'n'
-        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+        ---@cast opts vim.keymap.set.Opts
+        opts = type(opts) == 'string' and { desc = opts } or opts
+        opts.buffer = bufnr
+        vim.keymap.set(mode, lhs, rhs, opts)
     end
 
     keymap('[d', function()
