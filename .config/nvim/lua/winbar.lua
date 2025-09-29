@@ -31,7 +31,6 @@ function M.render()
             GIT = vim.g.work_projects_dir,
             HOME = vim.env.HOME,
             PALANTIR = vim.g.work_projects_dir .. '/Palantir',
-            PERSONAL = vim.g.personal_projects_dir,
         }
         for dir_name, dir_path in pairs(special_dirs) do
             if vim.startswith(path, vim.fs.normalize(dir_path)) and #dir_path > #prefix_path then

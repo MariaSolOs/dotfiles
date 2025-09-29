@@ -1,6 +1,5 @@
 -- Global variables.
 vim.g.projects_dir = vim.env.HOME .. '/Code'
-vim.g.personal_projects_dir = vim.g.projects_dir .. '/Personal'
 vim.g.work_projects_dir = '/Volumes/git'
 
 -- Set my colorscheme.
