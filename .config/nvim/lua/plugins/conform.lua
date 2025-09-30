@@ -4,7 +4,9 @@ return {
         'stevearc/conform.nvim',
         event = 'BufWritePre',
         opts = {
+            -- Leave me alone.
             notify_on_error = false,
+            notify_no_formatters = false,
             formatters_by_ft = {
                 c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
                 go = { name = 'gopls', timeout_ms = 500, lsp_format = 'prefer' },
