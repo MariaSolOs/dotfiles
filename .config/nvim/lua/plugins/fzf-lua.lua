@@ -95,6 +95,8 @@ return {
                     },
                 },
                 grep = {
+                    -- Search in hidden files by default.
+                    hidden = true,
                     header_prefix = icons.misc.search .. ' ',
                     rg_glob_fn = function(query, opts)
                         local regex, flags = query:match(string.format('^(.*)%s(.*)$', opts.glob_separator))
