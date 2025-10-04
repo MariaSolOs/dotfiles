@@ -37,35 +37,8 @@ function buildnvim() {
     rm -rf "$install_dir"
     make distclean
 
-    # Apply my fold column patch.
-    printf '\n========== APPLYING FOLDCOLUMN PATCH... ==========\n'
-    local patch_file="$nvim_dir/foldcolumn.patch"
-    cat <<'EOF' >"$patch_file"
-diff --git a/src/nvim/drawline.c b/src/nvim/drawline.c
-index 5196d5c9f4..ba336713cf 100644
---- a/src/nvim/drawline.c
-+++ b/src/nvim/drawline.c
-@@ -443,10 +443,8 @@ void fill_foldcolumn(win_T *wp, foldinfo_T foldinfo, linenr_T lnum, int attr, in
-       symbol = wp->w_p_fcs_chars.foldopen;
-     } else if (first_level == 1) {
-       symbol = wp->w_p_fcs_chars.foldsep;
--    } else if (first_level + i <= 9) {
--      symbol = schar_from_ascii('0' + first_level + i);
-     } else {
--      symbol = schar_from_ascii('>');
-+      symbol = schar_from_ascii(' ');
-     }
-
-     int vcol = i >= level ? -1 : (i == closedcol - 1 && closed) ? -2 : -3;
-EOF
-    git apply "$patch_file"
-    rm -f "$patch_file"
-
     # Build.
     make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX="$install_dir" install
-
-    # Remove the patched changes.
-    git checkout .
 }
 
 buildnvim "$@"
