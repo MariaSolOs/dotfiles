@@ -37,6 +37,7 @@ vim.opt.fillchars = {
     foldclose = arrows.right,
     foldopen = arrows.down,
     foldsep = ' ',
+    foldinner = ' ',
     msgsep = '─',
 }
 
