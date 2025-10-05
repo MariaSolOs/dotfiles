@@ -7,7 +7,7 @@ local lb_name = 'mariasolos/lightbulb'
 local lb_namespace = vim.api.nvim_create_namespace(lb_name)
 local lb_icon = require('icons').diagnostics.HINT
 local lb_group = vim.api.nvim_create_augroup(lb_name, {})
-local code_action_method = vim.lsp.protocol.Methods.textDocument_codeAction
+local code_action_method = 'textDocument/codeAction' --- @type vim.lsp.protocol.Method.ClientToServer.Request
 
 local timer = vim.uv.new_timer()
 assert(timer, 'Timer was not initialized')

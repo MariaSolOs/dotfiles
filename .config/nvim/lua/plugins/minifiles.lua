@@ -136,8 +136,7 @@ return {
                         },
                     }
                     local will_rename_method, did_rename_method =
-                        vim.lsp.protocol.Methods.workspace_willRenameFiles,
-                        vim.lsp.protocol.Methods.workspace_didRenameFiles
+                        'workspace/willRenameFiles', 'workspace/didRenameFiles'
                     local clients = vim.lsp.get_clients()
                     for _, client in ipairs(clients) do
                         if client:supports_method(will_rename_method) then

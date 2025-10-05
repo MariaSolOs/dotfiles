@@ -1,5 +1,4 @@
 local diagnostic_icons = require('icons').diagnostics
-local methods = vim.lsp.protocol.Methods
 
 local M = {}
 
@@ -35,7 +34,7 @@ local function on_attach(client, bufnr)
         vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
     end, 'Next error')
 
-    if client:supports_method(methods.textDocument_codeAction) then
+    if client:supports_method 'textDocument/codeAction' then
         require('lightbulb').attach_lightbulb(bufnr, client)
 
         keymap('gra', function()
@@ -45,25 +44,25 @@ local function on_attach(client, bufnr)
 
     -- Don't check for the capability here to allow dynamic registration of the request.
     vim.lsp.document_color.enable(true, bufnr)
-    if client:supports_method(methods.textDocument_documentColor) then
+    if client:supports_method 'textDocument/documentColor' then
         keymap('grc', function()
             vim.lsp.document_color.color_presentation()
         end, 'vim.lsp.document_color.color_presentation()', { 'n', 'x' })
     end
 
-    if client:supports_method(methods.textDocument_references) then
+    if client:supports_method 'textDocument/references' then
         keymap('grr', '<cmd>FzfLua lsp_references<cr>', 'vim.lsp.buf.references()')
     end
 
-    if client:supports_method(methods.textDocument_typeDefinition) then
+    if client:supports_method 'textDocument/typeDefinition' then
         keymap('gy', '<cmd>FzfLua lsp_typedefs<cr>', 'Go to type definition')
     end
 
-    if client:supports_method(methods.textDocument_documentSymbol) then
+    if client:supports_method 'textDocument/documentSymbol' then
         keymap('<leader>fs', '<cmd>FzfLua lsp_document_symbols<cr>', 'Document symbols')
     end
 
-    if client:supports_method(methods.textDocument_definition) then
+    if client:supports_method 'textDocument/definition' then
         keymap('gd', function()
             require('fzf-lua').lsp_definitions { jump1 = true }
         end, 'Go to definition')
@@ -72,7 +71,7 @@ local function on_attach(client, bufnr)
         end, 'Peek definition')
     end
 
-    if client:supports_method(methods.textDocument_signatureHelp) then
+    if client:supports_method 'textDocument/signatureHelp' then
         keymap('<C-k>', function()
             -- Close the completion menu first (if open).
             if require('blink.cmp.completion.windows.menu').win:is_open() then
@@ -83,7 +82,7 @@ local function on_attach(client, bufnr)
         end, 'Signature help', 'i')
     end
 
-    if client:supports_method(methods.textDocument_documentHighlight) then
+    if client:supports_method 'textDocument/documentHighlight' then
         local under_cursor_highlights_group =
             vim.api.nvim_create_augroup('mariasolos/cursor_highlights', { clear = false })
         vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave' }, {
@@ -100,7 +99,7 @@ local function on_attach(client, bufnr)
         })
     end
 
-    if client:supports_method(methods.textDocument_inlayHint) then
+    if client:supports_method 'textDocument/inlayHint' then
         local inlay_hints_group = vim.api.nvim_create_augroup('mariasolos/toggle_inlay_hints', { clear = false })
 
         if vim.g.inlay_hints then
@@ -142,7 +141,7 @@ local function on_attach(client, bufnr)
                 return
             end
 
-            client:request(vim.lsp.protocol.Methods.workspace_executeCommand, {
+            client:request('workspace/executeCommand', {
                 command = client.name == 'eslint' and 'eslint.applyAllFixes' or 'stylelint.applyAutoFixes',
                 arguments = {
                     {
@@ -233,8 +232,8 @@ vim.lsp.buf.signature_help = function()
 end
 
 -- Update mappings when registering dynamic capabilities.
-local register_capability = vim.lsp.handlers[methods.client_registerCapability]
-vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
+local register_capability = vim.lsp.handlers['client/registerCapability']
+vim.lsp.handlers['client/registerCapability'] = function(err, res, ctx)
     local client = vim.lsp.get_client_by_id(ctx.client_id)
     if not client then
         return
