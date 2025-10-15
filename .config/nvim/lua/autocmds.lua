@@ -102,9 +102,6 @@ vim.api.nvim_create_autocmd('FileType', {
                 vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
                 vim.cmd.normal 'zx'
             end)
-        else
-            -- Else just fallback to using indentation.
-            vim.wo[0][0].foldmethod = 'indent'
         end
     end,
 })
