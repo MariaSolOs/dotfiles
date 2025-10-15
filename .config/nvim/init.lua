@@ -62,5 +62,8 @@ require('lazy').setup(plugins, {
     },
 })
 
+-- Interactive textual undotree:
+vim.cmd.packadd 'nvim.undotree'
+
 -- Enable the new experimental command-line features.
 require('vim._extui').enable {}
