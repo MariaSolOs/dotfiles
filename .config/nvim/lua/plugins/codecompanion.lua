@@ -26,6 +26,14 @@ return {
                         },
                     },
                 },
+                chat = {
+                    keymaps = {
+                        clear = {
+                            modes = { n = 'gX' },
+                            description = 'Clear chat',
+                        },
+                    },
+                },
             },
         },
     },
