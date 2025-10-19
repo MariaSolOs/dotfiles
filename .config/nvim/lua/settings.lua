@@ -66,6 +66,7 @@ vim.o.ttimeoutlen = 10
 vim.opt.wildignore:append { '.DS_Store' }
 vim.o.completeopt = 'menuone,noselect,noinsert'
 vim.o.pumheight = 15
+vim.o.pumborder = 'rounded'
 
 -- Diff mode settings.
 -- Setting the context to a very large number disables folding.

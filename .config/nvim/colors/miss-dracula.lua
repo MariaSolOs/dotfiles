@@ -120,7 +120,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     Normal = { fg = colors.fg, bg = colors.bg },
     NormalFloat = { fg = colors.fg, bg = colors.bg },
     Number = { fg = colors.orange },
-    Pmenu = { fg = colors.white, bg = colors.transparent_blue },
+    Pmenu = { fg = colors.white, bg = colors.bg },
     PmenuSbar = { bg = colors.transparent_blue },
     PmenuSel = { fg = colors.cyan, bg = colors.selection },
     PmenuThumb = { bg = colors.selection },
