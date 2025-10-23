@@ -36,10 +36,6 @@ local function on_attach(client, bufnr)
 
     if client:supports_method 'textDocument/codeAction' then
         require('lightbulb').attach_lightbulb(bufnr, client)
-
-        keymap('gra', function()
-            require('tiny-code-action').code_action()
-        end, 'vim.lsp.buf.code_action()', { 'n', 'x' })
     end
 
     -- Don't check for the capability here to allow dynamic registration of the request.
