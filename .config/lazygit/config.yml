@@ -17,6 +17,7 @@ gui:
       - yellow
   border: rounded
   nerdFontsVersion: '3'
+  skipDiscardChangeWarning: true
 keybinding:
   files:
     commitChangesWithoutHook: <disabled>
