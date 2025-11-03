@@ -28,6 +28,17 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('mariasolos/disable_help_conceal', { clear = true }),
+    desc = 'Disable conceal in modifiable help files',
+    pattern = 'help',
+    callback = function(args)
+        if vim.bo[args.buf].modifiable then
+            vim.wo.conceallevel = 0
+        end
+    end,
+})
+
 vim.api.nvim_create_autocmd('VimEnter', {
     group = vim.api.nvim_create_augroup('mariasolos/dotfiles_setup', { clear = true }),
     desc = 'Special dotfiles setup',
