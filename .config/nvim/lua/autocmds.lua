@@ -22,7 +22,9 @@ vim.api.nvim_create_autocmd('FileType', {
         'scratch',
     },
     callback = function(args)
-        vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = args.buf })
+        if args.match ~= 'help' or not vim.bo[args.buf].modifiable then
+            vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = args.buf })
+        end
     end,
 })
 
