@@ -25,9 +25,11 @@ return {
                         '--add-opens',
                         'java.base/java.lang=ALL-UNNAMED',
                         '-jar',
-                        vim.fn.glob(vim.env.HOME .. '/.jdtls/plugins/org.eclipse.equinox.launcher_*.jar'),
+                        vim.fn.glob(
+                            vim.env.HOMEBREW_PREFIX .. '/opt/jdtls/libexec/plugins/org.eclipse.equinox.launcher_*.jar'
+                        ),
                         '-configuration',
-                        vim.env.HOME .. '/.jdtls/config_mac_arm',
+                        vim.env.HOMEBREW_PREFIX .. '/opt/jdtls/libexec/config_mac_arm',
                     }
 
                     -- Configure the data directory for the project.
