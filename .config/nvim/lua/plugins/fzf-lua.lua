@@ -32,7 +32,6 @@ return {
                     if vim.startswith(mode, 'n') then
                         require('fzf-lua').lgrep_curbuf(opts)
                     else
-                        opts.query = table.concat(vim.fn.getregion(vim.fn.getpos '.', vim.fn.getpos 'v'), '\n')
                         require('fzf-lua').blines(opts)
                     end
                 end,
