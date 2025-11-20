@@ -124,7 +124,7 @@ return {
             end
 
             -- Use overseer for running preLaunchTask and postDebugTask.
-            require('overseer').patch_dap(true)
+            require('overseer').enable_dap()
             require('dap.ext.vscode').json_decode = require('overseer.json').decode
 
             -- Lua configurations.

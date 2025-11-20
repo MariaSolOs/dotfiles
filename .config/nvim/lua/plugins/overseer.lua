@@ -58,7 +58,7 @@ return {
                 function()
                     local overseer = require 'overseer'
 
-                    overseer.run_template({}, function(task)
+                    overseer.run_task({}, function(task)
                         if task then
                             overseer.open { enter = false }
                         end
