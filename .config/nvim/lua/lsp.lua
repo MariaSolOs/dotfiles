@@ -196,8 +196,7 @@ vim.diagnostic.config {
 }
 
 -- Override the virtual text diagnostic handler so that the most severe diagnostic is shown first.
-local show_handler = vim.diagnostic.handlers.virtual_text.show
-assert(show_handler)
+local show_handler = assert(vim.diagnostic.handlers.virtual_text.show)
 local hide_handler = vim.diagnostic.handlers.virtual_text.hide
 vim.diagnostic.handlers.virtual_text = {
     show = function(ns, bufnr, diagnostics, opts)
@@ -235,7 +234,7 @@ vim.lsp.handlers['client/registerCapability'] = function(err, res, ctx)
         return
     end
 
-    on_attach(client, vim.api.nvim_get_current_buf())
+    on_attach(client, ctx.bufnr)
 
     return register_capability(err, res, ctx)
 end
