@@ -32,7 +32,6 @@
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-jdtls/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-treesitter-context/lua",
-      "$XDG_DATA_HOME/nvim/lazy/overseer.nvim/lua/overseer/init.lua",
       "$XDG_DATA_HOME/nvim/lazy/quicker.nvim/lua"
     ]
   }

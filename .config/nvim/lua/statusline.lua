@@ -226,8 +226,6 @@ function M.filetype_component()
     local special_icons = {
         DiffviewFileHistory = { icons.misc.git, 'Number' },
         DiffviewFiles = { icons.misc.git, 'Number' },
-        OverseerForm = { icons.misc.toolbox, 'Special' },
-        OverseerList = { icons.misc.toolbox, 'Special' },
         ['ccc-ui'] = { icons.misc.palette, 'Comment' },
         ['dap-view'] = { icons.misc.bug, 'Special' },
         ['grug-far'] = { icons.misc.search, 'Constant' },

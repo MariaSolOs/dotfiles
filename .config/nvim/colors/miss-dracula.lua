@@ -374,9 +374,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     GrugFarResultsRemoveIndicator = { link = 'Removed' },
     GrugFarResultsAddIndicator = { link = 'Added' },
 
-    -- Overseeer.
-    OverseerComponent = { link = '@keyword' },
-
     -- Links.
     HighlightUrl = { underline = true, fg = colors.neon_cyan, sp = colors.neon_cyan },
 
