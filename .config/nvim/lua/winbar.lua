@@ -38,7 +38,7 @@ function M.render()
             end
         end
         if prefix ~= '' then
-            path = path:gsub('^' .. prefix_path, '')
+            path = path:gsub('^' .. vim.pesc(prefix_path), '')
             prefix = string.format('%%#WinBarDir#%s %s%s', folder_icon, prefix, separator)
         end
     end
