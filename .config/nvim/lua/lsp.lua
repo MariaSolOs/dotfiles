@@ -234,7 +234,7 @@ vim.lsp.handlers['client/registerCapability'] = function(err, res, ctx)
         return
     end
 
-    on_attach(client, ctx.bufnr)
+    on_attach(client, vim.api.nvim_get_current_buf())
 
     return register_capability(err, res, ctx)
 end
