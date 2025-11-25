@@ -178,6 +178,8 @@ function M.lsp_progress_component()
     }
 end
 
+-- TODO: Replace this component by `vim.diagnostic.status()` when https://github.com/neovim/neovim/issues/35152#issuecomment-3577542606
+-- is resolved.
 local last_diagnostic_component = ''
 --- Diagnostic counts in the current buffer.
 ---@return string

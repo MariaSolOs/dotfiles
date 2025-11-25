@@ -109,6 +109,15 @@ return {
             local dap = require 'dap'
             local dv = require 'dap-view'
 
+            vim.api.nvim_create_autocmd('FileType', {
+                group = vim.api.nvim_create_augroup('mariasolos/dap_options', { clear = true }),
+                desc = 'Set options for DAP UI',
+                pattern = 'dap-view',
+                callback = function()
+                    vim.wo[0][0].listchars = 'space: ,tab:   '
+                end,
+            })
+
             -- Automatically open the UI when a new debug session is created.
             dap.listeners.before.attach['dap-view-config'] = function()
                 dv.open()
