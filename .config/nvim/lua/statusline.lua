@@ -178,47 +178,6 @@ function M.lsp_progress_component()
     }
 end
 
--- TODO: Replace this component by `vim.diagnostic.status()` when https://github.com/neovim/neovim/issues/35152#issuecomment-3577542606
--- is resolved.
-local last_diagnostic_component = ''
---- Diagnostic counts in the current buffer.
----@return string
-function M.diagnostics_component()
-    -- Lazy uses diagnostic icons, but those aren't errors per se.
-    if vim.bo.filetype == 'lazy' then
-        return ''
-    end
-
-    -- Use the last computed value if in insert mode.
-    if vim.startswith(vim.api.nvim_get_mode().mode, 'i') then
-        return last_diagnostic_component
-    end
-
-    local counts = vim.iter(vim.diagnostic.get(0)):fold({
-        ERROR = 0,
-        WARN = 0,
-        HINT = 0,
-        INFO = 0,
-    }, function(acc, diagnostic)
-        local severity = vim.diagnostic.severity[diagnostic.severity]
-        acc[severity] = acc[severity] + 1
-        return acc
-    end)
-
-    local parts = vim.iter(counts)
-        :map(function(severity, count)
-            if count == 0 then
-                return nil
-            end
-
-            local hl = 'Diagnostic' .. severity:sub(1, 1) .. severity:sub(2):lower()
-            return string.format('%%#%s#%s %d', M.get_or_create_hl(hl), icons.diagnostics[severity], count)
-        end)
-        :totable()
-
-    return table.concat(parts, ' ')
-end
-
 --- The buffer's filetype.
 ---@return string
 function M.filetype_component()
@@ -303,7 +262,7 @@ function M.render()
         },
         '%#StatusLine#%=',
         concat_components {
-            M.diagnostics_component(),
+            vim.diagnostic.status(),
             M.filetype_component(),
             M.encoding_component(),
             M.position_component(),

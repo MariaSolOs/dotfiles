@@ -161,6 +161,14 @@ end
 
 -- Diagnostic configuration.
 vim.diagnostic.config {
+    status = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = diagnostic_icons.ERROR,
+            [vim.diagnostic.severity.WARN] = diagnostic_icons.WARN,
+            [vim.diagnostic.severity.INFO] = diagnostic_icons.INFO,
+            [vim.diagnostic.severity.HINT] = diagnostic_icons.HINT,
+        },
+    },
     virtual_text = {
         prefix = '',
         spacing = 2,
