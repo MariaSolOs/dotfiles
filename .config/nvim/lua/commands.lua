@@ -11,10 +11,6 @@ vim.api.nvim_create_user_command('ToggleInlayHints', function()
     vim.lsp.inlay_hint.enable(vim.g.inlay_hints and (mode == 'n' or mode == 'v'))
 end, { desc = 'Toggle inlay hints', nargs = 0 })
 
-vim.api.nvim_create_user_command('Todos', function()
-    require('fzf-lua').grep { search = [[TODO:|todo!\(.*\)]], no_esc = true }
-end, { desc = 'Grep TODOs', nargs = 0 })
-
 vim.api.nvim_create_user_command('Scratch', function()
     vim.cmd 'bel 10new'
     local buf = vim.api.nvim_get_current_buf()
