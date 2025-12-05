@@ -48,6 +48,20 @@ return {
             { '<leader>fr', '<cmd>FzfLua oldfiles<cr>', desc = 'Recently opened files' },
             { '<leader>f<', '<cmd>FzfLua resume<cr>', desc = 'Resume last fzf command' },
             { 'z=', '<cmd>FzfLua spell_suggest<cr>', desc = 'Spelling suggestions' },
+            {
+                '<C-x><C-f>',
+                function()
+                    require('fzf-lua').complete_path {
+                        winopts = {
+                            height = 0.4,
+                            width = 0.5,
+                            relative = 'cursor',
+                        },
+                    }
+                end,
+                desc = 'Fuzzy complete path',
+                mode = 'i',
+            },
         },
         opts = function()
             local actions = require 'fzf-lua.actions'
