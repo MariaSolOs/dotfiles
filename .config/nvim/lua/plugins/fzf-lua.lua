@@ -211,6 +211,11 @@ return {
                             ui_opts.winopts.title = string.format(' %s ', ui_opts.kind)
                         end
 
+                        -- Ensure that there's a space at the end of the prompt.
+                        if ui_opts.prompt and not vim.endswith(ui_opts.prompt, ' ') then
+                            ui_opts.prompt = ui_opts.prompt .. ' '
+                        end
+
                         return ui_opts
                     end)
                 end
