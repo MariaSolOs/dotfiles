@@ -66,34 +66,26 @@ return {
             return {
                 triggers = {
                     -- Builtins.
-                    { mode = 'n', keys = 'g' },
-                    { mode = 'x', keys = 'g' },
-                    { mode = 'n', keys = '`' },
-                    { mode = 'x', keys = '`' },
-                    { mode = 'n', keys = '"' },
-                    { mode = 'x', keys = '"' },
-                    { mode = 'i', keys = '<C-r>' },
-                    { mode = 'c', keys = '<C-r>' },
+                    { mode = { 'n', 'x' }, keys = 'g' },
+                    { mode = { 'n', 'x' }, keys = '`' },
+                    { mode = { 'n', 'x' }, keys = '"' },
+                    { mode = { 'i', 'c' }, keys = '<C-r>' },
                     { mode = 'n', keys = '<C-w>' },
                     { mode = 'i', keys = '<C-x>' },
                     { mode = 'n', keys = 'z' },
                     -- Leader triggers.
-                    { mode = 'n', keys = '<leader>' },
-                    { mode = 'x', keys = '<leader>' },
+                    { mode = { 'n', 'x' }, keys = '<leader>' },
                     -- Moving between stuff.
                     { mode = 'n', keys = '[' },
                     { mode = 'n', keys = ']' },
                 },
                 clues = {
                     -- Leader/movement groups.
-                    { mode = 'n', keys = '<leader>a', desc = '+ai' },
-                    { mode = 'x', keys = '<leader>a', desc = '+ai' },
+                    { mode = { 'n', 'x' }, keys = '<leader>a', desc = '+ai' },
+                    { mode = { 'n', 'x' }, keys = '<leader>c', desc = '+code' },
+                    { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
                     { mode = 'n', keys = '<leader>b', desc = '+buffers' },
-                    { mode = 'n', keys = '<leader>c', desc = '+code' },
-                    { mode = 'x', keys = '<leader>c', desc = '+code' },
                     { mode = 'n', keys = '<leader>d', desc = '+debug' },
-                    { mode = 'n', keys = '<leader>f', desc = '+find' },
-                    { mode = 'x', keys = '<leader>f', desc = '+find' },
                     { mode = 'n', keys = '<leader>t', desc = '+tabs' },
                     { mode = 'n', keys = '<leader>x', desc = '+loclist/quickfix' },
                     { mode = 'n', keys = '[', desc = '+prev' },
