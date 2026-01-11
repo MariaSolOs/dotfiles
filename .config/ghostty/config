@@ -43,6 +43,7 @@ keybind = alt+shift+l=goto_split:right
 keybind = alt+shift+c=copy_to_clipboard
 keybind = alt+shift+b=write_screen_file:paste
 keybind = alt+shift+enter=toggle_fullscreen
+keybind = alt+shift+w=toggle_command_palette
 
 # Let me close stuff in peace:
 confirm-close-surface = false
