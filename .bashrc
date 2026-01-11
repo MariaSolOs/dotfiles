@@ -41,7 +41,7 @@ export GRIM_DEFAULT_DIR="$XDG_PICTURES_DIR/Screenshots"
 
 # Start Hyprland on TTY1.
 if [[ "$(tty)" == "/dev/tty1" ]]; then
-    exec Hyprland
+    exec start-hyprland
 fi
 
 # Set up Node version manager:
