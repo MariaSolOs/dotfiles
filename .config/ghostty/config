@@ -31,7 +31,6 @@ keybind = alt+five=goto_tab:5
 keybind = alt+shift+t=new_tab
 keybind = alt+shift+comma=reload_config
 keybind = alt+shift+q=close_surface
-keybind = alt+shift+i=inspector:toggle
 keybind = alt+equal=increase_font_size:1
 keybind = alt+minus=decrease_font_size:1
 keybind = alt+zero=reset_font_size
