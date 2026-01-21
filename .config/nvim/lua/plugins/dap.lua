@@ -31,7 +31,7 @@ return {
                         sections = { 'scopes', 'breakpoints', 'threads', 'exceptions', 'repl', 'console' },
                         default_section = 'scopes',
                     },
-                    windows = { height = 18 },
+                    windows = { size = 18 },
                     -- When jumping through the call stack, try to switch to the buffer if already open in
                     -- a window, else use the last window to open the buffer.
                     switchbuf = 'usetab,uselast',
