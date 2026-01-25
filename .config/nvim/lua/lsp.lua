@@ -21,12 +21,6 @@ local function on_attach(client, bufnr)
         vim.keymap.set(mode, lhs, rhs, opts)
     end
 
-    keymap('[d', function()
-        vim.diagnostic.jump { count = -1 }
-    end, 'Previous diagnostic')
-    keymap(']d', function()
-        vim.diagnostic.jump { count = 1 }
-    end, 'Next diagnostic')
     keymap('[e', function()
         vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR }
     end, 'Previous error')
