@@ -54,7 +54,7 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     padding: 0 8px;
 }
 
-#pulseaudio {
+#bluetooth, #pulseaudio {
     @include bordered-box($blue);
 
     padding: 0 6px;
