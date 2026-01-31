@@ -46,9 +46,8 @@
             "tooltip-format-wifi": "{essid} ({signalStrength}%)"
         },
         "bluetooth": {
-            "format": " {status}",
+            "format": "",
             "format-disabled": "", // Empty format hides the module
-            "format-connected": " {num_connections} connected",
             "on-click": "hyprctl dispatch exec '[float; size 800 600] kitty bluetui'",
             "tooltip-format": "{controller_alias}\t{controller_address}",
             "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
