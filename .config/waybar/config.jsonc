@@ -14,14 +14,8 @@
             "pulseaudio",
             "power-profiles-daemon"
         ],
-        "modules-center": [
-            "hyprland/workspaces",
-            "custom/notifications"
-        ],
-        "modules-right": [
-            "clock",
-            "clock#date"
-        ],
+        "modules-center": ["hyprland/workspaces", "custom/notifications"],
+        "modules-right": ["clock", "clock#date"],
 
         // Module configuration:
         "battery": {
@@ -110,13 +104,8 @@
         "spacing": 16,
 
         // Module order:
-        "modules-left": [
-            "wlr/taskbar"
-        ],
-        "modules-right": [
-            "hyprland/language",
-            "custom/power"
-        ],
+        "modules-left": ["wlr/taskbar"],
+        "modules-right": ["hyprland/language", "custom/power"],
 
         "wlr/taskbar": {
             "icon-size": 22,

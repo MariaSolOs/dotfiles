@@ -1,33 +1,42 @@
 // Color palette:
-$blue: #BCF4F5;
-$fuchsia: #E11299;
-$green: #97EDA2;
-$lilac: #D0B5F3;
-$pink: #E7A1D7;
-$transparent-black: #000000CC;
-$yellow: #F6F6B6;
+$blue: #bcf4f5;
+$fuchsia: #e11299;
+$green: #97eda2;
+$lilac: #d0b5f3;
+$pink: #e7a1d7;
+$transparent-black: #000000cc;
+$yellow: #f6f6b6;
 
 // Consistent styling:
 $border-radius: 4px;
 
 // Reset the default styling and configure my font:
 * {
-    font-family: 'Cartograph CF';
+    font-family: "Cartograph CF";
     font-size: 12px;
 }
 
-window#waybar { all: unset; }
+window#waybar {
+    all: unset;
+}
 
 // Shared mixins:
 @mixin bordered-box($color, $filled: true) {
-    @if $filled { background-color: rgba($color, 0.3); }
+    @if $filled {
+        background-color: rgba($color, 0.3);
+    }
 
     border: 1px solid $color;
     border-radius: $border-radius;
 }
 
 // Modules:
-$battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.charging': $blue);
+$battery-colors: (
+    "": $green,
+    ".warning": $yellow,
+    ".critical": $pink,
+    ".charging": $blue,
+);
 @each $class, $color in $battery-colors {
     #battery#{$class} {
         @include bordered-box($color);
@@ -48,13 +57,15 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
     margin-right: 16px;
 }
 
-#network, #power-profiles-daemon {
+#network,
+#power-profiles-daemon {
     @include bordered-box($green);
 
     padding: 0 8px;
 }
 
-#bluetooth, #pulseaudio {
+#bluetooth,
+#pulseaudio {
     @include bordered-box($blue);
 
     padding: 0 6px;
@@ -80,7 +91,9 @@ $battery-colors: ('': $green, '.warning': $yellow, '.critical': $pink, '.chargin
 
     padding: 0 4px;
 
-    &.notification, &.dnd-notification, &.dnd-inhibited-notification {
+    &.notification,
+    &.dnd-notification,
+    &.dnd-inhibited-notification {
         @include bordered-box($fuchsia);
     }
 }
@@ -93,7 +106,8 @@ window#waybar.dock {
 }
 
 // Dark purple tooltips!
-tooltip, menu {
+tooltip,
+menu {
     @include bordered-box($lilac, false);
 
     background-color: $transparent-black;
