@@ -71,6 +71,10 @@ $battery-colors: (
     padding: 0 6px;
 }
 
+#bluetooth.connected {
+    @include bordered-box($green);
+}
+
 #workspaces {
     @include bordered-box($lilac);
 }

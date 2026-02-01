@@ -41,6 +41,7 @@
         },
         "bluetooth": {
             "format": "",
+            "format-connected": " ({num_connections})",
             "format-disabled": "", // Empty format hides the module
             "on-click": "hyprctl dispatch exec '[float; size 800 600] kitty bluetui'",
             "tooltip-format": "{controller_alias}\t{controller_address}",
