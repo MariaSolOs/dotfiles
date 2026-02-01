@@ -58,7 +58,7 @@ set fish_cursor_default block
 set fish_cursor_insert line
 set fish_cursor_replace_one underscore
 
-# fzf shell integration:
+# Shell integrations.
 fzf --fish | source
 
 # Color theme.
