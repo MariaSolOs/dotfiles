@@ -1,2 +1,5 @@
 # nvim session files
 Session.vim
+
+# Claude local memory
+CLAUDE.local.md
