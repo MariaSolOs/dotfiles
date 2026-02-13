@@ -15,7 +15,6 @@
       // Include some plugins for API completion.
       "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",
       "$XDG_DATA_HOME/nvim/lazy/blink.cmp/lua",
-      "$XDG_DATA_HOME/nvim/lazy/codecompanion.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/diffview.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/flash.nvim/lua",
       "$XDG_DATA_HOME/nvim/lazy/fzf-lua/lua",
@@ -32,7 +31,8 @@
       "$XDG_DATA_HOME/nvim/lazy/nvim-dap/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-jdtls/lua",
       "$XDG_DATA_HOME/nvim/lazy/nvim-treesitter-context/lua",
-      "$XDG_DATA_HOME/nvim/lazy/quicker.nvim/lua"
+      "$XDG_DATA_HOME/nvim/lazy/quicker.nvim/lua",
+      "$XDG_DATA_HOME/nvim/lazy/sidekick.nvim/lua"
     ]
   }
 }
