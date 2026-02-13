@@ -197,6 +197,7 @@ function M.filetype_component()
         lazyterm = { icons.misc.terminal, 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
         qf = { icons.misc.search, 'Conditional' },
+        sidekick_terminal = { icons.misc.robot, 'Number' },
     }
 
     local filetype = vim.bo.filetype
