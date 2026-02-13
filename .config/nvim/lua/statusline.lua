@@ -190,7 +190,6 @@ function M.filetype_component()
         ['ccc-ui'] = { icons.misc.palette, 'Comment' },
         ['dap-view'] = { icons.misc.bug, 'Special' },
         ['grug-far'] = { icons.misc.search, 'Constant' },
-        codecompanion = { icons.misc.robot, 'Conditional' },
         fzf = { icons.misc.terminal, 'Special' },
         gitcommit = { icons.misc.git, 'Number' },
         gitrebase = { icons.misc.git, 'Number' },
