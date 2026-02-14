@@ -6,6 +6,8 @@ return {
             -- Disable next-edit suggestions.
             -- TODO: Give this another chance?
             nes = { enabled = false },
+            cli = { picker = 'fzf-lua' },
+            mux = { create = 'split' },
         },
         keys = {
             {
