@@ -16,4 +16,8 @@ quit-after-last-window-closed = true
 # This is done automatically by Hyprland on Linux so using this here.
 mouse-hide-while-typing = true
 
+# Automatically download updates from main.
+auto-update = download
+auto-update-channel = tip
+
 # vim: set ft=conf
