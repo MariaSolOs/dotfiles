@@ -28,6 +28,11 @@ return {
                 ['_'] = { 'trim_whitespace', 'trim_newlines' },
             },
             format_on_save = function()
+                if vim.bo.filetype == 'java' then
+                    -- Java formatting is too slow to do on save.
+                    return nil
+                end
+
                 -- Don't format when minifiles is open, since that triggers the "confirm without
                 -- synchronization" message.
                 if vim.g.minifiles_active then
