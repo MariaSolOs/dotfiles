@@ -7,8 +7,6 @@ return {
             -- TODO: Give this another chance?
             nes = { enabled = false },
             cli = { picker = 'fzf-lua' },
-            -- TODO: I think this doesn't work with just Ghostty.
-            mux = { create = 'split' },
         },
         keys = {
             {
