@@ -50,7 +50,8 @@
         },
         "pulseaudio": {
             "format": "  {volume}%",
-            "format-muted": " "
+            "format-muted": " ",
+            "on-click": "hyprctl dispatch exec '[float; size 900 700] pavucontrol'"
         },
         "power-profiles-daemon": {
             "format": "{icon}  {profile}",
