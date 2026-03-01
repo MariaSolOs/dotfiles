@@ -3,17 +3,22 @@ return {
     {
         'kylechui/nvim-surround',
         event = 'VeryLazy',
-        opts = {
-            keymaps = {
-                insert = false,
-                insert_line = false,
-                visual_line = false,
-                normal = 'yz',
-                normal_cur = 'yzz',
-                normal_line = 'yZ',
-                normal_cur_line = 'yZZ',
-                visual = 'Z',
-            },
-        },
+        init = function()
+            -- Disable the default keymaps.
+            vim.g.nvim_surround_no_mappings = true
+        end,
+        config = function()
+            require('nvim-surround').setup()
+
+            vim.keymap.set('n', 'yz', '<Plug>(nvim-surround-normal)', {
+                desc = 'Add a surrounding pair around a motion (normal mode)',
+            })
+            vim.keymap.set('n', 'yzz', '<Plug>(nvim-surround-normal-cur)', {
+                desc = 'Add a surrounding pair around the current line (normal mode)',
+            })
+            vim.keymap.set('x', 'Z', '<Plug>(nvim-surround-visual)', {
+                desc = 'Add a surrounding pair around a visual selection',
+            })
+        end,
     },
 }
