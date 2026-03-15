@@ -1,0 +1,7 @@
+{
+  "cursorUp": ["up", "ctrl+p"],
+  "cursorDown": ["down", "ctrl+n"],
+  "selectUp": ["up", "ctrl+p"],
+  "selectDown": ["down", "ctrl+n"],
+  "cycleModelForward": ["alt+p"]
+}
