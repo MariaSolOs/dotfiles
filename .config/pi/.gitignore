@@ -1,8 +1,0 @@
-# pnpm
-/node_modules/
-
-# Local state
-/agent/sessions/
-
-# Sensitive
-/agent/auth.json
