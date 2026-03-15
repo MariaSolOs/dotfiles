@@ -156,7 +156,7 @@ end
 -- Diagnostic configuration.
 vim.diagnostic.config {
     status = {
-        text = {
+        format = {
             [vim.diagnostic.severity.ERROR] = diagnostic_icons.ERROR,
             [vim.diagnostic.severity.WARN] = diagnostic_icons.WARN,
             [vim.diagnostic.severity.INFO] = diagnostic_icons.INFO,
