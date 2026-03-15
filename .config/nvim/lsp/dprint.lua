@@ -5,5 +5,14 @@
 ---@type vim.lsp.Config
 return {
     cmd = { 'dprint', 'lsp' },
-    filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'jsonc', 'graphql' },
+    filetypes = {
+        'graphql',
+        'javascript',
+        'javascriptreact',
+        'json',
+        'jsonc',
+        'markdown',
+        'typescript',
+        'typescriptreact',
+    },
 }

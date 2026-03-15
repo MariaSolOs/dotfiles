@@ -17,7 +17,7 @@ return {
                 jsonc = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
                 less = { 'prettier' },
                 lua = { 'stylua' },
-                markdown = { 'prettier' },
+                markdown = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
                 rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
                 scss = { 'prettier' },
                 sh = { 'shfmt' },
