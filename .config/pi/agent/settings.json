@@ -1,6 +1,6 @@
 {
   "lastChangelogVersion": "0.58.3",
-  "theme": "dracula",
+  "theme": "miss-dracula",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-5-20251101",
   "defaultThinkingLevel": "medium",
