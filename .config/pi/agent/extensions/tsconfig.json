@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "paths": {
+            "@mariozechner/pi-coding-agent": [
+                "/Users/majosolano/.nvm/versions/node/v23.7.0/lib/node_modules/@mariozechner/pi-coding-agent"
+            ]
+        }
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["node_modules"]
+}
