@@ -48,6 +48,9 @@ keybind = alt+shift+w=toggle_command_palette
 # Let me close stuff in peace:
 confirm-close-surface = false
 
+# Notify silently:
+notify-on-command-finish-action = no-bell,notify
+
 # Include OS-specific configurations.
 config-file = ?config-macos
 config-file = ?config-linux
