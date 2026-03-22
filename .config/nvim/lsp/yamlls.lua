@@ -1,4 +1,4 @@
--- Install with: npm i -g add yaml-language-server
+-- Install with: npm i -g yaml-language-server
 
 ---@type vim.lsp.Config
 return {
