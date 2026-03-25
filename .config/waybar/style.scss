@@ -35,7 +35,7 @@ $battery-colors: (
     "": $green,
     ".warning": $yellow,
     ".critical": $pink,
-    ".charging": $blue,
+    ".charging": $blue
 );
 @each $class, $color in $battery-colors {
     #battery#{$class} {
