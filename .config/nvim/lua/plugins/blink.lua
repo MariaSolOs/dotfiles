@@ -53,9 +53,6 @@ return {
 
                     return sources
                 end,
-                per_filetype = {
-                    codecompanion = { 'codecompanion', 'buffer' },
-                },
             },
             appearance = {
                 kind_icons = require('icons').symbol_kinds,
