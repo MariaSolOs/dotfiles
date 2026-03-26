@@ -50,6 +50,9 @@ vim.o.clipboard = 'unnamedplus'
 -- Save undo history.
 vim.o.undofile = true
 
+-- Enable project-local configuration.
+vim.o.exrc = true
+
 -- Case insensitive searching UNLESS /C or the search has capitals.
 vim.o.ignorecase = true
 vim.o.smartcase = true
