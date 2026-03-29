@@ -239,6 +239,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     LazyDimmed = { fg = colors.grey },
 
     -- LSP.
+    ComplHint = { link = 'Comment' },
     DiagnosticDeprecated = { strikethrough = true, fg = colors.fg },
     DiagnosticError = { fg = colors.red },
     DiagnosticFloatingError = { fg = colors.red },
