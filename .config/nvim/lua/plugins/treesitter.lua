@@ -35,8 +35,11 @@ return {
             },
         },
         build = ':TSUpdate',
-        opts = {
-            ensure_installed = {
+        config = function(_, opts)
+            require('nvim-treesitter').setup(opts)
+
+            -- Make sure that the following are installed:
+            require('nvim-treesitter').install {
                 'bash',
                 'c',
                 'cpp',
@@ -66,16 +69,7 @@ return {
                 'vim',
                 'vimdoc',
                 'yaml',
-            },
-            highlight = { enable = true },
-            indent = {
-                enable = true,
-                -- Treesitter unindents Yaml lists for some reason.
-                disable = { 'yaml' },
-            },
-        },
-        config = function(_, opts)
-            require('nvim-treesitter').setup(opts)
+            }
         end,
     },
 }
