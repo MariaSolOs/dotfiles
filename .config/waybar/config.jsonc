@@ -113,9 +113,8 @@
             "on-click": "activate"
         },
         "hyprland/language": {
-            // HACK: Using the workaround from https://github.com/Alexays/Waybar/issues/3676#issuecomment-2497447121.
-            "format-": "<span color='#E7A1D7'></span>  English (intl)",
             "format-en": "<span color='#E7A1D7'></span>  English (US)",
+            "format-en-intl": "<span color='#E7A1D7'></span>  English (intl)",
             "on-click": "hyprctl switchxkblayout current next"
         },
         "custom/power": {
