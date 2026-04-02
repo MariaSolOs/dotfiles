@@ -2,8 +2,7 @@ notARepository: 'quit'
 git:
   overrideGpg: true
   pagers:
-    - colorArg: always
-      pager: diff-so-fancy
+    - pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --hunk-header-style="omit"
 os:
   editPreset: nvim
 gui:

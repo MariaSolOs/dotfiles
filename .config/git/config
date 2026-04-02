@@ -1,6 +1,14 @@
 [core]
 	editor = nvim
     excludesfile = ~/.config/git/.gitignore_global
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    dark = true
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -16,7 +24,7 @@
 	defaultBranch = main
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 
 [pull]
 	rebase = true
