@@ -7,8 +7,10 @@
     diffFilter = delta --color-only
 
 [delta]
+    file-modified-label = "modified:"
+    hunk-header-style = omit
     navigate = true
-    dark = true
+    syntax-theme = Dracula
 
 [filter "lfs"]
     clean = git-lfs clean -- %f
