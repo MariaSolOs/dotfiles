@@ -14,9 +14,9 @@
 
 [filter "lfs"]
     clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+    smudge = git-lfs smudge -- %f
 
 [filter "git-ignore"]
     clean = "sed '/#\\s*git-ignore$/d'"
@@ -38,8 +38,8 @@
     prune = true
 
 [user]
-    name = Maria Solano
     email = majosolano99@gmail.com
+    name = Maria Solano
 
 [advice]
     skippedCherryPicks = false
