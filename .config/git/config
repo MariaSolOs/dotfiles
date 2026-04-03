@@ -1,5 +1,5 @@
 [core]
-	editor = nvim
+    editor = nvim
     excludesfile = ~/.config/git/.gitignore_global
     pager = delta
 
@@ -11,33 +11,33 @@
     dark = true
 
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 
 [filter "git-ignore"]
-	clean = "sed '/#\\s*git-ignore$/d'"
-	smudge = cat
+    clean = "sed '/#\\s*git-ignore$/d'"
+    smudge = cat
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
 
 [merge]
-	conflictstyle = zdiff3
+    conflictstyle = zdiff3
 
 [pull]
-	rebase = true
+    rebase = true
 
 [push]
-	autoSetupRemote = true
+    autoSetupRemote = true
 
 [fetch]
-	prune = true
+    prune = true
 
 [user]
-	name = Maria Solano
-	email = majosolano99@gmail.com
+    name = Maria Solano
+    email = majosolano99@gmail.com
 
 [advice]
-	skippedCherryPicks = false
+    skippedCherryPicks = false
