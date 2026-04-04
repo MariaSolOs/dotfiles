@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.62.0",
+  "lastChangelogVersion": "0.65.0",
   "theme": "miss-dracula",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-6",
