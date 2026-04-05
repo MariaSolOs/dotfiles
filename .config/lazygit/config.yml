@@ -1,4 +1,5 @@
 notARepository: 'quit'
+promptToReturnFromSubprocess: false
 git:
   overrideGpg: true
   pagers:
