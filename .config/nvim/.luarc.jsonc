@@ -11,6 +11,7 @@
       "${3rd}/luv/library",
       // Extra custom bits.
       "lua/icons.lua",
+      "lua/vim-pack.lua",
       // Include some plugins for API completion.
       "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",
       "$XDG_DATA_HOME/nvim/lazy/blink.cmp/lua",
