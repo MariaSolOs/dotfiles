@@ -23,7 +23,6 @@ abbr -a gb git branch
 abbr -a gc git commit
 abbr -a gco git checkout
 abbr -a gf git fetch
-abbr -a gl lazygit
 abbr -a gm git merge
 abbr -a gpl git pull
 abbr -a gpu git push
