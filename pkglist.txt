@@ -5,13 +5,13 @@ bat
 bluetui
 bluez
 bluez-utils
+brightnessctl
 btop
 chromium
 clang
 cliphist
 cmake
 dart-sass
-diff-so-fancy
 dprint
 e2fsprogs
 efibootmgr
@@ -20,6 +20,7 @@ fw-fanctrl-git
 fzf
 ghostty
 git
+git-delta
 go
 grub
 hypridle
@@ -46,6 +47,7 @@ obsidian
 openssh
 pacman-contrib
 pacman-log-orphans-hook
+pamixer
 paru
 paru-debug
 pavucontrol
