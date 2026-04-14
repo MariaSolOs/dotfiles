@@ -3,14 +3,22 @@ return {
     {
         'monkoose/neocodeium',
         event = 'InsertEnter',
-        opts = {
-            server = {
-                api_url = 'https://windsurf.fedstart.com/_route/api_server',
-                portal_url = 'https://windsurf.fedstart.com',
-            },
-            -- Don't show the number of suggestions in the gutter.
-            show_label = false,
-        },
+        opts = function()
+            local opts = {
+                -- Don't show the number of suggestions in the gutter.
+                show_label = false,
+            }
+
+            -- Configure the server for work.
+            if vim.startswith(vim.fn.hostname(), 'msolano') then
+                opts.server = {
+                    api_url = 'https://windsurf.fedstart.com/_route/api_server',
+                    portal_url = 'https://windsurf.fedstart.com',
+                }
+            end
+
+            return opts
+        end,
         keys = {
             {
                 '<C-.>',
