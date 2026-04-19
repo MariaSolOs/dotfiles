@@ -13,9 +13,16 @@ function buildnvim() {
     local current_branch
     current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
+    # Fetch the latest changes.
+    git fetch upstream master
+
+    # Log the upstream commits.
+    git --no-pager log --decorate=short --pretty=short master..upstream/master
+
     if [ "$current_branch" = "master" ]; then
-        # On master — discard any local changes.
+        # On master — discard any local changes and hard reset to avoid merge conflicts.
         git checkout -f master
+        git reset --hard upstream/master
     else
         # On another branch — bail if there are local changes.
         if ! git diff --exit-code; then
@@ -23,16 +30,8 @@ function buildnvim() {
             return
         fi
         git checkout master
+        git merge upstream/master
     fi
-
-    # Fetch the latest changes.
-    git fetch upstream master
-
-    # Log the upstream commits.
-    git --no-pager log --decorate=short --pretty=short master..upstream/master
-
-    # Merge the latest changes.
-    git merge upstream/master
 
     # Go back to the given commit or HEAD.
     local commit="${1:-HEAD}"
