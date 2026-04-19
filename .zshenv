@@ -18,7 +18,8 @@ export SHELL_SESSIONS_DISABLE=1
 export MANPAGER='nvim +Man!'
 
 # Set up neovim as the default editor.
-export EDITOR="$(which nvim)"
+EDITOR="$(which nvim)"
+export EDITOR
 export VISUAL="$EDITOR"
 
 # Disable Apple's save/restore mechanism.
