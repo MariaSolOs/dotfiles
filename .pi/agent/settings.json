@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.65.0",
+  "lastChangelogVersion": "0.67.68",
   "theme": "miss-dracula",
-  "defaultProvider": "anthropic",
+  "editorPaddingX": 1,
   "defaultModel": "claude-opus-4-6",
-  "defaultThinkingLevel": "medium",
-  "editorPaddingX": 1
+  "collapseChangelog": true,
+  "defaultProvider": "anthropic"
 }
