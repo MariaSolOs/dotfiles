@@ -3,6 +3,7 @@
     "typescript": {
     },
     "json": {
+        "indentWidth": 2
     },
     "markdown": {
     },
