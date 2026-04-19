@@ -10,13 +10,20 @@ function buildnvim() {
     # Go to the neovim directory.
     cd "$nvim_dir" || { printf '\n========== COULD NOT CD TO NEOVIM DIRECTORY ==========\n' && return; }
 
-    if ! git diff --exit-code; then
-        printf '\n========== LOCAL NEOVIM CHANGES! ==========\n'
-        return
-    fi
+    local current_branch
+    current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
-    # Checkout the master branch.
-    git checkout master
+    if [ "$current_branch" = "master" ]; then
+        # On master — discard any local changes.
+        git checkout -f master
+    else
+        # On another branch — bail if there are local changes.
+        if ! git diff --exit-code; then
+            printf '\n========== LOCAL CHANGES ON BRANCH %s! ==========\n' "$current_branch"
+            return
+        fi
+        git checkout master
+    fi
 
     # Fetch the latest changes.
     git fetch upstream master
