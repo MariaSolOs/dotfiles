@@ -1,5 +1,5 @@
 -- Install with: npm i -g bash-language-server
--- Also uses shellcheck for diagnostics and shfmt for formatting.
+-- Also uses shellcheck for diagnostics and shfmt for formatting (need to be installed separately).
 
 ---@type vim.lsp.Config
 return {
