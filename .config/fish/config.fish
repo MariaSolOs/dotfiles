@@ -28,6 +28,9 @@ abbr -a gpl git pull
 abbr -a gpu git push
 abbr -a gst git status
 
+# Claude.
+abbr -a cc claude
+
 # System maintenance.
 abbr -a --position anywhere s sudo
 if test "$os" = Darwin
