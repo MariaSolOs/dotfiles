@@ -73,7 +73,7 @@ vim.o.pumborder = 'rounded'
 
 -- Diff mode settings.
 -- Setting the context to a very large number disables folding.
-vim.opt.diffopt:append 'vertical,context:99'
+vim.opt.diffopt:append 'followwrap,vertical,context:99'
 
 vim.opt.shortmess:append {
     w = true,
