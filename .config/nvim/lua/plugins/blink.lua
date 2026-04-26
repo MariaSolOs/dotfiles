@@ -2,8 +2,12 @@
 return {
     {
         'saghen/blink.cmp',
-        dependencies = 'LuaSnip',
-        build = 'cargo +nightly build --release',
+        dependencies = { 'LuaSnip', 'saghen/blink.lib' },
+        build = function()
+            -- TODO: Fix the Task type below.
+            ---@diagnostic disable-next-line: undefined-field
+            require('blink.cmp').build():wait(60000)
+        end,
         event = 'InsertEnter',
         opts = {
             keymap = {
