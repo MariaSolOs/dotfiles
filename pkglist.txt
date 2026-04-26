@@ -21,6 +21,7 @@ fzf
 ghostty
 git
 git-delta
+github-cli
 go
 grub
 hypridle
@@ -47,6 +48,7 @@ obsidian
 openssh
 pacman-contrib
 pacman-log-orphans-hook
+pam-gnupg
 pamixer
 paru
 paru-debug
