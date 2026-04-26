@@ -3,6 +3,9 @@
     excludesfile = ~/.config/git/.gitignore_global
     pager = delta
 
+[commit]
+    gpgsign = true
+
 [interactive]
     diffFilter = delta --color-only
 
