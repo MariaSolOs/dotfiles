@@ -3,15 +3,15 @@ local M = {}
 ---@class PluginSpec
 ---@field src string The GitHub repository of the plugin
 ---@field module_name? string Optional module name for configuration (defaults to the repo name)
----@field opts? table Optional configuration options for the plugin
+---@field opts? table|fun():table Optional configuration options for the plugin
 ---@field on_setup? fun():nil Optional function to run after the plugin is loaded and configured
 
---- Helper function for adding and configuring plugins to the current session on a specific event.
----
 ---@param event vim.api.keyset.events
+---@param pattern? string|string[]
 ---@param plugins PluginSpec[]
-function M.add_on_event(event, plugins)
+local add_on_event = function(event, pattern, plugins)
     vim.api.nvim_create_autocmd(event, {
+        pattern = pattern,
         once = true,
         callback = function()
             local sources = vim.iter(plugins)
@@ -25,7 +25,8 @@ function M.add_on_event(event, plugins)
             -- Configure each plugin after loading.
             for _, plugin in ipairs(plugins) do
                 local module_name = plugin.module_name or plugin.src:match '.+/(.+)'
-                require(module_name).setup(plugin.opts or {})
+                local opts = type(plugin.opts) == 'function' and plugin.opts() or plugin.opts
+                require(module_name).setup(opts or {})
 
                 if plugin.on_setup then
                     plugin.on_setup()
@@ -33,6 +34,22 @@ function M.add_on_event(event, plugins)
             end
         end,
     })
+end
+
+--- Helper function for adding and configuring plugins to the current session on a specific event.
+---
+---@param event vim.api.keyset.events
+---@param plugins PluginSpec[]
+function M.add_on_event(event, plugins)
+    add_on_event(event, nil, plugins)
+end
+
+--- Helper function for adding and configuring plugins to the current session when a file of a specific type is first opened.
+---
+---@param patterns string|string[]
+---@param plugins PluginSpec[]
+function M.add_on_file_type(patterns, plugins)
+    add_on_event('FileType', patterns, plugins)
 end
 
 --- Runs the given command inside the plugin's directory when the plugin is updated.
