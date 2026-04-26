@@ -143,17 +143,6 @@ return {
                     name = 'Attach to running Neovim instance',
                 },
             }
-
-            -- C configurations.
-            dap.adapters.codelldb = {
-                type = 'server',
-                host = 'localhost',
-                port = '${port}',
-                executable = {
-                    command = 'codelldb',
-                    args = { '--port', '${port}' },
-                },
-            }
         end,
     },
 }
