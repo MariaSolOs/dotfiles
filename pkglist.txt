@@ -16,7 +16,9 @@ dprint
 e2fsprogs
 efibootmgr
 fish
+fprintd
 fw-fanctrl-git
+fwupd
 fzf
 ghostty
 git
@@ -72,6 +74,7 @@ swaync
 texinfo
 thunderbird
 trash-cli
+udisks2
 ufw
 unzip
 vim
