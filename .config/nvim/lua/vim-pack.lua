@@ -5,6 +5,7 @@ local M = {}
 ---@field module_name? string Optional module name for configuration (defaults to the repo name)
 ---@field opts? table|fun():table Optional configuration options for the plugin
 ---@field on_setup? fun():nil Optional function to run after the plugin is loaded and configured
+---@field setup? false Set to false to skip require/setup entirely (for vimscript-only or data-only plugins)
 
 ---@param event vim.api.keyset.events
 ---@param pattern? string|string[]
@@ -24,9 +25,14 @@ local add_on_event = function(event, pattern, plugins)
 
             -- Configure each plugin after loading.
             for _, plugin in ipairs(plugins) do
-                local module_name = plugin.module_name or plugin.src:match '.+/(.+)'
-                local opts = type(plugin.opts) == 'function' and plugin.opts() or plugin.opts
-                require(module_name).setup(opts or {})
+                if plugin.setup ~= false then
+                    local module_name = plugin.module_name or plugin.src:match '.+/(.+)'
+                    local mod = require(module_name)
+                    if type(mod.setup) == 'function' then
+                        local opts = type(plugin.opts) == 'function' and plugin.opts() or plugin.opts
+                        mod.setup(opts or {})
+                    end
+                end
 
                 if plugin.on_setup then
                     plugin.on_setup()
