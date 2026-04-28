@@ -52,6 +52,10 @@ add_on_event('BufWritePre', {
 
                 return {}
             end,
+            formatters = {
+                -- Require a Prettier configuration file to format.
+                prettier = { require_cwd = true },
+            },
         },
     },
 })
