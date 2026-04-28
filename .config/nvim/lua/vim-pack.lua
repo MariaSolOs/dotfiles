@@ -7,7 +7,7 @@ local M = {}
 ---@field on_setup? fun():nil Optional function to run after the plugin is loaded and configured
 ---@field setup? false Set to false to skip require/setup entirely (for vimscript-only or data-only plugins)
 
----@param event vim.api.keyset.events
+---@param event vim.api.keyset.events|vim.api.keyset.events[]
 ---@param pattern? string|string[]
 ---@param plugins PluginSpec[]
 local add_on_event = function(event, pattern, plugins)
@@ -44,7 +44,7 @@ end
 
 --- Helper function for adding and configuring plugins to the current session on a specific event.
 ---
----@param event vim.api.keyset.events
+---@param event vim.api.keyset.events|vim.api.keyset.events[]
 ---@param plugins PluginSpec[]
 function M.add_on_event(event, plugins)
     add_on_event(event, nil, plugins)

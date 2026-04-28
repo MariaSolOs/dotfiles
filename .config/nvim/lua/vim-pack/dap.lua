@@ -1,6 +1,7 @@
-local arrows = require('icons').arrows
 local add_on_event = require('vim-pack').add_on_event
 local add_on_filetype = require('vim-pack').add_on_file_type
+
+local arrows = require('icons').arrows
 
 -- Set up icons.
 local icons = {
