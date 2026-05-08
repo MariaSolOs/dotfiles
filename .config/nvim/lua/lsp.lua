@@ -154,12 +154,15 @@ end
 -- Diagnostic configuration.
 vim.diagnostic.config {
     status = {
-        format = {
-            [vim.diagnostic.severity.ERROR] = diagnostic_icons.ERROR,
-            [vim.diagnostic.severity.WARN] = diagnostic_icons.WARN,
-            [vim.diagnostic.severity.INFO] = diagnostic_icons.INFO,
-            [vim.diagnostic.severity.HINT] = diagnostic_icons.HINT,
-        },
+        format = function(counts)
+            local items = {}
+            for severity, count in pairs(counts) do
+                local name = vim.diagnostic.severity[severity]
+                local hl = 'DiagnosticSign' .. name:sub(1, 1) .. name:sub(2):lower()
+                table.insert(items, ('%%#%s#%s %d'):format(hl, diagnostic_icons[name], count))
+            end
+            return table.concat(items, ' ')
+        end,
     },
     virtual_text = {
         prefix = '',
