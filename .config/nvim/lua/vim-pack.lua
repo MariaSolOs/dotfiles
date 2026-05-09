@@ -7,6 +7,34 @@ local M = {}
 ---@field on_setup? fun():nil Optional function to run after the plugin is loaded and configured
 ---@field setup? false Set to false to skip require/setup entirely (for vimscript-only or data-only plugins)
 
+---@param plugins PluginSpec[]
+local function configure(plugins)
+    local sources = vim.iter(plugins)
+        :map(function(plugin)
+            -- Ensure we use GitHub urls.
+            return string.format('https://github.com/%s', plugin.src)
+        end)
+        :totable()
+
+    vim.pack.add(sources)
+
+    -- Configure each plugin after loading.
+    for _, plugin in ipairs(plugins) do
+        if plugin.setup ~= false then
+            local module_name = plugin.module_name or plugin.src:match '.+/(.+)'
+            local mod = require(module_name)
+            if type(mod.setup) == 'function' then
+                local opts = type(plugin.opts) == 'function' and plugin.opts() or plugin.opts
+                mod.setup(opts or {})
+            end
+        end
+
+        if plugin.on_setup then
+            plugin.on_setup()
+        end
+    end
+end
+
 ---@param event vim.api.keyset.events|vim.api.keyset.events[]
 ---@param pattern? string|string[]
 ---@param plugins PluginSpec[]
@@ -15,31 +43,16 @@ local add_on_event = function(event, pattern, plugins)
         pattern = pattern,
         once = true,
         callback = function()
-            local sources = vim.iter(plugins)
-                :map(function(plugin)
-                    -- Ensure we use GitHub urls.
-                    return string.format('https://github.com/%s', plugin.src)
-                end)
-                :totable()
-            vim.pack.add(sources)
-
-            -- Configure each plugin after loading.
-            for _, plugin in ipairs(plugins) do
-                if plugin.setup ~= false then
-                    local module_name = plugin.module_name or plugin.src:match '.+/(.+)'
-                    local mod = require(module_name)
-                    if type(mod.setup) == 'function' then
-                        local opts = type(plugin.opts) == 'function' and plugin.opts() or plugin.opts
-                        mod.setup(opts or {})
-                    end
-                end
-
-                if plugin.on_setup then
-                    plugin.on_setup()
-                end
-            end
+            configure(plugins)
         end,
     })
+end
+
+--- Helper function for adding and configuring plugins eagerly, with no lazy-loading.
+---
+---@param plugins PluginSpec[]
+function M.add(plugins)
+    configure(plugins)
 end
 
 --- Helper function for adding and configuring plugins to the current session on a specific event.
