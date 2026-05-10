@@ -51,6 +51,7 @@ add {
 
             -- Use <C-c> to select a choice in a snippet.
             vim.keymap.set({ 'i', 's' }, '<C-c>', function()
+                ---@diagnostic disable-next-line: undefined-field
                 if require('luasnip').choice_active() then
                     require 'luasnip.extras.select_choice'()
                 end
@@ -115,4 +116,8 @@ add {
     },
 }
 
-on_plugin_update('blink.cmp', 'cargo +nightly build --release')
+on_plugin_update('blink.cmp', function()
+    -- TODO: Fix the Task type below.
+    ---@diagnostic disable-next-line: undefined-field
+    require('blink.cmp').build():wait(60000)
+end)
