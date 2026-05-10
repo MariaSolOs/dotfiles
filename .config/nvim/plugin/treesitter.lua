@@ -1,43 +1,52 @@
 local add = require('vim-pack').add
 local on_plugin_update = require('vim-pack').on_plugin_update
 
+local parsers = {
+    'bash',
+    'c',
+    'cpp',
+    'fish',
+    'gitcommit',
+    'go',
+    'graphql',
+    'html',
+    'hyprlang',
+    'java',
+    'javascript',
+    'json',
+    'json5',
+    'lua',
+    'markdown',
+    'markdown_inline',
+    'python',
+    'query',
+    'rasi',
+    'regex',
+    'rust',
+    'scss',
+    'toml',
+    'tsx',
+    'typescript',
+    'vim',
+    'vimdoc',
+    'yaml',
+}
+
 -- Highlight, edit, and navigate code.
 add {
     {
         src = 'nvim-treesitter/nvim-treesitter',
         opts = {},
         on_setup = function()
-            -- Make sure that the following are installed:
-            require('nvim-treesitter').install {
-                'bash',
-                'c',
-                'cpp',
-                'fish',
-                'gitcommit',
-                'go',
-                'graphql',
-                'html',
-                'hyprlang',
-                'java',
-                'javascript',
-                'json',
-                'json5',
-                'lua',
-                'markdown',
-                'markdown_inline',
-                'python',
-                'query',
-                'rasi',
-                'regex',
-                'rust',
-                'scss',
-                'toml',
-                'tsx',
-                'typescript',
-                'vim',
-                'vimdoc',
-                'yaml',
-            }
+            -- Main-branch nvim-treesitter ships queries under `runtime/queries/`,
+            -- which isn't on rtp by default. Prepend it so highlights/folds/indents
+            -- are visible to `vim.treesitter.start`.
+            local init = vim.api.nvim_get_runtime_file('lua/nvim-treesitter/init.lua', false)[1]
+            if init then
+                vim.opt.runtimepath:prepend(vim.fn.fnamemodify(init, ':h:h:h') .. '/runtime')
+            end
+
+            require('nvim-treesitter').install(parsers):wait(300000)
         end,
     },
     {
@@ -68,5 +77,8 @@ add {
 }
 
 on_plugin_update('nvim-treesitter', function()
-    vim.cmd 'TSUpdate'
+    -- Re-install (picks up any newly-added parsers from the list above)
+    -- and update existing ones.
+    require('nvim-treesitter').install(parsers):wait(300000)
+    require('nvim-treesitter').update():wait(300000)
 end)
