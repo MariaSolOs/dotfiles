@@ -21,7 +21,7 @@ local function configure(plugins)
     -- Configure each plugin after loading.
     for _, plugin in ipairs(plugins) do
         if plugin.setup ~= false then
-            local module_name = plugin.module_name or plugin.src:match '.+/(.+)'
+            local module_name = plugin.module_name or (plugin.src:match('.+/(.+)'):gsub('%.nvim$', ''))
             local mod = require(module_name)
             if type(mod.setup) == 'function' then
                 local opts = type(plugin.opts) == 'function' and plugin.opts() or plugin.opts
