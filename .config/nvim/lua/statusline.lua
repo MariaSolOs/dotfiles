@@ -193,8 +193,6 @@ function M.filetype_component()
         fzf = { icons.misc.terminal, 'Special' },
         gitcommit = { icons.misc.git, 'Number' },
         gitrebase = { icons.misc.git, 'Number' },
-        lazy = { icons.symbol_kinds.Method, 'Special' },
-        lazyterm = { icons.misc.terminal, 'Special' },
         minifiles = { icons.symbol_kinds.Folder, 'Directory' },
         qf = { icons.misc.search, 'Conditional' },
     }

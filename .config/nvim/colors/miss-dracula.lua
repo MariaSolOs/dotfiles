@@ -235,9 +235,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     ['@struct'] = { fg = colors.cyan },
     ['@typeParameter'] = { fg = colors.cyan },
 
-    -- Package manager.
-    LazyDimmed = { fg = colors.grey },
-
     -- LSP.
     ComplHint = { link = 'Comment' },
     DiagnosticDeprecated = { strikethrough = true, fg = colors.fg },
