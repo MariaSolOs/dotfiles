@@ -27,6 +27,7 @@ add_on_event('UIEnter', {
     -- Lua adapter.
     {
         src = 'jbyuki/one-small-step-for-vimkind',
+        setup = false,
         on_setup = function()
             vim.keymap.set('n', '<leader>dl', function()
                 require('osv').launch { port = 8086 }
@@ -37,6 +38,7 @@ add_on_event('UIEnter', {
 add_on_filetype('lua', {
     {
         src = 'igorlfs/nvim-dap-view',
+        module_name = 'dap-view',
         opts = {
             winbar = {
                 sections = { 'scopes', 'breakpoints', 'threads', 'exceptions', 'repl', 'console' },
@@ -55,6 +57,7 @@ add_on_filetype('lua', {
     },
     {
         src = 'mfussenegger/nvim-dap',
+        setup = false,
         on_setup = function()
             vim.keymap.set('n', '<leader>db', function()
                 require('dap').toggle_breakpoint()

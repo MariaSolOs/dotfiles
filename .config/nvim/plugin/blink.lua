@@ -1,8 +1,8 @@
-local add_on_event = require('vim-pack').add_on_event
+local add = require('vim-pack').add
 local on_plugin_update = require('vim-pack').on_plugin_update
 
 -- Auto-completion and snippets.
-add_on_event('InsertEnter', {
+add {
     -- Shared library used by blink.cmp; no setup of its own.
     {
         src = 'saghen/blink.lib',
@@ -10,6 +10,7 @@ add_on_event('InsertEnter', {
     },
     {
         src = 'L3MON4D3/LuaSnip',
+        module_name = 'luasnip',
         opts = function()
             local types = require 'luasnip.util.types'
             return {
@@ -112,6 +113,6 @@ add_on_event('InsertEnter', {
             },
         },
     },
-})
+}
 
 on_plugin_update('blink.cmp', 'cargo +nightly build --release')
