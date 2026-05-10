@@ -1,3 +1,6 @@
+-- Enable the experimental Lua module loader.
+vim.loader.enable()
+
 -- Global variables.
 vim.g.projects_dir = vim.env.HOME .. '/Code'
 vim.g.work_projects_dir = '/Volumes/git'
