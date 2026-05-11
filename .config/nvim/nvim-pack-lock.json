@@ -93,7 +93,7 @@
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
     "nvim-dap-view": {
-      "rev": "8d01f149bf6b423072a816c6e30c12f3e541f4ea",
+      "rev": "3701c85e2a92c56bde09183fe85e0bdc16c02eab",
       "src": "https://github.com/igorlfs/nvim-dap-view"
     },
     "nvim-dap-virtual-text": {
