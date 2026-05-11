@@ -16,5 +16,5 @@ add_on_file_type('markdown', {
 })
 
 on_plugin_update('markdown-preview.nvim', function()
-    vim.fn['mkdp#util#install']()
+    vim.fn['mkdp#util#install_sync'](true)
 end)
