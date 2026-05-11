@@ -190,6 +190,7 @@ function M.filetype_component()
         ['ccc-ui'] = { icons.misc.palette, 'Comment' },
         ['dap-view'] = { icons.misc.bug, 'Special' },
         ['grug-far'] = { icons.misc.search, 'Constant' },
+        ['nvim-pack'] = { icons.symbol_kinds.Method, 'Special' },
         fzf = { icons.misc.terminal, 'Special' },
         gitcommit = { icons.misc.git, 'Number' },
         gitrebase = { icons.misc.git, 'Number' },

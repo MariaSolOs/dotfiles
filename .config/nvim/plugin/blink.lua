@@ -3,11 +3,7 @@ local on_plugin_update = require('vim-pack').on_plugin_update
 
 -- Auto-completion and snippets.
 add {
-    -- Shared library used by blink.cmp; no setup of its own.
-    {
-        src = 'saghen/blink.lib',
-        setup = false,
-    },
+    { src = 'saghen/blink.lib', setup = false },
     {
         src = 'L3MON4D3/LuaSnip',
         module_name = 'luasnip',
