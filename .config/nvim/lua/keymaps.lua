@@ -50,9 +50,6 @@ end, { desc = 'Exit insert mode and save changes (without formatting)', expr = t
 -- Quickly go to the end of the line while in insert mode.
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })
 
--- Mark management.
-vim.keymap.set('c', 'dm', 'delmarks', { desc = 'Delete marks' })
-
 -- Package manager.
 vim.keymap.set('n', '<leader>P', function()
     vim.pack.update()
