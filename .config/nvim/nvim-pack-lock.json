@@ -9,7 +9,7 @@
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink.cmp": {
-      "rev": "d3874d2a13aa19b095bdd10d37a82a8f0aa7cad3",
+      "rev": "2ef3db111181c5eef22a462aa0122349a6027f28",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
@@ -81,7 +81,7 @@
       "src": "https://github.com/nvim-mini/mini.splitjoin"
     },
     "neocodeium": {
-      "rev": "196b9b5961fb2f2128ece11e5ddb951938398cee",
+      "rev": "c04e74f4ad09ecb5803f0c5457bb9defa8a0700e",
       "src": "https://github.com/monkoose/neocodeium"
     },
     "nvim-autopairs": {
