@@ -28,9 +28,11 @@ vim.keymap.set('n', '<leader>to', '<cmd>tabonly<cr>', { desc = 'Close other tab 
 
 -- Poweful <esc>.
 vim.keymap.set({ 'i', 's', 'n' }, '<esc>', function()
+    ---@diagnostic disable: undefined-field
     if require('luasnip').expand_or_jumpable() then
         require('luasnip').unlink_current()
     end
+    ---@diagnostic enable: undefined-field
     vim.cmd 'noh'
     return '<esc>'
 end, { desc = 'Escape, clear hlsearch, and stop snippet session', expr = true })
@@ -50,3 +52,8 @@ vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the l
 
 -- Mark management.
 vim.keymap.set('c', 'dm', 'delmarks', { desc = 'Delete marks' })
+
+-- Package manager.
+vim.keymap.set('n', '<leader>P', function()
+    vim.pack.update()
+end, { desc = 'Update packages' })
