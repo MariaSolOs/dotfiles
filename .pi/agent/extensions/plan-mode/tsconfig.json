@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@earendil-works/pi-coding-agent": [
+        "/Users/msolano/.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/dist/index.d.ts"
+      ],
+      "@earendil-works/*": [
+        "/Users/msolano/.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/*/dist/index.d.ts"
+      ],
+      "typebox": [
+        "/Users/msolano/.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/typebox/build/index.d.mts"
+      ]
+    },
+    "typeRoots": [
+      "/Users/msolano/.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@types"
+    ],
+    "types": ["node"]
+  },
+  "include": ["index.ts"]
+}
