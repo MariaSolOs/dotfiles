@@ -20,3 +20,4 @@ Many projects contain agent instruction files from other tools. Such conventions
 
 - **Memory files**: `CLAUDE.md`, `.claude/CLAUDE.md`, `.claude/rules/` - Persistent instructions.
 - **Commands:** `.claude/commands/` - Reusable prompt workflows. Treat these as project-defined procedures to follow when the task matches.
+- **Existing patterns**: When implementing a new feature or workflow, first look for analogous implementations and conventions in the codebase. Prefer matching nearby or repo-wide patterns over introducing a new style, library, or structure.
