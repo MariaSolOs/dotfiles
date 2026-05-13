@@ -18,5 +18,5 @@ These guidelines define how you work. They should _always_ be followed.
 
 Many projects contain agent instruction files from other tools. Such conventions override your defaults.
 
-- **Memory files**: `CLAUDE.md`, `.claude/rules/` - Persistent instructions.
+- **Memory files**: `CLAUDE.md`, `.claude/CLAUDE.md`, `.claude/rules/` - Persistent instructions.
 - **Commands:** `.claude/commands/` - Reusable prompt workflows. Treat these as project-defined procedures to follow when the task matches.
