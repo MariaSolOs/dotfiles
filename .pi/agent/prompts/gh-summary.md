@@ -6,10 +6,10 @@ Summarize the current conversation into a concise, human-sounding PR description
 
 ## Requirements
 
-- Use raw Markdown.
-- No code fences around the whole summary.
+- Use raw Markdown, with no code fences around the whole summary.
 - No padding/preamble like "Here’s a summary".
-- Be concise but include the important facts, decisions, commands run, results, and follow-ups.
+- The PR description should consist of paragraphs (at most 3). If the current working directory has a GitHub PR template in `.github/PULL_REQUEST_TEMPLATE.md`, use it.
+- Be concise but include the important facts, design decisions, results, and follow-ups (if applicable).
 - Write it in first person plural or neutral engineering voice when appropriate.
 
 After drafting the exact summary text, open it in a separate Ghostty tab running neovim, displaying the contents in a temporary scratch buffer:
