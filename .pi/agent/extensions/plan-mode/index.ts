@@ -575,13 +575,15 @@ export default function planMode(pi: ExtensionAPI) {
     });
 
     pi.registerCommand("plan", {
-        description: "Plan mode control. Usage: /plan on | /plan off",
+        description: "Toggle plan mode on or off. Usage: /plan",
         handler: async (args, ctx) => {
-            const trimmed = args.trim();
-            if (trimmed === "on") return enter(ctx);
-            if (trimmed === "off") return exit(ctx);
+            if (args.trim()) {
+                ctx.ui.notify("Usage: /plan", "warning");
+                return;
+            }
 
-            ctx.ui.notify("Usage: /plan on or /plan off", "warning");
+            if (state.active) return exit(ctx);
+            return enter(ctx);
         },
     });
 
@@ -616,7 +618,7 @@ export default function planMode(pi: ExtensionAPI) {
         if (WRITE_TOOLS.has(event.toolName)) {
             return {
                 block: true,
-                reason: "Plan mode is active: write/edit tools are blocked. Use /plan off to leave plan mode.",
+                reason: "Plan mode is active: write/edit tools are blocked. Use /plan to leave plan mode.",
             };
         }
         if (event.toolName === "bash") {
