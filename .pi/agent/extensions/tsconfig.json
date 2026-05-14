@@ -10,6 +10,9 @@
       ],
       "@earendil-works/*": [
         "/Users/msolano/.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/*/dist/index.d.ts"
+      ],
+      "typebox": [
+        "/Users/msolano/.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/typebox/build/index.d.mts"
       ]
     },
     "typeRoots": [
@@ -17,5 +20,5 @@
     ],
     "types": ["node"]
   },
-  "include": ["index.ts"]
+  "include": ["**/*.ts"]
 }
