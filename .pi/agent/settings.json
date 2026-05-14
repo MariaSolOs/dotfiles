@@ -5,5 +5,5 @@
   "defaultModel": "gpt-5.5",
   "collapseChangelog": true,
   "defaultProvider": "openai",
-  "enableSkillCommands": true
+  "treeFilterMode": "user-only"
 }
