@@ -293,7 +293,7 @@ class BashPreviewComponent implements Component {
 
         const styledOutput = output
             .split("\n")
-            .map((line) => this.theme.fg("toolOutput", line))
+            .map((line) => this.theme.fg("toolOutput", replaceTabs(line)))
             .join("\n");
         const visualLines = wrapTextWithAnsi(styledOutput, Math.max(1, width));
         const displayLines = visualLines.slice(-PREVIEW_LINES);
