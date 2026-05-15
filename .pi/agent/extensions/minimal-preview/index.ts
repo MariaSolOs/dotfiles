@@ -80,6 +80,18 @@ function moreLinesMessage(remaining: number, theme: ThemeLike): string {
 	return theme.fg("muted", `${remaining} more lines...`);
 }
 
+function formatBashCall(args: any, theme: ThemeLike): string {
+	const command = str(args?.command);
+	const timeout = typeof args?.timeout === "number" ? args.timeout : undefined;
+	const timeoutSuffix = timeout ? theme.fg("muted", ` (timeout ${timeout}s)`) : "";
+	if (command === null) {
+		return `${theme.fg("toolTitle", theme.bold("$"))} ${theme.fg("error", "[invalid arg]")}${timeoutSuffix}`;
+	}
+
+	const commandDisplay = command ? replaceTabs(normalizeDisplayText(command)) : theme.fg("toolOutput", "...");
+	return `${theme.fg("toolTitle", theme.bold(`$ ${commandDisplay}`))}${timeoutSuffix}`;
+}
+
 function previewLines(lines: string[], theme: ThemeLike, options: { lang?: string; colorPlain?: boolean } = {}): string {
 	const trimmed = trimTrailingEmptyLines(lines);
 	const displayLines = trimmed.slice(0, PREVIEW_LINES);
@@ -186,6 +198,31 @@ function buildCollapsedEditCall(component: Box, args: any, theme: ThemeLike) {
 	return component;
 }
 
+class BashCallPreviewComponent implements Component {
+	constructor(
+		private args: any,
+		private theme: ThemeLike,
+	) {}
+
+	set(args: any, theme: ThemeLike) {
+		this.args = args;
+		this.theme = theme;
+	}
+
+	invalidate() {}
+
+	render(width: number): string[] {
+		const visualLines = wrapTextWithAnsi(formatBashCall(this.args, this.theme), Math.max(1, width));
+		const displayLines = visualLines.slice(0, PREVIEW_LINES);
+		const remaining = visualLines.length - displayLines.length;
+
+		if (remaining > 0) {
+			return [...displayLines, moreLinesMessage(remaining, this.theme)];
+		}
+		return displayLines;
+	}
+}
+
 class BashPreviewComponent implements Component {
 	constructor(
 		private result: any,
@@ -227,7 +264,21 @@ export default function (pi: ExtensionAPI) {
 			return getBuiltInDefinitions(ctx.cwd).bash.execute(toolCallId, params, signal, onUpdate, ctx);
 		},
 		renderCall(args: any, theme: any, context: any) {
-			return getBuiltInDefinitions(context.cwd).bash.renderCall?.(args, theme, context) ?? new Text("", 0, 0);
+			const state = context.state;
+			if (context.executionStarted && state?.startedAt === undefined) {
+				state.startedAt = Date.now();
+				state.endedAt = undefined;
+			}
+
+			if (context.expanded) {
+				const text = context.lastComponent instanceof Text ? context.lastComponent : new Text("", 0, 0);
+				text.setText(formatBashCall(args, theme));
+				return text;
+			}
+
+			const component = context.lastComponent instanceof BashCallPreviewComponent ? context.lastComponent : new BashCallPreviewComponent(args, theme);
+			component.set(args, theme);
+			return component;
 		},
 		renderResult(result: any, options: any, theme: any, context: any) {
 			if (options.expanded) {
