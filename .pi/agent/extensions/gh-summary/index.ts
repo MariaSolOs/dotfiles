@@ -1,5 +1,12 @@
 import { spawn } from "node:child_process";
-import { chmod, mkdtemp, open, readFile, stat, writeFile } from "node:fs/promises";
+import {
+    chmod,
+    mkdtemp,
+    open,
+    readFile,
+    stat,
+    writeFile,
+} from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { complete, type UserMessage } from "@earendil-works/pi-ai";
@@ -51,9 +58,17 @@ type SessionEntry = {
     };
 };
 
-function runCapture(file: string, args: string[], cwd: string, allowedExitCodes = [0]): Promise<CommandResult> {
+function runCapture(
+    file: string,
+    args: string[],
+    cwd: string,
+    allowedExitCodes = [0],
+): Promise<CommandResult> {
     return new Promise((resolve, reject) => {
-        const child = spawn(file, args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
+        const child = spawn(file, args, {
+            cwd,
+            stdio: ["ignore", "pipe", "pipe"],
+        });
         let stdout = "";
         let stderr = "";
 
@@ -69,13 +84,22 @@ function runCapture(file: string, args: string[], cwd: string, allowedExitCodes 
             if (allowedExitCodes.includes(resolvedCode)) {
                 resolve({ code: resolvedCode, stdout, stderr });
             } else {
-                reject(new Error(stderr.trim() || `${file} ${args.join(" ")} exited with code ${resolvedCode}`));
+                reject(
+                    new Error(
+                        stderr.trim() ||
+                            `${file} ${args.join(" ")} exited with code ${resolvedCode}`,
+                    ),
+                );
             }
         });
     });
 }
 
-async function runGit(cwd: string, args: string[], allowedExitCodes = [0]): Promise<string> {
+async function runGit(
+    cwd: string,
+    args: string[],
+    allowedExitCodes = [0],
+): Promise<string> {
     const result = await runCapture("git", args, cwd, allowedExitCodes);
     return result.stdout;
 }
@@ -111,7 +135,10 @@ function buildConversationContext(entries: SessionEntry[]): string {
         const label = role === "user" ? "User" : "Assistant";
         const section = `${label}: ${truncate(text, 2_000)}`;
         const separatorLength = sections.length === 0 ? 0 : 2;
-        if (total + separatorLength + section.length > MAX_CONVERSATION_CONTEXT_CHARS) {
+        if (
+            total + separatorLength + section.length >
+            MAX_CONVERSATION_CONTEXT_CHARS
+        ) {
             break;
         }
 
@@ -122,7 +149,12 @@ function buildConversationContext(entries: SessionEntry[]): string {
     return sections.join("\n\n");
 }
 
-function appendBoundedSection(sections: string[], title: string, body: string, total: { value: number }): void {
+function appendBoundedSection(
+    sections: string[],
+    title: string,
+    body: string,
+    total: { value: number },
+): void {
     if (total.value >= MAX_CHANGESET_CHARS) return;
 
     const trimmed = body.trimEnd();
@@ -148,16 +180,26 @@ function parseNulSeparated(value: string): string[] {
     return value.split("\0").filter(Boolean);
 }
 
-function resolveRepoPath(root: string, relativePath: string): string | undefined {
+function resolveRepoPath(
+    root: string,
+    relativePath: string,
+): string | undefined {
     const resolved = path.resolve(root, relativePath);
     const relative = path.relative(root, resolved);
-    if (relative === "" || relative.startsWith("..") || path.isAbsolute(relative)) {
+    if (
+        relative === "" ||
+        relative.startsWith("..") ||
+        path.isAbsolute(relative)
+    ) {
         return undefined;
     }
     return resolved;
 }
 
-async function readUntrackedFile(root: string, relativePath: string): Promise<string> {
+async function readUntrackedFile(
+    root: string,
+    relativePath: string,
+): Promise<string> {
     const absolutePath = resolveRepoPath(root, relativePath);
     if (!absolutePath) return "[omitted: path resolves outside repository]";
 
@@ -173,8 +215,14 @@ async function readUntrackedFile(root: string, relativePath: string): Promise<st
             const content = buffer.subarray(0, bytesRead);
             if (content.includes(0)) return "[binary file omitted]";
 
-            const truncationNote = fileStat.size > bytesRead ? `\n...[truncated ${fileStat.size - bytesRead} bytes]` : "";
-            return truncate(content.toString("utf8") + truncationNote, MAX_UNTRACKED_FILE_CHARS);
+            const truncationNote =
+                fileStat.size > bytesRead
+                    ? `\n...[truncated ${fileStat.size - bytesRead} bytes]`
+                    : "";
+            return truncate(
+                content.toString("utf8") + truncationNote,
+                MAX_UNTRACKED_FILE_CHARS,
+            );
         } finally {
             await handle.close();
         }
@@ -183,11 +231,17 @@ async function readUntrackedFile(root: string, relativePath: string): Promise<st
     }
 }
 
-async function buildUntrackedSection(root: string, rawFiles: string): Promise<string> {
+async function buildUntrackedSection(
+    root: string,
+    rawFiles: string,
+): Promise<string> {
     const files = parseNulSeparated(rawFiles);
     if (files.length === 0) return "";
 
-    const chunks = [`Untracked files (${files.length}):`, files.map((file) => `- ${file}`).join("\n")];
+    const chunks = [
+        `Untracked files (${files.length}):`,
+        files.map((file) => `- ${file}`).join("\n"),
+    ];
 
     for (const file of files.slice(0, MAX_UNTRACKED_FILES)) {
         const content = await readUntrackedFile(root, file);
@@ -195,7 +249,9 @@ async function buildUntrackedSection(root: string, rawFiles: string): Promise<st
     }
 
     if (files.length > MAX_UNTRACKED_FILES) {
-        chunks.push(`...[omitted ${files.length - MAX_UNTRACKED_FILES} additional untracked files]`);
+        chunks.push(
+            `...[omitted ${files.length - MAX_UNTRACKED_FILES} additional untracked files]`,
+        );
     }
 
     return chunks.join("\n\n");
@@ -211,7 +267,9 @@ async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
     try {
         root = (await runGit(cwd, ["rev-parse", "--show-toplevel"])).trim();
     } catch (error) {
-        throw new Error(`Not a git repository, or git is unavailable: ${(error as Error).message}`);
+        throw new Error(
+            `Not a git repository, or git is unavailable: ${(error as Error).message}`,
+        );
     }
 
     const [branch, head, status] = await Promise.all([
@@ -222,20 +280,38 @@ async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
 
     if (!status.trim()) return { root, text: "" };
 
-    const [stagedStat, unstagedStat, stagedDiff, unstagedDiff, untrackedRaw] = await Promise.all([
-        runGit(root, ["diff", "--cached", "--stat", "--"]),
-        runGit(root, ["diff", "--stat", "--"]),
-        runGit(root, ["diff", "--cached", "--no-ext-diff", "--find-renames", "--find-copies", "--"]),
-        runGit(root, ["diff", "--no-ext-diff", "--find-renames", "--find-copies", "--"]),
-        runGit(root, ["ls-files", "--others", "--exclude-standard", "-z"]),
-    ]);
+    const [stagedStat, unstagedStat, stagedDiff, unstagedDiff, untrackedRaw] =
+        await Promise.all([
+            runGit(root, ["diff", "--cached", "--stat", "--"]),
+            runGit(root, ["diff", "--stat", "--"]),
+            runGit(root, [
+                "diff",
+                "--cached",
+                "--no-ext-diff",
+                "--find-renames",
+                "--find-copies",
+                "--",
+            ]),
+            runGit(root, [
+                "diff",
+                "--no-ext-diff",
+                "--find-renames",
+                "--find-copies",
+                "--",
+            ]),
+            runGit(root, ["ls-files", "--others", "--exclude-standard", "-z"]),
+        ]);
 
     const sections: string[] = [];
     const total = { value: 0 };
     appendBoundedSection(
         sections,
         "Repository",
-        [`Root: ${root}`, `Branch: ${branch.trim() || "(detached HEAD)"}`, `HEAD: ${head.trim()}`].join("\n"),
+        [
+            `Root: ${root}`,
+            `Branch: ${branch.trim() || "(detached HEAD)"}`,
+            `HEAD: ${head.trim()}`,
+        ].join("\n"),
         total,
     );
     appendBoundedSection(sections, "Worktree status", status, total);
@@ -243,7 +319,12 @@ async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
     appendBoundedSection(sections, "Staged diff", stagedDiff, total);
     appendBoundedSection(sections, "Unstaged diffstat", unstagedStat, total);
     appendBoundedSection(sections, "Unstaged diff", unstagedDiff, total);
-    appendBoundedSection(sections, "Untracked files", await buildUntrackedSection(root, untrackedRaw), total);
+    appendBoundedSection(
+        sections,
+        "Untracked files",
+        await buildUntrackedSection(root, untrackedRaw),
+        total,
+    );
 
     return { root, text: sections.join("\n\n") };
 }
@@ -251,7 +332,11 @@ async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
 // Match GitHub's common single-file PR template location; absence is normal.
 async function readPrTemplate(cwd: string): Promise<string | undefined> {
     try {
-        const templatePath = path.join(cwd, ".github", "PULL_REQUEST_TEMPLATE.md");
+        const templatePath = path.join(
+            cwd,
+            ".github",
+            "PULL_REQUEST_TEMPLATE.md",
+        );
         const template = await readFile(templatePath, "utf8");
         return template.trim() || undefined;
     } catch (error) {
@@ -261,7 +346,11 @@ async function readPrTemplate(cwd: string): Promise<string | undefined> {
     }
 }
 
-function buildUserPrompt(changesText: string, conversationContext: string, prTemplate?: string): string {
+function buildUserPrompt(
+    changesText: string,
+    conversationContext: string,
+    prTemplate?: string,
+): string {
     const templateSection = prTemplate
         ? [
               "Use this GitHub PR template for the description if possible:",
@@ -314,7 +403,11 @@ function shellQuote(value: string): string {
 
 // Used for pbcopy and osascript so large/nested strings go through stdin instead
 // of shell arguments, avoiding fish/POSIX/AppleScript quoting interactions.
-function runWithInput(file: string, args: string[], input: string): Promise<void> {
+function runWithInput(
+    file: string,
+    args: string[],
+    input: string,
+): Promise<void> {
     return new Promise((resolve, reject) => {
         const child = spawn(file, args, { stdio: ["pipe", "ignore", "pipe"] });
         let stderr = "";
@@ -327,7 +420,11 @@ function runWithInput(file: string, args: string[], input: string): Promise<void
             if (code === 0) {
                 resolve();
             } else {
-                reject(new Error(stderr.trim() || `${file} exited with code ${code}`));
+                reject(
+                    new Error(
+                        stderr.trim() || `${file} exited with code ${code}`,
+                    ),
+                );
             }
         });
 
@@ -373,7 +470,8 @@ end tell
 
 export default function ghSummaryExtension(pi: ExtensionAPI) {
     pi.registerCommand("gh-summary", {
-        description: "Create a GitHub-ready PR title/description from the git worktree and open it in Ghostty/neovim",
+        description:
+            "Create a GitHub-ready PR title/description from the git worktree and open it in Ghostty/neovim",
         handler: async (_args, ctx) => {
             if (!ctx.model) {
                 ctx.ui.notify("No model selected", "error");
@@ -384,7 +482,10 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             try {
                 changes = await collectWorktreeChanges(ctx.cwd);
             } catch (error) {
-                ctx.ui.notify(`Failed to inspect git worktree: ${(error as Error).message}`, "error");
+                ctx.ui.notify(
+                    `Failed to inspect git worktree: ${(error as Error).message}`,
+                    "error",
+                );
                 return;
             }
 
@@ -397,16 +498,33 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
 
             let summary = "";
             try {
-                const auth = await ctx.modelRegistry.getApiKeyAndHeaders(ctx.model);
+                const auth = await ctx.modelRegistry.getApiKeyAndHeaders(
+                    ctx.model,
+                );
                 if (!auth.ok || !auth.apiKey) {
-                    throw new Error(auth.ok ? `No API key for ${ctx.model.provider}` : auth.error);
+                    throw new Error(
+                        auth.ok
+                            ? `No API key for ${ctx.model.provider}`
+                            : auth.error,
+                    );
                 }
 
                 const prTemplate = await readPrTemplate(changes.root);
-                const conversationContext = buildConversationContext(ctx.sessionManager.getBranch() as SessionEntry[]);
+                const conversationContext = buildConversationContext(
+                    ctx.sessionManager.getBranch() as SessionEntry[],
+                );
                 const userMessage: UserMessage = {
                     role: "user",
-                    content: [{ type: "text", text: buildUserPrompt(changes.text, conversationContext, prTemplate) }],
+                    content: [
+                        {
+                            type: "text",
+                            text: buildUserPrompt(
+                                changes.text,
+                                conversationContext,
+                                prTemplate,
+                            ),
+                        },
+                    ],
                     timestamp: Date.now(),
                 };
 
@@ -423,7 +541,10 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
 
                 summary = stripWrappingCodeFence(
                     response.content
-                        .filter((c): c is { type: "text"; text: string } => c.type === "text")
+                        .filter(
+                            (c): c is { type: "text"; text: string } =>
+                                c.type === "text",
+                        )
                         .map((c) => c.text)
                         .join("\n"),
                 );
@@ -432,7 +553,10 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     throw new Error("Model returned an empty summary");
                 }
             } catch (error) {
-                ctx.ui.notify(`Failed to generate PR summary: ${(error as Error).message}`, "error");
+                ctx.ui.notify(
+                    `Failed to generate PR summary: ${(error as Error).message}`,
+                    "error",
+                );
                 return;
             }
 
@@ -448,7 +572,10 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
 
             try {
                 await openInGhostty(wrapperPath);
-                ctx.ui.notify(`Opened PR summary in Ghostty/neovim: ${summaryPath}`, "info");
+                ctx.ui.notify(
+                    `Opened PR summary in Ghostty/neovim: ${summaryPath}`,
+                    "info",
+                );
             } catch (error) {
                 ctx.ui.notify(
                     `Failed to open Ghostty/neovim: ${(error as Error).message}. Summary written to ${summaryPath}`,

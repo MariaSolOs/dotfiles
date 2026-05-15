@@ -2,17 +2,10 @@
 
 This folder contains my configuration for `pi`.
 
-## TypeScript validation
+## Validation
 
-When validating TypeScript changes in this folder, use `tsgo`, not `tsc`.
-
-For extension-specific TypeScript projects, run `tsgo` from the extension directory with its local config, for example:
-
-```sh
-cd agent/extensions/gh-summary && tsgo -p tsconfig.json
-```
-
-Keep `tsconfig.json` files as small as possible. Do not configure options that are already TypeScript defaults. Only add options that are required for this Pi extension environment or for successful validation.
+- **TypeScript compilation**: When validating TypeScript changes in this folder, use `tsgo`, not `tsc`. For the extensions, use the `tsconfig.json` file in that folder (`cd agent/extensions && tsgo -p tsconfig.json`).
+- **Prettier formatting**: Use `prettier` to format all files in this folder.
 
 ## Documentation
 
