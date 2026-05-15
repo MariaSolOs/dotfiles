@@ -363,7 +363,7 @@ class BashPreviewComponent implements Component {
         const skipped = visualLines.length - displayLines.length;
 
         if (skipped > 0) {
-            return ["", moreLinesMessage(skipped, this.theme), ...displayLines];
+            return ["", ...displayLines, moreLinesMessage(skipped, this.theme)];
         }
         return ["", ...displayLines];
     }
