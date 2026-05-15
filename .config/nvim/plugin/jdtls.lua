@@ -21,7 +21,9 @@ add_on_file_type('java', {
                     '-Declipse.product=org.eclipse.jdt.ls.core.product',
                     '-Dlog.protocol=true',
                     '-Dlog.level=ALL',
-                    '-Xmx1g',
+                    '-Xmx4g',
+                    '-XX:+UseG1GC',
+                    '-XX:+UseStringDeduplication',
                     '--add-modules=ALL-SYSTEM',
                     '--add-opens',
                     'java.base/java.util=ALL-UNNAMED',
@@ -52,6 +54,16 @@ add_on_file_type('java', {
                         java = {
                             inlayHints = {
                                 parameterNames = { enabled = 'all' },
+                            },
+                            import = {
+                                exclusions = {
+                                    '**/build/**',
+                                    '**/.gradle/**',
+                                    '**/node_modules/**',
+                                    '**/.metadata/**',
+                                    '**/bin/**',
+                                    '**/out/**',
+                                },
                             },
                         },
                     },
