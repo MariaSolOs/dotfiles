@@ -9,6 +9,5 @@ This folder contains my configuration for `pi`.
 
 ## Documentation
 
-Extensions should include comments explaining the core logic and design. Don't go overboard: comments shouldn't explain what's obvious from the code.
-
-Don't add `README` files, comments in the implementation code is more than enough.
+- Extensions should include comments explaining the core logic and design. Don't go overboard: comments shouldn't explain what's obvious from the code.
+- Don't add `README` files, comments in the implementation code is more than enough.
