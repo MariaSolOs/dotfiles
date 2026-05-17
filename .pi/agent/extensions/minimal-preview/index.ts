@@ -3,6 +3,9 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
     createBashToolDefinition,
     createEditToolDefinition,
+    createFindToolDefinition,
+    createGrepToolDefinition,
+    createLsToolDefinition,
     createReadToolDefinition,
     createWriteToolDefinition,
     getLanguageFromPath,
@@ -33,16 +36,19 @@ function createBuiltInDefinitions(cwd: string) {
     // delegate execution to them so this extension only owns preview rendering.
     return {
         read: createReadToolDefinition(cwd),
+        ls: createLsToolDefinition(cwd),
+        grep: createGrepToolDefinition(cwd),
+        find: createFindToolDefinition(cwd),
         write: createWriteToolDefinition(cwd),
         edit: createEditToolDefinition(cwd),
         bash: createBashToolDefinition(cwd),
     };
 }
 
-const toolCache = new Map<
-    string,
-    ReturnType<typeof createBuiltInDefinitions>
->();
+type BuiltInDefinitions = ReturnType<typeof createBuiltInDefinitions>;
+type BuiltInToolName = keyof BuiltInDefinitions;
+
+const toolCache = new Map<string, BuiltInDefinitions>();
 
 function getBuiltInDefinitions(cwd: string) {
     let tools = toolCache.get(cwd);
@@ -51,6 +57,58 @@ function getBuiltInDefinitions(cwd: string) {
         toolCache.set(cwd, tools);
     }
     return tools;
+}
+
+function delegateExecute(toolName: BuiltInToolName): any {
+    return async (
+        toolCallId: string,
+        params: any,
+        signal: AbortSignal | undefined,
+        onUpdate: any,
+        ctx: any,
+    ) =>
+        getBuiltInDefinitions(ctx.cwd)[toolName].execute(
+            toolCallId,
+            params,
+            signal,
+            onUpdate,
+            ctx,
+        );
+}
+
+function renderBuiltInCall(
+    toolName: BuiltInToolName,
+    args: any,
+    theme: any,
+    context: any,
+    fallback: Component,
+): Component {
+    return (
+        getBuiltInDefinitions(context.cwd)[toolName].renderCall?.(
+            args,
+            theme,
+            context,
+        ) ?? fallback
+    );
+}
+
+function renderBuiltInExpandedResult(
+    toolName: BuiltInToolName,
+    result: any,
+    options: any,
+    theme: any,
+    context: any,
+    fallback: Component,
+): Component | undefined {
+    if (!options.expanded) return undefined;
+    return (
+        getBuiltInDefinitions(context.cwd)[toolName].renderResult?.(
+            result,
+            options,
+            theme,
+            context,
+        ) ?? fallback
+    );
 }
 
 function str(value: unknown): string | null {
@@ -132,6 +190,11 @@ function previewLines(
     }
 
     return output;
+}
+
+function formatMinimalTextResult(result: any, theme: ThemeLike): string {
+    const output = previewLines(textOutput(result).trim().split("\n"), theme);
+    return output ? `\n${output}` : "";
 }
 
 function highlightedContentLines(
@@ -306,26 +369,50 @@ class BashPreviewComponent implements Component {
     }
 }
 
+function registerMinimalTextResultTool(
+    pi: ExtensionAPI,
+    startupTools: BuiltInDefinitions,
+    toolName: "ls" | "grep" | "find",
+) {
+    pi.registerTool({
+        ...startupTools[toolName],
+        execute: delegateExecute(toolName),
+        renderCall(args: any, theme: any, context: any) {
+            return renderBuiltInCall(
+                toolName,
+                args,
+                theme,
+                context,
+                new Text("", 0, 0),
+            );
+        },
+        renderResult(result: any, options: any, theme: any, context: any) {
+            const expanded = renderBuiltInExpandedResult(
+                toolName,
+                result,
+                options,
+                theme,
+                context,
+                new Text("", 0, 0),
+            );
+            if (expanded) return expanded;
+
+            const text =
+                context.lastComponent instanceof Text
+                    ? context.lastComponent
+                    : new Text("", 0, 0);
+            text.setText(formatMinimalTextResult(result, theme));
+            return text;
+        },
+    });
+}
+
 export default function (pi: ExtensionAPI) {
     const startupTools = getBuiltInDefinitions(process.cwd());
 
     pi.registerTool({
         ...startupTools.bash,
-        async execute(
-            toolCallId: string,
-            params: any,
-            signal: AbortSignal | undefined,
-            onUpdate: any,
-            ctx: any,
-        ) {
-            return getBuiltInDefinitions(ctx.cwd).bash.execute(
-                toolCallId,
-                params,
-                signal,
-                onUpdate,
-                ctx,
-            );
-        },
+        execute: delegateExecute("bash"),
         renderCall(args: any, theme: any, context: any) {
             const state = context.state;
             if (context.executionStarted && state?.startedAt === undefined) {
@@ -370,43 +457,32 @@ export default function (pi: ExtensionAPI) {
         },
     });
 
+    registerMinimalTextResultTool(pi, startupTools, "ls");
+    registerMinimalTextResultTool(pi, startupTools, "grep");
+    registerMinimalTextResultTool(pi, startupTools, "find");
+
     pi.registerTool({
         ...startupTools.read,
-        async execute(
-            toolCallId: string,
-            params: any,
-            signal: AbortSignal | undefined,
-            onUpdate: any,
-            ctx: any,
-        ) {
-            return getBuiltInDefinitions(ctx.cwd).read.execute(
-                toolCallId,
-                params,
-                signal,
-                onUpdate,
-                ctx,
-            );
-        },
+        execute: delegateExecute("read"),
         renderCall(args: any, theme: any, context: any) {
-            return (
-                getBuiltInDefinitions(context.cwd).read.renderCall?.(
-                    args,
-                    theme,
-                    context,
-                ) ?? new Text("", 0, 0)
+            return renderBuiltInCall(
+                "read",
+                args,
+                theme,
+                context,
+                new Text("", 0, 0),
             );
         },
         renderResult(result: any, options: any, theme: any, context: any) {
-            if (options.expanded) {
-                return (
-                    getBuiltInDefinitions(context.cwd).read.renderResult?.(
-                        result,
-                        options,
-                        theme,
-                        context,
-                    ) ?? new Text("", 0, 0)
-                );
-            }
+            const expanded = renderBuiltInExpandedResult(
+                "read",
+                result,
+                options,
+                theme,
+                context,
+                new Text("", 0, 0),
+            );
+            if (expanded) return expanded;
 
             const text =
                 context.lastComponent instanceof Text
@@ -419,29 +495,15 @@ export default function (pi: ExtensionAPI) {
 
     pi.registerTool({
         ...startupTools.write,
-        async execute(
-            toolCallId: string,
-            params: any,
-            signal: AbortSignal | undefined,
-            onUpdate: any,
-            ctx: any,
-        ) {
-            return getBuiltInDefinitions(ctx.cwd).write.execute(
-                toolCallId,
-                params,
-                signal,
-                onUpdate,
-                ctx,
-            );
-        },
+        execute: delegateExecute("write"),
         renderCall(args: any, theme: any, context: any) {
             if (context.expanded) {
-                return (
-                    getBuiltInDefinitions(context.cwd).write.renderCall?.(
-                        args,
-                        theme,
-                        context,
-                    ) ?? new Text("", 0, 0)
+                return renderBuiltInCall(
+                    "write",
+                    args,
+                    theme,
+                    context,
+                    new Text("", 0, 0),
                 );
             }
 
@@ -466,29 +528,15 @@ export default function (pi: ExtensionAPI) {
 
     pi.registerTool({
         ...startupTools.edit,
-        async execute(
-            toolCallId: string,
-            params: any,
-            signal: AbortSignal | undefined,
-            onUpdate: any,
-            ctx: any,
-        ) {
-            return getBuiltInDefinitions(ctx.cwd).edit.execute(
-                toolCallId,
-                params,
-                signal,
-                onUpdate,
-                ctx,
-            );
-        },
+        execute: delegateExecute("edit"),
         renderCall(args: any, theme: any, context: any) {
             if (context.expanded) {
-                return (
-                    getBuiltInDefinitions(context.cwd).edit.renderCall?.(
-                        args,
-                        theme,
-                        context,
-                    ) ?? new Container()
+                return renderBuiltInCall(
+                    "edit",
+                    args,
+                    theme,
+                    context,
+                    new Container(),
                 );
             }
 
@@ -499,16 +547,15 @@ export default function (pi: ExtensionAPI) {
             return buildCollapsedEditCall(component, args, theme);
         },
         renderResult(result: any, options: any, theme: any, context: any) {
-            if (options.expanded) {
-                return (
-                    getBuiltInDefinitions(context.cwd).edit.renderResult?.(
-                        result,
-                        options,
-                        theme,
-                        context,
-                    ) ?? new Container()
-                );
-            }
+            const expanded = renderBuiltInExpandedResult(
+                "edit",
+                result,
+                options,
+                theme,
+                context,
+                new Container(),
+            );
+            if (expanded) return expanded;
 
             const component =
                 context.lastComponent instanceof Container
