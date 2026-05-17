@@ -9,7 +9,7 @@
  * Scoped-package-style literal `@` paths are handled by a fallback that the
  * downstream resolver opts into (see at-reference.ts).
  *
- * Used by the OpenCode plugin and Pi extension, where the whole args string
+ * Used by the plugin and Pi extension, where the whole args string
  * arrives pre-joined from the harness slash-command dispatcher. The Claude
  * Code binary parses argv directly with indexOf/splice and does not use
  * this helper.
@@ -18,7 +18,7 @@
  * non-whitespace tokens as separate segments. Only known flag tokens
  * (whole-word match) plus one adjacent whitespace run are removed.
  * This keeps double-spaces and tabs inside file paths intact — which
- * matches the pre-PR behavior on `main`, where OpenCode and Pi passed
+ * matches the pre-PR behavior on `main`, where Pi passed
  * the raw args string straight through to the filesystem resolver.
  *
  * Remaining edge: if a path literally contains a known flag as a standalone
@@ -93,7 +93,7 @@ export function parseAnnotateArgs(raw: string): ParsedAnnotateArgs {
 
     // Trim covers the case where two adjacent flags (`... --gate --json`)
     // both claim the single whitespace between them, leaving a trailing space
-    // after the kept token. Wrapping quotes come from OpenCode/Pi users who
+    // after the kept token. Wrapping quotes come from Pi users who
     // quote paths with spaces (shell muscle memory); strip them here so
     // downstream callers never see tokenization artifacts.
     const rawFilePath = stripWrappingQuotes(

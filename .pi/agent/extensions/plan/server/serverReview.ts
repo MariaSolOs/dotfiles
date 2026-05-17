@@ -690,27 +690,6 @@ export async function startReviewServer(options: {
             /* Pi not available */
         }
 
-        // OpenCode SDK
-        try {
-            // @ts-ignore — dynamic import; Bun-only types resolved at runtime
-            await import("../generated/ai/providers/opencode-sdk.js");
-            const opencodePath = whichCmd("opencode");
-            if (opencodePath) {
-                const provider = await ai.createProvider({
-                    type: "opencode-sdk",
-                    cwd: process.cwd(),
-                });
-                if (provider && "fetchModels" in provider) {
-                    await (
-                        provider as { fetchModels: () => Promise<void> }
-                    ).fetchModels();
-                }
-                registry.register(provider);
-            }
-        } catch {
-            /* OpenCode not available */
-        }
-
         if (registry.size > 0) {
             aiEndpoints = ai.createAIEndpoints({
                 registry,

@@ -46,7 +46,6 @@ export type PromptSectionOverrides = Record<string, string | undefined>;
 
 export type PromptRuntime =
     | "claude-code"
-    | "opencode"
     | "copilot-cli"
     | "pi"
     | "codex"
@@ -252,7 +251,7 @@ export function resolveDefaultDiffType(cfg?: PlanConfig): DefaultDiffType {
  * Resolve whether to use Jina Reader for URL annotation.
  *
  * Priority (highest wins):
- *   --no-jina CLI flag  →  PLAN_JINA env var  →  config.jina  →  default true
+ *  --no-jina CLI flag → PLAN_JINA env var → config.jina → default true
  */
 export function resolveUseJina(
     cliNoJina: boolean,

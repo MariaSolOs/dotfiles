@@ -3,7 +3,7 @@
 /**
  * `@`-reference handling for user-provided paths.
  *
- * Several agent harnesses (Claude Code, OpenCode, Pi) let users reference
+ * Several agent harnesses (Claude Code, Pi) let users reference
  * files with an `@` prefix, e.g. `@README.md`. The `@` is the team's
  * reference marker, not part of the filename. Stripping it is the primary
  * resolution path — that's the common case and it's supported first-class.
@@ -21,7 +21,7 @@ import { stripWrappingQuotes } from "./resolve-file";
 /**
  * Normalize a user-typed path reference by unwrapping matching `"..."` or
  * `'...'` quotes and removing a single leading `@`. Quotes come from
- * harnesses that tokenize on whitespace (OpenCode, Pi), where paths
+ * harnesses that tokenize on whitespace (Pi), where paths
  * containing spaces have to be quoted. The quote-stripping has to run
  * first so the `@` check sees the real first character.
  *

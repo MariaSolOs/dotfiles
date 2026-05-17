@@ -76,7 +76,6 @@ export type {
     ClaudeAgentSDKConfig,
     CodexSDKConfig,
     PiSDKConfig,
-    OpenCodeConfig,
 } from "./types.ts";
 
 // Provider registry

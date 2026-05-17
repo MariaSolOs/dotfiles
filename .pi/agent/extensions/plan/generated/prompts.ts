@@ -18,7 +18,6 @@ export function resolveTemplate(
 
 export const PLAN_TOOL_NAMES: Record<PromptRuntime, string> = {
     "claude-code": "ExitPlanMode",
-    opencode: "submit_plan",
     "copilot-cli": "exit_plan_mode",
     pi: "plan_submit_plan",
     codex: "ExitPlanMode",
@@ -34,7 +33,7 @@ export function buildPlanFileRule(
     planFilePath?: string,
 ): string {
     if (!planFilePath) return "";
-    return `- Your plan is saved at: ${planFilePath}\n  You can edit this file to make targeted changes, then pass its path to ${toolName}.\n`;
+    return `- Your plan is saved at: ${planFilePath}\n You can edit this file to make targeted changes, then pass its path to ${toolName}.\n`;
 }
 
 // ─── Default constants ───────────────────────────────────────────────────────
@@ -124,7 +123,6 @@ export function getReviewApprovedPrompt(
 }
 
 const REVIEW_DENIED_RUNTIME_DEFAULTS: Partial<Record<PromptRuntime, string>> = {
-    opencode: "\n\nPlease address this feedback.",
     pi: "\n\nPlease address this feedback.",
 };
 
@@ -159,9 +157,8 @@ export function getPlanDeniedPrompt(
     return resolveTemplate(template, vars ?? {});
 }
 
-const PLAN_APPROVED_RUNTIME_DEFAULTS: Partial<Record<PromptRuntime, string>> = {
-    opencode: "Plan approved!{{doneMsg}}",
-};
+const PLAN_APPROVED_RUNTIME_DEFAULTS: Partial<Record<PromptRuntime, string>> =
+    {};
 
 export function getPlanApprovedPrompt(
     runtime?: PromptRuntime | null,
@@ -181,10 +178,7 @@ export function getPlanApprovedPrompt(
 
 const PLAN_APPROVED_WITH_NOTES_RUNTIME_DEFAULTS: Partial<
     Record<PromptRuntime, string>
-> = {
-    opencode:
-        "Plan approved with notes!\n{{doneMsg}}\n\n## Implementation Notes\n\nThe user approved your plan but added the following notes to consider during implementation:\n\n{{feedback}}{{proceedSuffix}}",
-};
+> = {};
 
 export function getPlanApprovedWithNotesPrompt(
     runtime?: PromptRuntime | null,

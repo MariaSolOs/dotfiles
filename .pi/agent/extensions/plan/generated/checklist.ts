@@ -3,7 +3,7 @@
 /**
  * Checklist parsing and progress tracking utilities.
  *
- * Shared between Pi extension and OpenCode plugin for plan execution tracking.
+ * Shared between Pi extension and plugin for plan execution tracking.
  */
 
 export interface ChecklistItem {
