@@ -1,9 +1,12 @@
 {
-  "lastChangelogVersion": "0.74.0",
+  "lastChangelogVersion": "0.75.0",
   "theme": "miss-dracula",
   "editorPaddingX": 1,
   "defaultModel": "gpt-5.5",
   "collapseChangelog": true,
   "defaultProvider": "openai",
-  "treeFilterMode": "user-only"
+  "treeFilterMode": "user-only",
+  "packages": [
+    "npm:@plannotator/pi-extension"
+  ]
 }
