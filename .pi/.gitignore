@@ -1,5 +1,8 @@
 # Local state
 /agent/sessions/
 
+# Dependencies
+node_modules/
+
 # Sensitive
 /agent/auth.json

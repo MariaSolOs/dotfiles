@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Compound Planning — What 370 Files Reveal</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --bg: #fdfcfb;
+                --slate-900: #0f172a;
+                --slate-800: #1e293b;
+                --slate-700: #334155;
+                --slate-600: #475569;
+                --slate-500: #64748b;
+                --slate-400: #94a3b8;
+                --slate-300: #cbd5e1;
+                --slate-200: #e2e8f0;
+                --slate-100: #f1f5f9;
+                --slate-50: #f8fafc;
+                --amber-500: #f59e0b;
+                --amber-600: #d97706;
+                --amber-700: #b45309;
+                --amber-50: #fffbeb;
+                --emerald-500: #10b981;
+                --emerald-600: #059669;
+                --emerald-400: #34d399;
+                --emerald-900: #064e3b;
+                --emerald-800: #065f46;
+                --emerald-100: #d1fae5;
+                --emerald-50: #ecfdf5;
+                --rose-500: #f43f5e;
+                --rose-600: #e11d48;
+                --rose-400: #fb7185;
+                --rose-900: #881337;
+                --rose-800: #9f1239;
+                --rose-100: #ffe4e6;
+                --rose-50: #fff1f2;
+                --indigo-500: #6366f1;
+                --indigo-600: #4f46e5;
+                --purple-600: #9333ea;
+            }
+
+            body {
+                font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+                background: var(--bg);
+                color: var(--slate-800);
+                -webkit-font-smoothing: antialiased;
+            }
+
+            .container {
+                max-width: 1024px;
+                margin: 0 auto;
+                padding: 48px 24px 64px;
+            }
+            @media (min-width: 768px) {
+                .container {
+                    padding: 96px 24px 80px;
+                }
+            }
+
+            /* Typography */
+            .font-serif {
+                font-family: "Playfair Display", ui-serif, Georgia, serif;
+            }
+            .font-mono {
+                font-family: "JetBrains Mono", ui-monospace, monospace;
+            }
+
+            /* Header */
+            header {
+                border-bottom: 1px solid var(--slate-200);
+                padding-bottom: 40px;
+                margin-bottom: 96px;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            header h1 {
+                font-family: "Playfair Display", serif;
+                font-size: 36px;
+                font-weight: 400;
+                color: var(--slate-900);
+                line-height: 1.2;
+            }
+            header .meta {
+                font-size: 15px;
+                font-weight: 300;
+                color: var(--slate-500);
+                letter-spacing: 0.04em;
+            }
+
+            /* Sections */
+            .section {
+                margin-bottom: 128px;
+            }
+            .section-label {
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                color: var(--slate-400);
+                margin-bottom: 24px;
+            }
+
+            /* Narrative + KPIs */
+            .summary {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 48px;
+                align-items: start;
+            }
+            @media (min-width: 768px) {
+                .summary {
+                    grid-template-columns: 1fr 240px;
+                }
+            }
+            .narrative {
+                font-family: "Playfair Display", serif;
+                font-size: 26px;
+                line-height: 1.45;
+                color: var(--slate-900);
+            }
+            .narrative .highlight {
+                background: var(--amber-50);
+                color: var(--amber-700);
+                padding: 1px 6px;
+                border-radius: 3px;
+            }
+            .kpi-stack {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+            }
+            @media (min-width: 768px) {
+                .kpi-stack {
+                    border-left: 1px solid var(--slate-200);
+                    padding-left: 32px;
+                }
+            }
+            .kpi-item .kpi-value {
+                font-size: 36px;
+                font-weight: 300;
+                color: var(--slate-900);
+                letter-spacing: -0.02em;
+            }
+            .kpi-item .kpi-label {
+                font-size: 10px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: var(--slate-500);
+                margin-top: 2px;
+            }
+
+            /* Taxonomy bars */
+            .taxonomy-list {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .tax-row {
+                display: grid;
+                grid-template-columns: 24px 1fr 52px;
+                gap: 12px;
+                align-items: center;
+            }
+            .tax-rank {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 12px;
+                color: var(--slate-400);
+                text-align: right;
+            }
+            .tax-body {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .tax-label {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--slate-800);
+            }
+            .tax-bar-track {
+                height: 4px;
+                background: var(--slate-100);
+                border-radius: 100px;
+                overflow: hidden;
+            }
+            .tax-bar-fill {
+                height: 100%;
+                border-radius: 100px;
+                transition: width 0.6s ease;
+            }
+            .tax-bar-fill.top {
+                background: var(--amber-500);
+            }
+            .tax-bar-fill.rest {
+                background: var(--slate-300);
+            }
+            .tax-pct {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 12px;
+                color: var(--slate-500);
+                text-align: right;
+            }
+            .tax-quote {
+                font-size: 12px;
+                font-style: italic;
+                color: var(--slate-500);
+                margin-top: 2px;
+            }
+
+            /* Evolution timeline */
+            .evolution-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            @media (min-width: 768px) {
+                .evolution-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+            .evo-card {
+                background: white;
+                border: 1px solid var(--slate-200);
+                border-radius: 16px;
+                padding: 28px;
+            }
+            .evo-card .evo-month {
+                font-family: "Playfair Display", serif;
+                font-size: 20px;
+                color: var(--slate-900);
+                margin-bottom: 4px;
+            }
+            .evo-card .evo-theme {
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                margin-bottom: 16px;
+            }
+            .evo-card .evo-desc {
+                font-size: 14px;
+                color: var(--slate-600);
+                line-height: 1.6;
+            }
+            .evo-card .evo-stat {
+                margin-top: 16px;
+                padding-top: 16px;
+                border-top: 1px solid var(--slate-100);
+                font-family: "JetBrains Mono", monospace;
+                font-size: 12px;
+                color: var(--slate-500);
+            }
+            .evo-jan .evo-theme {
+                color: var(--slate-600);
+            }
+            .evo-feb .evo-theme {
+                color: var(--amber-600);
+            }
+            .evo-mar .evo-theme {
+                color: var(--indigo-600);
+            }
+
+            /* Quality comparison */
+            .quality-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            @media (min-width: 768px) {
+                .quality-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+            .q-card {
+                border-radius: 24px;
+                padding: 36px;
+            }
+            .q-card.good {
+                background: color-mix(
+                    in srgb,
+                    var(--emerald-50) 50%,
+                    transparent
+                );
+                border: 1px solid var(--emerald-100);
+            }
+            .q-card.bad {
+                background: color-mix(in srgb, var(--rose-50) 50%, transparent);
+                border: 1px solid var(--rose-100);
+            }
+            .q-card .q-icon {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            .q-card .q-title {
+                font-family: "Playfair Display", serif;
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            .q-card.good .q-title {
+                color: var(--emerald-900);
+            }
+            .q-card.bad .q-title {
+                color: var(--rose-900);
+            }
+            .q-list {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .q-list li {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            .q-card.good .q-list li {
+                color: color-mix(in srgb, var(--emerald-800) 90%, transparent);
+            }
+            .q-card.bad .q-list li {
+                color: color-mix(in srgb, var(--rose-800) 90%, transparent);
+            }
+            .q-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                margin-top: 7px;
+            }
+            .q-card.good .q-dot {
+                background: var(--emerald-400);
+            }
+            .q-card.bad .q-dot {
+                background: var(--rose-400);
+            }
+
+            /* Phrases */
+            .phrases-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            @media (min-width: 768px) {
+                .phrases-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+            .phrase-chip {
+                background: white;
+                border: 1px solid var(--slate-200);
+                border-radius: 12px;
+                padding: 14px 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+            }
+            .phrase-text {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 12px;
+                color: var(--slate-700);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .phrase-count {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 11px;
+                color: var(--slate-400);
+                flex-shrink: 0;
+            }
+
+            /* Dark action panel */
+            .action-panel {
+                background: var(--slate-900);
+                color: white;
+                border-radius: 24px;
+                padding: 40px;
+                box-shadow:
+                    0 20px 25px -5px rgb(0 0 0 / 0.1),
+                    0 8px 10px -6px rgb(0 0 0 / 0.1);
+            }
+            @media (min-width: 768px) {
+                .action-panel {
+                    padding: 56px;
+                }
+            }
+            .action-panel .section-label {
+                color: var(--slate-500);
+            }
+            .action-panel .ap-intro {
+                font-family: "Playfair Display", serif;
+                font-size: 22px;
+                color: white;
+                line-height: 1.4;
+                margin-bottom: 32px;
+                max-width: 640px;
+            }
+            .prompt-block {
+                background: color-mix(
+                    in srgb,
+                    var(--slate-800) 80%,
+                    transparent
+                );
+                border: 1px solid
+                    color-mix(in srgb, var(--slate-700) 50%, transparent);
+                border-radius: 16px;
+                overflow: hidden;
+            }
+            .prompt-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 20px;
+                border-bottom: 1px solid
+                    color-mix(in srgb, var(--slate-700) 30%, transparent);
+            }
+            .prompt-header-label {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 12px;
+                color: var(--slate-400);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .prompt-header-label svg {
+                width: 14px;
+                height: 14px;
+            }
+            .copy-btn {
+                background: none;
+                border: none;
+                font-family: "JetBrains Mono", monospace;
+                font-size: 12px;
+                color: var(--slate-400);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                transition: color 0.2s;
+            }
+            .copy-btn:hover {
+                color: white;
+            }
+            .copy-btn.copied {
+                color: var(--emerald-400);
+            }
+            .prompt-body {
+                padding: 20px;
+                max-height: 480px;
+                overflow-y: auto;
+            }
+            .prompt-body pre {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
+                line-height: 1.7;
+                color: color-mix(in srgb, var(--amber-200) 90%, transparent);
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+            .prompt-body pre .comment {
+                color: var(--slate-500);
+            }
+
+            /* Glow card */
+            .glow-wrap {
+                position: relative;
+                margin-top: 48px;
+            }
+            .glow-bg {
+                position: absolute;
+                inset: -2px;
+                background: linear-gradient(
+                    135deg,
+                    var(--indigo-500),
+                    var(--purple-600)
+                );
+                border-radius: 26px;
+                opacity: 0.15;
+                filter: blur(16px);
+                transition: opacity 0.5s;
+            }
+            .glow-wrap:hover .glow-bg {
+                opacity: 0.25;
+            }
+            .glow-card {
+                position: relative;
+                background: white;
+                border: 1px solid var(--slate-200);
+                border-radius: 24px;
+                padding: 32px 36px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            .glow-card .gc-text {
+                font-family: "Playfair Display", serif;
+                font-size: 18px;
+                font-weight: 500;
+                color: var(--slate-900);
+                line-height: 1.5;
+                max-width: 640px;
+            }
+            .glow-card .gc-text em {
+                font-style: italic;
+                color: var(--indigo-600);
+            }
+
+            /* Footer */
+            footer {
+                border-top: 1px solid var(--slate-200);
+                padding-top: 48px;
+                margin-top: 0;
+                text-align: center;
+            }
+            footer p {
+                font-family: "Playfair Display", serif;
+                font-style: italic;
+                font-size: 15px;
+                color: var(--slate-400);
+            }
+
+            /* Scrollbar in dark code block */
+            .prompt-body::-webkit-scrollbar {
+                width: 6px;
+            }
+            .prompt-body::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .prompt-body::-webkit-scrollbar-thumb {
+                background: var(--slate-700);
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <div>
+                    <h1>What 370 Files Reveal About<br />How You Plan</h1>
+                    <div class="meta" style="margin-top: 8px">
+                        backnotprop/plan &middot; Jan 7 &ndash; Mar 18, 2026
+                    </div>
+                </div>
+                <div class="meta" style="text-align: right">
+                    <span class="font-mono" style="font-size: 12px"
+                        >202 denials &middot; 168 annotations &middot; 71
+                        days</span
+                    >
+                </div>
+            </header>
+
+            <!-- 1. Narrative + KPIs -->
+            <div class="section">
+                <div class="section-label">1. The story in the data</div>
+                <div class="summary">
+                    <div class="narrative">
+                        Across 71 days you denied or revised
+                        <span class="highlight">202 plans</span> before any code
+                        was written. The single most common
+                        reason&mdash;appearing in 1 out of 4 denials&mdash;was
+                        the same: the agent jumped to implementation without
+                        telling you <em>what</em> it was building, <em>why</em>,
+                        or <em>how</em>. Missing narrative. Missing context.
+                        Missing the story. Your expectations evolved from
+                        &ldquo;does it work?&rdquo; in January to &ldquo;tell me
+                        the story and be confident&rdquo; by March.
+                    </div>
+                    <div class="kpi-stack">
+                        <div class="kpi-item">
+                            <div class="kpi-value">25.7%</div>
+                            <div class="kpi-label">
+                                Denials for missing narrative
+                            </div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-value">50%</div>
+                            <div class="kpi-label">
+                                Plans revised before coding
+                            </div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-value">12</div>
+                            <div class="kpi-label">
+                                Distinct denial categories
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Denial Taxonomy -->
+            <div class="section">
+                <div class="section-label">2. Why plans get denied</div>
+                <div class="taxonomy-list">
+                    <div class="tax-row">
+                        <span class="tax-rank">1</span>
+                        <div class="tax-body">
+                            <span class="tax-label"
+                                >Missing Narrative / Overview</span
+                            >
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill top"
+                                    style="width: 100%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"This plan is denied without narrative detail
+                                and rationales."</span
+                            >
+                        </div>
+                        <span class="tax-pct">25.7%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">2</span>
+                        <div class="tax-body">
+                            <span class="tax-label">Clarification Needed</span>
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 65%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"What does this Mean???"</span
+                            >
+                        </div>
+                        <span class="tax-pct">16.8%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">3</span>
+                        <div class="tax-body">
+                            <span class="tax-label">Testing / Procedural</span>
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 54%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"I'm denying so you can create a diff."</span
+                            >
+                        </div>
+                        <span class="tax-pct">13.9%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">4</span>
+                        <div class="tax-body">
+                            <span class="tax-label"
+                                >Wrong Approach / Over-Engineered</span
+                            >
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 37%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"Why are we doing difficult shit here? I want a
+                                hover experience."</span
+                            >
+                        </div>
+                        <span class="tax-pct">9.4%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">5</span>
+                        <div class="tax-body">
+                            <span class="tax-label">Process Requirement</span>
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 31%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"Make sure you feature branch."</span
+                            >
+                        </div>
+                        <span class="tax-pct">7.9%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">6</span>
+                        <div class="tax-body">
+                            <span class="tax-label"
+                                >Confidence / Risk Check</span
+                            >
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 29%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"Take a step back, breathe, make sure we're not
+                                being irrational."</span
+                            >
+                        </div>
+                        <span class="tax-pct">7.4%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">7</span>
+                        <div class="tax-body">
+                            <span class="tax-label">Content Removal</span>
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 27%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"I don't want this in the plan."</span
+                            >
+                        </div>
+                        <span class="tax-pct">6.9%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">8</span>
+                        <div class="tax-body">
+                            <span class="tax-label"
+                                >Implementation Bug Found</span
+                            >
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 23%"
+                                ></div>
+                            </div>
+                        </div>
+                        <span class="tax-pct">5.9%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">9</span>
+                        <div class="tax-body">
+                            <span class="tax-label">Design / UX Issue</span>
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 21%"
+                                ></div>
+                            </div>
+                        </div>
+                        <span class="tax-pct">5.4%</span>
+                    </div>
+                    <div class="tax-row">
+                        <span class="tax-rank">10</span>
+                        <div class="tax-body">
+                            <span class="tax-label">Naming / Terminology</span>
+                            <div class="tax-bar-track">
+                                <div
+                                    class="tax-bar-fill rest"
+                                    style="width: 16%"
+                                ></div>
+                            </div>
+                            <span class="tax-quote"
+                                >"Why do you keep calling it
+                                Simplified????"</span
+                            >
+                        </div>
+                        <span class="tax-pct">4.0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Evolution -->
+            <div class="section">
+                <div class="section-label">
+                    3. How your expectations evolved
+                </div>
+                <div class="evolution-grid">
+                    <div class="evo-card evo-jan">
+                        <div class="evo-month">January</div>
+                        <div class="evo-theme">"Does it work?"</div>
+                        <div class="evo-desc">
+                            Bug-hunting phase. You were hands-on testing View
+                            Logs, iterating on session scoping heuristics. 60%
+                            of denials were implementation bugs and verification
+                            failures. No mention of &ldquo;narrative&rdquo; or
+                            &ldquo;overview&rdquo; yet.
+                        </div>
+                        <div class="evo-stat">
+                            26 denials &middot; 0 narrative requests
+                        </div>
+                    </div>
+                    <div class="evo-card evo-feb">
+                        <div class="evo-month">February</div>
+                        <div class="evo-theme">"Follow the process"</div>
+                        <div class="evo-desc">
+                            Process gates emerged: feature branches, Linear
+                            tickets, pull main. 40% of denials were procedural
+                            (diff testing). UX polish intensified. The first
+                            narrative demands appeared: &ldquo;I want a
+                            narrative under each section.&rdquo;
+                        </div>
+                        <div class="evo-stat">
+                            48 denials &middot; 6 narrative requests
+                        </div>
+                    </div>
+                    <div class="evo-card evo-mar">
+                        <div class="evo-month">March</div>
+                        <div class="evo-theme">"Tell me the story"</div>
+                        <div class="evo-desc">
+                            Narrative became the #1 gate. You created a
+                            &ldquo;Missing overview&rdquo; label and applied it
+                            systematically. Confidence checks became standard.
+                            You began telling agents to &ldquo;take a step back,
+                            breathe, and analyze.&rdquo;
+                        </div>
+                        <div class="evo-stat">
+                            128 denials &middot; 25+ narrative requests
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Quality comparison -->
+            <div class="section">
+                <div class="section-label">4. What works vs. what doesn't</div>
+                <div class="quality-grid">
+                    <div class="q-card good">
+                        <div class="q-icon">&#10003;</div>
+                        <div class="q-title">What approved plans do</div>
+                        <ul class="q-list">
+                            <li>
+                                <span class="q-dot"></span>Lead with a narrative
+                                overview: what exists, what changes, why
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>State confidence and
+                                identify risks proactively
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Reference existing
+                                codebase patterns before proposing new code
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Use explicit,
+                                transparent naming (not euphemisms)
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Break large work into
+                                phases with evaluation gates
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Include example
+                                output for user-facing changes
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Specify feature
+                                branch and ticket creation steps
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="q-card bad">
+                        <div class="q-icon">&#10007;</div>
+                        <div class="q-title">
+                            What agents keep getting wrong
+                        </div>
+                        <ul class="q-list">
+                            <li>
+                                <span class="q-dot"></span>Jump to
+                                implementation steps without narrative context
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Over-engineer:
+                                Shift+Click when hover works, MCP tool when a
+                                README suffices
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Introduce new code
+                                for things the codebase already solves
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Propose work on top
+                                of failing lint/type checks
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Use vague or
+                                euphemistic naming (&ldquo;Accept&rdquo; instead
+                                of &ldquo;Git Add&rdquo;)
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Wait to be asked for
+                                confidence instead of stating it
+                            </li>
+                            <li>
+                                <span class="q-dot"></span>Rush to modify
+                                instead of reporting what they see
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. The actionable output -->
+            <div class="section">
+                <div class="section-label">5. The actionable output</div>
+                <div class="narrative" style="margin-bottom: 32px">
+                    The analysis produced
+                    <span class="highlight"
+                        >17 specific prompt instructions</span
+                    >
+                    that, if embedded in a planning prompt, would address ~70%
+                    of all denial reasons. The biggest three:
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 20px">
+                    <div
+                        style="
+                            display: flex;
+                            gap: 16px;
+                            align-items: flex-start;
+                        "
+                    >
+                        <span
+                            class="font-mono"
+                            style="
+                                font-size: 24px;
+                                font-weight: 300;
+                                color: var(--amber-500);
+                                flex-shrink: 0;
+                                width: 32px;
+                                text-align: right;
+                            "
+                            >1</span
+                        >
+                        <div>
+                            <div
+                                style="
+                                    font-size: 17px;
+                                    font-weight: 500;
+                                    color: var(--slate-900);
+                                    margin-bottom: 4px;
+                                "
+                            >
+                                Every plan MUST start with a Solution Overview
+                            </div>
+                            <div
+                                style="
+                                    font-size: 14px;
+                                    color: var(--slate-600);
+                                    line-height: 1.5;
+                                "
+                            >
+                                What exists, what changes, why, how. This alone
+                                addresses 1 in 4 denials.
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            gap: 16px;
+                            align-items: flex-start;
+                        "
+                    >
+                        <span
+                            class="font-mono"
+                            style="
+                                font-size: 24px;
+                                font-weight: 300;
+                                color: var(--amber-500);
+                                flex-shrink: 0;
+                                width: 32px;
+                                text-align: right;
+                            "
+                            >2</span
+                        >
+                        <div>
+                            <div
+                                style="
+                                    font-size: 17px;
+                                    font-weight: 500;
+                                    color: var(--slate-900);
+                                    margin-bottom: 4px;
+                                "
+                            >
+                                End every plan with a Confidence Assessment
+                            </div>
+                            <div
+                                style="
+                                    font-size: 14px;
+                                    color: var(--slate-600);
+                                    line-height: 1.5;
+                                "
+                            >
+                                Don&rsquo;t wait to be asked. State your
+                                confidence, identify risks, flag uncertainties.
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style="
+                            display: flex;
+                            gap: 16px;
+                            align-items: flex-start;
+                        "
+                    >
+                        <span
+                            class="font-mono"
+                            style="
+                                font-size: 24px;
+                                font-weight: 300;
+                                color: var(--amber-500);
+                                flex-shrink: 0;
+                                width: 32px;
+                                text-align: right;
+                            "
+                            >3</span
+                        >
+                        <div>
+                            <div
+                                style="
+                                    font-size: 17px;
+                                    font-weight: 500;
+                                    color: var(--slate-900);
+                                    margin-bottom: 4px;
+                                "
+                            >
+                                Search for existing patterns before proposing
+                                new code
+                            </div>
+                            <div
+                                style="
+                                    font-size: 14px;
+                                    color: var(--slate-600);
+                                    line-height: 1.5;
+                                "
+                            >
+                                Explicitly state what you found in the codebase.
+                                Prefer reuse over new implementation.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Recurring phrases -->
+            <div class="section">
+                <div class="section-label">6. Your most-used phrases</div>
+                <div class="phrases-grid">
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"narrative"</span
+                        ><span class="phrase-count">50+</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text"
+                            >"I don't want this in the plan"</span
+                        ><span class="phrase-count">10</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"feature branch"</span
+                        ><span class="phrase-count">8+</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"confidence"</span
+                        ><span class="phrase-count">8+</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"Missing overview"</span
+                        ><span class="phrase-count">14</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"front-end design skill"</span
+                        ><span class="phrase-count">16</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"separation of concerns"</span
+                        ><span class="phrase-count">6</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text"
+                            >"Take a step back, breathe"</span
+                        ><span class="phrase-count">6</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"how does this work"</span
+                        ><span class="phrase-count">5+</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"what the fuck"</span
+                        ><span class="phrase-count">4</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"create a ticket"</span
+                        ><span class="phrase-count">4+</span>
+                    </div>
+                    <div class="phrase-chip">
+                        <span class="phrase-text">"reusable"</span
+                        ><span class="phrase-count">19+</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Corrective Prompt -->
+            <div class="section" style="margin-bottom: 64px">
+                <div class="action-panel">
+                    <div class="section-label">7. The corrective prompt</div>
+                    <div class="ap-intro">
+                        These 17 instructions were extracted directly from your
+                        denial patterns. Embedding them in a planning prompt
+                        would address approximately 70% of all denial reasons.
+                    </div>
+                    <div class="prompt-block">
+                        <div class="prompt-header">
+                            <span class="prompt-header-label">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <polyline
+                                        points="4 17 10 11 4 5"
+                                    ></polyline>
+                                    <line
+                                        x1="12"
+                                        y1="19"
+                                        x2="20"
+                                        y2="19"
+                                    ></line>
+                                </svg>
+                                planning-instructions.md
+                            </span>
+                            <button class="copy-btn" onclick="copyPrompt(this)">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <rect
+                                        x="9"
+                                        y="9"
+                                        width="13"
+                                        height="13"
+                                        rx="2"
+                                        ry="2"
+                                    ></rect>
+                                    <path
+                                        d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                    ></path>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        <div class="prompt-body">
+                            <pre
+                                id="prompt-content"
+                            ><span class="comment"># Planning Instructions
+# Derived from 370 files of denial & annotation analysis</span>
+
+1. STRUCTURE: Every plan MUST begin with a "Solution Overview"
+   containing 2-3 paragraphs of narrative prose explaining:
+   - What exists today (current state)
+   - What will change and why
+   - How it will be built (approach summary)
+   Do NOT skip this. Do NOT replace it with bullet points.
+
+2. NARRATIVE: Every major section must include a rationale
+   paragraph — not just what will be done, but WHY this
+   approach was chosen over alternatives.
+
+3. FEATURE BRANCH: Always specify implementation will occur
+   on a feature branch. State the branch name. Never plan
+   to work directly on main.
+
+4. EXISTING PATTERNS: Before proposing any new implementation,
+   search the codebase for existing patterns that solve the
+   same problem. Explicitly state what you found and whether
+   you will reuse it. Prefer reuse over new code.
+
+5. CONFIDENCE STATEMENT: End the plan with a "Confidence
+   Assessment" section. State your confidence level, identify
+   risks or edge cases, and note uncertainties. Do not wait
+   to be asked.
+
+6. PHASING: For plans with more than 3 steps, break them into
+   numbered phases. After each phase, note "Pause for
+   evaluation" so the reviewer can assess before proceeding.
+
+7. ISSUE TRACKING: If the project uses Linear or GitHub Issues,
+   include a step to create relevant tickets BEFORE
+   implementation. Backlog items should be separate tickets.
+
+8. SIMPLICITY: Choose the simplest approach that meets
+   requirements. Do not introduce modifier keys when hover
+   works. Do not build a framework when a README suffices.
+
+9. NAMING: Use explicit, transparent names for user-facing
+   features. Do not euphemize Git operations ("Git Add"
+   not "Accept"). Match existing product naming conventions.
+
+10. CODE QUALITY: State that implementation will follow clean
+    code principles: modular architecture, separation of
+    concerns, no circumventing lint or type checks.
+
+11. CLEAN FOUNDATION: If the codebase has failing lint or type
+    checks, address these BEFORE proposing new features. State
+    the current CI/CD state.
+
+12. PRIVACY: For features involving data storage or sharing,
+    explicitly state privacy guarantees. Require user
+    confirmation before storing data.
+
+13. EXAMPLES: When the plan involves user-facing output or UI,
+    include an example of what it will look like.
+
+14. FOCUSED SCOPE: Do not include sections that are obvious,
+    boilerplate, or previously asked to be removed. Keep the
+    plan focused rather than comprehensive.
+
+15. DESIGN SKILL: For any frontend/UI work, invoke the
+    front-end design skill to validate the approach. Note
+    this invocation explicitly in the plan.
+
+16. VERIFICATION STEP: For refactors or multi-file changes,
+    include a verification step with line-by-line comparison
+    of affected code paths.
+
+17. DELIBERATION: If the plan involves a dramatic shift, state
+    that you have re-evaluated the approach, traced through
+    affected files mentally, and are confident in the plan.
+    Do not rush.</pre>
+                        </div>
+                    </div>
+
+                    <div class="glow-wrap">
+                        <div class="glow-bg"></div>
+                        <div class="glow-card">
+                            <div class="gc-text">
+                                These instructions are yours &mdash; derived
+                                from
+                                <em
+                                    >your feedback, your language, your
+                                    standards</em
+                                >. Copy them into your planning prompt and watch
+                                the deny rate drop.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>
+                    Analysis of 202 denied plans and 168 annotation files from
+                    the Plan archive.
+                </p>
+            </footer>
+        </div>
+
+        <script>
+            function copyPrompt(btn) {
+                const text =
+                    document.getElementById("prompt-content").textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Copied';
+                    btn.classList.add("copied");
+                    setTimeout(() => {
+                        btn.innerHTML =
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy';
+                        btn.classList.remove("copied");
+                    }, 2000);
+                });
+            }
+        </script>
+    </body>
+</html>

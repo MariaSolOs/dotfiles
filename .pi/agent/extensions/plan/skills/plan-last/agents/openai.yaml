@@ -1,0 +1,5 @@
+interface:
+    display_name: "Plan Last"
+    short_description: "Annotate the latest assistant message in Plan."
+policy:
+    allow_implicit_invocation: false

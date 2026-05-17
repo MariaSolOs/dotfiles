@@ -5,8 +5,5 @@
   "defaultModel": "gpt-5.5",
   "collapseChangelog": true,
   "defaultProvider": "openai",
-  "treeFilterMode": "user-only",
-  "packages": [
-    "npm:@plannotator/pi-extension"
-  ]
+  "treeFilterMode": "user-only"
 }

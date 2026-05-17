@@ -1,0 +1,27 @@
+{
+  "name": "plan",
+  "version": "0.19.17-local",
+  "type": "module",
+  "description": "Plan Pi extension - interactive plan review with annotations, annotate agent messages, and review code/PRs",
+  "license": "MIT OR Apache-2.0",
+  "keywords": [
+    "pi-package",
+    "plan",
+    "plan-review",
+    "ai-agent",
+    "coding-agent"
+  ],
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "dependencies": {
+    "@joplin/turndown-plugin-gfm": "^1.0.64",
+    "@pierre/diffs": "^1.1.12",
+    "turndown": "^7.2.4"
+  }
+}

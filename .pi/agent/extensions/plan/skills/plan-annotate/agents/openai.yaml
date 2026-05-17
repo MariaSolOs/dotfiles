@@ -1,0 +1,5 @@
+interface:
+    display_name: "Plan Annotate"
+    short_description: "Annotate a markdown file, URL, or folder in Plan."
+policy:
+    allow_implicit_invocation: false

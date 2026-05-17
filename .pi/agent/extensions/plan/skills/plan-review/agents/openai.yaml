@@ -1,0 +1,5 @@
+interface:
+    display_name: "Plan Review"
+    short_description: "Open Plan code review for local changes or a PR."
+policy:
+    allow_implicit_invocation: false
