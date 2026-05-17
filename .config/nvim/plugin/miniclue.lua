@@ -87,6 +87,7 @@ add_on_event('UIEnter', {
                     { mode = { 'n', 'x' }, keys = '<leader>f', desc = '+find' },
                     { mode = 'n', keys = '<leader>b', desc = '+buffers' },
                     { mode = 'n', keys = '<leader>d', desc = '+debug' },
+                    { mode = 'n', keys = '<leader>p', desc = '+package manager' },
                     { mode = 'n', keys = '<leader>t', desc = '+tabs' },
                     { mode = 'n', keys = '<leader>x', desc = '+loclist/quickfix' },
                     { mode = 'n', keys = '[', desc = '+prev' },

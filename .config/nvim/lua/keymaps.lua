@@ -51,6 +51,5 @@ end, { desc = 'Exit insert mode and save changes (without formatting)', expr = t
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })
 
 -- Package manager.
-vim.keymap.set('n', '<leader>P', function()
-    vim.pack.update()
-end, { desc = 'Update packages' })
+vim.keymap.set('n', '<leader>pu', '<cmd>packupdate<cr>', { desc = 'Update packages' })
+vim.keymap.set('n', '<leader>ps', '<cmd>packupdate ++lockfile<cr>', { desc = 'Sync packages to lockfile' })
