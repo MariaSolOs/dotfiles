@@ -15,6 +15,7 @@ dart-sass
 dprint
 e2fsprogs
 efibootmgr
+fd
 fish
 fprintd
 fw-fanctrl-git
