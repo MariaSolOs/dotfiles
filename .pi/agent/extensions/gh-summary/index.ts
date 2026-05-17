@@ -21,12 +21,12 @@ const MAX_UNTRACKED_FILES = 25;
 const MAX_UNTRACKED_READ_BYTES = 256_000;
 const MAX_UNTRACKED_FILE_CHARS = 12_000;
 
-const SYSTEM_PROMPT = `You write concise, human-sounding GitHub pull request titles and descriptions from git worktree changes.
+const SYSTEM_PROMPT = `You write concise, human-sounding GitHub pull request titles and descriptions from git changes.
 
 Requirements:
-- Base the PR summary primarily on the provided git status, diffs, and untracked file contents.
-- Use the provided conversation context only to understand intent, rationale, constraints, or wording around those worktree changes.
-- Do not summarize unrelated conversation history or mention work that is not reflected in the worktree changes.
+- Base the PR summary primarily on the provided git status, commit list, diffs, and untracked file contents.
+- Use the provided conversation context only to understand intent, rationale, constraints, or wording around those git changes.
+- Do not summarize unrelated conversation history or mention work that is not reflected in the git changes.
 - Use raw Markdown only; do not wrap the entire response in a code fence.
 - Do not include padding or preamble like "Here’s a summary".
 - Include a suggested PR title and a PR description.
@@ -257,12 +257,114 @@ async function buildUntrackedSection(
     return chunks.join("\n\n");
 }
 
-type WorktreeChanges = {
+type GitChanges = {
     root: string;
+    source: "worktree" | "branch";
     text: string;
 };
 
-async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
+async function refExists(root: string, ref: string): Promise<boolean> {
+    const result = await runCapture(
+        "git",
+        ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`],
+        root,
+        [0, 1],
+    );
+    return result.code === 0;
+}
+
+async function firstExistingBaseRef(
+    root: string,
+    branch: string,
+): Promise<string | undefined> {
+    const candidates: string[] = [];
+
+    const originHead = await runCapture(
+        "git",
+        ["symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
+        root,
+        [0, 1],
+    );
+    if (originHead.code === 0 && originHead.stdout.trim()) {
+        candidates.push(originHead.stdout.trim());
+    }
+
+    candidates.push("origin/main", "origin/master", "main", "master");
+
+    const upstream = await runCapture(
+        "git",
+        ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"],
+        root,
+        [0, 128],
+    );
+    if (upstream.code === 0 && upstream.stdout.trim()) {
+        candidates.push(upstream.stdout.trim());
+    }
+
+    for (const candidate of [...new Set(candidates)]) {
+        if (candidate === branch) continue;
+        if (await refExists(root, candidate)) return candidate;
+    }
+
+    return undefined;
+}
+
+async function collectBranchChanges(
+    root: string,
+    branch: string,
+    head: string,
+): Promise<GitChanges> {
+    const baseRef = await firstExistingBaseRef(root, branch.trim());
+    if (!baseRef) return { root, source: "branch", text: "" };
+
+    const mergeBase = (
+        await runGit(root, ["merge-base", baseRef, "HEAD"], [0, 1])
+    ).trim();
+    if (!mergeBase) return { root, source: "branch", text: "" };
+
+    const commitCount = Number(
+        (
+            await runGit(root, ["rev-list", "--count", `${mergeBase}..HEAD`])
+        ).trim(),
+    );
+    if (commitCount === 0) return { root, source: "branch", text: "" };
+
+    const [commits, diffStat, diff] = await Promise.all([
+        runGit(root, ["log", "--oneline", "--decorate", `${mergeBase}..HEAD`]),
+        runGit(root, ["diff", "--stat", `${mergeBase}..HEAD`, "--"]),
+        runGit(root, [
+            "diff",
+            "--no-ext-diff",
+            "--find-renames",
+            "--find-copies",
+            `${mergeBase}..HEAD`,
+            "--",
+        ]),
+    ]);
+
+    const sections: string[] = [];
+    const total = { value: 0 };
+    appendBoundedSection(
+        sections,
+        "Repository",
+        [
+            `Root: ${root}`,
+            `Branch: ${branch.trim() || "(detached HEAD)"}`,
+            `HEAD: ${head.trim()}`,
+            `Base ref: ${baseRef}`,
+            `Merge base: ${mergeBase.slice(0, 12)}`,
+            `Commits ahead: ${commitCount}`,
+        ].join("\n"),
+        total,
+    );
+    appendBoundedSection(sections, "Branch commits", commits, total);
+    appendBoundedSection(sections, "Branch diffstat", diffStat, total);
+    appendBoundedSection(sections, "Branch diff", diff, total);
+
+    return { root, source: "branch", text: sections.join("\n\n") };
+}
+
+async function collectGitChanges(cwd: string): Promise<GitChanges> {
     let root: string;
     try {
         root = (await runGit(cwd, ["rev-parse", "--show-toplevel"])).trim();
@@ -278,7 +380,7 @@ async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
         runGit(root, ["status", "--short"]),
     ]);
 
-    if (!status.trim()) return { root, text: "" };
+    if (!status.trim()) return collectBranchChanges(root, branch, head);
 
     const [stagedStat, unstagedStat, stagedDiff, unstagedDiff, untrackedRaw] =
         await Promise.all([
@@ -326,7 +428,7 @@ async function collectWorktreeChanges(cwd: string): Promise<WorktreeChanges> {
         total,
     );
 
-    return { root, text: sections.join("\n\n") };
+    return { root, source: "worktree", text: sections.join("\n\n") };
 }
 
 // Match GitHub's common single-file PR template location; absence is normal.
@@ -348,6 +450,7 @@ async function readPrTemplate(cwd: string): Promise<string | undefined> {
 
 function buildUserPrompt(
     changesText: string,
+    source: GitChanges["source"],
     conversationContext: string,
     prTemplate?: string,
 ): string {
@@ -363,7 +466,7 @@ function buildUserPrompt(
 
     const conversationSection = conversationContext.trim()
         ? [
-              "Supplemental conversation context. Use this only to clarify intent/rationale for the worktree changes; do not summarize unrelated parts of the conversation:",
+              "Supplemental conversation context. Use this only to clarify intent/rationale for the git changes; do not summarize unrelated parts of the conversation:",
               "<conversation_context>",
               conversationContext,
               "</conversation_context>",
@@ -371,9 +474,14 @@ function buildUserPrompt(
           ].join("\n")
         : "";
 
+    const sourceDescription =
+        source === "worktree"
+            ? "current git worktree changes"
+            : "commits on the current branch";
+
     return [
-        "Summarize the current git worktree changes into a concise GitHub-ready PR description, together with a suggested title.",
-        "Focus on what changed in the worktree. Use conversation context only as supporting context for those changes, not as the thing being summarized.",
+        `Summarize the ${sourceDescription} into a concise GitHub-ready PR description, together with a suggested title.`,
+        "Focus on the provided git changes. Use conversation context only as supporting context for those changes, not as the thing being summarized.",
         "",
         templateSection,
         conversationSection,
@@ -382,10 +490,10 @@ function buildUserPrompt(
         "",
         "<PR description markdown>",
         "",
-        "Git worktree changes:",
-        "<git_worktree_changes>",
+        "Git changes:",
+        "<git_changes>",
         changesText,
-        "</git_worktree_changes>",
+        "</git_changes>",
     ].join("\n");
 }
 
@@ -471,30 +579,36 @@ end tell
 export default function ghSummaryExtension(pi: ExtensionAPI) {
     pi.registerCommand("gh-summary", {
         description:
-            "Create a GitHub-ready PR title/description from the git worktree and open it in Ghostty/neovim",
+            "Create a GitHub-ready PR title/description from git changes and open it in Ghostty/neovim",
         handler: async (_args, ctx) => {
             if (!ctx.model) {
                 ctx.ui.notify("No model selected", "error");
                 return;
             }
 
-            let changes: WorktreeChanges;
+            let changes: GitChanges;
             try {
-                changes = await collectWorktreeChanges(ctx.cwd);
+                changes = await collectGitChanges(ctx.cwd);
             } catch (error) {
                 ctx.ui.notify(
-                    `Failed to inspect git worktree: ${(error as Error).message}`,
+                    `Failed to inspect git changes: ${(error as Error).message}`,
                     "error",
                 );
                 return;
             }
 
             if (!changes.text.trim()) {
-                ctx.ui.notify("No git worktree changes found", "warning");
+                ctx.ui.notify(
+                    "No git worktree changes or current-branch commits found",
+                    "warning",
+                );
                 return;
             }
 
-            ctx.ui.notify("Generating PR summary from git worktree...", "info");
+            ctx.ui.notify(
+                `Generating PR summary from ${changes.source === "worktree" ? "git worktree" : "current branch commits"}...`,
+                "info",
+            );
 
             let summary = "";
             try {
@@ -520,6 +634,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                             type: "text",
                             text: buildUserPrompt(
                                 changes.text,
+                                changes.source,
                                 conversationContext,
                                 prTemplate,
                             ),
