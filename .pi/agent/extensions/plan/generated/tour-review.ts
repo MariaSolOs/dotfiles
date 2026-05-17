@@ -271,7 +271,7 @@ should reference at least one stop.
 
 ## Pipeline
 
-1. Read the full diff (git diff, jj diff, or inlined patch).
+1. Read the full diff (git diff or inlined patch).
 2. Read CLAUDE.md and README.md for project context.
 3. Read commit messages (git log --oneline) and PR title/body if available.
 4. Identify logical groupings of change (cross-file when appropriate). These
@@ -398,13 +398,6 @@ export function buildTourClaudeCommand(
         "Bash(git remote:*)",
         "Bash(git rev-parse:*)",
         "Bash(git show-ref:*)",
-        "Bash(jj status:*)",
-        "Bash(jj diff:*)",
-        "Bash(jj log:*)",
-        "Bash(jj show:*)",
-        "Bash(jj file show:*)",
-        "Bash(jj cat:*)",
-        "Bash(jj bookmark list:*)",
         "Bash(gh pr view:*)",
         "Bash(gh pr diff:*)",
         "Bash(gh pr list:*)",

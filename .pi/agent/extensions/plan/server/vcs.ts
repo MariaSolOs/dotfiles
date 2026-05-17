@@ -11,11 +11,9 @@ import {
     getGitContext as getGitContextCore,
     runGitDiff as runGitDiffCore,
 } from "../generated/review-core.js";
-import { type ReviewJjRuntime } from "../generated/jj-core.js";
 import {
     type VcsSelection,
     createGitProvider,
-    createJjProvider,
     createVcsApi,
     resolveInitialDiffType,
 } from "../generated/vcs-core.js";
@@ -80,19 +78,7 @@ export const reviewRuntime: ReviewGitRuntime = {
     },
 };
 
-export const jjRuntime: ReviewJjRuntime = {
-    runJj(
-        args: string[],
-        options?: { cwd?: string; timeoutMs?: number },
-    ): Promise<GitCommandResult> {
-        return runCommand("jj", args, "jj not found", options);
-    },
-};
-
-const api = createVcsApi([
-    createJjProvider(jjRuntime),
-    createGitProvider(reviewRuntime),
-]);
+const api = createVcsApi([createGitProvider(reviewRuntime)]);
 
 export const {
     detectVcs,

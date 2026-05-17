@@ -479,7 +479,7 @@ export default function plan(pi: ExtensionAPI): void {
 
     pi.registerCommand("plan-review", {
         description:
-            "Open interactive code review for current changes or a PR URL; pass --git to force Git in JJ workspaces",
+            "Open interactive code review for current Git changes or a PR URL",
         handler: async (args, ctx) => {
             if (!hasReviewBrowserHtml()) {
                 ctx.ui.notify(

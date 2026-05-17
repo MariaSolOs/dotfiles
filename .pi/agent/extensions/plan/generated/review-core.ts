@@ -9,24 +9,15 @@
 
 import { resolve as resolvePath } from "node:path";
 
-export const JJ_TRUNK_REVSET = "trunk()";
-
 export type DiffType =
     | "uncommitted"
     | "staged"
     | "unstaged"
     | "last-commit"
-    | "jj-current"
-    | "jj-last"
-    | "jj-line"
-    | "jj-all"
-    | "jj-evolog"
     | "branch"
     | "merge-base"
     | "all"
-    | `worktree:${string}`
-    | "p4-default"
-    | `p4-changelist:${string}`;
+    | `worktree:${string}`;
 
 export interface DiffOption {
     id: string;
@@ -64,15 +55,6 @@ export interface RepositoryContext {
     displayFallback?: string;
 }
 
-export interface JjEvoLogEntry {
-    /** Short commit ID (12 hex chars) */
-    commitId: string;
-    /** First line of the commit message */
-    description: string;
-    /** Human-readable age string, e.g. "2 hours ago" */
-    age?: string;
-}
-
 export interface RecentCommit {
     /** Full SHA — sent back as the diff base. */
     sha: string;
@@ -95,9 +77,7 @@ export interface GitContext {
     compareTarget?: CompareTargetConfig;
     repository?: RepositoryContext;
     cwd?: string;
-    vcsType?: "git" | "jj" | "p4";
-    /** Evolution log entries for the current jj change (jj only). */
-    jjEvologs?: JjEvoLogEntry[];
+    vcsType?: "git";
     /** HEAD ancestry, newest first. Powers the commit-based baseline picker (#709). */
     recentCommits?: RecentCommit[];
 }
@@ -132,32 +112,6 @@ export function parseRemoteBookmark(
     const at = target.lastIndexOf("@");
     if (at <= 0 || at === target.length - 1) return null;
     return { name: target.slice(0, at), remote: target.slice(at + 1) };
-}
-
-export function jjCompareTargetRevset(target: string): string {
-    const remoteBookmark = parseRemoteBookmark(target);
-    if (remoteBookmark) {
-        return `remote_bookmarks(exact:${quoteJjString(remoteBookmark.name)}, exact:${quoteJjString(remoteBookmark.remote)})`;
-    }
-
-    const localBookmark = parseJjBookmarkName(target);
-    return localBookmark
-        ? `bookmarks(exact:${quoteJjString(localBookmark)})`
-        : target;
-}
-
-export function jjLineBaseRevset(target: string): string {
-    const compareTarget = jjCompareTargetRevset(target);
-    return `heads(::@ & ::(${compareTarget}))`;
-}
-
-function parseJjBookmarkName(target: string): string | null {
-    if (!target || target.startsWith("@") || /[()\s]/.test(target)) return null;
-    return target;
-}
-
-function quoteJjString(value: string): string {
-    return JSON.stringify(value);
 }
 
 export async function getCurrentBranch(
@@ -933,18 +887,4 @@ export async function gitResetFile(
 ): Promise<void> {
     validateFilePath(filePath);
     await ensureGitSuccess(runtime, ["reset", "HEAD", "--", filePath], cwd);
-}
-
-export function parseP4DiffType(
-    diffType: string,
-): { changelist: string | "default" } | null {
-    if (diffType === "p4-default") return { changelist: "default" };
-    if (diffType.startsWith("p4-changelist:")) {
-        return { changelist: diffType.slice("p4-changelist:".length) };
-    }
-    return null;
-}
-
-export function isP4DiffType(diffType: string): boolean {
-    return parseP4DiffType(diffType) !== null;
 }

@@ -1,11 +1,6 @@
 // @ts-nocheck
 // @generated — DO NOT EDIT. Source: packages/server/agent-review-message.ts
-import {
-    JJ_TRUNK_REVSET,
-    jjLineBaseRevset,
-    parseWorktreeDiffType,
-    type DiffType,
-} from "./review-core.js";
+import { parseWorktreeDiffType, type DiffType } from "./review-core.js";
 import type { PRMetadata } from "./pr-provider.js";
 
 export interface AgentReviewUserMessageOptions {
@@ -115,37 +110,6 @@ export function getLocalDiffInstruction(
                 inspect:
                     "All files are shown as additions, diffed against an empty tree.",
             };
-        case "jj-current":
-            return {
-                target: "the current JJ change",
-                inspect: "Run `jj diff --git -r @` to inspect the changes.",
-            };
-        case "jj-last":
-            return {
-                target: "the previous JJ change",
-                inspect: "Run `jj diff --git -r @-` to inspect the changes.",
-            };
-        case "jj-line": {
-            const base = defaultBranch || JJ_TRUNK_REVSET;
-            const baseRevset = jjLineBaseRevset(base);
-            return {
-                target: `the JJ line of work against \`${base}\``,
-                inspect: `Run \`jj diff --git --from ${shellQuote(baseRevset)} --to @\` to inspect the changes.`,
-            };
-        }
-        case "jj-evolog": {
-            const fromRev = defaultBranch || "<previous-evolog-commit>";
-            return {
-                target: "what changed between two evolutions of the current JJ change",
-                inspect: `Run \`jj diff --git --from ${shellQuote(fromRev)} --to @\` to inspect the changes (shows what was amended since the selected prior evolution).`,
-            };
-        }
-        case "jj-all":
-            return {
-                target: "all files in the JJ workspace",
-                inspect:
-                    "Run `jj diff --git --from 'root()' --to @` to inspect the changes.",
-            };
         default:
             return null;
     }
@@ -154,8 +118,4 @@ export function getLocalDiffInstruction(
 function normalizeLocalDiffType(diffType: DiffType): string {
     const worktree = parseWorktreeDiffType(diffType);
     return worktree?.subType ?? diffType;
-}
-
-function shellQuote(value: string): string {
-    return `'${value.replaceAll("'", "'\\''")}'`;
 }

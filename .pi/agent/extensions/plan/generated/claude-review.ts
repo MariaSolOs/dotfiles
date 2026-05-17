@@ -100,7 +100,7 @@ project guidance files explicitly expand your scope.
 ## Pipeline
 
 Step 1: Gather context
-  - Retrieve the PR diff or local diff (gh pr diff, git diff, or jj diff)
+  - Retrieve the PR diff or local diff (gh pr diff or git diff)
   - Read CLAUDE.md and REVIEW.md at the repo root and in every directory
     containing modified files
   - Build a map of which rules apply to which file paths
@@ -240,14 +240,6 @@ export function buildClaudeCommand(
         "Bash(git remote:*)",
         "Bash(git rev-parse:*)",
         "Bash(git show-ref:*)",
-        // JJ (read-only)
-        "Bash(jj status:*)",
-        "Bash(jj diff:*)",
-        "Bash(jj log:*)",
-        "Bash(jj show:*)",
-        "Bash(jj file show:*)",
-        "Bash(jj cat:*)",
-        "Bash(jj bookmark list:*)",
         "Bash(wc:*)",
     ].join(",");
 

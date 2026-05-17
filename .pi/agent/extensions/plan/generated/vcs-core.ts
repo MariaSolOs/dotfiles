@@ -15,14 +15,6 @@ import {
     runGitDiff,
 } from "./review-core";
 import { isAbsolute, relative, resolve } from "node:path";
-import {
-    type ReviewJjRuntime,
-    detectJjWorkspace,
-    getJjContext,
-    getJjFileContentsForDiff,
-    runJjDiff,
-} from "./jj-core";
-
 export type {
     DiffOption,
     DiffResult,
@@ -33,9 +25,6 @@ export type {
 } from "./review-core";
 
 export {
-    JJ_TRUNK_REVSET,
-    jjCompareTargetRevset,
-    jjLineBaseRevset,
     parseRemoteBookmark,
     parseWorktreeDiffType,
     validateFilePath,
@@ -67,7 +56,7 @@ export interface VcsProvider {
     detectRemoteDefaultCompareTarget?(cwd?: string): Promise<string | null>;
 }
 
-export type VcsSelection = "auto" | "git" | "jj" | "p4";
+export type VcsSelection = "auto" | "git";
 
 export interface VcsApi {
     detectVcs(cwd?: string): Promise<VcsProvider>;
@@ -128,13 +117,6 @@ const GIT_DIFF_TYPES = new Set([
     "branch",
     "merge-base",
     "all",
-]);
-const JJ_DIFF_TYPES = new Set([
-    "jj-current",
-    "jj-last",
-    "jj-line",
-    "jj-evolog",
-    "jj-all",
 ]);
 
 function selectNearestProvider(
@@ -261,48 +243,6 @@ export function createGitProvider(runtime: ReviewGitRuntime): VcsProvider {
     };
 }
 
-export function createJjProvider(runtime: ReviewJjRuntime): VcsProvider {
-    return {
-        id: "jj",
-
-        async detect(cwd?: string): Promise<boolean> {
-            return (await detectJjWorkspace(runtime, cwd)) !== null;
-        },
-
-        getRoot(cwd?: string): Promise<string | null> {
-            return detectJjWorkspace(runtime, cwd);
-        },
-
-        ownsDiffType(diffType: string): boolean {
-            return JJ_DIFF_TYPES.has(diffType);
-        },
-
-        getContext(cwd?: string): Promise<GitContext> {
-            return getJjContext(runtime, cwd);
-        },
-
-        runDiff(
-            diffType: DiffType,
-            defaultBranch: string,
-            cwd?: string,
-            options?: GitDiffOptions,
-        ): Promise<DiffResult> {
-            return runJjDiff(runtime, diffType, defaultBranch, cwd, options);
-        },
-
-        getFileContents(diffType, defaultBranch, filePath, oldPath?, cwd?) {
-            return getJjFileContentsForDiff(
-                runtime,
-                diffType,
-                defaultBranch,
-                filePath,
-                oldPath,
-                cwd,
-            );
-        },
-    };
-}
-
 export function createVcsApi(providers: readonly VcsProvider[]): VcsApi {
     const providerList = [...providers];
     const defaultProvider =
@@ -367,10 +307,6 @@ export function createVcsApi(providers: readonly VcsProvider[]): VcsApi {
         switch (id) {
             case "git":
                 return "Git";
-            case "jj":
-                return "JJ";
-            case "p4":
-                return "P4";
         }
     }
 
@@ -428,16 +364,6 @@ export function createVcsApi(providers: readonly VcsProvider[]): VcsApi {
         requestedBase: string | undefined,
         ownsRequestedDiffType: boolean,
     ): string {
-        if (gitContext.vcsType === "jj") {
-            if (
-                diffType === "jj-line" &&
-                ownsRequestedDiffType &&
-                requestedBase
-            ) {
-                return requestedBase;
-            }
-            return gitContext.defaultBranch;
-        }
         return requestedBase ?? gitContext.defaultBranch;
     }
 
@@ -579,12 +505,6 @@ export function resolveInitialDiffType(
     gitContext: GitContext,
     configuredDiffType: DiffType,
 ): DiffType {
-    if (gitContext.vcsType === "p4") {
-        return "p4-default";
-    }
-    if (gitContext.vcsType === "jj") {
-        return "jj-current";
-    }
     if (
         gitContext.diffOptions.some(
             (option) => option.id === configuredDiffType,
