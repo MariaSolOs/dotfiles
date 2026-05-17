@@ -118,11 +118,3 @@ vim.api.nvim_create_autocmd('FileType', {
         end
     end,
 })
-
-vim.api.nvim_create_autocmd('TextYankPost', {
-    group = vim.api.nvim_create_augroup('mariasolos/yank_highlight', { clear = true }),
-    desc = 'Highlight on yank',
-    callback = function()
-        vim.hl.on_yank { higroup = 'Visual' }
-    end,
-})
