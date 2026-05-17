@@ -509,8 +509,9 @@ function shellQuote(value: string): string {
     return `'${value.replace(/'/g, `'\\''`)}'`;
 }
 
-// Used for pbcopy and osascript so large/nested strings go through stdin instead
-// of shell arguments, avoiding fish/POSIX/AppleScript quoting interactions.
+// Used for clipboard/automation helpers so large/nested strings go through
+// stdin instead of shell arguments, avoiding fish/POSIX/AppleScript quoting
+// interactions.
 function runWithInput(
     file: string,
     args: string[],
@@ -540,8 +541,10 @@ function runWithInput(
     });
 }
 
-// This script runs inside the new Ghostty tab. The delayed Cmd+W is backgrounded
-// so the shell can exit immediately after scheduling tab cleanup.
+// This script runs inside the new Ghostty tab. On macOS the delayed Cmd+W is
+// backgrounded so the shell can exit immediately after scheduling tab cleanup;
+// on Linux we paste the command with `exec`, so the tab closes when this script
+// exits after nvim.
 function wrapperScript(summaryPath: string): string {
     return `#!/bin/sh
 set +e
@@ -557,11 +560,93 @@ exit "$status"
 `;
 }
 
-async function openInGhostty(wrapperPath: string): Promise<void> {
+async function commandExists(command: string): Promise<boolean> {
+    const result = await runCapture(
+        "/bin/sh",
+        ["-c", `command -v ${shellQuote(command)} >/dev/null 2>&1`],
+        process.cwd(),
+        [0, 1, 127],
+    );
+    return result.code === 0;
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function runClipboardCommand(
+    file: string,
+    args: string[],
+    input: string,
+): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const child = spawn(file, args, {
+            stdio: ["pipe", "ignore", "pipe"],
+        });
+        let stderr = "";
+        let settled = false;
+        let settleTimer: NodeJS.Timeout | undefined;
+
+        const settle = (error?: Error) => {
+            if (settled) return;
+            settled = true;
+            if (settleTimer) clearTimeout(settleTimer);
+            child.stderr.destroy();
+            child.unref();
+            if (error) reject(error);
+            else resolve();
+        };
+
+        child.stderr.on("data", (chunk) => {
+            stderr += String(chunk);
+        });
+        child.on("error", settle);
+        child.on("close", (code) => {
+            if (code === 0) settle();
+            else
+                settle(
+                    new Error(
+                        stderr.trim() || `${file} exited with code ${code}`,
+                    ),
+                );
+        });
+
+        child.stdin.end(input, () => {
+            // Wayland/X11 clipboard tools often stay alive to serve future paste
+            // requests. Once stdin is accepted, continue with Ghostty automation
+            // instead of waiting forever for the clipboard owner to exit.
+            settleTimer = setTimeout(() => settle(), 200);
+        });
+    });
+}
+
+async function copyToClipboard(text: string): Promise<void> {
+    if (process.platform === "darwin") {
+        await runWithInput("/usr/bin/pbcopy", [], text);
+        return;
+    }
+
+    if (await commandExists("wl-copy")) {
+        await runClipboardCommand("wl-copy", [], text);
+        return;
+    }
+
+    throw new Error("wl-copy is required for clipboard support on Linux");
+}
+
+async function sendHyprlandShortcut(shortcut: string): Promise<void> {
+    await runCapture(
+        "hyprctl",
+        ["dispatch", "sendshortcut", `${shortcut},activewindow`],
+        process.cwd(),
+    );
+}
+
+async function openInGhosttyMac(wrapperPath: string): Promise<void> {
     // Paste only a simple wrapper invocation into Ghostty; the fragile bits live
     // in the temp script where quoting is easier to control.
     const command = `command /bin/sh ${shellQuote(wrapperPath)}`;
-    await runWithInput("/usr/bin/pbcopy", [], command);
+    await copyToClipboard(command);
 
     const script = `tell application "Ghostty" to activate
 delay 0.3
@@ -574,6 +659,41 @@ end tell
 `;
 
     await runWithInput("/usr/bin/osascript", [], script);
+}
+
+async function openInGhosttyLinux(wrapperPath: string): Promise<void> {
+    if (!(await commandExists("hyprctl"))) {
+        throw new Error(
+            "opening a new Ghostty tab on Linux currently requires Hyprland's hyprctl",
+        );
+    }
+
+    // Replacing the new tab's shell makes Ghostty close the tab naturally when
+    // nvim exits, avoiding platform-specific close-tab automation.
+    const command = `exec /bin/sh ${shellQuote(wrapperPath)}`;
+    await copyToClipboard(command);
+
+    await sendHyprlandShortcut("CTRL_SHIFT,T");
+    await sleep(400);
+    await sendHyprlandShortcut("CTRL_SHIFT,V");
+    await sleep(100);
+    await sendHyprlandShortcut(",Return");
+}
+
+async function openInGhostty(wrapperPath: string): Promise<void> {
+    if (process.platform === "darwin") {
+        await openInGhosttyMac(wrapperPath);
+        return;
+    }
+
+    if (process.platform === "linux") {
+        await openInGhosttyLinux(wrapperPath);
+        return;
+    }
+
+    throw new Error(
+        `unsupported platform for Ghostty automation: ${process.platform}`,
+    );
 }
 
 export default function ghSummaryExtension(pi: ExtensionAPI) {
