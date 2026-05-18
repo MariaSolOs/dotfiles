@@ -631,11 +631,157 @@ function runWithInput(
     });
 }
 
+type LiveSummarySession = {
+    close: () => void;
+    revise: (feedback: string, conversationContext: string) => void;
+};
+
+const liveSummarySessions = new Set<LiveSummarySession>();
+let activeLiveSummarySession: LiveSummarySession | undefined;
+
+function startLiveSummarySession(options: {
+    tmpDir: string;
+    donePath: string;
+    summaryPath: string;
+    model: Model<Api>;
+    apiKey: string;
+    headers?: Record<string, string>;
+    changesText: string;
+    prTemplate?: string;
+    notify: (message: string, level: "info" | "warning" | "error") => void;
+}): LiveSummarySession | undefined {
+    let doneWatcher: FSWatcher | undefined;
+    let activeController: AbortController | undefined;
+    let inFlight = false;
+    let pendingFeedback:
+        | { feedback: string; conversationContext: string }
+        | undefined;
+    let closed = false;
+    let lastAppliedFeedback = "";
+
+    const runRevision = async (
+        feedback: string,
+        conversationContext: string,
+    ) => {
+        if (closed) return;
+        if (inFlight) {
+            pendingFeedback = { feedback, conversationContext };
+            return;
+        }
+        if (!feedback.trim() || feedback === lastAppliedFeedback) return;
+
+        inFlight = true;
+        try {
+            const currentSummary = await readFile(options.summaryPath, "utf8");
+            const userMessage: UserMessage = {
+                role: "user",
+                content: [
+                    {
+                        type: "text",
+                        text: buildRevisionPrompt({
+                            changesText: options.changesText,
+                            conversationContext,
+                            prTemplate: options.prTemplate,
+                            currentSummary,
+                            feedback,
+                        }),
+                    },
+                ],
+                timestamp: Date.now(),
+            };
+
+            activeController = new AbortController();
+            options.notify(
+                "Updating PR summary from current pi session feedback...",
+                "info",
+            );
+            const response = await complete(
+                options.model,
+                { systemPrompt: SYSTEM_PROMPT, messages: [userMessage] },
+                {
+                    apiKey: options.apiKey,
+                    headers: options.headers,
+                    signal: activeController.signal,
+                },
+            );
+
+            if (response.stopReason === "aborted" || closed) return;
+
+            const revisedSummary = stripWrappingCodeFence(
+                textFromResponse(response),
+            );
+            if (!revisedSummary.trim()) {
+                throw new Error("Model returned an empty summary");
+            }
+
+            await writeFile(options.summaryPath, revisedSummary, "utf8");
+            lastAppliedFeedback = feedback;
+            options.notify(
+                "Updated PR summary from current pi session feedback",
+                "info",
+            );
+        } catch (error) {
+            if (!closed) {
+                options.notify(
+                    `Failed to update PR summary from feedback: ${(error as Error).message}`,
+                    "error",
+                );
+            }
+        } finally {
+            activeController = undefined;
+            inFlight = false;
+            const pending = pendingFeedback;
+            pendingFeedback = undefined;
+            if (pending && !closed) {
+                void runRevision(pending.feedback, pending.conversationContext);
+            }
+        }
+    };
+
+    const close = () => {
+        if (closed) return;
+        closed = true;
+        activeController?.abort();
+        doneWatcher?.close();
+        liveSummarySessions.delete(session);
+        if (activeLiveSummarySession === session) {
+            activeLiveSummarySession = undefined;
+        }
+    };
+
+    const session: LiveSummarySession = {
+        close,
+        revise(feedback, conversationContext) {
+            void runRevision(feedback.trim(), conversationContext);
+        },
+    };
+
+    try {
+        doneWatcher = watch(
+            options.tmpDir,
+            { persistent: false },
+            (_eventType, filename) => {
+                if (filename === path.basename(options.donePath)) close();
+            },
+        );
+        doneWatcher.on("error", close);
+        liveSummarySessions.add(session);
+        return session;
+    } catch (error) {
+        options.notify(
+            `Failed to watch Neovim session: ${(error as Error).message}`,
+            "warning",
+        );
+        close();
+        return undefined;
+    }
+}
+
 // This script runs inside the new Ghostty tab. On macOS the delayed Cmd+W is
 // backgrounded so the shell can exit immediately after scheduling tab cleanup;
 // on Linux we paste the command with `exec`, so the tab closes when this script
 // exits after nvim.
-function wrapperScript(summaryPath: string): string {
+function wrapperScript(nvimScriptPath: string, donePath: string): string {
     return `#!/bin/sh
 set +e
 vimscript=${shellQuote(nvimScriptPath)}
