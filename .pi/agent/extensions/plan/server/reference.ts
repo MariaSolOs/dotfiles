@@ -35,7 +35,6 @@ import {
 } from "../generated/resolve-file.js";
 import { parseCodePath } from "../generated/code-file.js";
 import { htmlToMarkdown } from "../generated/html-to-markdown.js";
-import { preloadFile } from "@pierre/diffs/ssr";
 
 type Res = ServerResponse;
 
@@ -193,22 +192,10 @@ export async function handleDocRequest(res: Res, url: URL): Promise<void> {
                 return;
             }
             const contents = readFileSync(resolvedCode, "utf-8");
-            const displayName = resolvedCode.split("/").pop() || resolvedCode;
-            let prerenderedHTML: string | undefined;
-            try {
-                const result = await preloadFile({
-                    file: { name: displayName, contents },
-                    options: { disableFileHeader: true },
-                });
-                prerenderedHTML = result.prerenderedHTML;
-            } catch {
-                // Fall back to client-side rendering
-            }
             json(res, {
                 codeFile: true,
                 contents,
                 filepath: resolvedCode,
-                prerenderedHTML,
                 line: parsed.line,
                 lineEnd: parsed.lineEnd,
             });

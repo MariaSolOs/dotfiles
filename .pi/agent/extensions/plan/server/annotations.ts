@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Editor annotation handler (in-memory store for VS Code integration).
+ * Editor annotation handler (in-memory store for browser annotations).
  * EditorAnnotation type, createEditorAnnotationHandler
  */
 

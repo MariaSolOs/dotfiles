@@ -7,7 +7,6 @@ import {
     type ArchivedPlan,
     generateSlug,
     getPlanVersion,
-    getPlanVersionPath,
     getVersionCount,
     listArchivedPlans,
     listVersions,
@@ -25,7 +24,6 @@ import {
     handleUploadRequest,
 } from "./handlers.js";
 import { html, json, parseBody, requestUrl } from "./helpers.js";
-import { openEditorDiff } from "./ide.js";
 import {
     type BearConfig,
     type IntegrationResult,
@@ -167,7 +165,7 @@ export async function startPlanReviewServer(options: {
     const draftKey =
         options.mode !== "archive" ? contentHash(options.plan) : "";
 
-    // Editor annotations (in-memory, VS Code integration — skip in archive mode)
+    // Editor annotations (in-memory, skip in archive mode)
     const editorAnnotations =
         options.mode !== "archive" ? createEditorAnnotationHandler() : null;
     const externalAnnotations =
@@ -339,47 +337,6 @@ export async function startPlanReviewServer(options: {
             req.method === "GET"
         ) {
             handleFileBrowserRequest(res, url);
-        } else if (
-            url.pathname === "/api/plan/vscode-diff" &&
-            req.method === "POST"
-        ) {
-            try {
-                const body = await parseBody(req);
-                const baseVersion = body.baseVersion as number;
-                if (!baseVersion) {
-                    json(res, { error: "Missing baseVersion" }, 400);
-                    return;
-                }
-                const basePath = getPlanVersionPath(project, slug, baseVersion);
-                if (!basePath) {
-                    json(
-                        res,
-                        { error: `Version ${baseVersion} not found` },
-                        404,
-                    );
-                    return;
-                }
-                const result = await openEditorDiff(
-                    basePath,
-                    historyResult.path,
-                );
-                if ("error" in result) {
-                    json(res, { error: result.error }, 500);
-                    return;
-                }
-                json(res, { ok: true });
-            } catch (err) {
-                json(
-                    res,
-                    {
-                        error:
-                            err instanceof Error
-                                ? err.message
-                                : "Failed to open VS Code diff",
-                    },
-                    500,
-                );
-            }
         } else if (url.pathname === "/api/agents" && req.method === "GET") {
             json(res, { agents: [] });
         } else if (url.pathname === "/favicon.svg") {

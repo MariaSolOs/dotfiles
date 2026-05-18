@@ -92,47 +92,33 @@ Component patterns specific to PR explainer documents. For the base design syste
 
 ## Diff rendering
 
-Use Pierre diffs via CDN for syntax-highlighted, theme-aware diff rendering. Renders into shadow DOM (no style conflicts) with Shiki syntax highlighting.
+Use a plain `<pre><code>` block for compact, dependency-free diff rendering. Keep colors tied to Plan tokens and avoid importing external diff/highlighting libraries.
 
 ```html
-<script type="module">
-    import {
-        getSingularPatch,
-        registerDiffsComponent,
-    } from "https://cdn.jsdelivr.net/npm/@pierre/diffs@1.1.21/+esm";
-    registerDiffsComponent();
-
-    const patch = `--- a/src/handler.ts
+<pre class="diff-block"><code>--- a/src/handler.ts
 +++ b/src/handler.ts
 @@ -1,4 +1,6 @@
  import { Router } from 'express';
 +import { NotificationService } from './notifications';
--import { legacyPoll } from './polling';`;
+-import { legacyPoll } from './polling';</code></pre>
 
-    const container = document.querySelector("diffs-container");
-    container.fileDiff = getSingularPatch(patch);
-    container.options = {
-        themeType: window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light",
-        diffStyle: "unified",
-        diffIndicators: "bars",
-        lineDiffType: "word-alt",
-        unsafeCSS: `
-      :host {
-        --diffs-bg: var(--background);
-        --diffs-fg: var(--foreground);
-        border-radius: var(--radius);
-        border: 1.5px solid var(--border);
-        overflow: hidden;
-      }
-    `,
-    };
-</script>
-<diffs-container></diffs-container>
+<style>
+.diff-block {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--muted);
+    color: var(--foreground);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+</style>
 ```
 
-For multiple diffs, create one `<diffs-container>` per file. Pierre handles syntax highlighting, line numbers, add/del coloring, and word-level diffs automatically.
+For multiple diffs, create one styled `<pre><code>` block per file.
 
 ## Review comments
 
