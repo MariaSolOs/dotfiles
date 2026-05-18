@@ -964,7 +964,7 @@ export default function plan(pi: ExtensionAPI): void {
         description:
             "Submit your Plan plan for user review. " +
             "Call this only while Plan planning mode is active, after writing your plan as a markdown file anywhere inside the working directory. " +
-            "Pass the path to the plan file (e.g. PLAN.md or plans/auth.md). " +
+            "Pass the path to the plan file (e.g. remove-vscode-integration.md or plans/auth-flow.md). " +
             "The user will review the plan in a visual browser UI and can approve, deny with feedback, or annotate it. " +
             "If denied, edit the same file in place, then call this again with the same path.",
         parameters: Type.Object({
@@ -996,7 +996,7 @@ export default function plan(pi: ExtensionAPI): void {
                     content: [
                         {
                             type: "text",
-                            text: `Error: ${PLAN_SUBMIT_TOOL} requires a filePath argument pointing to your markdown plan file (e.g. "PLAN.md" or "plans/auth.md").`,
+                            text: `Error: ${PLAN_SUBMIT_TOOL} requires a filePath argument pointing to your markdown plan file (e.g. "remove-vscode-integration.md" or "plans/auth-flow.md").`,
                         },
                     ],
                     details: { approved: false },
@@ -1268,7 +1268,7 @@ You are pair-planning with the user. Explore the code to build context, then wri
 
 ### Picking a plan file
 
-Choose a descriptive filename for your plan. Convention: \`PLAN.md\` at the repo root for a single focused plan, or \`plans/<short-name>.md\` for projects that keep multiple plans. Reuse the same filename across revisions of the same plan so version history links up.
+Choose a short descriptive kebab-case filename for your plan, based on the task (for example, \`remove-vscode-integration.md\` or \`auth-flow.md\`). Do not use generic names like \`PLAN.md\`. Put it at the repo root unless the project has an existing plans directory/convention; in that case use \`plans/<short-descriptive-name>.md\`. Reuse the same filename across revisions of the same plan so version history links up.
 
 ### The Loop
 
