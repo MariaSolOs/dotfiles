@@ -1,9 +1,8 @@
 {
-  "lastChangelogVersion": "0.75.1",
+  "lastChangelogVersion": "0.75.3",
   "theme": "miss-dracula",
   "editorPaddingX": 1,
   "defaultModel": "gpt-5.5",
   "collapseChangelog": true,
   "defaultProvider": "openai-codex",
-  "treeFilterMode": "user-only"
 }
