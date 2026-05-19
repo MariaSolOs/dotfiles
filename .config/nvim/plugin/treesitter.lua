@@ -36,7 +36,6 @@ local parsers = {
 add {
     {
         src = 'nvim-treesitter/nvim-treesitter',
-        opts = {},
         on_setup = function()
             -- Main-branch nvim-treesitter ships queries under `runtime/queries/`,
             -- which isn't on rtp by default. Prepend it so highlights/folds/indents

@@ -4,7 +4,6 @@ local add_on_event = require('vim-pack').add_on_event
 add_on_event('UIEnter', {
     {
         src = 'kylechui/nvim-surround',
-        opts = {},
         on_setup = function()
             vim.keymap.set('n', 'yz', '<Plug>(nvim-surround-normal)', {
                 desc = 'Add a surrounding pair around a motion (normal mode)',

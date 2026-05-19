@@ -4,7 +4,6 @@ local add = require('vim-pack').add
 add {
     {
         src = 'nvim-mini/mini.bufremove',
-        opts = {},
         on_setup = function()
             vim.keymap.set('n', '<leader>bd', function()
                 require('mini.bufremove').delete(0, false)
