@@ -12,12 +12,18 @@
  * - Bash unrestricted during planning (prompt-guided)
  * - Writes restricted to markdown files inside cwd during planning
  * - plan_submit_plan tool with browser-based visual approval
- * - [DONE:n] markers for execution progress tracking
+ * - plan_complete_step tool for live execution progress tracking
  * - /plan-review command for code review
  * - /plan-annotate command for markdown annotation
  */
 
-import { existsSync, readFileSync, statSync } from "node:fs";
+import {
+    existsSync,
+    readFileSync,
+    statSync,
+    unlinkSync,
+    writeFileSync,
+} from "node:fs";
 import { basename, resolve } from "node:path";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { Type } from "@earendil-works/pi-ai";
@@ -34,9 +40,9 @@ import {
 } from "./config.js";
 import {
     type ChecklistItem,
-    markCompletedSteps,
+    markStepComplete,
     parseChecklist,
-} from "./generated/checklist.js";
+} from "./checklist-progress.js";
 import { hasMarkdownFiles, resolveUserPath } from "./generated/resolve-file.js";
 import { FILE_BROWSER_EXCLUDED } from "./generated/reference-common.js";
 import { htmlToMarkdown } from "./generated/html-to-markdown.js";
@@ -90,6 +96,7 @@ import {
 import {
     getToolsForPhase,
     isPlanWritePathAllowed,
+    PLAN_COMPLETE_STEP_TOOL,
     PLAN_SUBMIT_TOOL,
     type Phase,
     stripPlanningOnlyTools,
@@ -375,7 +382,7 @@ export default function plan(pi: ExtensionAPI): void {
     async function restoreSavedState(ctx: ExtensionContext): Promise<void> {
         if (!savedState) return;
 
-        pi.setActiveTools(savedState.activeTools);
+        pi.setActiveTools(stripPlanningOnlyTools(savedState.activeTools));
         if (savedState.model) {
             await applyModelRef(savedState.model, ctx, "restore");
         }
@@ -397,11 +404,7 @@ export default function plan(pi: ExtensionAPI): void {
             );
             const toolSet = new Set(baseTools);
             for (const tool of profile?.activeTools ?? []) toolSet.add(tool);
-            if (phase === "planning") {
-                pi.setActiveTools(getToolsForPhase([...toolSet], phase));
-            } else {
-                pi.setActiveTools([...toolSet]);
-            }
+            pi.setActiveTools(getToolsForPhase([...toolSet], phase));
         }
 
         if (profile?.model) {
@@ -1109,9 +1112,9 @@ export default function plan(pi: ExtensionAPI): void {
                 persistState();
                 justApprovedPlan = true;
 
-                const doneMsg =
+                const completionMsg =
                     checklistItems.length > 0
-                        ? `After completing each step, include [DONE:n] in your response where n is the step number.`
+                        ? `After completing each step, call ${PLAN_COMPLETE_STEP_TOOL} with the completed step number so the plan file and progress UI update immediately.`
                         : "";
 
                 if (result.feedback) {
@@ -1124,7 +1127,7 @@ export default function plan(pi: ExtensionAPI): void {
                                     loadConfig(),
                                     {
                                         planFilePath: inputPath,
-                                        doneMsg,
+                                        doneMsg: completionMsg,
                                         feedback: result.feedback,
                                     },
                                 ),
@@ -1141,7 +1144,7 @@ export default function plan(pi: ExtensionAPI): void {
                             type: "text",
                             text: getPlanApprovedPrompt("pi", loadConfig(), {
                                 planFilePath: inputPath,
-                                doneMsg,
+                                doneMsg: completionMsg,
                             }),
                         },
                     ],
@@ -1169,6 +1172,119 @@ export default function plan(pi: ExtensionAPI): void {
                     },
                 ],
                 details: { approved: false, feedback: feedbackText },
+            };
+        },
+    });
+
+    // ── plan_complete_step Tool ────────────────────────────────────
+
+    pi.registerTool({
+        name: PLAN_COMPLETE_STEP_TOOL,
+        label: "Complete Plan Step",
+        description:
+            "Mark a completed /plan checklist step as done. " +
+            "Call this immediately after finishing each implementation step from the approved plan. " +
+            "It updates both the plan markdown checkbox and the /plan progress UI.",
+        parameters: Type.Object({
+            step: Type.Number({
+                description:
+                    "1-based checklist step number to mark complete, matching the Remaining steps list.",
+            }),
+        }) as any,
+
+        async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+            if (phase !== "executing") {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: "Error: plan_complete_step is only available while executing an approved plan.",
+                        },
+                    ],
+                    details: { ok: false },
+                };
+            }
+
+            if (!lastSubmittedPath) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: "Error: no approved plan file is recorded for this execution.",
+                        },
+                    ],
+                    details: { ok: false },
+                };
+            }
+
+            const step = Number((params as { step?: unknown })?.step);
+            if (!Number.isInteger(step) || step < 1) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: "Error: step must be a positive integer.",
+                        },
+                    ],
+                    details: { ok: false, step },
+                };
+            }
+
+            const fullPath = resolve(ctx.cwd, lastSubmittedPath);
+            let planContent: string;
+            try {
+                planContent = readFileSync(fullPath, "utf-8");
+            } catch (err) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Error: failed to read ${lastSubmittedPath}: ${err instanceof Error ? err.message : String(err)}`,
+                        },
+                    ],
+                    details: { ok: false, step },
+                };
+            }
+
+            const result = markStepComplete(planContent, step);
+            if (result.error) {
+                return {
+                    content: [{ type: "text", text: `Error: ${result.error}` }],
+                    details: { ok: false, step },
+                };
+            }
+
+            if (result.changed) {
+                try {
+                    writeFileSync(fullPath, result.content, "utf-8");
+                } catch (err) {
+                    return {
+                        content: [
+                            {
+                                type: "text",
+                                text: `Error: failed to update ${lastSubmittedPath}: ${err instanceof Error ? err.message : String(err)}`,
+                            },
+                        ],
+                        details: { ok: false, step },
+                    };
+                }
+            }
+
+            checklistItems = parseChecklist(result.content);
+            updateStatus(ctx);
+            updateWidget(ctx);
+            persistState();
+
+            const itemText = result.item?.text ? `: ${result.item.text}` : "";
+            const status = result.changed ? "completed" : "already complete";
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Step ${step} ${status}${itemText}`,
+                    },
+                ],
+                details: { ok: true, step, changed: result.changed },
             };
         },
     });
@@ -1342,7 +1458,9 @@ Full tool access is enabled. Execute the plan from ${planRef}.
 Remaining steps:
 ${todoList}
 
-Execute each step in order. After completing a step, include [DONE:n] in your response where n is the step number.`,
+Execute each step in order. Immediately after completing each step, call ${PLAN_COMPLETE_STEP_TOOL} with that step number so the plan file and progress UI update live.
+
+When all checklist items are complete, /plan will ask whether to remove the plan file. Do not remove the plan file yourself; if the user declines, it will be kept in the filesystem.`,
                         display: false,
                     },
                 };
@@ -1380,15 +1498,20 @@ Execute each step in order. After completing a step, include [DONE:n] in your re
         };
     });
 
-    // Track execution progress
-    pi.on("turn_end", async (event, ctx) => {
-        if (phase !== "executing" || checklistItems.length === 0) return;
+    // Keep execution progress synced from the plan file.
+    pi.on("turn_end", async (_event, ctx) => {
+        if (phase !== "executing" || !lastSubmittedPath) return;
 
-        const text = getAssistantMessageText(event.message);
-        if (!text) return;
-        if (markCompletedSteps(text, checklistItems) > 0) {
+        try {
+            const planContent = readFileSync(
+                resolve(ctx.cwd, lastSubmittedPath),
+                "utf-8",
+            );
+            checklistItems = parseChecklist(planContent);
             updateStatus(ctx);
             updateWidget(ctx);
+        } catch {
+            // File deleted during execution — degrade gracefully.
         }
         persistState();
     });
@@ -1406,6 +1529,7 @@ Execute each step in order. After completing a step, include [DONE:n] in your re
         if (phase !== "executing" || checklistItems.length === 0) return;
 
         if (checklistItems.every((t) => t.completed)) {
+            const completedPlanPath = lastSubmittedPath;
             const completedList = checklistItems
                 .map((t) => `- [x] ~~${t.text}~~`)
                 .join("\n");
@@ -1417,6 +1541,55 @@ Execute each step in order. After completing a step, include [DONE:n] in your re
                 },
                 { triggerTurn: false },
             );
+
+            let cleanupMessage: string | null = null;
+            if (completedPlanPath) {
+                try {
+                    const planFilePath = resolve(ctx.cwd, completedPlanPath);
+                    if (!existsSync(planFilePath)) {
+                        cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
+                    } else {
+                        let removePlanFile = false;
+                        try {
+                            removePlanFile = await ctx.ui.confirm(
+                                "Remove plan file?",
+                                `Implementation is complete. Remove ${completedPlanPath} from the filesystem?`,
+                            );
+                        } catch (err) {
+                            cleanupMessage = `Plan file kept at ${completedPlanPath}; cleanup confirmation could not be shown: ${err instanceof Error ? err.message : String(err)}`;
+                        }
+
+                        if (removePlanFile) {
+                            try {
+                                unlinkSync(planFilePath);
+                                cleanupMessage = `Plan file removed: ${completedPlanPath}`;
+                            } catch (err) {
+                                if (!existsSync(planFilePath)) {
+                                    cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
+                                } else {
+                                    cleanupMessage = `Plan file kept at ${completedPlanPath}; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
+                                }
+                            }
+                        } else if (!cleanupMessage) {
+                            cleanupMessage = `Plan file kept: ${completedPlanPath}`;
+                        }
+                    }
+                } catch (err) {
+                    cleanupMessage = `Plan file kept at ${completedPlanPath}; cleanup could not complete: ${err instanceof Error ? err.message : String(err)}`;
+                }
+            }
+
+            if (cleanupMessage) {
+                pi.sendMessage(
+                    {
+                        customType: "plan-complete",
+                        content: cleanupMessage,
+                        display: true,
+                    },
+                    { triggerTurn: false },
+                );
+            }
+
             phase = "idle";
             checklistItems = [];
             lastSubmittedPath = null;
@@ -1458,34 +1631,13 @@ Execute each step in order. After completing a step, include [DONE:n] in your re
             savedState = stateEntry.data.savedState ?? savedState;
         }
 
-        // Rebuild execution state from disk + session messages
+        // Rebuild execution state from the plan file on disk.
         if (phase === "executing") {
             if (lastSubmittedPath) {
                 const fullPath = resolve(ctx.cwd, lastSubmittedPath);
                 if (existsSync(fullPath)) {
                     const content = readFileSync(fullPath, "utf-8");
                     checklistItems = parseChecklist(content);
-
-                    // Find last execution marker and scan messages after it for [DONE:n]
-                    let executeIndex = -1;
-                    for (let i = entries.length - 1; i >= 0; i--) {
-                        const entry = entries[i] as {
-                            type: string;
-                            customType?: string;
-                        };
-                        if (entry.customType === "plan-execute") {
-                            executeIndex = i;
-                            break;
-                        }
-                    }
-
-                    for (let i = executeIndex + 1; i < entries.length; i++) {
-                        const entry = entries[i];
-                        if (entry.type === "message" && "message" in entry) {
-                            const text = getAssistantMessageText(entry.message);
-                            if (text) markCompletedSteps(text, checklistItems);
-                        }
-                    }
                 } else {
                     // Plan file gone — fall back to idle
                     phase = "idle";
@@ -1513,8 +1665,8 @@ Execute each step in order. After completing a step, include [DONE:n] in your re
                 await restoreSavedState(ctx);
                 savedState = null;
             } else {
-                // Strip planning-only tools on fresh sessions where savedState is null.
-                // Without this, plan_submit_plan stays in the active tool set
+                // Strip phase-only tools on fresh sessions where savedState is null.
+                // Without this, plan tools can stay in the active tool set
                 // even though plan mode hasn't been activated. See #387.
                 pi.setActiveTools(stripPlanningOnlyTools(pi.getActiveTools()));
             }
