@@ -335,12 +335,13 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     -- Gitlinker.
     NvimGitLinkerHighlightTextObject = { link = 'Visual' },
 
-    -- Bufferline.
-    BufferLineBufferSelected = { bg = colors.bg, underline = true, sp = colors.purple },
-    BufferLineFill = { bg = colors.bg },
-    TabLine = { fg = colors.comment, bg = colors.bg },
-    TabLineFill = { bg = colors.bg },
-    TabLineSel = { bg = colors.purple },
+    -- Tabline.
+    MiniTablineCurrent = { fg = colors.bg, bg = colors.bright_magenta },
+    MiniTablineHidden = { fg = colors.comment, bg = colors.bg },
+    MiniTablineVisible = { fg = colors.bright_magenta, bg = colors.bg },
+    MiniTablineModifiedCurrent = { fg = colors.bg, bg = colors.grey, italic = true },
+    MiniTablineModifiedHidden = { fg = colors.grey, bg = colors.bg, italic = true },
+    MiniTablineModifiedVisible = { fg = colors.grey, bg = colors.bg, italic = true },
 
     -- When triggering flash, use a white font and make everything in the backdrop italic.
     FlashBackdrop = { italic = true },
