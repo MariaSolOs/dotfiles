@@ -77,6 +77,7 @@ export interface PlanReviewResultEvent {
     savedPath?: string;
     agentSwitch?: string;
     permissionMode?: string;
+    compactContext?: boolean;
 }
 
 export interface PlanReviewStatusPayload {
@@ -299,6 +300,7 @@ export function registerPlanEventListeners(pi: ExtensionAPI): void {
                             savedPath: result.savedPath,
                             agentSwitch: result.agentSwitch,
                             permissionMode: result.permissionMode,
+                            compactContext: result.compactContext,
                         } satisfies PlanReviewResultEvent;
                         setStoredReviewStatus(session.reviewId, {
                             status: "completed",

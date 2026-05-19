@@ -118,10 +118,17 @@ type SavedPhaseState = {
     thinkingLevel: ThinkingLevel;
 };
 
+type CompactApprovedPlanContext = {
+    planText: string;
+    planFilePath: string;
+    approvalEntryId?: string;
+};
+
 type PersistedPlanState = {
     phase: Phase;
     lastSubmittedPath?: string;
     savedState?: SavedPhaseState;
+    compactApprovedPlanContext?: CompactApprovedPlanContext;
 };
 
 type PlanAskQuestionDetails = {
@@ -284,13 +291,17 @@ export default function plan(pi: ExtensionAPI): void {
     let savedState: SavedPhaseState | null = null;
     let planConfig = {};
     let justApprovedPlan = false;
+    let compactApprovedPlanContext: CompactApprovedPlanContext | null = null;
+    let activeContext: ExtensionContext | null = null;
 
     pi.on("session_start", (_event, ctx) => {
         currentPiSession.update(ctx);
+        activeContext = ctx;
     });
 
     pi.on("session_shutdown", () => {
         currentPiSession.clear();
+        activeContext = null;
     });
 
     // ── Flags ────────────────────────────────────────────────────────────
@@ -369,7 +380,159 @@ export default function plan(pi: ExtensionAPI): void {
     }
 
     function persistState(): void {
-        pi.appendEntry("plan", { phase, lastSubmittedPath, savedState });
+        pi.appendEntry("plan", {
+            phase,
+            lastSubmittedPath,
+            savedState,
+            compactApprovedPlanContext,
+        });
+    }
+
+    function getLatestSessionEntryId(
+        ctx: ExtensionContext,
+    ): string | undefined {
+        const entries = ctx.sessionManager.getEntries() as { id?: string }[];
+        return [...entries].reverse().find((entry) => entry.id)?.id;
+    }
+
+    function enableCompactApprovedPlanContext(
+        ctx: ExtensionContext,
+        planText: string,
+        planFilePath: string,
+    ): void {
+        compactApprovedPlanContext = {
+            planText,
+            planFilePath,
+            approvalEntryId: getLatestSessionEntryId(ctx),
+        };
+    }
+
+    function compactApprovedPlanMessage(context: CompactApprovedPlanContext) {
+        return {
+            customType: "plan-compact-context",
+            role: "user",
+            content: [
+                {
+                    type: "text",
+                    text: `[PLAN - APPROVED COMPACT CONTEXT]\nThe planning conversation has been compacted. Use the approved plan below as the prior context for execution.\n\nPlan file: ${context.planFilePath}\n\n${context.planText}`,
+                },
+            ],
+        };
+    }
+
+    function messageKey(value: unknown): string | null {
+        try {
+            return JSON.stringify(value);
+        } catch {
+            return null;
+        }
+    }
+
+    function isRecord(value: unknown): value is Record<string, unknown> {
+        return typeof value === "object" && value !== null;
+    }
+
+    function getContentItems(message: Record<string, unknown>): unknown[] {
+        return Array.isArray(message.content) ? message.content : [];
+    }
+
+    function isToolProtocolItem(item: unknown): boolean {
+        if (!isRecord(item)) return false;
+        const type = item.type;
+        return (
+            type === "function_call" ||
+            type === "function_call_output" ||
+            type === "tool_use" ||
+            type === "tool_result" ||
+            type === "toolCall" ||
+            "tool_use_id" in item ||
+            "tool_call_id" in item ||
+            ("call_id" in item && ("output" in item || "result" in item))
+        );
+    }
+
+    function isToolProtocolMessage(message: unknown): boolean {
+        if (!isRecord(message)) return false;
+        return (
+            message.role === "tool" ||
+            message.role === "toolResult" ||
+            message.type === "function_call_output" ||
+            "tool_calls" in message ||
+            "function_call" in message ||
+            "tool_call_id" in message ||
+            getContentItems(message).some(isToolProtocolItem)
+        );
+    }
+
+    function stripToolProtocol(value: unknown): unknown {
+        if (Array.isArray(value)) {
+            return value
+                .filter(
+                    (item) =>
+                        !isToolProtocolItem(item) &&
+                        !isToolProtocolMessage(item),
+                )
+                .map(stripToolProtocol);
+        }
+
+        if (!isRecord(value)) return value;
+        if (isToolProtocolMessage(value) || isToolProtocolItem(value)) {
+            return undefined;
+        }
+
+        let changed = false;
+        const next: Record<string, unknown> = { ...value };
+        for (const [key, child] of Object.entries(value)) {
+            if (key !== "input" && key !== "messages" && key !== "content") {
+                continue;
+            }
+            const stripped = stripToolProtocol(child);
+            if (stripped !== child) {
+                changed = true;
+                if (stripped === undefined) delete next[key];
+                else next[key] = stripped;
+            }
+        }
+        return changed ? next : value;
+    }
+
+    function getPostApprovalContextMessages(messages: unknown[]): unknown[] {
+        const context = compactApprovedPlanContext;
+        if (!context?.approvalEntryId || !activeContext) return [];
+
+        const branch = activeContext.sessionManager.getBranch() as {
+            id?: string;
+            type?: string;
+            message?: unknown;
+        }[];
+        const boundaryIndex = branch.findIndex(
+            (entry) => entry.id === context.approvalEntryId,
+        );
+        if (boundaryIndex === -1) return [];
+
+        // Compacting replaces the pre-approval conversation with a synthetic
+        // approved-plan message. Tool protocol messages after the boundary can
+        // reference tool calls that were removed by that replacement, which
+        // causes providers such as Codex to reject the request. Keep only
+        // normal chat messages from after approval.
+        const postApprovalMessages = branch
+            .slice(boundaryIndex + 1)
+            .filter((entry) => entry.type === "message" && entry.message)
+            .map((entry) => entry.message)
+            .filter((message) => !isToolProtocolMessage(message));
+        const postApprovalObjects = new Set(postApprovalMessages);
+        const postApprovalKeys = new Set(
+            postApprovalMessages
+                .map((message) => messageKey(message))
+                .filter((key): key is string => key !== null),
+        );
+
+        return messages.filter((message) => {
+            if (isToolProtocolMessage(message)) return false;
+            if (postApprovalObjects.has(message)) return true;
+            const key = messageKey(message);
+            return key !== null && postApprovalKeys.has(key);
+        });
     }
 
     async function applyModelRef(
@@ -455,6 +618,7 @@ export default function plan(pi: ExtensionAPI): void {
         phase = "idle";
         checklistItems = [];
         lastSubmittedPath = null;
+        compactApprovedPlanContext = null;
 
         await restoreSavedState(ctx);
         savedState = null;
@@ -1316,6 +1480,13 @@ export default function plan(pi: ExtensionAPI): void {
                 phase = "executing";
                 await applyPhaseConfig(ctx, { restoreSavedState: true });
                 pi.appendEntry("plan-execute", { lastSubmittedPath });
+                if (result.compactContext) {
+                    enableCompactApprovedPlanContext(
+                        ctx,
+                        planContent,
+                        inputPath,
+                    );
+                }
                 persistState();
                 justApprovedPlan = true;
 
@@ -1677,8 +1848,23 @@ When all checklist items are complete, /plan will ask whether to remove the plan
         }
     });
 
-    // Filter stale context when idle
+    // Filter stale context when idle and compact approved-plan context during execution.
     pi.on("context", async (event) => {
+        if (compactApprovedPlanContext) {
+            const postApprovalMessages = getPostApprovalContextMessages(
+                event.messages,
+            );
+            return {
+                messages: [
+                    compactApprovedPlanMessage(compactApprovedPlanContext),
+                    ...postApprovalMessages.filter((m) => {
+                        const msg = m as { customType?: string };
+                        return msg.customType !== "plan-compact-context";
+                    }),
+                ],
+            };
+        }
+
         if (phase !== "idle") return;
 
         return {
@@ -1705,6 +1891,14 @@ When all checklist items are complete, /plan will ask whether to remove the plan
                 return true;
             }),
         };
+    });
+
+    pi.on("before_provider_request", (event) => {
+        if (!compactApprovedPlanContext) return;
+        // Safety net for provider serializers that may reintroduce tool-result
+        // protocol items after the normal context hook. Codex rejects orphaned
+        // function_call_output entries when their function_call was compacted.
+        return stripToolProtocol(event.payload);
     });
 
     // Keep execution progress synced from the plan file.
@@ -1802,6 +1996,7 @@ When all checklist items are complete, /plan will ask whether to remove the plan
             phase = "idle";
             checklistItems = [];
             lastSubmittedPath = null;
+            compactApprovedPlanContext = null;
 
             await restoreSavedState(ctx);
             savedState = null;
@@ -1838,6 +2033,9 @@ When all checklist items are complete, /plan will ask whether to remove the plan
             lastSubmittedPath =
                 stateEntry.data.lastSubmittedPath ?? lastSubmittedPath;
             savedState = stateEntry.data.savedState ?? savedState;
+            compactApprovedPlanContext =
+                stateEntry.data.compactApprovedPlanContext ??
+                compactApprovedPlanContext;
         }
 
         // Rebuild execution state from the plan file on disk.
@@ -1851,10 +2049,12 @@ When all checklist items are complete, /plan will ask whether to remove the plan
                     // Plan file gone — fall back to idle
                     phase = "idle";
                     lastSubmittedPath = null;
+                    compactApprovedPlanContext = null;
                 }
             } else {
                 // No path recorded — can't rebuild, fall back to idle
                 phase = "idle";
+                compactApprovedPlanContext = null;
             }
         }
 

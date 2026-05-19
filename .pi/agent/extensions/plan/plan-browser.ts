@@ -50,6 +50,7 @@ export interface PlanReviewDecision {
     savedPath?: string;
     agentSwitch?: string;
     permissionMode?: string;
+    compactContext?: boolean;
 }
 
 export interface BrowserDecisionSession<T> {
