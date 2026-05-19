@@ -1,42 +1,26 @@
 // @ts-nocheck
 /**
- * Note-taking app integrations (Obsidian, Bear, Octarine).
+ * Note-taking app integrations (Obsidian).
  * Node.js equivalents of packages/server/integrations.ts.
  * Config types, save functions, tag extraction, filename generation
  */
 
-import { execSync, spawn } from "node:child_process";
+import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 
 import {
     type ObsidianConfig,
-    type BearConfig,
-    type OctarineConfig,
     type IntegrationResult,
-    extractTitle,
     generateFrontmatter,
     generateFilename,
-    generateOctarineFrontmatter,
-    stripH1,
-    buildHashtags,
-    buildBearContent,
     detectObsidianVaults,
 } from "../generated/integrations-common.js";
 import { sanitizeTag } from "../generated/project.js";
 import { resolveUserPath } from "../generated/resolve-file.js";
 
-export type { ObsidianConfig, BearConfig, OctarineConfig, IntegrationResult };
-export {
-    extractTitle,
-    generateFrontmatter,
-    generateFilename,
-    generateOctarineFrontmatter,
-    stripH1,
-    buildHashtags,
-    buildBearContent,
-    detectObsidianVaults,
-};
+export type { ObsidianConfig, IntegrationResult };
+export { generateFrontmatter, generateFilename, detectObsidianVaults };
 
 /** Detect project name from git or cwd (sync). Used by extractTags for note integrations. */
 function detectProjectNameSync(): string | null {
@@ -144,53 +128,6 @@ export async function saveToObsidian(
         const content = `${frontmatter}\n\n[[Plan Plans]]\n\n${plan}`;
         writeFileSync(filePath, content);
         return { success: true, path: filePath };
-    } catch (err) {
-        return {
-            success: false,
-            error: err instanceof Error ? err.message : "Unknown error",
-        };
-    }
-}
-
-export async function saveToBear(
-    config: BearConfig,
-): Promise<IntegrationResult> {
-    try {
-        const { plan, customTags, tagPosition = "append" } = config;
-        const title = extractTitle(plan);
-        const body = stripH1(plan);
-        const tags = customTags?.trim() ? undefined : await extractTags(plan);
-        const hashtags = buildHashtags(customTags, tags ?? []);
-        const content = buildBearContent(body, hashtags, tagPosition);
-        const url = `bear://x-callback-url/create?title=${encodeURIComponent(title)}&text=${encodeURIComponent(content)}&open_note=no`;
-        spawn("open", [url], { stdio: "ignore" });
-        return { success: true };
-    } catch (err) {
-        return {
-            success: false,
-            error: err instanceof Error ? err.message : "Unknown error",
-        };
-    }
-}
-
-export async function saveToOctarine(
-    config: OctarineConfig,
-): Promise<IntegrationResult> {
-    try {
-        const { plan } = config;
-        const workspace = config.workspace.trim();
-        if (!workspace)
-            return { success: false, error: "Workspace is required" };
-        const folder = config.folder.trim() || "plan";
-        const filename = generateFilename(plan);
-        const base = filename.replace(/\.md$/, "");
-        const path = folder ? `${folder}/${base}` : base;
-        const tags = await extractTags(plan);
-        const frontmatter = generateOctarineFrontmatter(tags);
-        const content = `${frontmatter}\n\n${plan}`;
-        const url = `octarine://create?path=${encodeURIComponent(path)}&content=${encodeURIComponent(content)}&workspace=${encodeURIComponent(workspace)}&fresh=true&openAfter=false`;
-        spawn("open", [url], { stdio: "ignore" });
-        return { success: true, path };
     } catch (err) {
         return {
             success: false,

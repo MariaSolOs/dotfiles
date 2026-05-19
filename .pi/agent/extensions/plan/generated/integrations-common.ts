@@ -13,18 +13,6 @@ export interface ObsidianConfig {
     filenameSeparator?: "space" | "dash" | "underscore"; // Replace spaces in filename
 }
 
-export interface BearConfig {
-    plan: string;
-    customTags?: string;
-    tagPosition?: "prepend" | "append";
-}
-
-export interface OctarineConfig {
-    plan: string;
-    workspace: string;
-    folder: string;
-}
-
 export interface IntegrationResult {
     success: boolean;
     error?: string;
@@ -201,46 +189,4 @@ export function generateFilename(
     }
 
     return sanitized.endsWith(".md") ? sanitized : `${sanitized}.md`;
-}
-
-// --- Bear Integration ---
-
-export function stripH1(plan: string): string {
-    return plan.replace(/^#\s+.+\n?/m, "").trimStart();
-}
-
-export function buildHashtags(
-    customTags: string | undefined,
-    autoTags: string[],
-): string {
-    if (customTags?.trim()) {
-        return customTags
-            .split(",")
-            .map((t) => `#${t.trim()}`)
-            .filter((t) => t !== "#")
-            .join(" ");
-    }
-    return autoTags.map((t) => `#${t}`).join(" ");
-}
-
-export function buildBearContent(
-    body: string,
-    hashtags: string,
-    tagPosition: "prepend" | "append",
-): string {
-    return tagPosition === "prepend"
-        ? `${hashtags}\n\n${body}`
-        : `${body}\n\n${hashtags}`;
-}
-
-// --- Octarine Integration ---
-
-/**
- * Generate YAML frontmatter for an Octarine note.
- * Uses Octarine's property format (list-style tags, Status, Author, Last Edited).
- */
-export function generateOctarineFrontmatter(tags: string[]): string {
-    const now = new Date().toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
-    const tagLines = tags.map((t) => `  - ${t.toLowerCase()}`).join("\n");
-    return `---\ntags:\n${tagLines}\nStatus: Draft\nAuthor: plan\nLast Edited: ${now}\n---`;
 }

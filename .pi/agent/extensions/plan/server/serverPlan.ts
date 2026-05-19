@@ -25,13 +25,9 @@ import {
 } from "./handlers.js";
 import { html, json, parseBody, requestUrl } from "./helpers.js";
 import {
-    type BearConfig,
     type IntegrationResult,
     type ObsidianConfig,
-    type OctarineConfig,
-    saveToBear,
     saveToObsidian,
-    saveToOctarine,
 } from "./integrations.js";
 import { listenOnPort } from "./network.js";
 
@@ -347,33 +343,15 @@ export async function startPlanReviewServer(options: {
         ) {
             const results: {
                 obsidian?: IntegrationResult;
-                bear?: IntegrationResult;
-                octarine?: IntegrationResult;
             } = {};
             try {
                 const body = await parseBody(req);
                 const promises: Promise<void>[] = [];
                 const obsConfig = body.obsidian as ObsidianConfig | undefined;
-                const bearConfig = body.bear as BearConfig | undefined;
-                const octConfig = body.octarine as OctarineConfig | undefined;
                 if (obsConfig?.vaultPath && obsConfig?.plan) {
                     promises.push(
                         saveToObsidian(obsConfig).then((r) => {
                             results.obsidian = r;
-                        }),
-                    );
-                }
-                if (bearConfig?.plan) {
-                    promises.push(
-                        saveToBear(bearConfig).then((r) => {
-                            results.bear = r;
-                        }),
-                    );
-                }
-                if (octConfig?.plan && octConfig?.workspace) {
-                    promises.push(
-                        saveToOctarine(octConfig).then((r) => {
-                            results.octarine = r;
                         }),
                     );
                 }
@@ -417,26 +395,10 @@ export async function startPlanReviewServer(options: {
                     {};
                 const integrationPromises: Promise<void>[] = [];
                 const obsConfig = body.obsidian as ObsidianConfig | undefined;
-                const bearConfig = body.bear as BearConfig | undefined;
-                const octConfig = body.octarine as OctarineConfig | undefined;
                 if (obsConfig?.vaultPath && obsConfig?.plan) {
                     integrationPromises.push(
                         saveToObsidian(obsConfig).then((r) => {
                             integrationResults.obsidian = r;
-                        }),
-                    );
-                }
-                if (bearConfig?.plan) {
-                    integrationPromises.push(
-                        saveToBear(bearConfig).then((r) => {
-                            integrationResults.bear = r;
-                        }),
-                    );
-                }
-                if (octConfig?.plan && octConfig?.workspace) {
-                    integrationPromises.push(
-                        saveToOctarine(octConfig).then((r) => {
-                            integrationResults.octarine = r;
                         }),
                     );
                 }
