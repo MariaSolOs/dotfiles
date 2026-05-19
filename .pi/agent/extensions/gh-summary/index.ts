@@ -734,7 +734,7 @@ async function openInGhostty(wrapperPath: string): Promise<void> {
 export default function ghSummaryExtension(pi: ExtensionAPI) {
     pi.registerCommand("gh-summary", {
         description:
-            "Create a GitHub-ready PR title/description from git changes, with optional extra context, and open it in Ghostty/neovim",
+            "Create a GitHub-ready PR title/description from git changes and open it in neovim. Usage: /gh-summary [extra context]",
         handler: async (args, ctx) => {
             if (!ctx.model) {
                 ctx.ui.notify("No model selected", "error");
