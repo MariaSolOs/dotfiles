@@ -5,11 +5,13 @@ export type Phase = "idle" | "planning" | "executing";
 
 export const PLAN_SUBMIT_TOOL = "plan_submit_plan";
 export const PLAN_COMPLETE_STEP_TOOL = "plan_complete_step";
+export const PLAN_ASK_QUESTION_TOOL = "plan_ask_question";
 export const PLANNING_DISCOVERY_TOOLS = ["grep", "find", "ls"] as const;
 
 const PHASE_ONLY_TOOLS = new Set<string>([
     PLAN_SUBMIT_TOOL,
     PLAN_COMPLETE_STEP_TOOL,
+    PLAN_ASK_QUESTION_TOOL,
 ]);
 const ALLOWED_PLAN_EXTENSIONS = new Set<string>([".md", ".mdx"]);
 
@@ -28,6 +30,7 @@ export function getToolsForPhase(
                 ...tools,
                 ...PLANNING_DISCOVERY_TOOLS,
                 PLAN_SUBMIT_TOOL,
+                PLAN_ASK_QUESTION_TOOL,
             ]),
         ];
     }
