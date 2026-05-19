@@ -1,5 +1,4 @@
 import { spawn } from "node:child_process";
-import { watch, type FSWatcher } from "node:fs";
 import {
     chmod,
     mkdtemp,
@@ -10,12 +9,7 @@ import {
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import {
-    complete,
-    type Api,
-    type Model,
-    type UserMessage,
-} from "@earendil-works/pi-ai";
+import { complete, type UserMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 // Keep the summarization request bounded while preserving enough concrete diff
@@ -23,6 +17,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 const MAX_CHANGESET_CHARS = 120_000;
 const MAX_SECTION_CHARS = 50_000;
 const MAX_CONVERSATION_CONTEXT_CHARS = 12_000;
+const MAX_EXTRA_CONTEXT_CHARS = 8_000;
 const MAX_UNTRACKED_FILES = 25;
 const MAX_UNTRACKED_READ_BYTES = 256_000;
 const MAX_UNTRACKED_FILE_CHARS = 12_000;
@@ -31,8 +26,8 @@ const SYSTEM_PROMPT = `You write concise, human-sounding GitHub pull request tit
 
 Requirements:
 - Base the PR summary primarily on the provided git status, commit list, diffs, and untracked file contents.
-- Use the provided conversation context only to understand intent, rationale, constraints, or wording around those git changes.
-- Do not summarize unrelated conversation history or mention work that is not reflected in the git changes.
+- Use provided extra context and conversation context only to understand intent, rationale, constraints, or wording around those git changes.
+- Do not summarize unrelated context or mention work that is not reflected in the git changes.
 - Use raw Markdown only; do not wrap the entire response in a code fence.
 - Do not include padding or preamble like "Here’s a summary".
 - Include a suggested PR title and a PR description.
@@ -457,6 +452,7 @@ async function readPrTemplate(cwd: string): Promise<string | undefined> {
 function buildUserPrompt(
     changesText: string,
     source: GitChanges["source"],
+    extraContext: string,
     conversationContext: string,
     prTemplate?: string,
 ): string {
@@ -466,6 +462,16 @@ function buildUserPrompt(
               "<pull_request_template>",
               prTemplate,
               "</pull_request_template>",
+              "",
+          ].join("\n")
+        : "";
+
+    const extraContextSection = extraContext.trim()
+        ? [
+              "Extra context provided explicitly with this command. Use this only to clarify intent/rationale for the git changes:",
+              "<extra_context>",
+              truncate(extraContext.trim(), MAX_EXTRA_CONTEXT_CHARS),
+              "</extra_context>",
               "",
           ].join("\n")
         : "";
@@ -487,9 +493,10 @@ function buildUserPrompt(
 
     return [
         `Summarize the ${sourceDescription} into a concise GitHub-ready PR description, together with a suggested title.`,
-        "Focus on the provided git changes. Use conversation context only as supporting context for those changes, not as the thing being summarized.",
+        "Focus on the provided git changes. Use extra/context sections only as supporting context for those changes, not as the thing being summarized.",
         "",
         templateSection,
+        extraContextSection,
         conversationSection,
         "Output format:",
         "Title: <suggested PR title>",
@@ -523,75 +530,13 @@ function textFromResponse(
         .join("\n");
 }
 
-function buildRevisionPrompt(options: {
-    changesText: string;
-    conversationContext: string;
-    prTemplate?: string;
-    currentSummary: string;
-    feedback: string;
-}): string {
-    const templateSection = options.prTemplate
-        ? [
-              "Use this GitHub PR template for the revised description if possible:",
-              "<pull_request_template>",
-              options.prTemplate,
-              "</pull_request_template>",
-              "",
-          ].join("\n")
-        : "";
-
-    const conversationSection = options.conversationContext.trim()
-        ? [
-              "Supplemental conversation context. Use this only to clarify intent/rationale for the worktree changes; do not summarize unrelated parts of the conversation:",
-              "<conversation_context>",
-              options.conversationContext,
-              "</conversation_context>",
-              "",
-          ].join("\n")
-        : "";
-
-    return [
-        "Revise the existing GitHub PR title/description using the user's latest feedback.",
-        "Keep the result grounded in the git worktree changes. Do not invent changes that are not reflected in the worktree.",
-        "Output only the revised GitHub-ready markdown in this format:",
-        "Title: <suggested PR title>",
-        "",
-        "<PR description markdown>",
-        "",
-        templateSection,
-        conversationSection,
-        "Current draft:",
-        "<current_draft>",
-        truncate(options.currentSummary, 24_000),
-        "</current_draft>",
-        "",
-        "User feedback:",
-        "<feedback>",
-        options.feedback,
-        "</feedback>",
-        "",
-        "Git worktree changes:",
-        "<git_worktree_changes>",
-        options.changesText,
-        "</git_worktree_changes>",
-    ].join("\n");
-}
-
 function vimString(value: string): string {
     return `'${value.replace(/'/g, "''")}'`;
 }
 
 function nvimScript(summaryPath: string): string {
-    return `set hidden autoread updatetime=500
-augroup gh_summary_live
-  autocmd!
-  autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * silent! checktime
-  autocmd FileChangedShellPost * echo "gh-summary updated from pi session feedback"
-augroup END
-let g:gh_summary_checktime_timer = timer_start(500, {-> execute('silent! checktime')}, {'repeat': -1})
-autocmd VimLeavePre * if exists('g:gh_summary_checktime_timer') | call timer_stop(g:gh_summary_checktime_timer) | endif
-execute 'edit ' . fnameescape(${vimString(summaryPath)})
-setlocal filetype=markdown readonly nomodifiable noswapfile
+    return `execute 'edit ' . fnameescape(${vimString(summaryPath)})
+setlocal filetype=markdown noswapfile
 `;
 }
 
@@ -631,164 +576,16 @@ function runWithInput(
     });
 }
 
-type LiveSummarySession = {
-    close: () => void;
-    revise: (feedback: string, conversationContext: string) => void;
-};
-
-const liveSummarySessions = new Set<LiveSummarySession>();
-let activeLiveSummarySession: LiveSummarySession | undefined;
-
-function startLiveSummarySession(options: {
-    tmpDir: string;
-    donePath: string;
-    summaryPath: string;
-    model: Model<Api>;
-    apiKey: string;
-    headers?: Record<string, string>;
-    changesText: string;
-    prTemplate?: string;
-    notify: (message: string, level: "info" | "warning" | "error") => void;
-}): LiveSummarySession | undefined {
-    let doneWatcher: FSWatcher | undefined;
-    let activeController: AbortController | undefined;
-    let inFlight = false;
-    let pendingFeedback:
-        | { feedback: string; conversationContext: string }
-        | undefined;
-    let closed = false;
-    let lastAppliedFeedback = "";
-
-    const runRevision = async (
-        feedback: string,
-        conversationContext: string,
-    ) => {
-        if (closed) return;
-        if (inFlight) {
-            pendingFeedback = { feedback, conversationContext };
-            return;
-        }
-        if (!feedback.trim() || feedback === lastAppliedFeedback) return;
-
-        inFlight = true;
-        try {
-            const currentSummary = await readFile(options.summaryPath, "utf8");
-            const userMessage: UserMessage = {
-                role: "user",
-                content: [
-                    {
-                        type: "text",
-                        text: buildRevisionPrompt({
-                            changesText: options.changesText,
-                            conversationContext,
-                            prTemplate: options.prTemplate,
-                            currentSummary,
-                            feedback,
-                        }),
-                    },
-                ],
-                timestamp: Date.now(),
-            };
-
-            activeController = new AbortController();
-            options.notify(
-                "Updating PR summary from current pi session feedback...",
-                "info",
-            );
-            const response = await complete(
-                options.model,
-                { systemPrompt: SYSTEM_PROMPT, messages: [userMessage] },
-                {
-                    apiKey: options.apiKey,
-                    headers: options.headers,
-                    signal: activeController.signal,
-                },
-            );
-
-            if (response.stopReason === "aborted" || closed) return;
-
-            const revisedSummary = stripWrappingCodeFence(
-                textFromResponse(response),
-            );
-            if (!revisedSummary.trim()) {
-                throw new Error("Model returned an empty summary");
-            }
-
-            await writeFile(options.summaryPath, revisedSummary, "utf8");
-            lastAppliedFeedback = feedback;
-            options.notify(
-                "Updated PR summary from current pi session feedback",
-                "info",
-            );
-        } catch (error) {
-            if (!closed) {
-                options.notify(
-                    `Failed to update PR summary from feedback: ${(error as Error).message}`,
-                    "error",
-                );
-            }
-        } finally {
-            activeController = undefined;
-            inFlight = false;
-            const pending = pendingFeedback;
-            pendingFeedback = undefined;
-            if (pending && !closed) {
-                void runRevision(pending.feedback, pending.conversationContext);
-            }
-        }
-    };
-
-    const close = () => {
-        if (closed) return;
-        closed = true;
-        activeController?.abort();
-        doneWatcher?.close();
-        liveSummarySessions.delete(session);
-        if (activeLiveSummarySession === session) {
-            activeLiveSummarySession = undefined;
-        }
-    };
-
-    const session: LiveSummarySession = {
-        close,
-        revise(feedback, conversationContext) {
-            void runRevision(feedback.trim(), conversationContext);
-        },
-    };
-
-    try {
-        doneWatcher = watch(
-            options.tmpDir,
-            { persistent: false },
-            (_eventType, filename) => {
-                if (filename === path.basename(options.donePath)) close();
-            },
-        );
-        doneWatcher.on("error", close);
-        liveSummarySessions.add(session);
-        return session;
-    } catch (error) {
-        options.notify(
-            `Failed to watch Neovim session: ${(error as Error).message}`,
-            "warning",
-        );
-        close();
-        return undefined;
-    }
-}
-
 // This script runs inside the new Ghostty tab. On macOS the delayed Cmd+W is
 // backgrounded so the shell can exit immediately after scheduling tab cleanup;
 // on Linux we paste the command with `exec`, so the tab closes when this script
 // exits after nvim.
-function wrapperScript(nvimScriptPath: string, donePath: string): string {
+function wrapperScript(nvimScriptPath: string): string {
     return `#!/bin/sh
 set +e
 vimscript=${shellQuote(nvimScriptPath)}
-donefile=${shellQuote(donePath)}
 nvim -n -S "$vimscript"
 status=$?
-: > "$donefile"
 (
   sleep 0.1
   /usr/bin/osascript -e 'tell application "Ghostty" to activate' \
@@ -935,33 +732,10 @@ async function openInGhostty(wrapperPath: string): Promise<void> {
 }
 
 export default function ghSummaryExtension(pi: ExtensionAPI) {
-    pi.on("input", (event, ctx) => {
-        const session = activeLiveSummarySession;
-        if (!session) return { action: "continue" };
-
-        const feedback = event.text.trim();
-        if (!feedback) return { action: "handled" };
-
-        // While the live summary is open, user input is feedback for the draft
-        // only. Mark it handled so the agent does not turn that feedback into
-        // repository edits or any other normal task execution.
-        session.revise(
-            feedback,
-            buildConversationContext(
-                ctx.sessionManager.getBranch() as SessionEntry[],
-            ),
-        );
-        return { action: "handled" };
-    });
-
-    pi.on("session_shutdown", () => {
-        for (const session of [...liveSummarySessions]) session.close();
-    });
-
     pi.registerCommand("gh-summary", {
         description:
-            "Create a GitHub-ready PR title/description from git changes and open it in Ghostty/neovim",
-        handler: async (_args, ctx) => {
+            "Create a GitHub-ready PR title/description from git changes, with optional extra context, and open it in Ghostty/neovim",
+        handler: async (args, ctx) => {
             if (!ctx.model) {
                 ctx.ui.notify("No model selected", "error");
                 return;
@@ -993,8 +767,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             );
 
             let summary = "";
-            let apiKey = "";
-            let headers: Record<string, string> | undefined;
+            const extraContext = (args ?? "").trim();
             let prTemplate: string | undefined;
             let conversationContext = "";
             try {
@@ -1006,8 +779,8 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                             : auth.error,
                     );
                 }
-                apiKey = auth.apiKey;
-                headers = auth.headers;
+                const apiKey = auth.apiKey;
+                const headers = auth.headers;
 
                 prTemplate = await readPrTemplate(changes.root);
                 conversationContext = buildConversationContext(
@@ -1021,6 +794,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                             text: buildUserPrompt(
                                 changes.text,
                                 changes.source,
+                                extraContext,
                                 conversationContext,
                                 prTemplate,
                             ),
@@ -1058,43 +832,20 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             const tmpDir = await mkdtemp(path.join(os.tmpdir(), "gh-summary-"));
             const summaryPath = path.join(tmpDir, "pr-description.md");
             const nvimScriptPath = path.join(tmpDir, "gh-summary.nvim.vim");
-            const donePath = path.join(tmpDir, "closed");
             const wrapperPath = path.join(tmpDir, "open-gh-summary.sh");
 
             await writeFile(summaryPath, summary, "utf8");
             await writeFile(nvimScriptPath, nvimScript(summaryPath), "utf8");
-            await writeFile(
-                wrapperPath,
-                wrapperScript(nvimScriptPath, donePath),
-                "utf8",
-            );
+            await writeFile(wrapperPath, wrapperScript(nvimScriptPath), "utf8");
             await chmod(wrapperPath, 0o700);
-
-            activeLiveSummarySession?.close();
-            const liveSummarySession = startLiveSummarySession({
-                tmpDir,
-                donePath,
-                summaryPath,
-                model,
-                apiKey,
-                headers,
-                changesText: changes.text,
-                prTemplate,
-                notify: (message, level) => ctx.ui.notify(message, level),
-            });
-            activeLiveSummarySession = liveSummarySession;
 
             try {
                 await openInGhostty(wrapperPath);
                 ctx.ui.notify(
-                    `Opened live PR summary in Ghostty/neovim: ${summaryPath}`,
+                    `Opened PR summary in Ghostty/neovim: ${summaryPath}`,
                     "info",
                 );
             } catch (error) {
-                liveSummarySession?.close();
-                if (activeLiveSummarySession === liveSummarySession) {
-                    activeLiveSummarySession = undefined;
-                }
                 ctx.ui.notify(
                     `Failed to open Ghostty/neovim: ${(error as Error).message}. Summary written to ${summaryPath}`,
                     "error",
