@@ -2,7 +2,7 @@
 /**
  * Document and reference handlers (Node.js equivalents of packages/server/reference-handlers.ts).
  * VaultNode, buildFileTree, walkMarkdownFiles, handleDocRequest,
- * detectObsidianVaults, handleObsidian*, handleFileBrowserRequest
+ * handleFileBrowserRequest
  */
 
 import {
@@ -13,7 +13,7 @@ import {
     type Dirent,
 } from "node:fs";
 import type { ServerResponse } from "node:http";
-import { join, resolve as resolvePath } from "node:path";
+import { join } from "node:path";
 
 import { json, parseBody } from "./helpers";
 import type { IncomingMessage } from "node:http";
@@ -23,7 +23,6 @@ import {
     buildFileTree,
     FILE_BROWSER_EXCLUDED,
 } from "../generated/reference-common.js";
-import { detectObsidianVaults } from "../generated/integrations-common.js";
 import {
     isAbsoluteUserPath,
     isCodeFilePath,
@@ -294,88 +293,6 @@ export async function handleDocExistsRequest(
     );
 
     json(res, { results });
-}
-
-export function handleObsidianVaultsRequest(res: Res): void {
-    json(res, { vaults: detectObsidianVaults() });
-}
-
-export function handleObsidianFilesRequest(res: Res, url: URL): void {
-    const vaultPath = url.searchParams.get("vaultPath");
-    if (!vaultPath) {
-        json(res, { error: "Missing vaultPath parameter" }, 400);
-        return;
-    }
-    const resolvedVault = resolveUserPath(vaultPath);
-    if (!existsSync(resolvedVault) || !statSync(resolvedVault).isDirectory()) {
-        json(res, { error: "Invalid vault path" }, 400);
-        return;
-    }
-    try {
-        const files: string[] = [];
-        walkMarkdownFiles(resolvedVault, resolvedVault, files, /\.mdx?$/i);
-        files.sort();
-        json(res, { tree: buildFileTree(files) });
-    } catch {
-        json(res, { error: "Failed to list vault files" }, 500);
-    }
-}
-
-export function handleObsidianDocRequest(res: Res, url: URL): void {
-    const vaultPath = url.searchParams.get("vaultPath");
-    const filePath = url.searchParams.get("path");
-    if (!vaultPath || !filePath) {
-        json(res, { error: "Missing vaultPath or path parameter" }, 400);
-        return;
-    }
-    if (!/\.mdx?$/i.test(filePath)) {
-        json(res, { error: "Only markdown files are supported" }, 400);
-        return;
-    }
-    const resolvedVault = resolveUserPath(vaultPath);
-    let resolvedFile = resolvePath(resolvedVault, filePath);
-
-    // Bare filename search within vault
-    if (!existsSync(resolvedFile) && !filePath.includes("/")) {
-        const files: string[] = [];
-        walkMarkdownFiles(resolvedVault, resolvedVault, files, /\.mdx?$/i);
-        const matches = files.filter(
-            (f) => f.split("/").pop()!.toLowerCase() === filePath.toLowerCase(),
-        );
-        if (matches.length === 1) {
-            resolvedFile = resolvePath(resolvedVault, matches[0]);
-        } else if (matches.length > 1) {
-            json(
-                res,
-                {
-                    error: `Ambiguous filename '${filePath}': found ${matches.length} matches`,
-                    matches,
-                },
-                400,
-            );
-            return;
-        }
-    }
-
-    // Security: must be within vault
-    if (
-        !resolvedFile.startsWith(resolvedVault + "/") &&
-        resolvedFile !== resolvedVault
-    ) {
-        json(res, { error: "Access denied: path is outside vault" }, 403);
-        return;
-    }
-
-    if (!existsSync(resolvedFile)) {
-        json(res, { error: `File not found: ${filePath}` }, 404);
-        return;
-    }
-    try {
-        const markdown = readFileSync(resolvedFile, "utf-8");
-        json(res, { markdown, filepath: resolvedFile });
-    } catch {
-        json(res, { error: "Failed to read file" }, 500);
-    }
 }
 
 export function handleFileBrowserRequest(res: Res, url: URL): void {

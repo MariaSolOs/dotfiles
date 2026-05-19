@@ -24,9 +24,6 @@ import {
     handleDocRequest,
     handleDocExistsRequest,
     handleFileBrowserRequest,
-    handleObsidianVaultsRequest,
-    handleObsidianFilesRequest,
-    handleObsidianDocRequest,
 } from "./reference.js";
 import { warmFileListCache } from "../generated/resolve-file.js";
 import { createExternalAnnotationHandler } from "./external-annotations.js";
@@ -170,18 +167,6 @@ export async function startAnnotateServer(options: {
             req.method === "POST"
         ) {
             await handleDocExistsRequest(res, req);
-        } else if (url.pathname === "/api/obsidian/vaults") {
-            handleObsidianVaultsRequest(res);
-        } else if (
-            url.pathname === "/api/reference/obsidian/files" &&
-            req.method === "GET"
-        ) {
-            handleObsidianFilesRequest(res, url);
-        } else if (
-            url.pathname === "/api/reference/obsidian/doc" &&
-            req.method === "GET"
-        ) {
-            handleObsidianDocRequest(res, url);
         } else if (
             url.pathname === "/api/reference/files" &&
             req.method === "GET"

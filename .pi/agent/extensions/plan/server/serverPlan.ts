@@ -24,11 +24,6 @@ import {
     handleUploadRequest,
 } from "./handlers.js";
 import { html, json, parseBody, requestUrl } from "./helpers.js";
-import {
-    type IntegrationResult,
-    type ObsidianConfig,
-    saveToObsidian,
-} from "./integrations.js";
 import { listenOnPort } from "./network.js";
 
 import {
@@ -47,9 +42,6 @@ import {
     handleDocRequest,
     handleDocExistsRequest,
     handleFileBrowserRequest,
-    handleObsidianDocRequest,
-    handleObsidianFilesRequest,
-    handleObsidianVaultsRequest,
 } from "./reference.js";
 import { warmFileListCache } from "../generated/resolve-file.js";
 
@@ -317,18 +309,6 @@ export async function startPlanReviewServer(options: {
             req.method === "POST"
         ) {
             await handleDocExistsRequest(res, req);
-        } else if (url.pathname === "/api/obsidian/vaults") {
-            handleObsidianVaultsRequest(res);
-        } else if (
-            url.pathname === "/api/reference/obsidian/files" &&
-            req.method === "GET"
-        ) {
-            handleObsidianFilesRequest(res, url);
-        } else if (
-            url.pathname === "/api/reference/obsidian/doc" &&
-            req.method === "GET"
-        ) {
-            handleObsidianDocRequest(res, url);
         } else if (
             url.pathname === "/api/reference/files" &&
             req.method === "GET"
@@ -342,31 +322,7 @@ export async function startPlanReviewServer(options: {
             url.pathname === "/api/save-notes" &&
             req.method === "POST"
         ) {
-            const results: {
-                obsidian?: IntegrationResult;
-            } = {};
-            try {
-                const body = await parseBody(req);
-                const promises: Promise<void>[] = [];
-                const obsConfig = body.obsidian as ObsidianConfig | undefined;
-                if (obsConfig?.vaultPath && obsConfig?.plan) {
-                    promises.push(
-                        saveToObsidian(obsConfig).then((r) => {
-                            results.obsidian = r;
-                        }),
-                    );
-                }
-                await Promise.allSettled(promises);
-                for (const [name, result] of Object.entries(results)) {
-                    if (!result?.success && result)
-                        console.error(`[${name}] Save failed: ${result.error}`);
-                }
-            } catch (err) {
-                console.error(`[Save Notes] Error:`, err);
-                json(res, { error: "Save failed" }, 500);
-                return;
-            }
-            json(res, { ok: true, results });
+            json(res, { ok: true, results: {} });
         } else if (url.pathname === "/api/approve" && req.method === "POST") {
             if (decisionSettled) {
                 json(res, { ok: true, duplicate: true });
@@ -392,25 +348,6 @@ export async function startPlanReviewServer(options: {
                     };
                     planSaveEnabled = ps.enabled;
                     planSaveCustomPath = ps.customPath;
-                }
-                // Run note integrations in parallel
-                const integrationResults: Record<string, IntegrationResult> =
-                    {};
-                const integrationPromises: Promise<void>[] = [];
-                const obsConfig = body.obsidian as ObsidianConfig | undefined;
-                if (obsConfig?.vaultPath && obsConfig?.plan) {
-                    integrationPromises.push(
-                        saveToObsidian(obsConfig).then((r) => {
-                            integrationResults.obsidian = r;
-                        }),
-                    );
-                }
-                await Promise.allSettled(integrationPromises);
-                for (const [name, result] of Object.entries(
-                    integrationResults,
-                )) {
-                    if (!result?.success && result)
-                        console.error(`[${name}] Save failed: ${result.error}`);
                 }
             } catch (err) {
                 console.error(`[Integration] Error:`, err);
