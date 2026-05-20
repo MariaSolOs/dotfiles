@@ -139,7 +139,9 @@ function normalizePlanAnswerChoice(answer: string): string {
 }
 
 function isCustomAnswerChoice(answer: string | null): boolean {
-    return answer === CUSTOM_ANSWER_LABEL || answer === LEGACY_CUSTOM_ANSWER_LABEL;
+    return (
+        answer === CUSTOM_ANSWER_LABEL || answer === LEGACY_CUSTOM_ANSWER_LABEL
+    );
 }
 
 type PlanAskQuestionDetails = {
@@ -440,8 +442,52 @@ export default function plan(pi: ExtensionAPI): void {
         }
     }
 
+    function collectBranchMessageReferences(): {
+        objects: Set<unknown>;
+        keys: Set<string>;
+    } {
+        const messages =
+            activeContext?.sessionManager
+                .getBranch()
+                .filter(
+                    (entry: { type?: string; message?: unknown }) =>
+                        entry.type === "message" && entry.message,
+                )
+                .map((entry: { message?: unknown }) => entry.message) ?? [];
+
+        return {
+            objects: new Set(messages),
+            keys: new Set(
+                messages
+                    .map((message) => messageKey(message))
+                    .filter((key): key is string => key !== null),
+            ),
+        };
+    }
+
     function isRecord(value: unknown): value is Record<string, unknown> {
         return typeof value === "object" && value !== null;
+    }
+
+    function isPlanSyntheticContextMessage(message: unknown): boolean {
+        if (!isRecord(message)) return false;
+        return (
+            message.customType === "plan-compact-context" ||
+            message.customType === "plan-context"
+        );
+    }
+
+    function getPreservedNonBranchContextMessages(
+        messages: unknown[],
+    ): unknown[] {
+        const branchMessages = collectBranchMessageReferences();
+        return messages.filter((message) => {
+            if (isPlanSyntheticContextMessage(message)) return false;
+            if (branchMessages.objects.has(message)) return false;
+
+            const key = messageKey(message);
+            return key === null || !branchMessages.keys.has(key);
+        });
     }
 
     function getContentItems(message: Record<string, unknown>): unknown[] {
@@ -1370,8 +1416,7 @@ export default function plan(pi: ExtensionAPI): void {
                     content: [
                         {
                             type: "text",
-                            text:
-                                "Custom answer selected. Ask the user for their custom response in the normal Pi prompt now; do not call plan_ask_question again for this follow-up.",
+                            text: "Custom answer selected. Ask the user for their custom response in the normal Pi prompt now; do not call plan_ask_question again for this follow-up.",
                         },
                     ],
                     details: {
@@ -1925,16 +1970,18 @@ When all checklist items are complete, /plan will ask whether to remove the plan
     // Filter stale context when idle and compact approved-plan context during execution.
     pi.on("context", async (event) => {
         if (compactApprovedPlanContext) {
+            const preservedContextMessages =
+                getPreservedNonBranchContextMessages(event.messages);
             const postApprovalMessages = getPostApprovalContextMessages(
                 event.messages,
             );
             return {
                 messages: [
+                    ...preservedContextMessages,
                     compactApprovedPlanMessage(compactApprovedPlanContext),
-                    ...postApprovalMessages.filter((m) => {
-                        const msg = m as { customType?: string };
-                        return msg.customType !== "plan-compact-context";
-                    }),
+                    ...postApprovalMessages.filter(
+                        (message) => !isPlanSyntheticContextMessage(message),
+                    ),
                 ],
             };
         }

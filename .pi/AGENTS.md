@@ -6,6 +6,7 @@ This folder contains my configuration for `pi`.
 
 - **TypeScript compilation**: When validating TypeScript changes in this folder, use `tsgo`, not `tsc`. For the extensions, use the `tsconfig.json` file in that folder (`cd agent/extensions && tsgo -p tsconfig.json`).
 - **Prettier formatting**: Use `prettier` to format all files in this folder.
+- **Git**: This configuration is tracked via a bare Git repository using a sparse checkout. For Git operations use `git --git-dir="$HOME"/.cfg --work-tree="$HOME"` and focus only on the changes in the `$HOME/.pi` folder.
 
 ## Documentation
 
