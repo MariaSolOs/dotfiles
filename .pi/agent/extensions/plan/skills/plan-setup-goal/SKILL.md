@@ -26,7 +26,7 @@ Interview the user such that you can derive every "fact" this goal should produc
 - What edge cases to consider
 - What constraints or precedent apply
 
-Ask questions **one at a time**, waiting for feedback before continuing. When `plan_ask_question` is available, use it for each interview question instead of plain chat: provide a finite list of answer choices, include your recommended answer as one option, and include an “Other / custom answer” option when the proposed choices may not fit. If `plan_ask_question` is unavailable, ask in chat with the same finite choices.
+Ask questions **one at a time**, waiting for feedback before continuing. When `plan_ask_question` is available, use it for each interview question instead of plain chat: provide a finite list of answer choices, include your recommended answer as one option, and include a “Custom answer” option when the proposed choices may not fit. If `plan_ask_question` is unavailable, ask in chat with the same finite choices.
 
 **If a question can be answered by exploring the codebase, explore the codebase instead of asking.**
 

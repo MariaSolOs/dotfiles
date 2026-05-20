@@ -131,11 +131,23 @@ type PersistedPlanState = {
     compactApprovedPlanContext?: CompactApprovedPlanContext;
 };
 
+const CUSTOM_ANSWER_LABEL = "Custom answer";
+const LEGACY_CUSTOM_ANSWER_LABEL = "Other / custom answer";
+
+function normalizePlanAnswerChoice(answer: string): string {
+    return answer === LEGACY_CUSTOM_ANSWER_LABEL ? CUSTOM_ANSWER_LABEL : answer;
+}
+
+function isCustomAnswerChoice(answer: string | null): boolean {
+    return answer === CUSTOM_ANSWER_LABEL || answer === LEGACY_CUSTOM_ANSWER_LABEL;
+}
+
 type PlanAskQuestionDetails = {
     question: string;
     answers: string[];
     answer: string | null;
     cancelled?: boolean;
+    customAnswerSelected?: boolean;
     ok: boolean;
 };
 
@@ -436,49 +448,81 @@ export default function plan(pi: ExtensionAPI): void {
         return Array.isArray(message.content) ? message.content : [];
     }
 
-    function isToolProtocolItem(item: unknown): boolean {
-        if (!isRecord(item)) return false;
-        const type = item.type;
-        return (
-            type === "function_call" ||
-            type === "function_call_output" ||
-            type === "tool_use" ||
-            type === "tool_result" ||
-            type === "toolCall" ||
-            "tool_use_id" in item ||
-            "tool_call_id" in item ||
-            ("call_id" in item && ("output" in item || "result" in item))
-        );
+    function addString(set: Set<string>, value: unknown): void {
+        if (typeof value === "string" && value.length > 0) set.add(value);
     }
 
-    function isToolProtocolMessage(message: unknown): boolean {
-        if (!isRecord(message)) return false;
-        return (
-            message.role === "tool" ||
-            message.role === "toolResult" ||
-            message.type === "function_call_output" ||
-            "tool_calls" in message ||
-            "function_call" in message ||
-            "tool_call_id" in message ||
-            getContentItems(message).some(isToolProtocolItem)
-        );
+    function collectToolCallIds(
+        value: unknown,
+        ids = new Set<string>(),
+    ): Set<string> {
+        if (Array.isArray(value)) {
+            for (const item of value) collectToolCallIds(item, ids);
+            return ids;
+        }
+        if (!isRecord(value)) return ids;
+
+        if (value.type === "toolCall") addString(ids, value.id);
+        if (value.type === "function_call") addString(ids, value.call_id);
+        if (value.type === "tool_use") addString(ids, value.id);
+
+        const toolCalls = value.tool_calls;
+        if (Array.isArray(toolCalls)) {
+            for (const call of toolCalls) {
+                if (isRecord(call)) addString(ids, call.id);
+            }
+        }
+
+        const functionCall = value.function_call;
+        if (isRecord(functionCall)) {
+            addString(ids, functionCall.id);
+            addString(ids, functionCall.call_id);
+        }
+
+        collectToolCallIds(value.content, ids);
+        collectToolCallIds(value.input, ids);
+        collectToolCallIds(value.messages, ids);
+        return ids;
     }
 
-    function stripToolProtocol(value: unknown): unknown {
+    function getToolOutputCallId(value: unknown): string | undefined {
+        if (!isRecord(value)) return undefined;
+        if (typeof value.toolCallId === "string") return value.toolCallId;
+        if (typeof value.tool_call_id === "string") return value.tool_call_id;
+        if (typeof value.tool_use_id === "string") return value.tool_use_id;
+        if (
+            value.type === "function_call_output" &&
+            typeof value.call_id === "string"
+        ) {
+            return value.call_id;
+        }
+        if (
+            (value.type === "tool_result" ||
+                "output" in value ||
+                "result" in value) &&
+            typeof value.call_id === "string"
+        ) {
+            return value.call_id;
+        }
+        return undefined;
+    }
+
+    function stripOrphanedToolOutputs(
+        value: unknown,
+        callIds: Set<string>,
+    ): unknown {
         if (Array.isArray(value)) {
             return value
-                .filter(
-                    (item) =>
-                        !isToolProtocolItem(item) &&
-                        !isToolProtocolMessage(item),
-                )
-                .map(stripToolProtocol);
+                .filter((item) => {
+                    const outputCallId = getToolOutputCallId(item);
+                    return !outputCallId || callIds.has(outputCallId);
+                })
+                .map((item) => stripOrphanedToolOutputs(item, callIds));
         }
 
         if (!isRecord(value)) return value;
-        if (isToolProtocolMessage(value) || isToolProtocolItem(value)) {
-            return undefined;
-        }
+        const outputCallId = getToolOutputCallId(value);
+        if (outputCallId && !callIds.has(outputCallId)) return undefined;
 
         let changed = false;
         const next: Record<string, unknown> = { ...value };
@@ -486,7 +530,7 @@ export default function plan(pi: ExtensionAPI): void {
             if (key !== "input" && key !== "messages" && key !== "content") {
                 continue;
             }
-            const stripped = stripToolProtocol(child);
+            const stripped = stripOrphanedToolOutputs(child, callIds);
             if (stripped !== child) {
                 changed = true;
                 if (stripped === undefined) delete next[key];
@@ -494,6 +538,11 @@ export default function plan(pi: ExtensionAPI): void {
             }
         }
         return changed ? next : value;
+    }
+
+    function pruneOrphanedToolOutputs<T>(messages: T[]): T[] {
+        const callIds = collectToolCallIds(messages);
+        return stripOrphanedToolOutputs(messages, callIds) as T[];
     }
 
     function getPostApprovalContextMessages(messages: unknown[]): unknown[] {
@@ -511,15 +560,16 @@ export default function plan(pi: ExtensionAPI): void {
         if (boundaryIndex === -1) return [];
 
         // Compacting replaces the pre-approval conversation with a synthetic
-        // approved-plan message. Tool protocol messages after the boundary can
-        // reference tool calls that were removed by that replacement, which
-        // causes providers such as Codex to reject the request. Keep only
-        // normal chat messages from after approval.
-        const postApprovalMessages = branch
-            .slice(boundaryIndex + 1)
-            .filter((entry) => entry.type === "message" && entry.message)
-            .map((entry) => entry.message)
-            .filter((message) => !isToolProtocolMessage(message));
+        // approved-plan message. The approval tool result may remain after the
+        // boundary while its assistant tool call was compacted away; remove only
+        // those orphaned tool outputs so future execution tool calls/results are
+        // still visible to the model.
+        const postApprovalMessages = pruneOrphanedToolOutputs(
+            branch
+                .slice(boundaryIndex + 1)
+                .filter((entry) => entry.type === "message" && entry.message)
+                .map((entry) => entry.message),
+        );
         const postApprovalObjects = new Set(postApprovalMessages);
         const postApprovalKeys = new Set(
             postApprovalMessages
@@ -527,12 +577,13 @@ export default function plan(pi: ExtensionAPI): void {
                 .filter((key): key is string => key !== null),
         );
 
-        return messages.filter((message) => {
-            if (isToolProtocolMessage(message)) return false;
-            if (postApprovalObjects.has(message)) return true;
-            const key = messageKey(message);
-            return key !== null && postApprovalKeys.has(key);
-        });
+        return pruneOrphanedToolOutputs(
+            messages.filter((message) => {
+                if (postApprovalObjects.has(message)) return true;
+                const key = messageKey(message);
+                return key !== null && postApprovalKeys.has(key);
+            }),
+        );
     }
 
     async function applyModelRef(
@@ -1153,7 +1204,7 @@ export default function plan(pi: ExtensionAPI): void {
             }),
             answers: Type.Array(Type.String(), {
                 description:
-                    "Finite answer choices to show in the interactive selection list. Include an 'Other / custom answer' choice when the proposed answers may not fit.",
+                    "Finite answer choices to show in the interactive selection list. Include a 'Custom answer' choice when the proposed answers may not fit.",
             }),
         }) as any,
 
@@ -1178,7 +1229,9 @@ export default function plan(pi: ExtensionAPI): void {
             const question = String(params.question ?? "").trim();
             const answers = Array.isArray(params.answers)
                 ? params.answers
-                      .map((answer) => String(answer).trim())
+                      .map((answer) =>
+                          normalizePlanAnswerChoice(String(answer).trim()),
+                      )
                       .filter((answer) => answer.length > 0)
                 : [];
 
@@ -1311,6 +1364,26 @@ export default function plan(pi: ExtensionAPI): void {
             }
 
             const selectedAnswer = answers[Number(selectedIndex)] ?? null;
+
+            if (isCustomAnswerChoice(selectedAnswer)) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text:
+                                "Custom answer selected. Ask the user for their custom response in the normal Pi prompt now; do not call plan_ask_question again for this follow-up.",
+                        },
+                    ],
+                    details: {
+                        question,
+                        answers,
+                        answer: CUSTOM_ANSWER_LABEL,
+                        customAnswerSelected: true,
+                        ok: true,
+                    } satisfies PlanAskQuestionDetails,
+                };
+            }
+
             return {
                 content: [
                     {
@@ -1780,7 +1853,8 @@ Start by quickly scanning key files to form an initial understanding of the task
 
 - Never ask what you could find out by reading the code.
 - Whenever user-only clarification is needed, use ${PLAN_ASK_QUESTION_TOOL}; do not ask the question as plain chat.
-- Keep each ${PLAN_ASK_QUESTION_TOOL} question answerable via finite choices. Include an “Other / custom answer” choice when none of the proposed choices may fit.
+- Keep each ${PLAN_ASK_QUESTION_TOOL} question answerable via finite choices. Include a “Custom answer” choice when none of the proposed choices may fit.
+- If plan_ask_question reports \`Custom answer selected\`, ask the user for their custom response as a plain chat follow-up in the normal Pi prompt; this is the only exception to the previous rule.
 - Batch related questions together only when they can be answered by one finite choice list; otherwise ask one focused ${PLAN_ASK_QUESTION_TOOL} question at a time.
 - Focus on things only the user can answer: requirements, preferences, tradeoffs, edge-case priorities.
 - Scale depth to the task — a vague feature request needs many rounds; a focused bug fix may need one or none.
@@ -1895,10 +1969,11 @@ When all checklist items are complete, /plan will ask whether to remove the plan
 
     pi.on("before_provider_request", (event) => {
         if (!compactApprovedPlanContext) return;
-        // Safety net for provider serializers that may reintroduce tool-result
-        // protocol items after the normal context hook. Codex rejects orphaned
-        // function_call_output entries when their function_call was compacted.
-        return stripToolProtocol(event.payload);
+        // Safety net for provider serializers that may reintroduce orphaned
+        // tool outputs after the normal context hook. Keep valid tool
+        // call/result pairs so execution can continue normally.
+        const callIds = collectToolCallIds(event.payload);
+        return stripOrphanedToolOutputs(event.payload, callIds);
     });
 
     // Keep execution progress synced from the plan file.
