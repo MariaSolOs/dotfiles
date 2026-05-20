@@ -181,9 +181,8 @@ export function handleNormalMode(
                 recordKey(data);
             }
         } else {
-            // Invalid register, cancel
+            // Unsupported register, cancel/reset without selecting it
             resetOperatorState(state);
-            state.register = '"';
         }
         return true;
     }

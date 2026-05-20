@@ -153,7 +153,8 @@ export function handleVisualMode(
         if (data.length === 1 && isValidRegister(data)) {
             state.register = data;
         } else {
-            state.register = '"';
+            // Unsupported register, cancel/reset without selecting it
+            resetOperatorState(state);
         }
         return true;
     }
