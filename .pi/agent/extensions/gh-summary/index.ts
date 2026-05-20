@@ -580,12 +580,16 @@ function runWithInput(
 // backgrounded so the shell can exit immediately after scheduling tab cleanup;
 // on Linux we paste the command with `exec`, so the tab closes when this script
 // exits after nvim.
-function wrapperScript(nvimScriptPath: string): string {
+function wrapperScript(nvimScriptPath: string, tmpDir: string): string {
     return `#!/bin/sh
 set +e
 vimscript=${shellQuote(nvimScriptPath)}
+tmpdir=${shellQuote(tmpDir)}
 nvim -n -S "$vimscript"
 status=$?
+if [ "$status" -eq 0 ]; then
+  rm -rf -- "$tmpdir"
+fi
 (
   sleep 0.1
   /usr/bin/osascript -e 'tell application "Ghostty" to activate' \
@@ -836,7 +840,11 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
 
             await writeFile(summaryPath, summary, "utf8");
             await writeFile(nvimScriptPath, nvimScript(summaryPath), "utf8");
-            await writeFile(wrapperPath, wrapperScript(nvimScriptPath), "utf8");
+            await writeFile(
+                wrapperPath,
+                wrapperScript(nvimScriptPath, tmpDir),
+                "utf8",
+            );
             await chmod(wrapperPath, 0o700);
 
             try {
