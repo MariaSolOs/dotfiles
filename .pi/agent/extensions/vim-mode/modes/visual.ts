@@ -421,7 +421,6 @@ export function handleVisualMode(
                     /^\s+/,
                     "",
                 );
-                const joinCol = currentLine.length;
                 newLines[joinLine] =
                     currentLine + (nextLine.length > 0 ? " " + nextLine : "");
                 newLines.splice(joinLine + 1, 1);
