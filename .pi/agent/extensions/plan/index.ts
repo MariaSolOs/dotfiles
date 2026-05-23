@@ -111,10 +111,16 @@ type SavedPhaseState = {
     thinkingLevel: ThinkingLevel;
 };
 
+type LoadedContextFile = {
+    path: string;
+    content: string;
+};
+
 type CompactApprovedPlanContext = {
     planText: string;
     planFilePath: string;
     approvalEntryId?: string;
+    projectContextFiles?: LoadedContextFile[];
 };
 
 type PersistedPlanState = {
@@ -277,6 +283,7 @@ export default function plan(pi: ExtensionAPI): void {
     let planConfig = {};
     let justApprovedPlan = false;
     let compactApprovedPlanContext: CompactApprovedPlanContext | null = null;
+    let loadedContextFiles: LoadedContextFile[] = [];
     let activeContext: ExtensionContext | null = null;
 
     pi.on("session_start", (_event, ctx) => {
@@ -380,6 +387,36 @@ export default function plan(pi: ExtensionAPI): void {
         return [...entries].reverse().find((entry) => entry.id)?.id;
     }
 
+    function cloneContextFiles(value: unknown): LoadedContextFile[] {
+        if (!Array.isArray(value)) return [];
+        return value
+            .filter(
+                (file): file is LoadedContextFile =>
+                    isRecord(file) &&
+                    typeof file.path === "string" &&
+                    typeof file.content === "string",
+            )
+            .map((file) => ({ path: file.path, content: file.content }));
+    }
+
+    function rememberLoadedContextFiles(event: unknown): void {
+        if (!isRecord(event)) return;
+        const options = event.systemPromptOptions;
+        if (!isRecord(options) || !("contextFiles" in options)) return;
+        loadedContextFiles = cloneContextFiles(options.contextFiles);
+    }
+
+    function formatProjectContextFiles(files?: LoadedContextFile[]): string {
+        if (!files || files.length === 0) return "";
+        const renderedFiles = files
+            .map(
+                (file) =>
+                    `<project_instructions path="${file.path}">\n${file.content}\n</project_instructions>`,
+            )
+            .join("\n\n");
+        return `\n\n<project_context>\n\nProject-specific instructions and guidelines loaded at session start:\n\n${renderedFiles}\n\n</project_context>`;
+    }
+
     function enableCompactApprovedPlanContext(
         ctx: ExtensionContext,
         planText: string,
@@ -389,6 +426,9 @@ export default function plan(pi: ExtensionAPI): void {
             planText,
             planFilePath,
             approvalEntryId: getLatestSessionEntryId(ctx),
+            // Preserve AGENTS.md and other loaded context files because the
+            // compacted branch replaces the earlier context-bearing prompt.
+            projectContextFiles: loadedContextFiles,
         };
     }
 
@@ -399,7 +439,7 @@ export default function plan(pi: ExtensionAPI): void {
             content: [
                 {
                     type: "text",
-                    text: `[PLAN - APPROVED COMPACT CONTEXT]\nThe planning conversation has been compacted. Use the approved plan below as the prior context for execution.\n\nPlan file: ${context.planFilePath}\n\n${context.planText}`,
+                    text: `[PLAN - APPROVED COMPACT CONTEXT]\nThe planning conversation has been compacted. Use the project context files and approved plan below as the prior context for execution.${formatProjectContextFiles(context.projectContextFiles)}\n\nPlan file: ${context.planFilePath}\n\n${context.planText}`,
                 },
             ],
         };
@@ -1562,7 +1602,8 @@ export default function plan(pi: ExtensionAPI): void {
     });
 
     // Inject phase-specific context
-    pi.on("before_agent_start", async (_event, ctx) => {
+    pi.on("before_agent_start", async (event, ctx) => {
+        rememberLoadedContextFiles(event);
         const profile = getPhaseProfile();
         const planRef = lastSubmittedPath ?? "your plan file";
 
