@@ -268,7 +268,6 @@ export async function startPlanReviewServer(options: {
                 const body = (await parseBody(req)) as {
                     displayName?: string;
                     diffOptions?: Record<string, unknown>;
-                    conventionalComments?: boolean;
                     pfmReminder?: boolean;
                 };
                 const toSave: Record<string, unknown> = {};
@@ -276,8 +275,6 @@ export async function startPlanReviewServer(options: {
                     toSave.displayName = body.displayName;
                 if (body.diffOptions !== undefined)
                     toSave.diffOptions = body.diffOptions;
-                if (body.conventionalComments !== undefined)
-                    toSave.conventionalComments = body.conventionalComments;
                 if (body.pfmReminder !== undefined)
                     toSave.pfmReminder = body.pfmReminder;
                 if (Object.keys(toSave).length > 0)

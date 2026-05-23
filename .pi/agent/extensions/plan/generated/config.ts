@@ -35,13 +35,6 @@ export interface DiffOptions {
     lineBgIntensity?: DiffLineBgIntensity;
 }
 
-/** Single conventional comment label entry stored in config.json */
-export interface CCLabelConfig {
-    label: string;
-    display: string;
-    blocking: boolean;
-}
-
 export type PromptSectionOverrides = Record<string, string | undefined>;
 
 export type PromptRuntime =
@@ -109,9 +102,6 @@ export interface PlanConfig {
     displayName?: string;
     diffOptions?: DiffOptions;
     prompts?: PromptConfig;
-    conventionalComments?: boolean;
-    /** null = explicitly cleared (use defaults), undefined = not set */
-    conventionalLabels?: CCLabelConfig[] | null;
     /**
      * Enable `gh attestation verify` during CLI installation/upgrade.
      * Read by scripts/install.sh|ps1|cmd on every run (not by any runtime code).
@@ -215,20 +205,12 @@ export function getServerConfig(gitUser: string | null): {
     displayName?: string;
     diffOptions?: DiffOptions;
     gitUser?: string;
-    conventionalComments?: boolean;
-    conventionalLabels?: CCLabelConfig[] | null;
 } {
     const cfg = loadConfig();
     return {
         displayName: cfg.displayName,
         diffOptions: cfg.diffOptions,
         gitUser: gitUser ?? undefined,
-        ...(cfg.conventionalComments !== undefined && {
-            conventionalComments: cfg.conventionalComments,
-        }),
-        ...(cfg.conventionalLabels !== undefined && {
-            conventionalLabels: cfg.conventionalLabels,
-        }),
     };
 }
 
