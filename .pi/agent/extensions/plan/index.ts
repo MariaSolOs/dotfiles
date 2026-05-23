@@ -28,16 +28,9 @@ import { basename, resolve } from "node:path";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { Type } from "@earendil-works/pi-ai";
 import {
-    DynamicBorder,
     type ExtensionAPI,
     type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
-import {
-    Container,
-    type SelectItem,
-    SelectList,
-    Text,
-} from "@earendil-works/pi-tui";
 import {
     buildPromptVariables,
     formatTodoList,
@@ -101,9 +94,9 @@ import {
     withCurrentPiSessionFallbackHeader,
 } from "./current-pi-session.js";
 import {
+    ASK_QUESTION_TOOL,
     getToolsForPhase,
     isPlanWritePathAllowed,
-    PLAN_ASK_QUESTION_TOOL,
     PLAN_COMPLETE_STEP_TOOL,
     PLAN_SUBMIT_TOOL,
     type Phase,
@@ -129,28 +122,6 @@ type PersistedPlanState = {
     lastSubmittedPath?: string;
     savedState?: SavedPhaseState;
     compactApprovedPlanContext?: CompactApprovedPlanContext;
-};
-
-const CUSTOM_ANSWER_LABEL = "Custom answer";
-const LEGACY_CUSTOM_ANSWER_LABEL = "Other / custom answer";
-
-function normalizePlanAnswerChoice(answer: string): string {
-    return answer === LEGACY_CUSTOM_ANSWER_LABEL ? CUSTOM_ANSWER_LABEL : answer;
-}
-
-function isCustomAnswerChoice(answer: string | null): boolean {
-    return (
-        answer === CUSTOM_ANSWER_LABEL || answer === LEGACY_CUSTOM_ANSWER_LABEL
-    );
-}
-
-type PlanAskQuestionDetails = {
-    question: string;
-    answers: string[];
-    answer: string | null;
-    cancelled?: boolean;
-    customAnswerSelected?: boolean;
-    ok: boolean;
 };
 
 function getPlanReviewAvailabilityWarning(options: {
@@ -1236,218 +1207,6 @@ export default function plan(pi: ExtensionAPI): void {
         },
     });
 
-    // ── plan_ask_question Tool ───────────────────────────────────
-
-    pi.registerTool({
-        name: PLAN_ASK_QUESTION_TOOL,
-        label: "Ask Plan Question",
-        description:
-            "Ask the user a planning clarification question with a finite list of answer choices. " +
-            "Use this only while Plan planning mode is active when user-only clarification is required.",
-        parameters: Type.Object({
-            question: Type.String({
-                description: "The clarification question to ask the user.",
-            }),
-            answers: Type.Array(Type.String(), {
-                description:
-                    "Finite answer choices to show in the interactive selection list. Include a 'Custom answer' choice when the proposed answers may not fit.",
-            }),
-        }) as any,
-
-        async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-            if (phase !== "planning") {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "Error: plan_ask_question is only available while planning.",
-                        },
-                    ],
-                    details: {
-                        question: params.question,
-                        answers: params.answers ?? [],
-                        answer: null,
-                        ok: false,
-                    } satisfies PlanAskQuestionDetails,
-                };
-            }
-
-            const question = String(params.question ?? "").trim();
-            const answers = Array.isArray(params.answers)
-                ? params.answers
-                      .map((answer) =>
-                          normalizePlanAnswerChoice(String(answer).trim()),
-                      )
-                      .filter((answer) => answer.length > 0)
-                : [];
-
-            if (!question) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "Error: question must be a non-empty string.",
-                        },
-                    ],
-                    details: {
-                        question,
-                        answers,
-                        answer: null,
-                        ok: false,
-                    } satisfies PlanAskQuestionDetails,
-                };
-            }
-
-            if (answers.length === 0) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "Error: answers must contain at least one non-empty answer choice.",
-                        },
-                    ],
-                    details: {
-                        question,
-                        answers,
-                        answer: null,
-                        ok: false,
-                    } satisfies PlanAskQuestionDetails,
-                };
-            }
-
-            if (!ctx.hasUI) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "Error: interactive question UI is not available in this session.",
-                        },
-                    ],
-                    details: {
-                        question,
-                        answers,
-                        answer: null,
-                        ok: false,
-                    } satisfies PlanAskQuestionDetails,
-                };
-            }
-
-            const items: SelectItem[] = answers.map((answer, index) => ({
-                value: String(index),
-                label: answer,
-            }));
-
-            const selectedIndex = await ctx.ui.custom<string | null>(
-                (tui, theme, _kb, done) => {
-                    const container = new Container();
-                    container.addChild(
-                        new DynamicBorder((s: string) => theme.fg("accent", s)),
-                    );
-                    container.addChild(
-                        new Text(
-                            theme.fg("accent", theme.bold(question)),
-                            1,
-                            0,
-                        ),
-                    );
-
-                    const selectList = new SelectList(
-                        items,
-                        Math.min(items.length, 10),
-                        {
-                            selectedPrefix: (t) => theme.fg("accent", t),
-                            selectedText: (t) => theme.fg("accent", t),
-                            description: (t) => theme.fg("muted", t),
-                            scrollInfo: (t) => theme.fg("dim", t),
-                            noMatch: (t) => theme.fg("warning", t),
-                        },
-                    );
-                    selectList.onSelect = (item) => done(item.value);
-                    selectList.onCancel = () => done(null);
-                    container.addChild(selectList);
-
-                    container.addChild(
-                        new Text(
-                            theme.fg(
-                                "dim",
-                                "↑↓ navigate • enter select • esc cancel",
-                            ),
-                            1,
-                            0,
-                        ),
-                    );
-                    container.addChild(
-                        new DynamicBorder((s: string) => theme.fg("accent", s)),
-                    );
-
-                    return {
-                        render: (width) => container.render(width),
-                        invalidate: () => container.invalidate(),
-                        handleInput: (data) => {
-                            selectList.handleInput(data);
-                            tui.requestRender();
-                        },
-                    };
-                },
-            );
-
-            if (selectedIndex === null || selectedIndex === undefined) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "User cancelled the question selection.",
-                        },
-                    ],
-                    details: {
-                        question,
-                        answers,
-                        answer: null,
-                        cancelled: true,
-                        ok: true,
-                    } satisfies PlanAskQuestionDetails,
-                };
-            }
-
-            const selectedAnswer = answers[Number(selectedIndex)] ?? null;
-
-            if (isCustomAnswerChoice(selectedAnswer)) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "Custom answer selected. Ask the user for their custom response in the normal Pi prompt now; do not call plan_ask_question again for this follow-up.",
-                        },
-                    ],
-                    details: {
-                        question,
-                        answers,
-                        answer: CUSTOM_ANSWER_LABEL,
-                        customAnswerSelected: true,
-                        ok: true,
-                    } satisfies PlanAskQuestionDetails,
-                };
-            }
-
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: selectedAnswer
-                            ? `User selected: ${selectedAnswer}`
-                            : "User selection could not be resolved.",
-                    },
-                ],
-                details: {
-                    question,
-                    answers,
-                    answer: selectedAnswer,
-                    ok: selectedAnswer !== null,
-                } satisfies PlanAskQuestionDetails,
-            };
-        },
-    });
-
     // ── plan_submit_plan Tool ────────────────────────────────────
 
     pi.registerTool({
@@ -1870,7 +1629,7 @@ export default function plan(pi: ExtensionAPI): void {
                         `[PLAN - PLANNING PHASE]
 You are in plan mode. You MUST NOT make any changes to the codebase — no edits, no commits, no installs, no destructive commands. During planning you may only write or edit markdown files (.md, .mdx) inside the working directory.
 
-Available tools: read, bash, grep, find, ls, write (markdown only), edit (markdown only), ${PLAN_ASK_QUESTION_TOOL}, ${PLAN_SUBMIT_TOOL}
+Available tools: read, bash, grep, find, ls, write (markdown only), edit (markdown only), ${ASK_QUESTION_TOOL}, ${PLAN_SUBMIT_TOOL}
 
 Do not run destructive bash commands (rm, git push, npm install, etc.) — focus on reading and exploring the codebase. Web fetching (curl, wget) is fine.
 
@@ -1888,7 +1647,7 @@ Repeat this cycle until the plan is complete:
 
 1. **Explore** — Use read, grep, find, ls, and bash to understand the codebase. Actively search for existing functions, utilities, and patterns that can be reused — avoid proposing new code when suitable implementations already exist.
 2. **Update the plan file** — After each discovery, immediately capture what you learned in the plan. Don't wait until the end. Use write for the initial draft, then edit for all subsequent updates.
-3. **Ask the user** — When you hit an ambiguity or decision you can't resolve from code alone, call ${PLAN_ASK_QUESTION_TOOL} with the question and finite answer choices. Then go back to step 1.
+3. **Ask the user** — When you hit an ambiguity or decision you can't resolve from code alone, call ${ASK_QUESTION_TOOL} with the question and finite answer choices. Then go back to step 1.
 
 ### First Turn
 
@@ -1897,10 +1656,10 @@ Start by quickly scanning key files to form an initial understanding of the task
 ### Asking Good Questions
 
 - Never ask what you could find out by reading the code.
-- Whenever user-only clarification is needed, use ${PLAN_ASK_QUESTION_TOOL}; do not ask the question as plain chat.
-- Keep each ${PLAN_ASK_QUESTION_TOOL} question answerable via finite choices. Include a “Custom answer” choice when none of the proposed choices may fit.
-- If plan_ask_question reports \`Custom answer selected\`, ask the user for their custom response as a plain chat follow-up in the normal Pi prompt; this is the only exception to the previous rule.
-- Batch related questions together only when they can be answered by one finite choice list; otherwise ask one focused ${PLAN_ASK_QUESTION_TOOL} question at a time.
+- Whenever user-only clarification is needed, use ${ASK_QUESTION_TOOL}; do not ask the question as plain chat.
+- Keep each ${ASK_QUESTION_TOOL} question answerable via finite choices. Include a “Custom answer” choice when none of the proposed choices may fit.
+- If the user chooses “Custom answer”, read the typed response from the tool's \`customAnswer\` detail; do not ask a plain-chat follow-up for the custom response.
+- Batch related questions together only when they can be answered by one finite choice list; otherwise ask one focused ${ASK_QUESTION_TOOL} question at a time.
 - Focus on things only the user can answer: requirements, preferences, tradeoffs, edge-case priorities.
 - Scale depth to the task — a vague feature request needs many rounds; a focused bug fix may need one or none.
 
@@ -1932,7 +1691,7 @@ When the user denies a plan with feedback:
 ### Ending Your Turn
 
 Your turn should only end by either:
-- Calling ${PLAN_ASK_QUESTION_TOOL} to gather more information.
+- Calling ${ASK_QUESTION_TOOL} to gather more information.
 - Calling ${PLAN_SUBMIT_TOOL} when the plan is ready for review.
 
 Do not end your turn without doing one of these two things.` +
