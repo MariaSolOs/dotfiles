@@ -1,20 +1,12 @@
 import { homedir } from "node:os";
+import * as Pi from "@earendil-works/pi-coding-agent";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
-    createBashToolDefinition,
-    createEditToolDefinition,
-    createFindToolDefinition,
-    createGrepToolDefinition,
-    createLsToolDefinition,
-    createReadToolDefinition,
-    createWriteToolDefinition,
     getLanguageFromPath,
     highlightCode,
 } from "@earendil-works/pi-coding-agent";
 import {
-    Box,
     Container,
-    Spacer,
     Text,
     wrapTextWithAnsi,
     type Component,
@@ -31,21 +23,33 @@ type ThemeLike = {
     bold(text: string): string;
 };
 
-function createBuiltInDefinitions(cwd: string) {
-    // Built-in definitions are cwd-aware; cache one set per working directory and
-    // delegate execution to them so this extension only owns preview rendering.
+function createFallbackBuiltInDefinitions(cwd: string) {
     return {
-        read: createReadToolDefinition(cwd),
-        ls: createLsToolDefinition(cwd),
-        grep: createGrepToolDefinition(cwd),
-        find: createFindToolDefinition(cwd),
-        write: createWriteToolDefinition(cwd),
-        edit: createEditToolDefinition(cwd),
-        bash: createBashToolDefinition(cwd),
+        read: Pi.createReadToolDefinition(cwd),
+        ls: Pi.createLsToolDefinition(cwd),
+        grep: Pi.createGrepToolDefinition(cwd),
+        find: Pi.createFindToolDefinition(cwd),
+        write: Pi.createWriteToolDefinition(cwd),
+        edit: Pi.createEditToolDefinition(cwd),
+        bash: Pi.createBashToolDefinition(cwd),
     };
 }
 
-type BuiltInDefinitions = ReturnType<typeof createBuiltInDefinitions>;
+type BuiltInDefinitions = ReturnType<typeof createFallbackBuiltInDefinitions>;
+
+function createBuiltInDefinitions(cwd: string): BuiltInDefinitions {
+    // Built-in definitions are cwd-aware; cache one set per working directory and
+    // delegate execution to them so this extension only owns preview rendering.
+    const createAllToolDefinitions = (
+        Pi as typeof Pi & {
+            createAllToolDefinitions?: (cwd: string) => BuiltInDefinitions;
+        }
+    ).createAllToolDefinitions;
+    return (
+        createAllToolDefinitions?.(cwd) ?? createFallbackBuiltInDefinitions(cwd)
+    );
+}
+
 type BuiltInToolName = keyof BuiltInDefinitions;
 
 const toolCache = new Map<string, BuiltInDefinitions>();
@@ -239,74 +243,6 @@ function formatWriteCall(args: any, theme: ThemeLike): string {
         if (preview) output += `\n\n${preview}`;
     }
     return output;
-}
-
-type EditBlock = { oldText: string; newText: string };
-
-function getEditBlocks(args: any): EditBlock[] {
-    if (Array.isArray(args?.edits)) {
-        return args.edits.filter(
-            (edit: any): edit is EditBlock =>
-                typeof edit?.oldText === "string" &&
-                typeof edit?.newText === "string",
-        );
-    }
-    if (
-        typeof args?.oldText === "string" &&
-        typeof args?.newText === "string"
-    ) {
-        return [{ oldText: args.oldText, newText: args.newText }];
-    }
-    return [];
-}
-
-function editPreviewLines(args: any, theme: ThemeLike): string[] {
-    const blocks = getEditBlocks(args);
-    const lines: string[] = [];
-
-    for (const block of blocks) {
-        const oldLines = trimTrailingEmptyLines(
-            normalizeDisplayText(block.oldText).split("\n"),
-        );
-        const newLines = trimTrailingEmptyLines(
-            normalizeDisplayText(block.newText).split("\n"),
-        );
-
-        for (const line of oldLines) {
-            lines.push(theme.fg("toolDiffRemoved", `- ${replaceTabs(line)}`));
-        }
-        for (const line of newLines) {
-            lines.push(theme.fg("toolDiffAdded", `+ ${replaceTabs(line)}`));
-        }
-    }
-
-    return lines;
-}
-
-function formatEditCall(args: any, theme: ThemeLike): string {
-    const rawPath = str(args?.file_path ?? args?.path);
-    const path = rawPath !== null ? shortenPath(rawPath) : null;
-    const pathDisplay =
-        path === null
-            ? theme.fg("error", "[invalid arg]")
-            : path
-              ? theme.fg("accent", path)
-              : theme.fg("toolOutput", "...");
-    return `${theme.fg("toolTitle", theme.bold("edit"))} ${pathDisplay}`;
-}
-
-function buildCollapsedEditCall(component: Box, args: any, theme: ThemeLike) {
-    component.setBgFn((text) => theme.bg("toolPendingBg", text));
-    component.clear();
-    component.addChild(new Text(formatEditCall(args, theme), 0, 0));
-
-    const lines = editPreviewLines(args, theme);
-    const output = previewLines(lines, theme, { colorPlain: false });
-    if (output) {
-        component.addChild(new Spacer(1));
-        component.addChild(new Text(output, 0, 0));
-    }
-    return component;
 }
 
 class BashCallPreviewComponent implements Component {
@@ -530,39 +466,23 @@ export default function (pi: ExtensionAPI) {
         ...startupTools.edit,
         execute: delegateExecute("edit"),
         renderCall(args: any, theme: any, context: any) {
-            if (context.expanded) {
-                return renderBuiltInCall(
-                    "edit",
-                    args,
-                    theme,
-                    context,
-                    new Container(),
-                );
-            }
-
-            const component =
-                context.lastComponent instanceof Box
-                    ? context.lastComponent
-                    : new Box(1, 1, (text) => theme.bg("toolPendingBg", text));
-            return buildCollapsedEditCall(component, args, theme);
-        },
-        renderResult(result: any, options: any, theme: any, context: any) {
-            const expanded = renderBuiltInExpandedResult(
+            return renderBuiltInCall(
                 "edit",
-                result,
-                options,
+                args,
                 theme,
                 context,
                 new Container(),
             );
-            if (expanded) return expanded;
-
-            const component =
-                context.lastComponent instanceof Container
-                    ? context.lastComponent
-                    : new Container();
-            component.clear();
-            return component;
+        },
+        renderResult(result: any, options: any, theme: any, context: any) {
+            return (
+                getBuiltInDefinitions(context.cwd).edit.renderResult?.(
+                    result,
+                    options,
+                    theme,
+                    context,
+                ) ?? new Container()
+            );
         },
     });
 }
