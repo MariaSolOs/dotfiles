@@ -4,5 +4,5 @@
   "editorPaddingX": 1,
   "defaultModel": "gpt-5.5",
   "collapseChangelog": true,
-  "defaultProvider": "openai-codex",
+  "defaultProvider": "openai-codex"
 }
