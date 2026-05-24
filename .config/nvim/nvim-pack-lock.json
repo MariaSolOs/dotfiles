@@ -16,6 +16,10 @@
       "rev": "f29d8bac6549bc1e7d699c83f680823d7def98bd",
       "src": "https://github.com/saghen/blink.lib"
     },
+    "bufferline.nvim": {
+      "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
+      "src": "https://github.com/akinsho/bufferline.nvim"
+    },
     "conform.nvim": {
       "rev": "18aeab3d63d350dcf44d64c462cc489a3412af40",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -75,10 +79,6 @@
     "mini.splitjoin": {
       "rev": "146aef247d9bfc58bab20dd921ba6b75ac4b8cf9",
       "src": "https://github.com/nvim-mini/mini.splitjoin"
-    },
-    "mini.tabline": {
-      "rev": "7d4a8a79f37361ad287d27bda0f37fc53f924a50",
-      "src": "https://github.com/nvim-mini/mini.tabline"
     },
     "neocodeium": {
       "rev": "a1f73887af6cc4b09cb15cc96e0b72d7932552a5",
