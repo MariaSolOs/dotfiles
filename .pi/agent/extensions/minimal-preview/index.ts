@@ -17,6 +17,7 @@ import {
 // Pi's built-in renderers. Bash uses visual terminal lines so wrapped JSON and
 // other long single-line outputs do not fill the screen.
 const PREVIEW_LINES = 2;
+const EDIT_CONTEXT_LINES = 2;
 
 type ThemeLike = {
     fg(color: string, text: string): string;
@@ -211,6 +212,89 @@ function previewLines(
 
 function minimalTextPreviewLines(result: any, theme: ThemeLike): string[] {
     return previewLineArray(textOutput(result).trim().split("\n"), theme);
+}
+
+function isDiffChangeLine(line: string): boolean {
+    return line.startsWith("+") || line.startsWith("-");
+}
+
+function isDiffContextLine(line: string): boolean {
+    return line.startsWith(" ");
+}
+
+function diffLineNumberWidth(lines: string[]): number {
+    for (const line of lines) {
+        const match = /^[ +\-](\s*\d+) /.exec(line);
+        if (match) return match[1].length;
+    }
+    return 0;
+}
+
+function diffEllipsisLine(lineNumberWidth: number): string {
+    return ` ${"".padStart(lineNumberWidth)} ...`;
+}
+
+function compactDiffContext(
+    diff: string,
+    contextLines = EDIT_CONTEXT_LINES,
+): string {
+    const lines = diff.split("\n");
+    const keep = new Set<number>();
+
+    lines.forEach((line, index) => {
+        if (!isDiffChangeLine(line)) return;
+        for (
+            let contextIndex = Math.max(0, index - contextLines);
+            contextIndex <= Math.min(lines.length - 1, index + contextLines);
+            contextIndex++
+        ) {
+            keep.add(contextIndex);
+        }
+    });
+
+    if (keep.size === 0 || keep.size === lines.length) return diff;
+
+    const lineNumberWidth = diffLineNumberWidth(lines);
+    const compacted: string[] = [];
+    let skippedContext = false;
+
+    lines.forEach((line, index) => {
+        if (keep.has(index) || !isDiffContextLine(line)) {
+            if (skippedContext && compacted.length > 0) {
+                compacted.push(diffEllipsisLine(lineNumberWidth));
+            }
+            skippedContext = false;
+            compacted.push(line);
+        } else {
+            skippedContext = true;
+        }
+    });
+
+    return compacted.join("\n");
+}
+
+function compactEditPreview(preview: any): any {
+    if (!preview || typeof preview.diff !== "string") return preview;
+    const compactDiff = compactDiffContext(preview.diff);
+    if (compactDiff === preview.diff) return preview;
+    return { ...preview, diff: compactDiff };
+}
+
+function compactEditResult(result: any): any {
+    const diff = result?.details?.diff;
+    if (typeof diff !== "string") return result;
+    const compactDiff = compactDiffContext(diff);
+    if (compactDiff === diff) return result;
+    return {
+        ...result,
+        details: { ...result.details, diff: compactDiff },
+    };
+}
+
+function compactEditState(context: any) {
+    const callComponent = context.state?.callComponent;
+    if (!callComponent?.preview) return;
+    callComponent.preview = compactEditPreview(callComponent.preview);
 }
 
 function highlightedContentLines(
@@ -501,6 +585,9 @@ export default function (pi: ExtensionAPI) {
         ...startupTools.edit,
         execute: delegateExecute("edit"),
         renderCall(args: any, theme: any, context: any) {
+            // The built-in edit renderer owns async preview computation; compact
+            // its cached diff before it rebuilds the preview body.
+            compactEditState(context);
             return renderBuiltInCall(
                 "edit",
                 args,
@@ -510,9 +597,10 @@ export default function (pi: ExtensionAPI) {
             );
         },
         renderResult(result: any, options: any, theme: any, context: any) {
+            compactEditState(context);
             return (
                 getBuiltInDefinitions(context.cwd).edit.renderResult?.(
-                    result,
+                    compactEditResult(result),
                     options,
                     theme,
                     context,
