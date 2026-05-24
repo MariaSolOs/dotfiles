@@ -36,16 +36,23 @@ import {
 } from "./reference.js";
 import { warmFileListCache } from "../generated/resolve-file.js";
 
+export interface PlanHistoryRef {
+    project: string;
+    slug: string;
+}
+
 export interface PlanReviewDecision {
     approved: boolean;
     feedback?: string;
     agentSwitch?: string;
     permissionMode?: string;
     compactContext?: boolean;
+    planHistory?: PlanHistoryRef;
 }
 
 export interface PlanServerResult {
     reviewId: string;
+    planHistory: PlanHistoryRef;
     port: number;
     portSource: "env" | "remote-default" | "random";
     url: string;
@@ -79,6 +86,7 @@ export async function startPlanReviewServer(options: {
     const slug = generateSlug(options.plan);
     const project = detectProjectName();
     const historyResult = saveToHistory(project, slug, options.plan);
+    const planHistory = { project, slug };
     const previousPlan =
         historyResult.version > 1
             ? getPlanVersion(project, slug, historyResult.version - 1)
@@ -241,6 +249,7 @@ export async function startPlanReviewServer(options: {
                 agentSwitch,
                 permissionMode: effectivePermissionMode,
                 compactContext,
+                planHistory,
             });
             json(res, { ok: true });
         } else if (url.pathname === "/api/deny" && req.method === "POST") {
@@ -267,6 +276,7 @@ export async function startPlanReviewServer(options: {
 
     return {
         reviewId,
+        planHistory,
         port,
         portSource,
         url: `http://localhost:${port}`,

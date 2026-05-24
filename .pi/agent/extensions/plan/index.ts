@@ -52,6 +52,7 @@ import {
 } from "./generated/url-to-markdown.js";
 import { loadConfig, resolveUseJina } from "./generated/config.js";
 import { composeImproveContext } from "./generated/pfm-reminder.js";
+import { deletePlanHistory } from "./generated/storage.js";
 import {
     getReviewApprovedPrompt,
     getReviewDeniedSuffix,
@@ -121,9 +122,15 @@ type CompactApprovedPlanContext = {
     projectContextFiles?: LoadedContextFile[];
 };
 
+type PlanHistoryRef = {
+    project: string;
+    slug: string;
+};
+
 type PersistedPlanState = {
     phase: Phase;
     lastSubmittedPath?: string;
+    approvedPlanHistory?: PlanHistoryRef;
     savedState?: SavedPhaseState;
     compactApprovedPlanContext?: CompactApprovedPlanContext;
 };
@@ -276,6 +283,7 @@ export default function plan(pi: ExtensionAPI): void {
     let phase: Phase = "idle";
     void registerPlanEventListeners(pi);
     let lastSubmittedPath: string | null = null;
+    let approvedPlanHistory: PlanHistoryRef | null = null;
     let checklistItems: ChecklistItem[] = [];
     let savedState: SavedPhaseState | null = null;
     let planConfig = {};
@@ -373,6 +381,7 @@ export default function plan(pi: ExtensionAPI): void {
         pi.appendEntry("plan", {
             phase,
             lastSubmittedPath,
+            approvedPlanHistory,
             savedState,
             compactApprovedPlanContext,
         });
@@ -706,6 +715,7 @@ export default function plan(pi: ExtensionAPI): void {
 
     async function enterPlanning(ctx: ExtensionContext): Promise<void> {
         phase = "planning";
+        approvedPlanHistory = null;
         checklistItems = [];
         captureSavedState(ctx);
         await applyPhaseConfig(ctx, { restoreSavedState: false });
@@ -724,6 +734,7 @@ export default function plan(pi: ExtensionAPI): void {
         phase = "idle";
         checklistItems = [];
         lastSubmittedPath = null;
+        approvedPlanHistory = null;
         compactApprovedPlanContext = null;
 
         await restoreSavedState(ctx);
@@ -891,6 +902,7 @@ export default function plan(pi: ExtensionAPI): void {
         // Non-interactive or no HTML: auto-approve
         if (!ctx.hasUI || !hasPlanBrowserHtml()) {
             phase = "executing";
+            approvedPlanHistory = null;
             await applyPhaseConfig(ctx, { restoreSavedState: true });
             pi.appendEntry("plan-execute", { lastSubmittedPath });
             persistState();
@@ -921,6 +933,7 @@ export default function plan(pi: ExtensionAPI): void {
 
         if (result.approved) {
             phase = "executing";
+            approvedPlanHistory = result.planHistory ?? null;
             await applyPhaseConfig(ctx, { restoreSavedState: true });
             pi.appendEntry("plan-execute", { lastSubmittedPath });
             if (result.compactContext) {
@@ -1830,7 +1843,7 @@ ${todoList}
 
 Execute each step in order. Immediately after completing each step, call ${PLAN_COMPLETE_STEP_TOOL} with that step number so the plan file and progress UI update live.
 
-When all checklist items are complete, /plan will ask whether to remove the plan file. Do not remove the plan file yourself; if the user declines, it will be kept in the filesystem.`,
+When all checklist items are complete, /plan will automatically remove the plan file. Do not remove the plan file yourself.`,
                         display: false,
                     },
                 };
@@ -1939,39 +1952,45 @@ When all checklist items are complete, /plan will ask whether to remove the plan
             );
 
             let cleanupMessage: string | null = null;
+            let planFileRemoved = false;
             if (completedPlanPath) {
                 try {
                     const planFilePath = resolve(ctx.cwd, completedPlanPath);
                     if (!existsSync(planFilePath)) {
+                        planFileRemoved = true;
                         cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
                     } else {
-                        let removePlanFile = false;
                         try {
-                            removePlanFile = await ctx.ui.confirm(
-                                "Done!",
-                                `Implementation is complete. Remove ${completedPlanPath} from the filesystem?`,
-                            );
+                            unlinkSync(planFilePath);
+                            planFileRemoved = true;
+                            cleanupMessage = `Plan file removed: ${completedPlanPath}`;
                         } catch (err) {
-                            cleanupMessage = `Plan file kept at ${completedPlanPath}; cleanup confirmation could not be shown: ${err instanceof Error ? err.message : String(err)}`;
-                        }
-
-                        if (removePlanFile) {
-                            try {
-                                unlinkSync(planFilePath);
-                                cleanupMessage = `Plan file removed: ${completedPlanPath}`;
-                            } catch (err) {
-                                if (!existsSync(planFilePath)) {
-                                    cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
-                                } else {
-                                    cleanupMessage = `Plan file kept at ${completedPlanPath}; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
-                                }
+                            if (!existsSync(planFilePath)) {
+                                planFileRemoved = true;
+                                cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
+                            } else {
+                                cleanupMessage = `Plan file kept at ${completedPlanPath}; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
                             }
-                        } else if (!cleanupMessage) {
-                            cleanupMessage = `Plan file kept: ${completedPlanPath}`;
                         }
                     }
                 } catch (err) {
                     cleanupMessage = `Plan file kept at ${completedPlanPath}; cleanup could not complete: ${err instanceof Error ? err.message : String(err)}`;
+                }
+            }
+
+            if (planFileRemoved && approvedPlanHistory) {
+                try {
+                    deletePlanHistory(
+                        approvedPlanHistory.project,
+                        approvedPlanHistory.slug,
+                    );
+                    cleanupMessage = cleanupMessage
+                        ? `${cleanupMessage}\nPlan history removed: ~/.plan/history/${approvedPlanHistory.project}/${approvedPlanHistory.slug}`
+                        : `Plan history removed: ~/.plan/history/${approvedPlanHistory.project}/${approvedPlanHistory.slug}`;
+                } catch (err) {
+                    cleanupMessage = cleanupMessage
+                        ? `${cleanupMessage}\nPlan history kept; failed to remove it: ${err instanceof Error ? err.message : String(err)}`
+                        : `Plan history kept; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
                 }
             }
 
@@ -1989,6 +2008,7 @@ When all checklist items are complete, /plan will ask whether to remove the plan
             phase = "idle";
             checklistItems = [];
             lastSubmittedPath = null;
+            approvedPlanHistory = null;
             compactApprovedPlanContext = null;
 
             await restoreSavedState(ctx);
@@ -2025,6 +2045,8 @@ When all checklist items are complete, /plan will ask whether to remove the plan
             phase = stateEntry.data.phase ?? phase;
             lastSubmittedPath =
                 stateEntry.data.lastSubmittedPath ?? lastSubmittedPath;
+            approvedPlanHistory =
+                stateEntry.data.approvedPlanHistory ?? approvedPlanHistory;
             savedState = stateEntry.data.savedState ?? savedState;
             compactApprovedPlanContext =
                 stateEntry.data.compactApprovedPlanContext ??
@@ -2042,11 +2064,13 @@ When all checklist items are complete, /plan will ask whether to remove the plan
                     // Plan file gone — fall back to idle
                     phase = "idle";
                     lastSubmittedPath = null;
+                    approvedPlanHistory = null;
                     compactApprovedPlanContext = null;
                 }
             } else {
                 // No path recorded — can't rebuild, fall back to idle
                 phase = "idle";
+                approvedPlanHistory = null;
                 compactApprovedPlanContext = null;
             }
         }

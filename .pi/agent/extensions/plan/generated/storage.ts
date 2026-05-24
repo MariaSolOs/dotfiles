@@ -18,6 +18,7 @@ import {
     readdirSync,
     statSync,
     existsSync,
+    rmSync,
 } from "fs";
 import { sanitizeTag } from "./project";
 
@@ -53,6 +54,14 @@ export function getHistoryDir(project: string, slug: string): string {
     const historyDir = join(homedir(), ".plan", "history", project, slug);
     mkdirSync(historyDir, { recursive: true });
     return historyDir;
+}
+
+/**
+ * Delete all stored versions for a project/slug plan history.
+ */
+export function deletePlanHistory(project: string, slug: string): void {
+    const historyDir = join(homedir(), ".plan", "history", project, slug);
+    rmSync(historyDir, { recursive: true, force: true });
 }
 
 /**

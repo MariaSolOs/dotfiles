@@ -44,12 +44,18 @@ import { loadConfig, resolveDefaultDiffType } from "./generated/config.js";
 export { getLastAssistantMessageText } from "./assistant-message.js";
 
 export type AnnotateMode = "annotate" | "annotate-folder" | "annotate-last";
+export interface PlanHistoryRef {
+    project: string;
+    slug: string;
+}
+
 export interface PlanReviewDecision {
     approved: boolean;
     feedback?: string;
     agentSwitch?: string;
     permissionMode?: string;
     compactContext?: boolean;
+    planHistory?: PlanHistoryRef;
 }
 
 export interface BrowserDecisionSession<T> {
@@ -60,6 +66,7 @@ export interface BrowserDecisionSession<T> {
 
 export interface PlanReviewBrowserSession extends BrowserDecisionSession<PlanReviewDecision> {
     reviewId: string;
+    planHistory: PlanHistoryRef;
     onDecision: (
         listener: (result: PlanReviewDecision) => void | Promise<void>,
     ) => () => void;
@@ -206,6 +213,7 @@ export async function startPlanReviewBrowserSession(
     return {
         ...session,
         reviewId: server.reviewId,
+        planHistory: server.planHistory,
         onDecision: server.onDecision,
     };
 }
