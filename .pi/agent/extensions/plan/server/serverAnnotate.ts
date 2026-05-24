@@ -20,11 +20,7 @@ import { html, json, parseBody, requestUrl } from "./helpers.js";
 import { listenOnPort } from "./network.js";
 
 import { getRepoInfo } from "./project.js";
-import {
-    handleDocRequest,
-    handleDocExistsRequest,
-    handleFileBrowserRequest,
-} from "./reference.js";
+import { handleDocRequest, handleDocExistsRequest } from "./reference.js";
 import { warmFileListCache } from "../generated/resolve-file.js";
 import { createExternalAnnotationHandler } from "./external-annotations.js";
 
@@ -164,11 +160,6 @@ export async function startAnnotateServer(options: {
             req.method === "POST"
         ) {
             await handleDocExistsRequest(res, req);
-        } else if (
-            url.pathname === "/api/reference/files" &&
-            req.method === "GET"
-        ) {
-            handleFileBrowserRequest(res, url);
         } else if (url.pathname === "/favicon.svg") {
             handleFavicon(res);
         } else if (url.pathname === "/api/exit" && req.method === "POST") {

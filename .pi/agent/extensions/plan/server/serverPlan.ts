@@ -29,11 +29,7 @@ import {
 } from "../generated/config.js";
 import { composeImproveContext } from "../generated/pfm-reminder.js";
 import { detectProjectName, getRepoInfo } from "./project.js";
-import {
-    handleDocRequest,
-    handleDocExistsRequest,
-    handleFileBrowserRequest,
-} from "./reference.js";
+import { handleDocRequest, handleDocExistsRequest } from "./reference.js";
 import { warmFileListCache } from "../generated/resolve-file.js";
 
 export interface PlanHistoryRef {
@@ -207,11 +203,6 @@ export async function startPlanReviewServer(options: {
             req.method === "POST"
         ) {
             await handleDocExistsRequest(res, req);
-        } else if (
-            url.pathname === "/api/reference/files" &&
-            req.method === "GET"
-        ) {
-            handleFileBrowserRequest(res, url);
         } else if (url.pathname === "/api/agents" && req.method === "GET") {
             json(res, { agents: [] });
         } else if (url.pathname === "/favicon.svg") {

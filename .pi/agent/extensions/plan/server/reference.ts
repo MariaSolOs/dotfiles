@@ -1,28 +1,13 @@
 // @ts-nocheck
 /**
  * Document and reference handlers (Node.js equivalents of packages/server/reference-handlers.ts).
- * VaultNode, buildFileTree, walkMarkdownFiles, handleDocRequest,
- * handleFileBrowserRequest
  */
 
-import {
-    existsSync,
-    readdirSync,
-    readFileSync,
-    statSync,
-    type Dirent,
-} from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import type { ServerResponse } from "node:http";
-import { join } from "node:path";
-
 import { json, parseBody } from "./helpers";
 import type { IncomingMessage } from "node:http";
 
-import {
-    type VaultNode,
-    buildFileTree,
-    FILE_BROWSER_EXCLUDED,
-} from "../generated/reference-common.js";
 import {
     isAbsoluteUserPath,
     isCodeFilePath,
@@ -36,32 +21,6 @@ import { parseCodePath } from "../generated/code-file.js";
 import { htmlToMarkdown } from "../generated/html-to-markdown.js";
 
 type Res = ServerResponse;
-
-/** Recursively walk a directory collecting files by extension, skipping ignored dirs. */
-function walkMarkdownFiles(
-    dir: string,
-    root: string,
-    results: string[],
-    extensions: RegExp = /\.(mdx?|html?)$/i,
-): void {
-    let entries: Dirent[];
-    try {
-        entries = readdirSync(dir, { withFileTypes: true }) as Dirent[];
-    } catch {
-        return;
-    }
-    for (const entry of entries) {
-        if (entry.isDirectory()) {
-            if (FILE_BROWSER_EXCLUDED.includes(entry.name + "/")) continue;
-            walkMarkdownFiles(join(dir, entry.name), root, results, extensions);
-        } else if (entry.isFile() && extensions.test(entry.name)) {
-            const relative = join(dir, entry.name)
-                .slice(root.length + 1)
-                .replace(/\\/g, "/");
-            results.push(relative);
-        }
-    }
-}
 
 /** Serve a linked markdown document. Uses shared resolveMarkdownFile for parity with Bun server. */
 export async function handleDocRequest(res: Res, url: URL): Promise<void> {
@@ -293,25 +252,4 @@ export async function handleDocExistsRequest(
     );
 
     json(res, { results });
-}
-
-export function handleFileBrowserRequest(res: Res, url: URL): void {
-    const dirPath = url.searchParams.get("dirPath");
-    if (!dirPath) {
-        json(res, { error: "Missing dirPath parameter" }, 400);
-        return;
-    }
-    const resolvedDir = resolveUserPath(dirPath);
-    if (!existsSync(resolvedDir) || !statSync(resolvedDir).isDirectory()) {
-        json(res, { error: "Invalid directory path" }, 400);
-        return;
-    }
-    try {
-        const files: string[] = [];
-        walkMarkdownFiles(resolvedDir, resolvedDir, files);
-        files.sort();
-        json(res, { tree: buildFileTree(files) });
-    } catch {
-        json(res, { error: "Failed to list directory files" }, 500);
-    }
 }
