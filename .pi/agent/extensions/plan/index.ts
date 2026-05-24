@@ -28,9 +28,16 @@ import { basename, relative, resolve } from "node:path";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { Type } from "@earendil-works/pi-ai";
 import {
+    DynamicBorder,
     type ExtensionAPI,
     type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
+import {
+    Container,
+    type SelectItem,
+    SelectList,
+    Text,
+} from "@earendil-works/pi-tui";
 import {
     buildPromptVariables,
     formatTodoList,
@@ -75,7 +82,7 @@ import {
     startCodeReviewBrowserSession,
     startLastMessageAnnotationSession,
     startMarkdownAnnotationSession,
-    openPlanReviewBrowser,
+    startPlanReviewBrowserSession,
     registerPlanEventListeners,
 } from "./plan-events.js";
 import {
@@ -288,6 +295,11 @@ export default function plan(pi: ExtensionAPI): void {
     let savedState: SavedPhaseState | null = null;
     let planConfig = {};
     let justApprovedPlan = false;
+    // Monotonic token for cancelling async plan-review continuations when the
+    // user toggles /plan while the browser review is still pending.
+    let planModeEpoch = 0;
+    let activePlanReviewStop: (() => void) | null = null;
+    let cancelWithoutCleanupPrompt = false;
     let compactApprovedPlanContext: CompactApprovedPlanContext | null = null;
     let loadedContextFiles: LoadedContextFile[] = [];
     let activeContext: ExtensionContext | null = null;
@@ -713,7 +725,12 @@ export default function plan(pi: ExtensionAPI): void {
         updateWidget(ctx);
     }
 
-    async function enterPlanning(ctx: ExtensionContext): Promise<void> {
+    async function enterPlanning(
+        ctx: ExtensionContext,
+        opts: { cancelWithoutCleanupPrompt?: boolean } = {},
+    ): Promise<void> {
+        planModeEpoch += 1;
+        cancelWithoutCleanupPrompt = opts.cancelWithoutCleanupPrompt === true;
         phase = "planning";
         approvedPlanHistory = null;
         checklistItems = [];
@@ -731,11 +748,14 @@ export default function plan(pi: ExtensionAPI): void {
     }
 
     async function exitToIdle(ctx: ExtensionContext): Promise<void> {
+        planModeEpoch += 1;
         phase = "idle";
         checklistItems = [];
         lastSubmittedPath = null;
         approvedPlanHistory = null;
         compactApprovedPlanContext = null;
+        justApprovedPlan = false;
+        cancelWithoutCleanupPrompt = false;
 
         await restoreSavedState(ctx);
         savedState = null;
@@ -745,11 +765,179 @@ export default function plan(pi: ExtensionAPI): void {
         ctx.ui.notify("Plan: disabled. Full access restored.");
     }
 
+    type CancelCleanupChoice = "keep" | "remove";
+
+    async function promptCancelCleanup(
+        ctx: ExtensionContext,
+    ): Promise<CancelCleanupChoice | null> {
+        if (!ctx.hasUI) {
+            ctx.ui.notify(
+                "Plan: cancellation needs a cleanup choice, but interactive UI is unavailable. Plan mode remains active.",
+                "warning",
+            );
+            return null;
+        }
+
+        const answers = [
+            {
+                value: "keep",
+                label: "Cancel plan mode and keep files",
+            },
+            {
+                value: "remove",
+                label: "Cancel plan mode and remove the plan file plus related history",
+            },
+        ] satisfies Array<{ value: CancelCleanupChoice; label: string }>;
+        const items: SelectItem[] = answers.map((answer) => ({
+            value: answer.value,
+            label: answer.label,
+        }));
+
+        return ctx.ui.custom<CancelCleanupChoice | null>(
+            (tui, theme, _kb, done) => {
+                const container = new Container();
+                container.addChild(
+                    new DynamicBorder((s: string) => theme.fg("accent", s)),
+                );
+                container.addChild(
+                    new Text(
+                        theme.fg(
+                            "accent",
+                            theme.bold("Cancel the active plan?"),
+                        ),
+                        1,
+                        0,
+                    ),
+                );
+
+                const selectList = new SelectList(items, items.length, {
+                    selectedPrefix: (t) => theme.fg("accent", t),
+                    selectedText: (t) => theme.fg("accent", t),
+                    description: (t) => theme.fg("muted", t),
+                    scrollInfo: (t) => theme.fg("dim", t),
+                    noMatch: (t) => theme.fg("warning", t),
+                });
+                selectList.onSelect = (item) =>
+                    done(item.value as CancelCleanupChoice);
+                selectList.onCancel = () => done(null);
+                container.addChild(selectList);
+
+                container.addChild(
+                    new Text(
+                        theme.fg(
+                            "dim",
+                            "↑↓ navigate • enter select • esc keep plan active",
+                        ),
+                        1,
+                        0,
+                    ),
+                );
+                container.addChild(
+                    new DynamicBorder((s: string) => theme.fg("accent", s)),
+                );
+
+                return {
+                    render: (width) => container.render(width),
+                    invalidate: () => container.invalidate(),
+                    handleInput: (data) => {
+                        selectList.handleInput(data);
+                        tui.requestRender();
+                    },
+                };
+            },
+        );
+    }
+
+    function cleanupCancelledPlanArtifacts(
+        ctx: ExtensionContext,
+        planPath: string | null,
+        history: PlanHistoryRef | null,
+    ): void {
+        const messages: string[] = [];
+        if (planPath) {
+            const fullPath = resolve(ctx.cwd, planPath);
+            try {
+                if (existsSync(fullPath)) {
+                    unlinkSync(fullPath);
+                    messages.push(`Plan file removed: ${planPath}`);
+                } else {
+                    messages.push(`Plan file was already removed: ${planPath}`);
+                }
+            } catch (err) {
+                if (!existsSync(fullPath)) {
+                    messages.push(`Plan file was already removed: ${planPath}`);
+                } else {
+                    messages.push(
+                        `Plan file kept at ${planPath}; failed to remove it: ${err instanceof Error ? err.message : String(err)}`,
+                    );
+                }
+            }
+        }
+
+        if (history) {
+            try {
+                deletePlanHistory(history.project, history.slug);
+                messages.push(
+                    `Plan history removed: ~/.plan/history/${history.project}/${history.slug}`,
+                );
+            } catch (err) {
+                messages.push(
+                    `Plan history kept; failed to remove it: ${err instanceof Error ? err.message : String(err)}`,
+                );
+            }
+        }
+
+        for (const message of messages) ctx.ui.notify(message, "info");
+    }
+
+    async function cancelActivePlan(ctx: ExtensionContext): Promise<void> {
+        const cleanupChoice =
+            cancelWithoutCleanupPrompt || !lastSubmittedPath
+                ? "keep"
+                : await promptCancelCleanup(ctx);
+        if (!cleanupChoice) {
+            ctx.ui.notify(
+                "Plan: cancellation cancelled; plan mode remains active.",
+            );
+            return;
+        }
+
+        const cancelledPlanPath = lastSubmittedPath;
+        const cancelledPlanHistory = approvedPlanHistory;
+
+        planModeEpoch += 1;
+        activePlanReviewStop?.();
+        activePlanReviewStop = null;
+        justApprovedPlan = false;
+        phase = "idle";
+        checklistItems = [];
+        lastSubmittedPath = null;
+        approvedPlanHistory = null;
+        compactApprovedPlanContext = null;
+        cancelWithoutCleanupPrompt = false;
+
+        await restoreSavedState(ctx);
+        savedState = null;
+        updateStatus(ctx);
+        updateWidget(ctx);
+        persistState();
+
+        if (cleanupChoice === "remove") {
+            cleanupCancelledPlanArtifacts(
+                ctx,
+                cancelledPlanPath,
+                cancelledPlanHistory,
+            );
+        }
+
+        ctx.ui.notify("Plan: cancelled. Full access restored.");
+    }
+
     async function togglePlanMode(ctx: ExtensionContext): Promise<void> {
         if (phase === "idle") {
             await enterPlanning(ctx);
         } else {
-            await exitToIdle(ctx);
+            await cancelActivePlan(ctx);
         }
     }
 
@@ -796,6 +984,7 @@ export default function plan(pi: ExtensionAPI): void {
 
     type PlanSubmitHelperOptions = {
         allowIdleAutoPlanning?: boolean;
+        cancelWithoutCleanupPrompt?: boolean;
     };
 
     async function submitPlanForReview(
@@ -805,7 +994,10 @@ export default function plan(pi: ExtensionAPI): void {
     ) {
         if (phase !== "planning") {
             if (phase === "idle" && options.allowIdleAutoPlanning) {
-                await enterPlanning(ctx);
+                await enterPlanning(ctx, {
+                    cancelWithoutCleanupPrompt:
+                        options.cancelWithoutCleanupPrompt,
+                });
             } else {
                 const text =
                     phase === "executing"
@@ -896,14 +1088,29 @@ export default function plan(pi: ExtensionAPI): void {
             };
         }
 
+        if (options.cancelWithoutCleanupPrompt) {
+            cancelWithoutCleanupPrompt = true;
+        }
         lastSubmittedPath = inputPath;
         checklistItems = parseChecklist(planContent);
+        const reviewEpoch = planModeEpoch;
 
         // Non-interactive or no HTML: auto-approve
         if (!ctx.hasUI || !hasPlanBrowserHtml()) {
             phase = "executing";
             approvedPlanHistory = null;
             await applyPhaseConfig(ctx, { restoreSavedState: true });
+            if (phase !== "executing" || planModeEpoch !== reviewEpoch) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: "Plan review result ignored because plan mode was disabled before review completed.",
+                        },
+                    ],
+                    details: { approved: false, cancelled: true },
+                };
+            }
             pi.appendEntry("plan-execute", { lastSubmittedPath });
             persistState();
             justApprovedPlan = true;
@@ -919,22 +1126,66 @@ export default function plan(pi: ExtensionAPI): void {
             };
         }
 
-        let result: Awaited<ReturnType<typeof openPlanReviewBrowser>>;
+        let result: any;
         try {
-            result = await openPlanReviewBrowser(ctx, planContent);
+            const session = await startPlanReviewBrowserSession(
+                ctx,
+                planContent,
+            );
+            activePlanReviewStop = session.stop;
+            approvedPlanHistory = session.planHistory;
+            persistState();
+            result = await session.waitForDecision();
         } catch (err) {
+            if (phase !== "planning" || planModeEpoch !== reviewEpoch) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: "Plan review result ignored because plan mode was disabled before review completed.",
+                        },
+                    ],
+                    details: { approved: false, cancelled: true },
+                };
+            }
             const message = `Failed to start plan review UI: ${getStartupErrorMessage(err)}`;
             ctx.ui.notify(message, "error");
             return {
                 content: [{ type: "text", text: message }],
                 details: { approved: false },
             };
+        } finally {
+            activePlanReviewStop = null;
+        }
+
+        if (phase !== "planning" || planModeEpoch !== reviewEpoch) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: "Plan review result ignored because plan mode was disabled before review completed.",
+                    },
+                ],
+                details: { approved: false, cancelled: true },
+            };
         }
 
         if (result.approved) {
+            planModeEpoch += 1;
             phase = "executing";
-            approvedPlanHistory = result.planHistory ?? null;
+            approvedPlanHistory = result.planHistory ?? approvedPlanHistory;
             await applyPhaseConfig(ctx, { restoreSavedState: true });
+            if (phase !== "executing" || planModeEpoch !== reviewEpoch + 1) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: "Plan review result ignored because plan mode was disabled before review completed.",
+                        },
+                    ],
+                    details: { approved: false, cancelled: true },
+                };
+            }
             pi.appendEntry("plan-execute", { lastSubmittedPath });
             if (result.compactContext) {
                 enableCompactApprovedPlanContext(ctx, planContent, inputPath);
@@ -1274,24 +1525,26 @@ export default function plan(pi: ExtensionAPI): void {
                             `Opening plan review for ${filePath}...`,
                             "info",
                         );
-                        const result = await submitPlanForReview(
-                            planInputPath,
-                            ctx,
-                            { allowIdleAutoPlanning: true },
-                        );
-                        const text = result.content?.find(
-                            (part: { type?: string; text?: string }) =>
-                                part?.type === "text" &&
-                                typeof part.text === "string",
-                        )?.text;
-                        if (text) {
-                            if (
-                                /^(Error:|Failed to start plan review UI:)/i.test(
-                                    text,
-                                )
-                            ) {
-                                ctx.ui.notify(text, "error");
-                            } else {
+                        void submitPlanForReview(planInputPath, ctx, {
+                            allowIdleAutoPlanning: true,
+                            cancelWithoutCleanupPrompt: true,
+                        })
+                            .then((result) => {
+                                if (result.details?.cancelled) return;
+                                const text = result.content?.find(
+                                    (part: { type?: string; text?: string }) =>
+                                        part?.type === "text" &&
+                                        typeof part.text === "string",
+                                )?.text;
+                                if (!text) return;
+                                if (
+                                    /^(Error:|Failed to start plan review UI:)/i.test(
+                                        text,
+                                    )
+                                ) {
+                                    ctx.ui.notify(text, "error");
+                                    return;
+                                }
                                 sendUserMessageWithCurrentSessionFallback(
                                     pi,
                                     text,
@@ -1299,8 +1552,15 @@ export default function plan(pi: ExtensionAPI): void {
                                     "Plan file review result could not be sent",
                                     origin,
                                 );
-                            }
-                        }
+                            })
+                            .catch((err) => {
+                                reportBackgroundError(
+                                    ctx,
+                                    "Plan file review failed",
+                                    err,
+                                    origin,
+                                );
+                            });
                         return;
                     }
                     ctx.ui.notify(
@@ -1929,7 +2189,13 @@ When all checklist items are complete, /plan will automatically remove the plan 
     pi.on("agent_end", async (_event, ctx) => {
         if (phase === "executing" && justApprovedPlan) {
             justApprovedPlan = false;
+            const autoContinueEpoch = planModeEpoch;
             setTimeout(() => {
+                if (
+                    phase !== "executing" ||
+                    planModeEpoch !== autoContinueEpoch
+                )
+                    return;
                 pi.sendUserMessage("Continue with the approved plan.");
             }, 0);
             return;
@@ -2010,6 +2276,7 @@ When all checklist items are complete, /plan will automatically remove the plan 
             lastSubmittedPath = null;
             approvedPlanHistory = null;
             compactApprovedPlanContext = null;
+            cancelWithoutCleanupPrompt = false;
 
             await restoreSavedState(ctx);
             savedState = null;
