@@ -16,7 +16,7 @@ import {
 // Keep collapsed tool output compact while still leaving expanded views to
 // Pi's built-in renderers. Bash uses visual terminal lines so wrapped JSON and
 // other long single-line outputs do not fill the screen.
-const PREVIEW_LINES = 2;
+const PREVIEW_LINES = 3;
 const EDIT_CONTEXT_LINES = 2;
 
 type ThemeLike = {
