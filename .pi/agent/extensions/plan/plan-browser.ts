@@ -47,7 +47,6 @@ export type AnnotateMode = "annotate" | "annotate-folder" | "annotate-last";
 export interface PlanReviewDecision {
     approved: boolean;
     feedback?: string;
-    savedPath?: string;
     agentSwitch?: string;
     permissionMode?: string;
     compactContext?: boolean;
@@ -768,31 +767,4 @@ export async function startLastMessageAnnotationSession(
         undefined,
         gate,
     );
-}
-
-export async function openArchiveBrowserAction(
-    ctx: ExtensionContext,
-    customPlanPath?: string,
-): Promise<{ opened: boolean }> {
-    if (!ctx.hasUI || !planHtmlContent) {
-        throw new Error("Plan archive browser is unavailable in this session.");
-    }
-
-    const server = await startPlanReviewServer({
-        plan: "",
-        htmlContent: planHtmlContent,
-        origin: "pi",
-        mode: "archive",
-        customPlanPath,
-        sharingEnabled: process.env.PLAN_SHARE !== "disabled",
-        shareBaseUrl: process.env.PLAN_SHARE_URL || undefined,
-        pasteApiUrl: process.env.PLAN_PASTE_URL || undefined,
-    });
-
-    return openBrowserAndWait(server, ctx, async () => {
-        if (server.waitForDone) {
-            await server.waitForDone();
-        }
-        return { opened: true };
-    });
 }

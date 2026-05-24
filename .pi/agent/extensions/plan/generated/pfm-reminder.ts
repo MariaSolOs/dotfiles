@@ -13,34 +13,12 @@
 
 /**
  * Compose the additionalContext string for the improve-context PreToolUse handler.
- * Returns null when no sources are enabled (handler should exit silently).
- *
- * Order: PFM reminder first (capabilities) then improvement hook (corrective
- * rules). Both appear separated by a horizontal rule.
+ * Returns null when the reminder is disabled (handler should exit silently).
  */
 export function composeImproveContext(input: {
     pfmEnabled: boolean;
-    improvementHookContent: string | null;
 }): string | null {
-    const sections: string[] = [];
-
-    if (input.pfmEnabled) {
-        sections.push(PFM_REMINDER);
-    }
-
-    if (input.improvementHookContent) {
-        sections.push(
-            [
-                "[Plan Improvement Hook]",
-                "The following corrective instructions were generated from analysis of previous plan denial patterns.",
-                "Apply these guidelines when writing your plan:\n",
-                input.improvementHookContent,
-            ].join("\n"),
-        );
-    }
-
-    if (sections.length === 0) return null;
-    return sections.join("\n\n---\n\n");
+    return input.pfmEnabled ? PFM_REMINDER : null;
 }
 
 export const PFM_REMINDER = `[Plan Flavored Markdown]

@@ -51,7 +51,6 @@ import {
     isConvertedSource,
 } from "./generated/url-to-markdown.js";
 import { loadConfig, resolveUseJina } from "./generated/config.js";
-import { readImprovementHook } from "./generated/improvement-hooks.js";
 import { composeImproveContext } from "./generated/pfm-reminder.js";
 import {
     getReviewApprovedPrompt,
@@ -72,7 +71,6 @@ import {
     hasPlanBrowserHtml,
     hasReviewBrowserHtml,
     getStartupErrorMessage,
-    openArchiveBrowserAction,
     startCodeReviewBrowserSession,
     startLastMessageAnnotationSession,
     startMarkdownAnnotationSession,
@@ -1519,31 +1517,6 @@ export default function plan(pi: ExtensionAPI): void {
         },
     });
 
-    pi.registerCommand("plan-archive", {
-        description: "Browse saved plan decisions",
-        handler: async (_args, ctx) => {
-            if (!hasPlanBrowserHtml()) {
-                ctx.ui.notify(
-                    "Archive UI not available. Run 'bun run build' in the pi-extension directory.",
-                    "error",
-                );
-                return;
-            }
-
-            ctx.ui.notify("Opening plan archive...", "info");
-
-            try {
-                await openArchiveBrowserAction(ctx);
-                ctx.ui.notify("Archive browser closed.", "info");
-            } catch (err) {
-                ctx.ui.notify(
-                    `Failed to start archive: ${getStartupErrorMessage(err)}`,
-                    "error",
-                );
-            }
-        },
-    });
-
     // ── plan_submit_plan Tool ────────────────────────────────────
 
     pi.registerTool({
@@ -1726,11 +1699,8 @@ export default function plan(pi: ExtensionAPI): void {
 
         let improveContext: string | null = null;
         if (phase === "planning") {
-            const hook = readImprovementHook("enterplanmode-improve");
-            const pfmEnabled = loadConfig().pfmReminder === true;
             improveContext = composeImproveContext({
-                pfmEnabled,
-                improvementHookContent: hook?.content ?? null,
+                pfmEnabled: loadConfig().pfmReminder === true,
             });
         }
 

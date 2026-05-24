@@ -10,7 +10,6 @@ import type { DiffType, VcsSelection } from "./server.js";
 import {
     getLastAssistantMessageText,
     getStartupErrorMessage,
-    openArchiveBrowserAction,
     openCodeReview,
     openLastMessageAnnotation,
     openMarkdownAnnotation,
@@ -29,8 +28,7 @@ export type PlanAction =
     | "review-status"
     | "code-review"
     | "annotate"
-    | "annotate-last"
-    | "archive";
+    | "annotate-last";
 
 export interface PlanHandledResponse<T> {
     status: "handled";
@@ -74,7 +72,6 @@ export interface PlanReviewResultEvent {
     reviewId: string;
     approved: boolean;
     feedback?: string;
-    savedPath?: string;
     agentSwitch?: string;
     permissionMode?: string;
     compactContext?: boolean;
@@ -122,14 +119,6 @@ export interface PlanAnnotationResult {
     approved?: boolean;
 }
 
-export interface PlanArchivePayload {
-    customPlanPath?: string;
-}
-
-export interface PlanArchiveResult {
-    opened: boolean;
-}
-
 export type PlanRequestMap = {
     "plan-review": PlanRequestBase<
         "plan-review",
@@ -156,7 +145,6 @@ export type PlanRequestMap = {
         PlanAnnotatePayload,
         PlanAnnotationResult
     >;
-    archive: PlanRequestBase<"archive", PlanArchivePayload, PlanArchiveResult>;
 };
 export type PlanRequest = PlanRequestMap[PlanAction];
 export type PlanResponseMap = {
@@ -165,7 +153,6 @@ export type PlanResponseMap = {
     "code-review": PlanResponse<PlanCodeReviewResult>;
     annotate: PlanResponse<PlanAnnotationResult>;
     "annotate-last": PlanResponse<PlanAnnotationResult>;
-    archive: PlanResponse<PlanArchiveResult>;
 };
 function isPlanAction(value: unknown): value is PlanAction {
     return (
@@ -173,8 +160,7 @@ function isPlanAction(value: unknown): value is PlanAction {
         value === "review-status" ||
         value === "code-review" ||
         value === "annotate" ||
-        value === "annotate-last" ||
-        value === "archive"
+        value === "annotate-last"
     );
 }
 
@@ -297,7 +283,6 @@ export function registerPlanEventListeners(pi: ExtensionAPI): void {
                             reviewId: session.reviewId,
                             approved: result.approved,
                             feedback: result.feedback,
-                            savedPath: result.savedPath,
                             agentSwitch: result.agentSwitch,
                             permissionMode: result.permissionMode,
                             compactContext: result.compactContext,
@@ -377,14 +362,6 @@ export function registerPlanEventListeners(pi: ExtensionAPI): void {
                     request.respond({ status: "handled", result });
                     return;
                 }
-                case "archive": {
-                    const result = await openArchiveBrowserAction(
-                        ctx,
-                        request.payload?.customPlanPath,
-                    );
-                    request.respond({ status: "handled", result });
-                    return;
-                }
             }
         } catch (err) {
             const message = getStartupErrorMessage(err);
@@ -405,7 +382,6 @@ export {
     startLastMessageAnnotationSession,
     startMarkdownAnnotationSession,
     getStartupErrorMessage,
-    openArchiveBrowserAction,
     openCodeReview,
     openLastMessageAnnotation,
     openMarkdownAnnotation,

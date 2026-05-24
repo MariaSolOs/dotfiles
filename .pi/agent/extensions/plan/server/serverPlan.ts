@@ -4,15 +4,10 @@ import { createServer } from "node:http";
 
 import { contentHash, deleteDraft } from "../generated/draft.js";
 import {
-    type ArchivedPlan,
     generateSlug,
     getPlanVersion,
     getVersionCount,
-    listArchivedPlans,
     listVersions,
-    readArchivedPlan,
-    saveAnnotations,
-    saveFinalSnapshot,
     saveToHistory,
 } from "../generated/storage.js";
 import { createEditorAnnotationHandler } from "./annotations.js";
@@ -32,10 +27,6 @@ import {
     detectGitUser,
     getServerConfig,
 } from "../generated/config.js";
-import {
-    readImprovementHook,
-    getImprovementHookExpectedPath,
-} from "../generated/improvement-hooks.js";
 import { composeImproveContext } from "../generated/pfm-reminder.js";
 import { detectProjectName, getRepoInfo } from "./project.js";
 import {
@@ -48,7 +39,6 @@ import { warmFileListCache } from "../generated/resolve-file.js";
 export interface PlanReviewDecision {
     approved: boolean;
     feedback?: string;
-    savedPath?: string;
     agentSwitch?: string;
     permissionMode?: string;
     compactContext?: boolean;
@@ -63,7 +53,6 @@ export interface PlanServerResult {
     onDecision: (
         listener: (result: PlanReviewDecision) => void | Promise<void>,
     ) => () => void;
-    waitForDone?: () => Promise<void>;
     stop: () => void;
 }
 
@@ -75,8 +64,6 @@ export async function startPlanReviewServer(options: {
     sharingEnabled?: boolean;
     shareBaseUrl?: string;
     pasteApiUrl?: string;
-    mode?: "archive";
-    customPlanPath?: string | null;
 }): Promise<PlanServerResult> {
     // Side-channel pre-warm so /api/doc/exists POSTs land on warm cache.
     void warmFileListCache(process.cwd(), "code");
@@ -88,46 +75,19 @@ export async function startPlanReviewServer(options: {
     const pasteApiUrl =
         (options.pasteApiUrl ?? process.env.PLAN_PASTE_URL) || undefined;
 
-    // --- Archive mode setup ---
-    let archivePlans: ArchivedPlan[] = [];
-    let initialArchivePlan = "";
-    let resolveDone: (() => void) | undefined;
-    let donePromise: Promise<void> | undefined;
-
-    if (options.mode === "archive") {
-        archivePlans = listArchivedPlans(options.customPlanPath ?? undefined);
-        initialArchivePlan =
-            archivePlans.length > 0
-                ? (readArchivedPlan(
-                      archivePlans[0].filename,
-                      options.customPlanPath ?? undefined,
-                  ) ?? "")
-                : "";
-        donePromise = new Promise<void>((resolve) => {
-            resolveDone = resolve;
-        });
-    }
-
-    // --- Plan review mode setup (skip in archive mode) ---
-    const repoInfo = options.mode !== "archive" ? getRepoInfo() : null;
-    const slug = options.mode !== "archive" ? generateSlug(options.plan) : "";
-    const project = options.mode !== "archive" ? detectProjectName() : "";
-    const historyResult =
-        options.mode !== "archive"
-            ? saveToHistory(project, slug, options.plan)
-            : { version: 0, path: "", isNew: false };
+    const repoInfo = getRepoInfo();
+    const slug = generateSlug(options.plan);
+    const project = detectProjectName();
+    const historyResult = saveToHistory(project, slug, options.plan);
     const previousPlan =
-        options.mode !== "archive" && historyResult.version > 1
+        historyResult.version > 1
             ? getPlanVersion(project, slug, historyResult.version - 1)
             : null;
-    const versionInfo =
-        options.mode !== "archive"
-            ? {
-                  version: historyResult.version,
-                  totalVersions: getVersionCount(project, slug),
-                  project,
-              }
-            : null;
+    const versionInfo = {
+        version: historyResult.version,
+        totalVersions: getVersionCount(project, slug),
+        project,
+    };
 
     const reviewId = randomUUID();
     let resolveDecision!: (result: PlanReviewDecision) => void;
@@ -150,52 +110,15 @@ export async function startPlanReviewServer(options: {
         return true;
     };
 
-    // Draft key for annotation persistence
-    const draftKey =
-        options.mode !== "archive" ? contentHash(options.plan) : "";
-
-    // Editor annotations (in-memory, skip in archive mode)
-    const editorAnnotations =
-        options.mode !== "archive" ? createEditorAnnotationHandler() : null;
-    const externalAnnotations =
-        options.mode !== "archive"
-            ? createExternalAnnotationHandler("plan")
-            : null;
-
-    // Lazy cache for in-session archive tab
-    let cachedArchivePlans: ArchivedPlan[] | null = null;
+    // Drafts are keyed by plan content so browser notes survive reloads/crashes.
+    const draftKey = contentHash(options.plan);
+    const editorAnnotations = createEditorAnnotationHandler();
+    const externalAnnotations = createExternalAnnotationHandler("plan");
 
     const server = createServer(async (req, res) => {
         const url = requestUrl(req);
 
-        if (url.pathname === "/api/done" && req.method === "POST") {
-            resolveDone?.();
-            json(res, { ok: true });
-        } else if (
-            url.pathname === "/api/archive/plans" &&
-            req.method === "GET"
-        ) {
-            const customPath = url.searchParams.get("customPath") || undefined;
-            if (!cachedArchivePlans)
-                cachedArchivePlans = listArchivedPlans(customPath);
-            json(res, { plans: cachedArchivePlans });
-        } else if (
-            url.pathname === "/api/archive/plan" &&
-            req.method === "GET"
-        ) {
-            const filename = url.searchParams.get("filename");
-            const customPath = url.searchParams.get("customPath") || undefined;
-            if (!filename) {
-                json(res, { error: "Missing filename" }, 400);
-                return;
-            }
-            const markdown = readArchivedPlan(filename, customPath);
-            if (!markdown) {
-                json(res, { error: "Not found" }, 404);
-                return;
-            }
-            json(res, { markdown, filepath: filename });
-        } else if (url.pathname === "/api/plan/version") {
+        if (url.pathname === "/api/plan/version") {
             const vParam = url.searchParams.get("v");
             if (!vParam) {
                 json(res, { error: "Missing v parameter" }, 400);
@@ -215,52 +138,28 @@ export async function startPlanReviewServer(options: {
         } else if (url.pathname === "/api/plan/versions") {
             json(res, { project, slug, versions: listVersions(project, slug) });
         } else if (url.pathname === "/api/plan") {
-            if (options.mode === "archive") {
-                json(res, {
-                    plan: initialArchivePlan,
-                    origin: options.origin ?? "pi",
-                    mode: "archive",
-                    archivePlans,
-                    sharingEnabled,
-                    shareBaseUrl,
-                    serverConfig: getServerConfig(gitUser),
-                });
-            } else {
-                json(res, {
-                    plan: options.plan,
-                    origin: options.origin ?? "pi",
-                    permissionMode: options.permissionMode,
-                    previousPlan,
-                    versionInfo,
-                    sharingEnabled,
-                    shareBaseUrl,
-                    pasteApiUrl,
-                    repoInfo,
-                    projectRoot: process.cwd(),
-                    serverConfig: getServerConfig(gitUser),
-                });
-            }
+            json(res, {
+                plan: options.plan,
+                origin: options.origin ?? "pi",
+                permissionMode: options.permissionMode,
+                previousPlan,
+                versionInfo,
+                sharingEnabled,
+                shareBaseUrl,
+                pasteApiUrl,
+                repoInfo,
+                projectRoot: process.cwd(),
+                serverConfig: getServerConfig(gitUser),
+            });
         } else if (
             url.pathname === "/api/hooks/status" &&
             req.method === "GET"
         ) {
             const config = loadConfig();
-            const hook = readImprovementHook("enterplanmode-improve");
             const pfmEnabled = config.pfmReminder === true;
-            const composed = composeImproveContext({
-                pfmEnabled,
-                improvementHookContent: hook?.content ?? null,
-            });
+            const composed = composeImproveContext({ pfmEnabled });
             json(res, {
                 pfmReminder: { enabled: pfmEnabled },
-                improvementHook: {
-                    present: !!hook,
-                    filePath:
-                        hook?.filePath ??
-                        getImprovementHookExpectedPath("enterplanmode-improve"),
-                    fileSize: hook?.content?.length ?? null,
-                    content: hook?.content ?? null,
-                },
                 composedLength: composed?.length ?? null,
             });
         } else if (url.pathname === "/api/config" && req.method === "POST") {
@@ -289,15 +188,9 @@ export async function startPlanReviewServer(options: {
             await handleUploadRequest(req, res);
         } else if (url.pathname === "/api/draft") {
             await handleDraftRequest(req, res, draftKey);
-        } else if (
-            editorAnnotations &&
-            (await editorAnnotations.handle(req, res, url))
-        ) {
+        } else if (await editorAnnotations.handle(req, res, url)) {
             return;
-        } else if (
-            externalAnnotations &&
-            (await externalAnnotations.handle(req, res, url))
-        ) {
+        } else if (await externalAnnotations.handle(req, res, url)) {
             return;
         } else if (url.pathname === "/api/doc" && req.method === "GET") {
             await handleDocRequest(res, url);
@@ -329,8 +222,6 @@ export async function startPlanReviewServer(options: {
             let agentSwitch: string | undefined;
             let requestedPermissionMode: string | undefined;
             let compactContext = false;
-            let planSaveEnabled = true;
-            let planSaveCustomPath: string | undefined;
             try {
                 const body = await parseBody(req);
                 if (body.feedback) feedback = body.feedback as string;
@@ -338,30 +229,8 @@ export async function startPlanReviewServer(options: {
                 if (body.permissionMode)
                     requestedPermissionMode = body.permissionMode as string;
                 compactContext = body.compactContext === true;
-                if (body.planSave !== undefined) {
-                    const ps = body.planSave as {
-                        enabled: boolean;
-                        customPath?: string;
-                    };
-                    planSaveEnabled = ps.enabled;
-                    planSaveCustomPath = ps.customPath;
-                }
             } catch (err) {
                 console.error(`[Integration] Error:`, err);
-            }
-            // Save annotations and final snapshot
-            let savedPath: string | undefined;
-            if (planSaveEnabled) {
-                const annotations = feedback || "";
-                if (annotations)
-                    saveAnnotations(slug, annotations, planSaveCustomPath);
-                savedPath = saveFinalSnapshot(
-                    slug,
-                    "approved",
-                    options.plan,
-                    annotations,
-                    planSaveCustomPath,
-                );
             }
             deleteDraft(draftKey);
             const effectivePermissionMode =
@@ -369,48 +238,26 @@ export async function startPlanReviewServer(options: {
             publishDecision({
                 approved: true,
                 feedback,
-                savedPath,
                 agentSwitch,
                 permissionMode: effectivePermissionMode,
                 compactContext,
             });
-            json(res, { ok: true, savedPath });
+            json(res, { ok: true });
         } else if (url.pathname === "/api/deny" && req.method === "POST") {
             if (decisionSettled) {
                 json(res, { ok: true, duplicate: true });
                 return;
             }
             let feedback = "Plan rejected by user";
-            let planSaveEnabled = true;
-            let planSaveCustomPath: string | undefined;
             try {
                 const body = await parseBody(req);
                 feedback = (body.feedback as string) || feedback;
-                if (body.planSave !== undefined) {
-                    const ps = body.planSave as {
-                        enabled: boolean;
-                        customPath?: string;
-                    };
-                    planSaveEnabled = ps.enabled;
-                    planSaveCustomPath = ps.customPath;
-                }
             } catch {
                 /* use default feedback */
             }
-            let savedPath: string | undefined;
-            if (planSaveEnabled) {
-                saveAnnotations(slug, feedback, planSaveCustomPath);
-                savedPath = saveFinalSnapshot(
-                    slug,
-                    "denied",
-                    options.plan,
-                    feedback,
-                    planSaveCustomPath,
-                );
-            }
             deleteDraft(draftKey);
-            publishDecision({ approved: false, feedback, savedPath });
-            json(res, { ok: true, savedPath });
+            publishDecision({ approved: false, feedback });
+            json(res, { ok: true });
         } else {
             html(res, options.htmlContent);
         }
@@ -430,7 +277,6 @@ export async function startPlanReviewServer(options: {
                 decisionListeners.delete(listener);
             };
         },
-        ...(donePromise && { waitForDone: () => donePromise }),
         stop: () => server.close(),
     };
 }
