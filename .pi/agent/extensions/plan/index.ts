@@ -323,7 +323,7 @@ export default function plan(pi: ExtensionAPI): void {
                 "plan",
                 ctx.ui.theme.fg(
                     "accent",
-                    `📋 ${completed}/${checklistItems.length}`,
+                    `☑ ${completed}/${checklistItems.length}`,
                 ),
             );
         } else if (phase === "planning" && profile?.statusLabel) {
