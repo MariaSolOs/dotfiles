@@ -3,5 +3,7 @@
   "tui.editor.cursorDown": ["down", "ctrl+n"],
   "tui.select.up": ["up", "ctrl+p"],
   "tui.select.down": ["down", "ctrl+n"],
+  "app.session.toggleNamedFilter": ["ctrl+l"],
+  "app.session.togglePath": ["ctrl+f"],
   "app.model.cycleForward": ["alt+p"]
 }
