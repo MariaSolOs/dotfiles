@@ -2205,42 +2205,28 @@ When all checklist items are complete, /plan will automatically remove the plan 
 
         if (checklistItems.every((t) => t.completed)) {
             const completedPlanPath = lastSubmittedPath;
-            const completedList = checklistItems
-                .map((t) => `- [x] ~~${t.text}~~`)
-                .join("\n");
-            pi.sendMessage(
-                {
-                    customType: "plan-complete",
-                    content: `**Plan Complete!** ✓\n\n${completedList}`,
-                    display: true,
-                },
-                { triggerTurn: false },
-            );
 
-            let cleanupMessage: string | null = null;
+            let cleanupErrMessage: string | null = null;
             let planFileRemoved = false;
             if (completedPlanPath) {
                 try {
                     const planFilePath = resolve(ctx.cwd, completedPlanPath);
                     if (!existsSync(planFilePath)) {
                         planFileRemoved = true;
-                        cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
                     } else {
                         try {
                             unlinkSync(planFilePath);
                             planFileRemoved = true;
-                            cleanupMessage = `Plan file removed: ${completedPlanPath}`;
                         } catch (err) {
                             if (!existsSync(planFilePath)) {
                                 planFileRemoved = true;
-                                cleanupMessage = `Plan file was already removed: ${completedPlanPath}`;
                             } else {
-                                cleanupMessage = `Plan file kept at ${completedPlanPath}; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
+                                cleanupErrMessage = `Plan file kept at ${completedPlanPath}; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
                             }
                         }
                     }
                 } catch (err) {
-                    cleanupMessage = `Plan file kept at ${completedPlanPath}; cleanup could not complete: ${err instanceof Error ? err.message : String(err)}`;
+                    cleanupErrMessage = `Plan file kept at ${completedPlanPath}; cleanup could not complete: ${err instanceof Error ? err.message : String(err)}`;
                 }
             }
 
@@ -2250,21 +2236,18 @@ When all checklist items are complete, /plan will automatically remove the plan 
                         approvedPlanHistory.project,
                         approvedPlanHistory.slug,
                     );
-                    cleanupMessage = cleanupMessage
-                        ? `${cleanupMessage}\nPlan history removed: ~/.plan/history/${approvedPlanHistory.project}/${approvedPlanHistory.slug}`
-                        : `Plan history removed: ~/.plan/history/${approvedPlanHistory.project}/${approvedPlanHistory.slug}`;
                 } catch (err) {
-                    cleanupMessage = cleanupMessage
-                        ? `${cleanupMessage}\nPlan history kept; failed to remove it: ${err instanceof Error ? err.message : String(err)}`
+                    cleanupErrMessage = cleanupErrMessage
+                        ? `${cleanupErrMessage}\nPlan history kept; failed to remove it: ${err instanceof Error ? err.message : String(err)}`
                         : `Plan history kept; failed to remove it: ${err instanceof Error ? err.message : String(err)}`;
                 }
             }
 
-            if (cleanupMessage) {
+            if (cleanupErrMessage) {
                 pi.sendMessage(
                     {
-                        customType: "plan-complete",
-                        content: cleanupMessage,
+                        customType: "plan-cleanup-error",
+                        content: `**Cleanup Error**\n\n${cleanupErrMessage}`,
                         display: true,
                     },
                     { triggerTurn: false },
