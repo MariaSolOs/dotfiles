@@ -8,6 +8,7 @@ import {
 import {
     Container,
     Text,
+    truncateToWidth,
     wrapTextWithAnsi,
     type Component,
 } from "@earendil-works/pi-tui";
@@ -171,34 +172,45 @@ function formatBashCall(args: any, theme: ThemeLike): string {
     return `${theme.fg("toolTitle", theme.bold(`$ ${commandDisplay}`))}${timeoutSuffix}`;
 }
 
-function previewLines(
+function previewLineArray(
     lines: string[],
     theme: ThemeLike,
     options: { lang?: string; colorPlain?: boolean } = {},
-): string {
+): string[] {
     const trimmed = trimTrailingEmptyLines(lines);
-    const displayLines = trimmed.slice(0, PREVIEW_LINES);
+    if (trimmed.length === 0) return [];
+
+    const hasMore = trimmed.length > PREVIEW_LINES;
+    const contentLineCount = hasMore
+        ? Math.max(0, PREVIEW_LINES - 1)
+        : PREVIEW_LINES;
+    const displayLines = trimmed.slice(0, contentLineCount);
     const remaining = trimmed.length - displayLines.length;
 
-    let output = displayLines
-        .map((line) => {
-            if (options.lang) return line;
-            return options.colorPlain === false
-                ? line
-                : theme.fg("toolOutput", replaceTabs(line));
-        })
-        .join("\n");
+    const output = displayLines.map((line) => {
+        if (options.lang) return line;
+        return options.colorPlain === false
+            ? line
+            : theme.fg("toolOutput", replaceTabs(line));
+    });
 
     if (remaining > 0) {
-        output += `${output ? "\n" : ""}${moreLinesMessage(remaining, theme)}`;
+        output.push(moreLinesMessage(remaining, theme));
     }
 
     return output;
 }
 
-function formatMinimalTextResult(result: any, theme: ThemeLike): string {
-    const output = previewLines(textOutput(result).trim().split("\n"), theme);
-    return output ? `\n${output}` : "";
+function previewLines(
+    lines: string[],
+    theme: ThemeLike,
+    options: { lang?: string; colorPlain?: boolean } = {},
+): string {
+    return previewLineArray(lines, theme, options).join("\n");
+}
+
+function minimalTextPreviewLines(result: any, theme: ThemeLike): string[] {
+    return previewLineArray(textOutput(result).trim().split("\n"), theme);
 }
 
 function highlightedContentLines(
@@ -243,6 +255,28 @@ function formatWriteCall(args: any, theme: ThemeLike): string {
         if (preview) output += `\n\n${preview}`;
     }
     return output;
+}
+
+class MinimalTextResultPreviewComponent implements Component {
+    constructor(
+        private result: any,
+        private theme: ThemeLike,
+    ) {}
+
+    set(result: any, theme: ThemeLike) {
+        this.result = result;
+        this.theme = theme;
+    }
+
+    invalidate() {}
+
+    render(width: number): string[] {
+        // The collapsed preview must stay within PREVIEW_LINES terminal rows.
+        // Text wraps long grep matches, so render directly and truncate instead.
+        return minimalTextPreviewLines(this.result, this.theme).map((line) =>
+            truncateToWidth(line, Math.max(1, width)),
+        );
+    }
 }
 
 class BashCallPreviewComponent implements Component {
@@ -333,12 +367,13 @@ function registerMinimalTextResultTool(
             );
             if (expanded) return expanded;
 
-            const text =
-                context.lastComponent instanceof Text
+            const component =
+                context.lastComponent instanceof
+                MinimalTextResultPreviewComponent
                     ? context.lastComponent
-                    : new Text("", 0, 0);
-            text.setText(formatMinimalTextResult(result, theme));
-            return text;
+                    : new MinimalTextResultPreviewComponent(result, theme);
+            component.set(result, theme);
+            return component;
         },
     });
 }
