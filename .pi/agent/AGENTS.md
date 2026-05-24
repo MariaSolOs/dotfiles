@@ -14,9 +14,9 @@ These guidelines define how you work. They should _always_ be followed.
 
 - Only use read-only `git` commands (such as `git status`, `git diff`, `git log`, `git branch`, `git ls-files`, etc) unless instructed otherwise.
 
-## Asking questions
+## Asking questions or listing options
 
-- Whenever you need to ask the user a question, use the `ask_question` tool when it is available instead of asking in plain chat.
+- Whenever you need to ask the user a question or provide a list of options, use the `ask_question` tool when it is available instead of asking in plain chat.
 - Provide finite answer choices, and include a `Custom answer` choice when the listed options may not fit.
 
 ## Follow project conventions

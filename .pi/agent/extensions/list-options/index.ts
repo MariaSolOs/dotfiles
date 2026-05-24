@@ -51,17 +51,18 @@ function details(
 export default function (pi: ExtensionAPI) {
     pi.registerTool({
         name: ASK_QUESTION_TOOL,
-        label: "Ask Question",
+        label: "List Options",
         description:
-            "Ask the user a question with a finite list of answer choices. " +
-            "Use this whenever user clarification is required. Include a 'Custom answer' choice when the proposed answers may not fit; the custom response is collected in the same UI.",
+            "Ask the user a question or present a finite list of options for the user to choose from. " +
+            "Use this whenever user clarification is required or whenever you would provide/propose a list of options. Include a 'Custom answer' choice when the proposed answers may not fit; the custom response is collected in the same UI.",
         parameters: Type.Object({
             question: Type.String({
-                description: "The question to ask the user.",
+                description:
+                    "The question, prompt, or option-list heading to show the user.",
             }),
             answers: Type.Array(Type.String(), {
                 description:
-                    "Finite answer choices to show in the interactive selection list. Include a 'Custom answer' choice when the proposed answers may not fit.",
+                    "Finite answer choices or proposed options to show in the interactive selection list. Include a 'Custom answer' choice when the proposed answers may not fit.",
             }),
         }) as any,
 
