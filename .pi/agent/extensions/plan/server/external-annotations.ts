@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * External Annotations — Pi (node:http) server handler.
  *

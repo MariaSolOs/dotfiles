@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Agent Jobs — Pi (node:http) server handler.
  *

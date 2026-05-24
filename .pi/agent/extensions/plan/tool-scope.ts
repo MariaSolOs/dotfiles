@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { extname, isAbsolute, relative, resolve } from "node:path";
 
 export type Phase = "idle" | "planning" | "executing";

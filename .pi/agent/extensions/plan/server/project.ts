@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Project detection — repo info, project name, remote URL parsing.
  * detectProjectName, getRepoInfo, parseRemoteUrl

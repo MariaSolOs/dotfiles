@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Core HTTP helpers for Pi extension servers.
  * parseBody, json, html, send, toWebRequest

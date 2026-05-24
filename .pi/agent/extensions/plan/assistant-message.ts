@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 
 type AssistantTextBlock = { type?: string; text?: string };

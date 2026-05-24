@@ -29,6 +29,7 @@ import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { Type } from "@earendil-works/pi-ai";
 import {
     DynamicBorder,
+    type AgentToolResult,
     type ExtensionAPI,
     type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
@@ -107,7 +108,7 @@ import {
     PLAN_SUBMIT_TOOL,
     type Phase,
     stripPlanningOnlyTools,
-} from "./tool-scope.ts";
+} from "./tool-scope.js";
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -476,14 +477,13 @@ export default function plan(pi: ExtensionAPI): void {
         objects: Set<unknown>;
         keys: Set<string>;
     } {
-        const messages =
-            activeContext?.sessionManager
-                .getBranch()
-                .filter(
-                    (entry: { type?: string; message?: unknown }) =>
-                        entry.type === "message" && entry.message,
-                )
-                .map((entry: { message?: unknown }) => entry.message) ?? [];
+        const branch = (activeContext?.sessionManager.getBranch() ?? []) as {
+            type?: string;
+            message?: unknown;
+        }[];
+        const messages = branch
+            .filter((entry) => entry.type === "message" && entry.message)
+            .map((entry) => entry.message);
 
         return {
             objects: new Set(messages),
@@ -991,7 +991,7 @@ export default function plan(pi: ExtensionAPI): void {
         inputPath: string | undefined,
         ctx: ExtensionContext,
         options: PlanSubmitHelperOptions = {},
-    ) {
+    ): Promise<AgentToolResult<Record<string, unknown>>> {
         if (phase !== "planning") {
             if (phase === "idle" && options.allowIdleAutoPlanning) {
                 await enterPlanning(ctx, {

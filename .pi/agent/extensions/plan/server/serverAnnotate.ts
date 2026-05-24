@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createServer } from "node:http";
 import { dirname, resolve as resolvePath } from "node:path";
 

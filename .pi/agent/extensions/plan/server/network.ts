@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Network utilities — remote detection, port binding, browser opening.
  * isRemoteSession, getServerPort, listenOnPort, openBrowser

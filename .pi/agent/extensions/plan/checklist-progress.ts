@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Markdown checklist progress helpers for /plan execution.
  *
@@ -39,8 +38,11 @@ const TASK_ITEM_PATTERN = /^(\s*)(?:[-*+]|\d+[.)])(\s+)\[([ xX])\](\s*)(.*)$/;
 
 function splitLinesPreservingEndings(content: string): ParsedLine[] {
     if (content.length === 0) return [];
-    return content.match(/.*(?:\r\n|\n|\r|$)/g)!
-        .filter((part, index, parts) => part.length > 0 || index < parts.length - 1)
+    return content
+        .match(/.*(?:\r\n|\n|\r|$)/g)!
+        .filter(
+            (part, index, parts) => part.length > 0 || index < parts.length - 1,
+        )
         .map((part) => {
             const endingMatch = part.match(/(\r\n|\n|\r)$/);
             const ending = endingMatch?.[0] ?? "";
