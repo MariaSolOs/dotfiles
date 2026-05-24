@@ -14,7 +14,7 @@
  * - plan_submit_plan tool with browser-based visual approval
  * - plan_complete_step tool for live execution progress tracking
  * - /plan-review command for code review
- * - /plan-annotate command for markdown annotation
+ * - /plan-file command for markdown/plan file review
  */
 
 import {
@@ -24,7 +24,7 @@ import {
     unlinkSync,
     writeFileSync,
 } from "node:fs";
-import { basename, resolve } from "node:path";
+import { basename, relative, resolve } from "node:path";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { Type } from "@earendil-works/pi-ai";
 import {
@@ -744,6 +744,255 @@ export default function plan(pi: ExtensionAPI): void {
         }
     }
 
+    function normalizePlanHeading(text: string): string {
+        return text
+            .trim()
+            .toLowerCase()
+            .replace(/[`*_~]/g, "")
+            .replace(/\s+/g, " ")
+            .replace(/[:#]+$/g, "")
+            .trim();
+    }
+
+    function looksLikeGeneratedPlanMarkdown(markdown: string): boolean {
+        const requiredHeadings = new Set([
+            "context",
+            "approach",
+            "files to modify",
+            "reuse",
+            "steps",
+            "verification",
+        ]);
+        const lines = markdown.split(/\r?\n/);
+        const headings: { name: string; line: number }[] = [];
+
+        for (let i = 0; i < lines.length; i += 1) {
+            const match = /^#{1,6}\s+(.+?)\s*$/.exec(lines[i]);
+            if (!match) continue;
+            headings.push({ name: normalizePlanHeading(match[1]), line: i });
+        }
+
+        for (const heading of requiredHeadings) {
+            if (!headings.some((h) => h.name === heading)) return false;
+        }
+
+        const stepsIndex = headings.findIndex((h) => h.name === "steps");
+        if (stepsIndex === -1) return false;
+        const stepsStart = headings[stepsIndex].line + 1;
+        const stepsEnd = headings[stepsIndex + 1]?.line ?? lines.length;
+        return lines
+            .slice(stepsStart, stepsEnd)
+            .some((line) => /^\s*-\s+\[[ xX]\]\s+\S/.test(line));
+    }
+
+    type PlanSubmitHelperOptions = {
+        allowIdleAutoPlanning?: boolean;
+    };
+
+    async function submitPlanForReview(
+        inputPath: string | undefined,
+        ctx: ExtensionContext,
+        options: PlanSubmitHelperOptions = {},
+    ) {
+        if (phase !== "planning") {
+            if (phase === "idle" && options.allowIdleAutoPlanning) {
+                await enterPlanning(ctx);
+            } else {
+                const text =
+                    phase === "executing"
+                        ? "Error: a plan is already being executed. Finish or disable the current plan before reviewing another plan file."
+                        : "Error: Not in plan mode. Use /plan to enter planning mode first.";
+                return {
+                    content: [{ type: "text", text }],
+                    details: { approved: false },
+                };
+            }
+        }
+
+        inputPath = inputPath?.trim();
+        if (!inputPath) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Error: ${PLAN_SUBMIT_TOOL} requires a filePath argument pointing to your markdown plan file (e.g. "remove-vscode-integration.md" or "plans/auth-flow.md").`,
+                    },
+                ],
+                details: { approved: false },
+            };
+        }
+
+        if (!isPlanWritePathAllowed(inputPath, ctx.cwd)) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Error: plan file must be a markdown file (.md or .mdx) inside the working directory. Rejected: ${inputPath}`,
+                    },
+                ],
+                details: { approved: false },
+            };
+        }
+
+        const fullPath = resolve(ctx.cwd, inputPath);
+
+        try {
+            if (!statSync(fullPath).isFile()) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Error: ${inputPath} is not a regular file. Write your plan to a markdown file first, then call ${PLAN_SUBMIT_TOOL} with its path.`,
+                        },
+                    ],
+                    details: { approved: false },
+                };
+            }
+        } catch {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Error: ${inputPath} does not exist. Write your plan using the write tool first, then call ${PLAN_SUBMIT_TOOL} again.`,
+                    },
+                ],
+                details: { approved: false },
+            };
+        }
+
+        let planContent: string;
+        try {
+            planContent = readFileSync(fullPath, "utf-8");
+        } catch (err) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Error: failed to read ${inputPath}: ${err instanceof Error ? err.message : String(err)}`,
+                    },
+                ],
+                details: { approved: false },
+            };
+        }
+
+        if (planContent.trim().length === 0) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Error: ${inputPath} is empty. Write your plan first, then call ${PLAN_SUBMIT_TOOL} again.`,
+                    },
+                ],
+                details: { approved: false },
+            };
+        }
+
+        lastSubmittedPath = inputPath;
+        checklistItems = parseChecklist(planContent);
+
+        // Non-interactive or no HTML: auto-approve
+        if (!ctx.hasUI || !hasPlanBrowserHtml()) {
+            phase = "executing";
+            await applyPhaseConfig(ctx, { restoreSavedState: true });
+            pi.appendEntry("plan-execute", { lastSubmittedPath });
+            persistState();
+            justApprovedPlan = true;
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: getPlanAutoApprovedPrompt("pi", loadConfig()),
+                    },
+                ],
+                details: { approved: true },
+                terminate: true,
+            };
+        }
+
+        let result: Awaited<ReturnType<typeof openPlanReviewBrowser>>;
+        try {
+            result = await openPlanReviewBrowser(ctx, planContent);
+        } catch (err) {
+            const message = `Failed to start plan review UI: ${getStartupErrorMessage(err)}`;
+            ctx.ui.notify(message, "error");
+            return {
+                content: [{ type: "text", text: message }],
+                details: { approved: false },
+            };
+        }
+
+        if (result.approved) {
+            phase = "executing";
+            await applyPhaseConfig(ctx, { restoreSavedState: true });
+            pi.appendEntry("plan-execute", { lastSubmittedPath });
+            if (result.compactContext) {
+                enableCompactApprovedPlanContext(ctx, planContent, inputPath);
+            }
+            persistState();
+            justApprovedPlan = true;
+
+            const completionMsg =
+                checklistItems.length > 0
+                    ? `After completing each step, call ${PLAN_COMPLETE_STEP_TOOL} with the completed step number so the plan file and progress UI update immediately.`
+                    : "";
+
+            if (result.feedback) {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: getPlanApprovedWithNotesPrompt(
+                                "pi",
+                                loadConfig(),
+                                {
+                                    planFilePath: inputPath,
+                                    doneMsg: completionMsg,
+                                    feedback: result.feedback,
+                                },
+                            ),
+                        },
+                    ],
+                    details: { approved: true, feedback: result.feedback },
+                    terminate: true,
+                };
+            }
+
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: getPlanApprovedPrompt("pi", loadConfig(), {
+                            planFilePath: inputPath,
+                            doneMsg: completionMsg,
+                        }),
+                    },
+                ],
+                details: { approved: true },
+                terminate: true,
+            };
+        }
+
+        // Denied
+        persistState();
+        const feedbackText = result.feedback || "Plan rejected. Please revise.";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: getPlanDeniedPrompt("pi", loadConfig(), {
+                        toolName: getPlanToolName("pi"),
+                        planFileRule: buildPlanFileRule(
+                            getPlanToolName("pi"),
+                            inputPath,
+                        ),
+                        feedback: feedbackText,
+                    }),
+                },
+            ],
+            details: { approved: false, feedback: feedbackText },
+        };
+    }
+
     // ── Commands & Shortcuts ─────────────────────────────────────────────
 
     pi.registerCommand("plan", {
@@ -872,8 +1121,9 @@ export default function plan(pi: ExtensionAPI): void {
         },
     });
 
-    pi.registerCommand("plan-annotate", {
-        description: "Open markdown file or folder in annotation UI",
+    pi.registerCommand("plan-file", {
+        description:
+            "Open a plan markdown file for review or annotate a file/folder/URL",
         handler: async (args, ctx) => {
             // #570: split --gate / --json from the path. --json is silently
             // accepted (Pi writes back via sendUserMessage, not stdout).
@@ -887,19 +1137,11 @@ export default function plan(pi: ExtensionAPI): void {
             } = parseAnnotateArgs(args ?? "");
             if (!filePath) {
                 ctx.ui.notify(
-                    "Usage: /plan-annotate <file.md | file.html | https://... | folder/> [--gate] [--json]",
+                    "Usage: /plan-file <file.md | file.mdx | file.html | https://... | folder/> [--gate] [--json]",
                     "error",
                 );
                 return;
             }
-            if (!hasPlanBrowserHtml()) {
-                ctx.ui.notify(
-                    "Annotation UI not available. Run 'bun run build' in the pi-extension directory.",
-                    "error",
-                );
-                return;
-            }
-
             let markdown: string;
             let rawHtml: string | undefined;
             let absolutePath: string;
@@ -1003,11 +1245,66 @@ export default function plan(pi: ExtensionAPI): void {
                     );
                 } else {
                     markdown = readFileSync(absolutePath, "utf-8");
+                    const planInputPath = relative(ctx.cwd, absolutePath);
+                    if (
+                        isPlanWritePathAllowed(planInputPath, ctx.cwd) &&
+                        looksLikeGeneratedPlanMarkdown(markdown)
+                    ) {
+                        currentPiSession.update(ctx);
+                        const origin = getPiSessionIdentity(ctx);
+                        if (phase === "executing") {
+                            ctx.ui.notify(
+                                "A plan is already being executed. Finish or disable the current plan before reviewing another plan file.",
+                                "error",
+                            );
+                            return;
+                        }
+                        ctx.ui.notify(
+                            `Opening plan review for ${filePath}...`,
+                            "info",
+                        );
+                        const result = await submitPlanForReview(
+                            planInputPath,
+                            ctx,
+                            { allowIdleAutoPlanning: true },
+                        );
+                        const text = result.content?.find(
+                            (part: { type?: string; text?: string }) =>
+                                part?.type === "text" &&
+                                typeof part.text === "string",
+                        )?.text;
+                        if (text) {
+                            if (
+                                /^(Error:|Failed to start plan review UI:)/i.test(
+                                    text,
+                                )
+                            ) {
+                                ctx.ui.notify(text, "error");
+                            } else {
+                                sendUserMessageWithCurrentSessionFallback(
+                                    pi,
+                                    text,
+                                    { deliverAs: "followUp" },
+                                    "Plan file review result could not be sent",
+                                    origin,
+                                );
+                            }
+                        }
+                        return;
+                    }
                     ctx.ui.notify(
                         `Opening annotation UI for ${filePath}...`,
                         "info",
                     );
                 }
+            }
+
+            if (!hasPlanBrowserHtml()) {
+                ctx.ui.notify(
+                    "Annotation UI not available. Run 'bun run build' in the pi-extension directory.",
+                    "error",
+                );
+                return;
             }
 
             currentPiSession.update(ctx);
@@ -1266,208 +1563,12 @@ export default function plan(pi: ExtensionAPI): void {
         }) as any,
 
         async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-            // Guard: must be in planning phase
-            if (phase !== "planning") {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: "Error: Not in plan mode. Use /plan to enter planning mode first.",
-                        },
-                    ],
-                    details: { approved: false },
-                };
-            }
-
             const inputPath = (
                 params as { filePath?: string }
             )?.filePath?.trim();
-            if (!inputPath) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Error: ${PLAN_SUBMIT_TOOL} requires a filePath argument pointing to your markdown plan file (e.g. "remove-vscode-integration.md" or "plans/auth-flow.md").`,
-                        },
-                    ],
-                    details: { approved: false },
-                };
-            }
-
-            if (!isPlanWritePathAllowed(inputPath, ctx.cwd)) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Error: plan file must be a markdown file (.md or .mdx) inside the working directory. Rejected: ${inputPath}`,
-                        },
-                    ],
-                    details: { approved: false },
-                };
-            }
-
-            const fullPath = resolve(ctx.cwd, inputPath);
-
-            try {
-                if (!statSync(fullPath).isFile()) {
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: `Error: ${inputPath} is not a regular file. Write your plan to a markdown file first, then call ${PLAN_SUBMIT_TOOL} with its path.`,
-                            },
-                        ],
-                        details: { approved: false },
-                    };
-                }
-            } catch {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Error: ${inputPath} does not exist. Write your plan using the write tool first, then call ${PLAN_SUBMIT_TOOL} again.`,
-                        },
-                    ],
-                    details: { approved: false },
-                };
-            }
-
-            let planContent: string;
-            try {
-                planContent = readFileSync(fullPath, "utf-8");
-            } catch (err) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Error: failed to read ${inputPath}: ${err instanceof Error ? err.message : String(err)}`,
-                        },
-                    ],
-                    details: { approved: false },
-                };
-            }
-
-            if (planContent.trim().length === 0) {
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: `Error: ${inputPath} is empty. Write your plan first, then call ${PLAN_SUBMIT_TOOL} again.`,
-                        },
-                    ],
-                    details: { approved: false },
-                };
-            }
-
-            lastSubmittedPath = inputPath;
-            checklistItems = parseChecklist(planContent);
-
-            // Non-interactive or no HTML: auto-approve
-            if (!ctx.hasUI || !hasPlanBrowserHtml()) {
-                phase = "executing";
-                await applyPhaseConfig(ctx, { restoreSavedState: true });
-                pi.appendEntry("plan-execute", { lastSubmittedPath });
-                persistState();
-                justApprovedPlan = true;
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: getPlanAutoApprovedPrompt("pi", loadConfig()),
-                        },
-                    ],
-                    details: { approved: true },
-                    terminate: true,
-                };
-            }
-
-            let result: Awaited<ReturnType<typeof openPlanReviewBrowser>>;
-            try {
-                result = await openPlanReviewBrowser(ctx, planContent);
-            } catch (err) {
-                const message = `Failed to start plan review UI: ${getStartupErrorMessage(err)}`;
-                ctx.ui.notify(message, "error");
-                return {
-                    content: [{ type: "text", text: message }],
-                    details: { approved: false },
-                };
-            }
-
-            if (result.approved) {
-                phase = "executing";
-                await applyPhaseConfig(ctx, { restoreSavedState: true });
-                pi.appendEntry("plan-execute", { lastSubmittedPath });
-                if (result.compactContext) {
-                    enableCompactApprovedPlanContext(
-                        ctx,
-                        planContent,
-                        inputPath,
-                    );
-                }
-                persistState();
-                justApprovedPlan = true;
-
-                const completionMsg =
-                    checklistItems.length > 0
-                        ? `After completing each step, call ${PLAN_COMPLETE_STEP_TOOL} with the completed step number so the plan file and progress UI update immediately.`
-                        : "";
-
-                if (result.feedback) {
-                    return {
-                        content: [
-                            {
-                                type: "text",
-                                text: getPlanApprovedWithNotesPrompt(
-                                    "pi",
-                                    loadConfig(),
-                                    {
-                                        planFilePath: inputPath,
-                                        doneMsg: completionMsg,
-                                        feedback: result.feedback,
-                                    },
-                                ),
-                            },
-                        ],
-                        details: { approved: true, feedback: result.feedback },
-                        terminate: true,
-                    };
-                }
-
-                return {
-                    content: [
-                        {
-                            type: "text",
-                            text: getPlanApprovedPrompt("pi", loadConfig(), {
-                                planFilePath: inputPath,
-                                doneMsg: completionMsg,
-                            }),
-                        },
-                    ],
-                    details: { approved: true },
-                    terminate: true,
-                };
-            }
-
-            // Denied
-            persistState();
-            const feedbackText =
-                result.feedback || "Plan rejected. Please revise.";
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: getPlanDeniedPrompt("pi", loadConfig(), {
-                            toolName: getPlanToolName("pi"),
-                            planFileRule: buildPlanFileRule(
-                                getPlanToolName("pi"),
-                                inputPath,
-                            ),
-                            feedback: feedbackText,
-                        }),
-                    },
-                ],
-                details: { approved: false, feedback: feedbackText },
-            };
+            return submitPlanForReview(inputPath, ctx, {
+                allowIdleAutoPlanning: false,
+            });
         },
     });
 
