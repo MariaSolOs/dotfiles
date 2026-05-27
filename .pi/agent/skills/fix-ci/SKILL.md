@@ -15,19 +15,12 @@ into API calls to CircleCI v2 and summarize failing/erroring tests.
 
 ## Requirements
 
-Set a CircleCI API token in one of these environment variables:
+Make sure that the following environment variables are set in your environment. If not, raise an error.
 
-```bash
-export CIRCLE_TOKEN=...
-# or
-export CIRCLECI_TOKEN=...
-```
+- `CIRCLECI_TOKEN`
+- `CIRCLECI_API_BASE`
 
-For CircleCI Enterprise/Server instances, the helper infers the API base from the URL host. Override if needed:
-
-```bash
-export CIRCLECI_API_BASE=https://circle.example.com/api/v2
-```
+For such test run `[ -n "${CIRCLECI_TOKEN}" ]  && echo "ENV OK" || echo "ERROR: MISSING ENV VAR"`
 
 ## Usage
 
