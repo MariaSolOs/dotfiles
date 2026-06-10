@@ -4,6 +4,7 @@ git:
   overrideGpg: true
   pagers:
     - pager: delta --paging=never -n --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --file-style="omit"
+    - pager: delta --paging=never -n -s --file-style="omit"
 os:
   editPreset: nvim
 gui:
