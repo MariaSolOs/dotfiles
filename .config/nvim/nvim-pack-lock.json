@@ -5,15 +5,15 @@
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "SchemaStore.nvim": {
-      "rev": "30d47907079474907f24d4a546932119a8b9f641",
+      "rev": "304d2286752923e3b0eb1ddcb3d4002a69b855ad",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink.cmp": {
-      "rev": "3db7326f54b73df4789e0fd6274bedda33975fea",
+      "rev": "39682a9c737920578cf68887c21eaa4ce3845c67",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
-      "rev": "b127d48bf8e9ac9cf41f6e0fbead317503f76558",
+      "rev": "08ac9a9b873d3c7376e408a36c40c4131e2809ce",
       "src": "https://github.com/saghen/blink.lib"
     },
     "bufferline.nvim": {
@@ -81,7 +81,7 @@
       "src": "https://github.com/nvim-mini/mini.splitjoin"
     },
     "neocodeium": {
-      "rev": "b2fd9f02bf292b1ecc3a29406417601b0e46ad7d",
+      "rev": "d6dd1fe6938e89460e27f5215516f5e9468d8a10",
       "src": "https://github.com/monkoose/neocodeium"
     },
     "nvim-autopairs": {
@@ -105,7 +105,7 @@
       "src": "https://github.com/mfussenegger/nvim-jdtls"
     },
     "nvim-surround": {
-      "rev": "2e93e154de9ff326def6480a4358bfc149d5da2c",
+      "rev": "8b47db616ef658b8fc27e61db2896aa2f40134de",
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
