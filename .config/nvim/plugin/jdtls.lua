@@ -38,7 +38,7 @@ add_on_file_type('java', {
                 }
 
                 -- Configure the data directory for the project.
-                local root_dir = vim.fs.root(0, { '.git', 'gradlew' })
+                local root_dir = vim.fs.root(0, { 'settings.gradle', 'build.gradle', 'gradlew', '.git' })
                 local project_name = root_dir and vim.fs.basename(root_dir)
                 if project_name then
                     vim.list_extend(cmd, {
