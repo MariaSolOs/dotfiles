@@ -1,11 +1,4 @@
 local add = require('vim-pack').add
-local on_plugin_update = require('vim-pack').on_plugin_update
-
-on_plugin_update('blink.cmp', function()
-    -- TODO: Fix the Task type below.
-    ---@diagnostic disable-next-line: undefined-field
-    require('blink.cmp').build():pwait()
-end)
 
 -- Auto-completion and snippets.
 add {
@@ -115,5 +108,10 @@ add {
                 kind_icons = require('icons').symbol_kinds,
             },
         },
+        on_setup = function()
+            -- TODO: Fix the Task type below.
+            ---@diagnostic disable-next-line: undefined-field
+            require('blink.cmp').build():pwait()
+        end,
     },
 }
