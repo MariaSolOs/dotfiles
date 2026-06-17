@@ -181,7 +181,7 @@ end
 --- The buffer's filetype.
 ---@return string
 function M.filetype_component()
-    local devicons = require 'nvim-web-devicons'
+    local has_devicons, devicons = pcall(require, 'nvim-web-devicons')
 
     -- Special icons for some filetypes.
     local special_icons = {
@@ -203,10 +203,10 @@ function M.filetype_component()
         filetype = '[No Name]'
     end
 
-    local icon, icon_hl
+    local icon, icon_hl = '', 'Normal'
     if special_icons[filetype] then
         icon, icon_hl = unpack(special_icons[filetype])
-    else
+    elseif has_devicons then
         local buf_name = vim.api.nvim_buf_get_name(0)
         local name, ext = vim.fn.fnamemodify(buf_name, ':t'), vim.fn.fnamemodify(buf_name, ':e')
 
