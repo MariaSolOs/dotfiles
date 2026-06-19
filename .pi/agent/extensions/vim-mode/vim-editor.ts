@@ -18,11 +18,7 @@ import type {
 import { createInitialState, modeDisplayName, type VimState } from "./state.js";
 import { handleNormalMode, type NormalModeContext } from "./modes/normal.js";
 import { handleInsertMode, type InsertModeContext } from "./modes/insert.js";
-import {
-    handleReplaceMode,
-    resetReplaceState,
-    type ReplaceModeContext,
-} from "./modes/replace.js";
+import { handleReplaceMode, type ReplaceModeContext } from "./modes/replace.js";
 import {
     handleVisualMode,
     getVisualRange,
@@ -276,9 +272,12 @@ export class VimEditor extends CustomEditor {
             const modeName = modeDisplayName(this.vimState.mode);
             const label = ` ${modeName} `;
             if (visibleWidth(lines[last]!) >= label.length) {
+                // Color the mode indicator orange (#FFBFA9 from the miss-dracula
+                // theme) via 24-bit ANSI, resetting the foreground after.
+                const orangeLabel = `\x1b[38;2;255;191;169m${label}\x1b[39m`;
                 lines[last] =
                     truncateToWidth(lines[last]!, width - label.length, "") +
-                    label;
+                    orangeLabel;
             }
         }
 
