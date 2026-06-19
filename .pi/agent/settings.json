@@ -1,8 +1,11 @@
 {
-  "lastChangelogVersion": "0.75.3",
+  "lastChangelogVersion": "0.79.8",
   "theme": "miss-dracula",
   "editorPaddingX": 1,
-  "defaultModel": "gpt-5.5",
+  "defaultModel": "claude-opus-4-8",
   "collapseChangelog": true,
-  "defaultProvider": "openai-codex"
+  "defaultProvider": "anthropic",
+  "warnings": {
+    "anthropicExtraUsage": false
+  }
 }
