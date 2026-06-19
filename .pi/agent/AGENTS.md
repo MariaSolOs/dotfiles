@@ -10,9 +10,10 @@ These guidelines define how you work. They should _always_ be followed.
 
 - Limit your exploration and modifications to the current working directory unless instructed otherwise.
 
-## `git` usage
+## Command execution
 
 - Only use read-only `git` commands (such as `git status`, `git diff`, `git log`, `git branch`, `git ls-files`, etc) unless instructed otherwise.
+- Use `fd` instead of `find` and `rg` instead of `grep`. These are faster Rust tools.
 
 ## Asking questions or listing options
 
