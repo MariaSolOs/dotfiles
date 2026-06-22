@@ -111,13 +111,6 @@ export interface PlanConfig {
      */
     verifyAttestation?: boolean;
     /**
-     * Enable Jina Reader for URL-to-markdown conversion during annotation.
-     * When true (default), `plan annotate <url>` routes through
-     * r.jina.ai for better JS-rendered page support and reader-mode extraction.
-     * Set to false to always use plain fetch + Turndown.
-     */
-    jina?: boolean;
-    /**
      * Inject a Plan Flavored Markdown reminder into every EnterPlanMode
      * call so the agent is aware it can enrich plans with code-file links,
      * callouts, tables, diagrams, task lists, and the other PFM extensions.
@@ -227,30 +220,4 @@ export function resolveDefaultDiffType(cfg?: PlanConfig): DefaultDiffType {
         v === "all"
         ? v
         : "unstaged";
-}
-
-/**
- * Resolve whether to use Jina Reader for URL annotation.
- *
- * Priority (highest wins):
- *  --no-jina CLI flag → PLAN_JINA env var → config.jina → default true
- */
-export function resolveUseJina(
-    cliNoJina: boolean,
-    config: PlanConfig,
-): boolean {
-    // CLI flag has highest priority
-    if (cliNoJina) return false;
-
-    // Environment variable
-    const envVal = process.env.PLAN_JINA;
-    if (envVal !== undefined) {
-        return envVal === "1" || envVal.toLowerCase() === "true";
-    }
-
-    // Config file
-    if (config.jina !== undefined) return config.jina;
-
-    // Default: enabled
-    return true;
 }

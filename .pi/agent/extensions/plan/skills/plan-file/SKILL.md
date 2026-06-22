@@ -1,6 +1,6 @@
 ---
 name: plan-file
-description: Open Plan's file UI for a Plan-generated plan markdown file, ordinary markdown/HTML file, URL, or folder.
+description: Open Plan's file UI for a Plan-generated plan markdown file, ordinary markdown/HTML file, or folder.
 ---
 
 # Plan File
@@ -16,7 +16,7 @@ plan file <path-or-url>
 Behavior:
 
 1. If the target is a Plan-generated plan markdown file, it opens the plan review flow so the user can approve or request revisions.
-2. Otherwise, it opens the annotation UI for markdown, converted HTML, URLs, or folders.
+2. Otherwise, it opens the annotation UI for markdown, converted HTML, or folders.
 3. Wait for the browser review to finish.
 4. If feedback is returned, address it directly.
 5. If the session closes without feedback, say so briefly and continue.

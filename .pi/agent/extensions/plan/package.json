@@ -2,7 +2,7 @@
   "name": "plan",
   "private": true,
   "type": "module",
-  "description": "Plan Pi extension - interactive plan review with annotations, annotate agent messages, and review code/PRs",
+  "description": "Plan Pi extension - interactive plan review with local file annotations, annotate agent messages, and review code/PRs",
   "pi": {
     "extensions": [
       "./index.ts"

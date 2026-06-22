@@ -54,11 +54,7 @@ import {
 import { hasMarkdownFiles, resolveUserPath } from "./generated/resolve-file.js";
 import { FILE_BROWSER_EXCLUDED } from "./generated/reference-common.js";
 import { htmlToMarkdown } from "./generated/html-to-markdown.js";
-import {
-    urlToMarkdown,
-    isConvertedSource,
-} from "./generated/url-to-markdown.js";
-import { loadConfig, resolveUseJina } from "./generated/config.js";
+import { loadConfig } from "./generated/config.js";
 import { composeImproveContext } from "./generated/pfm-reminder.js";
 import { deletePlanHistory } from "./generated/storage.js";
 import {
@@ -1385,7 +1381,7 @@ export default function plan(pi: ExtensionAPI): void {
 
     pi.registerCommand("plan-file", {
         description:
-            "Open a plan markdown file for review or annotate a file/folder/URL",
+            "Open a plan markdown file for review or annotate a file/folder",
         handler: async (args, ctx) => {
             // #570: split --gate / --json from the path. --json is silently
             // accepted (Pi writes back via sendUserMessage, not stdout).
@@ -1399,7 +1395,7 @@ export default function plan(pi: ExtensionAPI): void {
             } = parseAnnotateArgs(args ?? "");
             if (!filePath) {
                 ctx.ui.notify(
-                    "Usage: /plan-file <file.md | file.mdx | file.html | https://... | folder/> [--gate] [--json]",
+                    "Usage: /plan-file <file.md | file.mdx | file.html | folder/> [--gate] [--json]",
                     "error",
                 );
                 return;
@@ -1413,161 +1409,142 @@ export default function plan(pi: ExtensionAPI): void {
             let sourceConverted = false;
             let isFolder = false;
 
-            // --- URL annotation ---
-            const isUrl = /^https?:\/\//i.test(filePath);
-
-            if (isUrl) {
-                const useJina = resolveUseJina(false, loadConfig());
+            if (/^https?:\/\//i.test(filePath)) {
                 ctx.ui.notify(
-                    `Fetching: ${filePath}${useJina ? " (via Jina Reader)" : " (via fetch+Turndown)"}...`,
-                    "info",
+                    "URL annotation is no longer supported. Download the page or save it as markdown/HTML, then run /plan-file on the local file.",
+                    "error",
                 );
-                try {
-                    const result = await urlToMarkdown(filePath, { useJina });
-                    markdown = result.markdown;
-                    sourceConverted = isConvertedSource(result.source);
-                } catch (err) {
+                return;
+            }
+
+            // Pick the interpretation of the user input that actually exists:
+            // stripped form first (reference-mode primary), literal as fallback
+            // for scoped-package-style names. Falls back to the stripped form
+            // for the error message if neither exists.
+            const resolvedCandidate = resolveAtReference(rawFilePath, (c) => {
+                const abs = resolveUserPath(c, ctx.cwd);
+                return existsSync(abs);
+            });
+            if (resolvedCandidate === null) {
+                absolutePath = resolveUserPath(filePath, ctx.cwd);
+                ctx.ui.notify(`File not found: ${absolutePath}`, "error");
+                return;
+            }
+            absolutePath = resolveUserPath(resolvedCandidate, ctx.cwd);
+
+            try {
+                isFolder = statSync(absolutePath).isDirectory();
+            } catch {
+                ctx.ui.notify(`Cannot access: ${absolutePath}`, "error");
+                return;
+            }
+
+            if (isFolder) {
+                if (
+                    !hasMarkdownFiles(
+                        absolutePath,
+                        FILE_BROWSER_EXCLUDED,
+                        /\.(mdx?|html?)$/i,
+                    )
+                ) {
                     ctx.ui.notify(
-                        `Failed to fetch URL: ${err instanceof Error ? err.message : String(err)}`,
+                        `No markdown or HTML files found in ${absolutePath}`,
                         "error",
                     );
                     return;
                 }
-                absolutePath = filePath;
-                sourceInfo = filePath;
-            } else {
-                // Pick the interpretation of the user input that actually exists:
-                // stripped form first (reference-mode primary), literal as fallback
-                // for scoped-package-style names. Falls back to the stripped form
-                // for the error message if neither exists.
-                const resolvedCandidate = resolveAtReference(
-                    rawFilePath,
-                    (c) => {
-                        const abs = resolveUserPath(c, ctx.cwd);
-                        return existsSync(abs);
-                    },
+                markdown = "";
+                folderPath = absolutePath;
+                mode = "annotate-folder";
+                ctx.ui.notify(
+                    `Opening annotation UI for folder ${filePath}...`,
+                    "info",
                 );
-                if (resolvedCandidate === null) {
-                    absolutePath = resolveUserPath(filePath, ctx.cwd);
-                    ctx.ui.notify(`File not found: ${absolutePath}`, "error");
+            } else if (/\.html?$/i.test(absolutePath)) {
+                // HTML file annotation — convert to markdown via Turndown
+                const fileSize = statSync(absolutePath).size;
+                if (fileSize > 10 * 1024 * 1024) {
+                    ctx.ui.notify(
+                        `File too large (${Math.round(fileSize / 1024 / 1024)}MB, max 10MB)`,
+                        "error",
+                    );
                     return;
                 }
-                absolutePath = resolveUserPath(resolvedCandidate, ctx.cwd);
-
-                try {
-                    isFolder = statSync(absolutePath).isDirectory();
-                } catch {
-                    ctx.ui.notify(`Cannot access: ${absolutePath}`, "error");
-                    return;
-                }
-
-                if (isFolder) {
-                    if (
-                        !hasMarkdownFiles(
-                            absolutePath,
-                            FILE_BROWSER_EXCLUDED,
-                            /\.(mdx?|html?)$/i,
-                        )
-                    ) {
-                        ctx.ui.notify(
-                            `No markdown or HTML files found in ${absolutePath}`,
-                            "error",
-                        );
-                        return;
-                    }
+                const html = readFileSync(absolutePath, "utf-8");
+                if (renderHtmlFlag) {
+                    rawHtml = html;
                     markdown = "";
-                    folderPath = absolutePath;
-                    mode = "annotate-folder";
-                    ctx.ui.notify(
-                        `Opening annotation UI for folder ${filePath}...`,
-                        "info",
-                    );
-                } else if (/\.html?$/i.test(absolutePath)) {
-                    // HTML file annotation — convert to markdown via Turndown
-                    const fileSize = statSync(absolutePath).size;
-                    if (fileSize > 10 * 1024 * 1024) {
+                } else {
+                    markdown = htmlToMarkdown(html);
+                    sourceConverted = true;
+                }
+                sourceInfo = basename(absolutePath);
+                ctx.ui.notify(
+                    `Opening annotation UI for ${filePath}...`,
+                    "info",
+                );
+            } else {
+                markdown = readFileSync(absolutePath, "utf-8");
+                const planInputPath = relative(ctx.cwd, absolutePath);
+                if (
+                    isPlanWritePathAllowed(planInputPath, ctx.cwd) &&
+                    looksLikeGeneratedPlanMarkdown(markdown)
+                ) {
+                    currentPiSession.update(ctx);
+                    const origin = getPiSessionIdentity(ctx);
+                    if (phase === "executing") {
                         ctx.ui.notify(
-                            `File too large (${Math.round(fileSize / 1024 / 1024)}MB, max 10MB)`,
+                            "A plan is already being executed. Finish or disable the current plan before reviewing another plan file.",
                             "error",
                         );
                         return;
                     }
-                    const html = readFileSync(absolutePath, "utf-8");
-                    if (renderHtmlFlag) {
-                        rawHtml = html;
-                        markdown = "";
-                    } else {
-                        markdown = htmlToMarkdown(html);
-                        sourceConverted = true;
-                    }
-                    sourceInfo = basename(absolutePath);
                     ctx.ui.notify(
-                        `Opening annotation UI for ${filePath}...`,
+                        `Opening plan review for ${filePath}...`,
                         "info",
                     );
-                } else {
-                    markdown = readFileSync(absolutePath, "utf-8");
-                    const planInputPath = relative(ctx.cwd, absolutePath);
-                    if (
-                        isPlanWritePathAllowed(planInputPath, ctx.cwd) &&
-                        looksLikeGeneratedPlanMarkdown(markdown)
-                    ) {
-                        currentPiSession.update(ctx);
-                        const origin = getPiSessionIdentity(ctx);
-                        if (phase === "executing") {
-                            ctx.ui.notify(
-                                "A plan is already being executed. Finish or disable the current plan before reviewing another plan file.",
-                                "error",
-                            );
-                            return;
-                        }
-                        ctx.ui.notify(
-                            `Opening plan review for ${filePath}...`,
-                            "info",
-                        );
-                        void submitPlanForReview(planInputPath, ctx, {
-                            allowIdleAutoPlanning: true,
-                            cancelWithoutCleanupPrompt: true,
-                        })
-                            .then((result) => {
-                                if (result.details?.cancelled) return;
-                                const text = result.content?.find(
-                                    (part: { type?: string; text?: string }) =>
-                                        part?.type === "text" &&
-                                        typeof part.text === "string",
-                                )?.text;
-                                if (!text) return;
-                                if (
-                                    /^(Error:|Failed to start plan review UI:)/i.test(
-                                        text,
-                                    )
-                                ) {
-                                    ctx.ui.notify(text, "error");
-                                    return;
-                                }
-                                sendUserMessageWithCurrentSessionFallback(
-                                    pi,
+                    void submitPlanForReview(planInputPath, ctx, {
+                        allowIdleAutoPlanning: true,
+                        cancelWithoutCleanupPrompt: true,
+                    })
+                        .then((result) => {
+                            if (result.details?.cancelled) return;
+                            const text = result.content?.find(
+                                (part: { type?: string; text?: string }) =>
+                                    part?.type === "text" &&
+                                    typeof part.text === "string",
+                            )?.text;
+                            if (!text) return;
+                            if (
+                                /^(Error:|Failed to start plan review UI:)/i.test(
                                     text,
-                                    { deliverAs: "followUp" },
-                                    "Plan file review result could not be sent",
-                                    origin,
-                                );
-                            })
-                            .catch((err) => {
-                                reportBackgroundError(
-                                    ctx,
-                                    "Plan file review failed",
-                                    err,
-                                    origin,
-                                );
-                            });
-                        return;
-                    }
-                    ctx.ui.notify(
-                        `Opening annotation UI for ${filePath}...`,
-                        "info",
-                    );
+                                )
+                            ) {
+                                ctx.ui.notify(text, "error");
+                                return;
+                            }
+                            sendUserMessageWithCurrentSessionFallback(
+                                pi,
+                                text,
+                                { deliverAs: "followUp" },
+                                "Plan file review result could not be sent",
+                                origin,
+                            );
+                        })
+                        .catch((err) => {
+                            reportBackgroundError(
+                                ctx,
+                                "Plan file review failed",
+                                err,
+                                origin,
+                            );
+                        });
+                    return;
                 }
+                ctx.ui.notify(
+                    `Opening annotation UI for ${filePath}...`,
+                    "info",
+                );
             }
 
             if (!hasPlanBrowserHtml()) {
