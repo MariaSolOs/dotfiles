@@ -1137,14 +1137,6 @@ export async function startReviewServer(options: {
                 json(res, { error: "Not in PR mode" }, 400);
                 return;
             }
-            if (prMeta.platform !== "github") {
-                json(
-                    res,
-                    { error: "Viewed sync only supported for GitHub" },
-                    400,
-                );
-                return;
-            }
             const prNodeId = prMeta.prNodeId;
             if (!prNodeId) {
                 json(res, { error: "PR node ID not available" }, 400);

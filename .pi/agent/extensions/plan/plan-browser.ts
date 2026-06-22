@@ -301,10 +301,9 @@ export async function startCodeReviewBrowserSession(
         const prRef = parsePRUrl(urlArg);
         if (!prRef) {
             throw new Error(
-                `Invalid PR/MR URL: ${urlArg}\n` +
-                    "Supported formats:\n" +
-                    "  GitHub: https://github.com/owner/repo/pull/123\n" +
-                    "  GitLab: https://gitlab.com/group/project/-/merge_requests/42",
+                `Invalid GitHub PR URL: ${urlArg}\n` +
+                    "Supported format:\n" +
+                    "  GitHub: https://github.com/owner/repo/pull/123",
             );
         }
 
@@ -317,7 +316,7 @@ export async function startCodeReviewBrowserSession(
             const msg = err instanceof Error ? err.message : String(err);
             if (msg.includes("not found") || msg.includes("ENOENT")) {
                 throw new Error(
-                    `${cliName === "gh" ? "GitHub" : "GitLab"} CLI (${cliName}) is not installed. Install it from ${cliUrl}`,
+                    `GitHub CLI (${cliName}) is not installed. Install it from ${cliUrl}`,
                 );
             }
             throw err;
@@ -337,24 +336,15 @@ export async function startCodeReviewBrowserSession(
             let sessionDir: string | undefined;
             try {
                 const repoDir = options.cwd ?? ctx.cwd;
-                const identifier =
-                    prMetadata.platform === "github"
-                        ? `${prMetadata.owner}-${prMetadata.repo}-${prMetadata.number}`
-                        : `${prMetadata.projectPath.replace(/\//g, "-")}-${prMetadata.iid}`;
+                const identifier = `${prMetadata.owner}-${prMetadata.repo}-${prMetadata.number}`;
                 const suffix = Math.random().toString(36).slice(2, 8);
-                const prNumber =
-                    prMetadata.platform === "github"
-                        ? prMetadata.number
-                        : prMetadata.iid;
+                const prNumber = prMetadata.number;
                 sessionDir = join(
                     realpathSync(tmpdir()),
                     `plan-pr-${identifier}-${suffix}`,
                 );
                 localPath = join(sessionDir, "pool", `pr-${prNumber}`);
-                const fetchRefStr =
-                    prMetadata.platform === "github"
-                        ? `refs/pull/${prMetadata.number}/head`
-                        : `refs/merge-requests/${prMetadata.iid}/head`;
+                const fetchRefStr = `refs/pull/${prMetadata.number}/head`;
 
                 // Validate inputs from platform API to prevent git flag/path injection
                 if (
@@ -377,10 +367,7 @@ export async function startCodeReviewBrowserSession(
                     if (remoteResult.exitCode === 0) {
                         const remoteUrl = remoteResult.stdout.trim();
                         const currentRepo = parseRemoteUrl(remoteUrl);
-                        const prRepo =
-                            prMetadata.platform === "github"
-                                ? `${prMetadata.owner}/${prMetadata.repo}`
-                                : prMetadata.projectPath;
+                        const prRepo = `${prMetadata.owner}/${prMetadata.repo}`;
                         const repoMatches =
                             !!currentRepo &&
                             currentRepo.toLowerCase() === prRepo.toLowerCase();
@@ -470,28 +457,18 @@ export async function startCodeReviewBrowserSession(
                     process.once("exit", exitHandler);
                 } else {
                     // ── Cross-repo: shallow clone + fetch PR head ──
-                    const prRepo =
-                        prMetadata.platform === "github"
-                            ? `${prMetadata.owner}/${prMetadata.repo}`
-                            : prMetadata.projectPath;
+                    const prRepo = `${prMetadata.owner}/${prMetadata.repo}`;
                     if (/^-/.test(prRepo))
                         throw new Error(
                             `Invalid repository identifier: ${prRepo}`,
                         );
-                    const cli =
-                        prMetadata.platform === "github" ? "gh" : "glab";
+                    const cli = "gh";
                     const host = prMetadata.host;
-                    // gh/glab repo clone doesn't accept --hostname; set GH_HOST/GITLAB_HOST env instead
-                    const isDefaultHost =
-                        host === "github.com" || host === "gitlab.com";
-                    const cloneEnv = isDefaultHost
-                        ? undefined
-                        : {
-                              ...process.env,
-                              ...(prMetadata.platform === "github"
-                                  ? { GH_HOST: host }
-                                  : { GITLAB_HOST: host }),
-                          };
+                    // gh repo clone doesn't accept --hostname; set GH_HOST for GitHub Enterprise.
+                    const cloneEnv =
+                        host === "github.com"
+                            ? undefined
+                            : { ...process.env, GH_HOST: host };
 
                     console.error(`Cloning ${prRepo} (shallow)...`);
                     const cloneResult = spawnSync(

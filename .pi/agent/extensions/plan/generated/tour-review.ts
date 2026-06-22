@@ -156,12 +156,10 @@ solved? What motivated the work? Keep it conversational; you're giving
 context, not writing a ticket.
 
 To determine intent:
-- If a PR/MR URL was provided, read the PR description (gh pr view or
-  equivalent). Look for motivation, linked issues, and context the author
-  provided.
+- If a GitHub PR URL was provided, read the PR description (gh pr view).
+  Look for motivation, linked issues, and context the author provided.
 - If the PR body references a GitHub issue (e.g. "Fixes #123", "Closes
-  owner/repo#456") or GitLab issue, read that specific issue for deeper
-  context.
+  owner/repo#456"), read that specific issue for deeper context.
 - If no PR is provided, infer intent from commit messages, branch name, and
   the nature of the changes themselves.
 - IMPORTANT: Do NOT search for issues or tickets that are not explicitly
@@ -407,9 +405,6 @@ export function buildTourClaudeCommand(
         // so the allowlist has to permit the issue-read commands.
         "Bash(gh issue view:*)",
         "Bash(gh api repos/*/*/issues/*)",
-        "Bash(glab mr view:*)",
-        "Bash(glab mr diff:*)",
-        "Bash(glab issue view:*)",
         "Bash(wc:*)",
     ].join(",");
 

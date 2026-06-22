@@ -163,7 +163,7 @@ export async function runPRFullStackDiff(
 }
 
 /**
- * Fetch and checkout a PR/MR head in a local worktree.
+ * Fetch and checkout a GitHub PR head in a local worktree.
  * Returns true if the checkout succeeded, false otherwise.
  */
 export async function checkoutPRHead(
@@ -171,10 +171,7 @@ export async function checkoutPRHead(
     metadata: PRMetadata,
     cwd: string,
 ): Promise<boolean> {
-    const refSpec =
-        metadata.platform === "github"
-            ? `refs/pull/${metadata.number}/head`
-            : `refs/merge-requests/${metadata.iid}/head`;
+    const refSpec = `refs/pull/${metadata.number}/head`;
 
     const fetch = await runtime.runGit(["fetch", "origin", refSpec], { cwd });
     if (fetch.exitCode !== 0) return false;
@@ -211,7 +208,7 @@ export function buildMinimalStackTree(
 
     nodes.push({
         branch: metadata.headBranch,
-        number: metadata.platform === "github" ? metadata.number : metadata.iid,
+        number: metadata.number,
         title: metadata.title,
         url: metadata.url,
         isCurrent: true,

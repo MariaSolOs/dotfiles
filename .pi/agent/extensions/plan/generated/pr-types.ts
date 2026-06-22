@@ -1,13 +1,9 @@
 // @ts-nocheck
 // @generated — DO NOT EDIT. Source: packages/shared/pr-types.ts
 /**
- * Browser-safe PR/MR types and pure helpers.
+ * Browser-safe GitHub PR types and pure helpers.
  *
- * Split out from pr-provider.ts so the review UI can import types,
- * label helpers, and URL parsing without dragging the GitHub/GitLab
- * server implementations (and their Node-only dependencies) through
- * the browser bundle. pr-provider.ts re-exports nothing from here;
- * server-side dispatch lives there.
+ * This local Plan extension only supports GitHub PR review.
  */
 
 // --- Runtime Types ---
@@ -29,9 +25,8 @@ export interface PRRuntime {
 
 // --- Platform Types ---
 
-export type Platform = "github" | "gitlab";
+export type Platform = "github";
 
-/** GitHub PR reference */
 export interface GithubPRRef {
     platform: "github";
     host: string;
@@ -40,18 +35,8 @@ export interface GithubPRRef {
     number: number;
 }
 
-/** GitLab MR reference */
-export interface GitlabMRRef {
-    platform: "gitlab";
-    host: string;
-    projectPath: string;
-    iid: number;
-}
+export type PRRef = GithubPRRef;
 
-/** Discriminated union — auto-detected from URL */
-export type PRRef = GithubPRRef | GitlabMRRef;
-
-/** GitHub PR metadata */
 export interface GithubPRMetadata {
     platform: "github";
     host: string;
@@ -73,29 +58,9 @@ export interface GithubPRMetadata {
     url: string;
 }
 
-/** GitLab MR metadata */
-export interface GitlabMRMetadata {
-    platform: "gitlab";
-    host: string;
-    projectPath: string;
-    iid: number;
-    title: string;
-    author: string;
-    baseBranch: string;
-    headBranch: string;
-    /** Project default branch, used to infer whether this MR targets another MR branch. */
-    defaultBranch?: string;
-    baseSha: string;
-    headSha: string;
-    /** Merge-base SHA — the common ancestor commit used to compute the MR diff. */
-    mergeBaseSha?: string;
-    url: string;
-}
+export type PRMetadata = GithubPRMetadata;
 
-/** Discriminated union — downstream gets type narrowing for free */
-export type PRMetadata = GithubPRMetadata | GitlabMRMetadata;
-
-// --- PR Context Types (platform-agnostic) ---
+// --- PR Context Types ---
 
 export interface PRComment {
     id: string;
@@ -190,7 +155,6 @@ export interface PRStackInfo {
         | "branch-inferred"
         | "tree-discovered"
         | "github-native"
-        | "gitlab-native"
         | "graphite"
         | "ghstack";
 }
@@ -220,75 +184,47 @@ export interface PRListItem {
 }
 
 // --- Label Helpers ---
-// Accept either PRRef or PRMetadata (both have `platform` discriminant)
 
 type HasPlatform = PRRef | PRMetadata;
 
-/** "GitHub" or "GitLab" */
-export function getPlatformLabel(m: HasPlatform): string {
-    return m.platform === "github" ? "GitHub" : "GitLab";
+export function getPlatformLabel(_m: HasPlatform): string {
+    return "GitHub";
 }
 
-/** "PR" or "MR" */
-export function getMRLabel(m: HasPlatform): string {
-    return m.platform === "github" ? "PR" : "MR";
+export function getMRLabel(_m: HasPlatform): string {
+    return "PR";
 }
 
-/** "#123" or "!42" */
 export function getMRNumberLabel(m: HasPlatform): string {
-    if (m.platform === "github") return `#${m.number}`;
-    return `!${m.iid}`;
+    return `#${m.number}`;
 }
 
-/** "owner/repo" or "group/project" */
 export function getDisplayRepo(m: HasPlatform): string {
-    if (m.platform === "github") return `${m.owner}/${m.repo}`;
-    return m.projectPath;
+    return `${m.owner}/${m.repo}`;
 }
 
-/** Reconstruct a PRRef from metadata */
 export function prRefFromMetadata(m: PRMetadata): PRRef {
-    if (m.platform === "github") {
-        return {
-            platform: "github",
-            host: m.host,
-            owner: m.owner,
-            repo: m.repo,
-            number: m.number,
-        };
-    }
     return {
-        platform: "gitlab",
+        platform: "github",
         host: m.host,
-        projectPath: m.projectPath,
-        iid: m.iid,
+        owner: m.owner,
+        repo: m.repo,
+        number: m.number,
     };
 }
 
 export function isSameProject(a: PRRef, b: PRRef): boolean {
-    if (a.platform !== b.platform) return false;
-    if (a.platform === "github" && b.platform === "github") {
-        return a.host === b.host && a.owner === b.owner && a.repo === b.repo;
-    }
-    if (a.platform === "gitlab" && b.platform === "gitlab") {
-        return a.host === b.host && a.projectPath === b.projectPath;
-    }
-    return false;
+    return a.host === b.host && a.owner === b.owner && a.repo === b.repo;
 }
 
-/** CLI tool name for the platform */
-export function getCliName(ref: PRRef): string {
-    return ref.platform === "github" ? "gh" : "glab";
+export function getCliName(_ref: PRRef): string {
+    return "gh";
 }
 
-/** Install URL for the platform CLI */
-export function getCliInstallUrl(ref: PRRef): string {
-    return ref.platform === "github"
-        ? "https://cli.github.com"
-        : "https://gitlab.com/gitlab-org/cli";
+export function getCliInstallUrl(_ref: PRRef): string {
+    return "https://cli.github.com";
 }
 
-/** Encode a file path for use in platform API URLs */
 export function encodeApiFilePath(filePath: string): string {
     return encodeURIComponent(filePath);
 }
@@ -296,35 +232,15 @@ export function encodeApiFilePath(filePath: string): string {
 // --- URL Parsing ---
 
 /**
- * Parse a PR/MR URL into its components. Auto-detects platform.
+ * Parse a GitHub PR URL into its components.
  *
  * Handles:
  * - GitHub: https://github.com/owner/repo/pull/123[/files|/commits]
  * - GitHub Enterprise: https://ghe.company.com/owner/repo/pull/123
- * - GitLab: https://gitlab.com/group/subgroup/project/-/merge_requests/42[/diffs]
- * - Self-hosted GitLab: https://gitlab.mycompany.com/group/project/-/merge_requests/42
- *
- * GitLab is checked first because `/-/merge_requests/` is unambiguous,
- * while `/pull/` could theoretically appear on any host.
  */
 export function parsePRUrl(url: string): PRRef | null {
     if (!url) return null;
 
-    // GitLab: https://{host}/{projectPath}/-/merge_requests/{iid}[/...]
-    // Checked first — `/-/merge_requests/` is the most specific pattern.
-    const glMatch = url.match(
-        /^https?:\/\/([^/]+)\/(.+?)\/-\/merge_requests\/(\d+)/,
-    );
-    if (glMatch) {
-        return {
-            platform: "gitlab",
-            host: glMatch[1],
-            projectPath: glMatch[2],
-            iid: parseInt(glMatch[3], 10),
-        };
-    }
-
-    // GitHub (including GHE): https://{host}/{owner}/{repo}/pull/{number}[/...]
     const ghMatch = url.match(
         /^https?:\/\/([^/]+)\/([^/]+)\/([^/]+)\/pull\/(\d+)/,
     );

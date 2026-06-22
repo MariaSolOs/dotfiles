@@ -183,7 +183,7 @@ Step 6: Return structured JSON output matching the schema.
 - Never flag issues in skipped paths or generated files unless guidance
   explicitly includes them
 - Prefer silence over false positives — when in doubt, drop the finding
-- Do NOT post any comments to GitHub or GitLab
+- Do NOT post any comments to GitHub
 - Do NOT use gh pr comment or any commenting tool
 - Your only output is the structured JSON findings`;
 
@@ -221,11 +221,6 @@ export function buildClaudeCommand(
         "Bash(gh api repos/*/*/pulls/*/files*)",
         "Bash(gh api repos/*/*/pulls/*/comments*)",
         "Bash(gh api repos/*/*/issues/*/comments*)",
-        // GitLab CLI
-        "Bash(glab mr view:*)",
-        "Bash(glab mr diff:*)",
-        "Bash(glab mr list:*)",
-        "Bash(glab api:*)",
         // Git (read-only)
         "Bash(git status:*)",
         "Bash(git diff:*)",
