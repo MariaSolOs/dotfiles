@@ -151,12 +151,7 @@ export interface PRStackInfo {
     baseBranch: string;
     defaultBranch?: string;
     label: string;
-    source:
-        | "branch-inferred"
-        | "tree-discovered"
-        | "github-native"
-        | "graphite"
-        | "ghstack";
+    source: "branch-inferred" | "tree-discovered" | "github-native" | "ghstack";
 }
 
 export interface PRStackNode {
