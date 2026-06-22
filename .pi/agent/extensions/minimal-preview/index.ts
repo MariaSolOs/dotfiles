@@ -309,16 +309,6 @@ function highlightedContentLines(
     };
 }
 
-function formatReadResult(args: any, result: any, theme: ThemeLike): string {
-    const rawPath = str(args?.file_path ?? args?.path);
-    const { lines, lang } = highlightedContentLines(
-        textOutput(result),
-        rawPath,
-    );
-    const output = previewLines(lines, theme, { lang });
-    return output ? `\n${output}` : "";
-}
-
 function formatWriteCall(args: any, theme: ThemeLike): string {
     const rawPath = str(args?.file_path ?? args?.path);
     const fileContent = str(args?.content);
@@ -543,7 +533,7 @@ export default function (pi: ExtensionAPI) {
                 context.lastComponent instanceof Text
                     ? context.lastComponent
                     : new Text("", 0, 0);
-            text.setText(formatReadResult(context.args, result, theme));
+            text.setText("");
             return text;
         },
     });
