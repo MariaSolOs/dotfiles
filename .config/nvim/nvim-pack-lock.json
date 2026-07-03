@@ -5,11 +5,11 @@
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "SchemaStore.nvim": {
-      "rev": "490afbd7fd3b316330550405ac74758a971104a4",
+      "rev": "6ff1f21b2e2b77ec59f7433ce2d9fbc052d908ac",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink.cmp": {
-      "rev": "bda905a4bf1b3edfa708b0be193b8c63d8620c96",
+      "rev": "9dcb1f3a9164f10c8950a790aace576f2e89dc78",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
@@ -33,7 +33,7 @@
       "src": "https://github.com/folke/flash.nvim"
     },
     "fzf-lua": {
-      "rev": "39da6060d53659acf3ec118200bc48721b29b8fd",
+      "rev": "d2084cf776049b4bce6764eb58cda567dec781c4",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitlinker.nvim": {
@@ -41,7 +41,7 @@
       "src": "https://github.com/linrongbin16/gitlinker.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "2038c666bd9d8a0b7349a0b6ee00dc83104b9ecf",
+      "rev": "eb60cc7b94c46005237fd34170d76f3a089a90aa",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "grug-far.nvim": {
@@ -69,7 +69,7 @@
       "src": "https://github.com/nvim-mini/mini.clue"
     },
     "mini.files": {
-      "rev": "0da2aa91bd89418671cde22a9d4a8a4f3035bb2d",
+      "rev": "266df5bd14c980b30eaa9c159b745467d2129459",
       "src": "https://github.com/nvim-mini/mini.files"
     },
     "mini.move": {
@@ -77,7 +77,7 @@
       "src": "https://github.com/nvim-mini/mini.move"
     },
     "mini.splitjoin": {
-      "rev": "4a0e6f5ea83148f6884eed03f287f94c3f22915d",
+      "rev": "6b731ce7f38ca4899a575373db93d2de2fc5bbf2",
       "src": "https://github.com/nvim-mini/mini.splitjoin"
     },
     "neocodeium": {
@@ -125,7 +125,7 @@
       "src": "https://github.com/windwp/nvim-ts-autotag"
     },
     "nvim-web-devicons": {
-      "rev": "dfbfaa967a6f7ec50789bead7ef87e336c1fa63c",
+      "rev": "dad71387de386a946b123079d0e53f23028f3abd",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "one-small-step-for-vimkind": {
