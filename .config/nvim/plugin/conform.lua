@@ -18,6 +18,7 @@ add_on_event('BufWritePre', {
                 less = { 'prettier' },
                 lua = { 'stylua' },
                 markdown = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                python = { 'ruff_format' },
                 rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
                 scss = { 'prettier' },
                 sh = { 'shfmt' },
