@@ -21,6 +21,11 @@ export NVM_DIR="$HOME/.nvm"
 # Use a completion menu.
 zstyle ':completion:*' menu select
 
+# Load pyenv.
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
+
 # Execute fish if it's not the parent process.
 if ! ps -p $PPID | grep -q fish; then
   fish
