@@ -449,6 +449,45 @@ async function readPrTemplate(cwd: string): Promise<string | undefined> {
     }
 }
 
+function expandHome(value: string): string {
+    if (value === "~") return os.homedir();
+    if (value.startsWith("~/")) return path.join(os.homedir(), value.slice(2));
+    return value;
+}
+
+type ParsedArgs = { repo?: string; extraContext: string };
+
+// Split the raw argument string into an optional `--repo <path>` (or
+// `--repo=<path>`) flag and free-form extra context. Everything that is not the
+// repo flag is passed through to the model as supporting context, matching the
+// original single-argument behaviour when the flag is absent.
+function parseArgs(rawArgs: string): ParsedArgs {
+    const tokens =
+        (rawArgs ?? "").trim().match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) ?? [];
+    const unquote = (value: string) => value.replace(/^['"]|['"]$/g, "");
+    const rest: string[] = [];
+    let repo: string | undefined;
+
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        if (token === "--repo") {
+            const next = tokens[i + 1];
+            if (next !== undefined) {
+                repo = expandHome(unquote(next));
+                i++;
+            }
+            continue;
+        }
+        if (token.startsWith("--repo=")) {
+            repo = expandHome(unquote(token.slice("--repo=".length)));
+            continue;
+        }
+        rest.push(token);
+    }
+
+    return { repo, extraContext: rest.join(" ") };
+}
+
 function buildUserPrompt(
     changesText: string,
     source: GitChanges["source"],
@@ -738,17 +777,38 @@ async function openInGhostty(wrapperPath: string): Promise<void> {
 export default function ghSummaryExtension(pi: ExtensionAPI) {
     pi.registerCommand("gh-summary", {
         description:
-            "Create a GitHub-ready PR title/description from git changes and open it in neovim. Usage: /gh-summary [extra context]",
+            "Create a GitHub-ready PR title/description from git changes and open it in neovim. Usage: /gh-summary [--repo <path>] [extra context]",
         handler: async (args, ctx) => {
             if (!ctx.model) {
                 ctx.ui.notify("No model selected", "error");
                 return;
             }
 
+            const { repo, extraContext } = parseArgs(args ?? "");
+            // Resolve the target repo relative to pi's cwd so `--repo` can point
+            // at a sibling checkout (e.g. running /gh-summary from a config repo
+            // to summarize changes made in another repository).
+            const targetCwd = repo ? path.resolve(ctx.cwd, repo) : ctx.cwd;
+
+            if (repo) {
+                try {
+                    const dirStat = await stat(targetCwd);
+                    if (!dirStat.isDirectory()) {
+                        throw new Error("path is not a directory");
+                    }
+                } catch (error) {
+                    ctx.ui.notify(
+                        `Invalid --repo ${targetCwd}: ${(error as Error).message}`,
+                        "error",
+                    );
+                    return;
+                }
+            }
+
             let changes: GitChanges;
             const model = ctx.model;
             try {
-                changes = await collectGitChanges(ctx.cwd);
+                changes = await collectGitChanges(targetCwd);
             } catch (error) {
                 ctx.ui.notify(
                     `Failed to inspect git changes: ${(error as Error).message}`,
@@ -771,7 +831,6 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             );
 
             let summary = "";
-            const extraContext = (args ?? "").trim();
             let prTemplate: string | undefined;
             let conversationContext = "";
             try {
