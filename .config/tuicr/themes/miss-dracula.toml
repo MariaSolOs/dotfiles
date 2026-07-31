@@ -1,0 +1,69 @@
+# My custom miss-dracula theme.
+#
+# Palette:
+#   bg               #0E1419    fg          #F6F6F5    selection    #3C4148
+#   comment          #B08BBB    cyan        #A7DFEF    green        #87E58E
+#   orange           #FFBFA9    pink        #E48CC1    purple       #BAA0E8
+#   red              #E95678    yellow      #E8EDA2    grey         #A9ABAC
+#   bright_cyan      #BCF4F5    bright_green #97EDA2   bright_red   #EC6A88
+#   bright_yellow    #F6F6B6    lavender    #6272A4    lilac        #6D5978
+#   transparent_*    black #1E1F29  green #22372C  red #342231  yellow #202624
+#   fuchsia          #E11299    neon_cyan   #00DFDF
+
+# Surfaces / text -------------------------------------------------------------
+panel_bg = "#0E1419"          # bg
+bg_highlight = "#3C4148"      # selection
+fg_primary = "#F6F6F5"        # fg
+fg_secondary = "#A9ABAC"      # grey
+fg_dim = "#6D5978"            # lilac
+
+# Diff ------------------------------------------------------------------------
+diff_add = "#97EDA2"          # bright_green
+diff_add_bg = "#22372C"       # transparent_green
+diff_del = "#EC6A88"          # bright_red
+diff_del_bg = "#342231"       # transparent_red
+diff_context = "#B08BBB"      # comment
+diff_hunk_header = "#BAA0E8"  # purple
+expanded_context_fg = "#6272A4" # lavender
+
+syntax_add_bg = "#22372C"
+syntax_del_bg = "#342231"
+syntax_theme = "miss-dracula-syntax.tmTheme"
+
+# File list -------------------------------------------------------------------
+file_added = "#87E58E"        # green
+file_modified = "#E8EDA2"     # yellow
+file_deleted = "#E95678"      # red
+file_renamed = "#BAA0E8"      # purple
+
+reviewed = "#97EDA2"          # bright_green
+pending = "#F6F6B6"           # bright_yellow
+
+# Comment badges --------------------------------------------------------------
+comment_note = "#A7DFEF"      # cyan
+comment_suggestion = "#FFBFA9" # orange
+comment_issue = "#EC6A88"     # bright_red
+comment_praise = "#87E58E"    # green
+
+# Chrome ----------------------------------------------------------------------
+border_focused = "#E48CC1"    # pink
+border_unfocused = "#6272A4"  # lavender
+status_bar_bg = "#1E1F29"     # transparent_black
+cursor_color = "#E11299"      # fuchsia
+cursor_line_bg = "#3C4148"    # selection
+branch_name = "#BAA0E8"       # purple
+help_indicator = "#B08BBB"    # comment
+
+# Messages --------------------------------------------------------------------
+message_info_fg = "#0E1419"
+message_info_bg = "#A7DFEF"   # cyan
+message_warning_fg = "#0E1419"
+message_warning_bg = "#E8EDA2" # yellow
+message_error_fg = "#0E1419"
+message_error_bg = "#EC6A88"  # bright_red
+update_badge_fg = "#0E1419"
+update_badge_bg = "#FFBFA9"   # orange
+
+# Mode indicator --------------------------------------------------------------
+mode_fg = "#1E1F29"           # transparent_black
+mode_bg = "#BAA0E8"           # purple
