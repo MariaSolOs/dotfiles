@@ -9,7 +9,8 @@ import {
 } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { complete, type UserMessage } from "@earendil-works/pi-ai";
+import type { AssistantMessage, UserMessage } from "@earendil-works/pi-ai";
+import { complete } from "@earendil-works/pi-ai/compat";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 // Keep the summarization request bounded while preserving enough concrete diff
@@ -557,9 +558,7 @@ function stripWrappingCodeFence(text: string): string {
     return (match ? match[1] : trimmed).trimEnd() + "\n";
 }
 
-function textFromResponse(
-    response: Awaited<ReturnType<typeof complete>>,
-): string {
+function textFromResponse(response: AssistantMessage): string {
     return response.content
         .filter(
             (content): content is { type: "text"; text: string } =>

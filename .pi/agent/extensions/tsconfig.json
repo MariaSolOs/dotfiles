@@ -8,6 +8,9 @@
       "@earendil-works/pi-coding-agent": [
         "../../../.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/dist/index.d.ts"
       ],
+      "@earendil-works/pi-ai/compat": [
+        "../../../.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-ai/dist/compat.d.ts"
+      ],
       "@earendil-works/*": [
         "../../../.nvm/versions/node/v25.6.1/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/*/dist/index.d.ts"
       ],
