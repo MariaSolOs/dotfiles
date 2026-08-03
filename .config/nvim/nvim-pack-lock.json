@@ -29,8 +29,8 @@
       "src": "https://github.com/sindrets/diffview.nvim"
     },
     "flash.nvim": {
-      "rev": "25ce9b72a8be5a8458c8983c8af766c8fbbc2012",
-      "src": "https://github.com/onion108/flash.nvim"
+      "rev": "b6346946d10d07998efee029fb0f7a593806d0cd",
+      "src": "https://github.com/folke/flash.nvim"
     },
     "fzf-lua": {
       "rev": "28440c741e927592877514fba3db21eb188caec8",
