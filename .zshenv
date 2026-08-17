@@ -11,6 +11,7 @@ export PATH="$HOME/.local/bin:$PATH" # Local scripts.
 export PATH="$HOME/go/bin:$PATH" # Go binaries.
 
 # zsh configuration.
+export HISTFILE="$XDG_CONFIG_HOME/zsh/.zsh_history"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export SHELL_SESSIONS_DISABLE=1
 
