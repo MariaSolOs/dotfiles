@@ -69,6 +69,11 @@ codex completion fish | source
 # Color theme.
 fish_config theme choose "Dracula Official"
 
+# Terminal search/sync.
+if status is-interactive
+    atuin init fish | source
+end
+
 # Prompt.
 if test "$os" = Darwin
     starship init fish | source
