@@ -4,3 +4,4 @@ Session.vim
 # Claude local files
 CLAUDE.local.md
 settings.local.json
+.claude/.cc-writes/
