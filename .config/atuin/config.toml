@@ -13,6 +13,10 @@ search_mode = "daemon-fuzzy"
 # Don't store failed commands
 store_failed = false
 
+# Custom miss-dracula theme
+[theme]
+name = "miss-dracula"
+
 ## Enable and autostart the background daemon
 [daemon]
 enabled = true

@@ -1,0 +1,19 @@
+[theme]
+name = "miss-dracula"
+
+[colors]
+AlertInfo = "#A7DFEF"
+AlertWarn = "#E8EDA2"
+AlertError = "#E95678"
+Annotation = "#B08BBB"
+Base = "#F6F6F5"
+Guidance = "#6D5978"
+Important = "#FFBFA9"
+Title = "#BAA0E8"
+Muted = "#A9ABAC"
+SyntaxCommand = "#87E58E"
+SyntaxFlag = "#E48CC1"
+SyntaxString = "#E8EDA2"
+SyntaxVariable = "#A7DFEF"
+SyntaxOperator = "#E48CC1"
+SyntaxComment = "#B08BBB"
