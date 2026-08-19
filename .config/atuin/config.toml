@@ -1,7 +1,7 @@
 # Use the full display style
 style = "full"
 
-## Put the search bar at the top
+# Put the search bar at the top
 invert = true
 
 # Disable the moving list numbers
