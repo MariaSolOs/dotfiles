@@ -10,9 +10,6 @@ show_numeric_shortcuts = false
 # Enable the daemon search which uses an in-memory index to perform fast and customizable searches
 search_mode = "daemon-fuzzy"
 
-# Don't store failed commands
-store_failed = false
-
 # Custom miss-dracula theme
 [theme]
 name = "miss-dracula"
