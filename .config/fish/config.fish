@@ -69,14 +69,6 @@ codex completion fish | source
 # Color theme.
 fish_config theme choose "Dracula Official"
 
-# Terminal search/sync.
-if status is-interactive
-    atuin init fish | source
-
-    # Atuin binds `?` in its default map, but this shell uses vi insert mode.
-    bind -M insert ? _atuin_ai_question_mark_insert
-end
-
 # Prompt.
 if test "$os" = Darwin
     starship init fish | source
