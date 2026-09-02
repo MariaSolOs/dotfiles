@@ -37,10 +37,12 @@ function runCapture(
     args: string[],
     cwd: string,
     allowedExitCodes = [0],
+    env?: NodeJS.ProcessEnv,
 ): Promise<CommandResult> {
     return new Promise((resolve, reject) => {
         const child = spawn(file, args, {
             cwd,
+            env,
             stdio: ["ignore", "pipe", "pipe"],
         });
         let stdout = "";
@@ -189,10 +191,20 @@ function wrapperScript(
     repoRoot: string,
     tuicrArgs: string[],
     donePath: string,
+    reviewEnv: NodeJS.ProcessEnv,
 ): string {
     const argv = tuicrArgs.map(shellQuote).join(" ");
+    const environment = [
+        "HOME",
+        "XDG_DATA_HOME",
+        "XDG_CONFIG_HOME",
+        "GIT_CONFIG_GLOBAL",
+    ]
+        .map((name) => `export ${name}=${shellQuote(reviewEnv[name]!)}`)
+        .join("\n");
     return `#!/bin/sh
 set +e
+${environment}
 cd ${shellQuote(repoRoot)} || exit 1
 tuicr ${argv}
 status=$?
@@ -261,12 +273,16 @@ function parseJson<T>(raw: string, fallback: T): T {
     }
 }
 
-async function listSessions(repoRoot: string): Promise<ReviewSession[]> {
+async function listSessions(
+    repoRoot: string,
+    env: NodeJS.ProcessEnv,
+): Promise<ReviewSession[]> {
     const result = await runCapture(
         "tuicr",
         ["review", "list", "--repo", repoRoot],
         repoRoot,
         [0, 1],
+        env,
     );
     if (result.code !== 0) return [];
     return parseJson<ReviewSession[]>(result.stdout, []);
@@ -275,30 +291,35 @@ async function listSessions(repoRoot: string): Promise<ReviewSession[]> {
 async function sessionComments(
     repoRoot: string,
     slug: string,
+    env: NodeJS.ProcessEnv,
 ): Promise<ReviewComment[]> {
     const result = await runCapture(
         "tuicr",
         ["review", "comments", "--session", slug, "--repo", repoRoot],
         repoRoot,
         [0, 1],
+        env,
     );
     if (result.code !== 0) return [];
     return parseJson<ReviewComment[]>(result.stdout, []);
 }
 
-// Comments from every session of the repo, keyed by id so pre-existing comments
-// (from earlier reviews) can be filtered out after tuicr exits.
 async function collectComments(
     repoRoot: string,
-): Promise<Map<string, ReviewComment>> {
+    env: NodeJS.ProcessEnv,
+): Promise<ReviewComment[]> {
     const comments = new Map<string, ReviewComment>();
-    for (const session of await listSessions(repoRoot)) {
+    for (const session of await listSessions(repoRoot, env)) {
         if (!session.slug) continue;
-        for (const comment of await sessionComments(repoRoot, session.slug)) {
+        for (const comment of await sessionComments(
+            repoRoot,
+            session.slug,
+            env,
+        )) {
             if (comment?.id) comments.set(comment.id, comment);
         }
     }
-    return comments;
+    return [...comments.values()];
 }
 
 function commentHeading(comment: ReviewComment): string {
@@ -382,14 +403,27 @@ export default function tuicrExtension(pi: ExtensionAPI) {
                 ).map((token) => token.replace(/^['"]|['"]$/g, "")),
             ];
 
-            const before = await collectComments(repoRoot);
-
             const tmpDir = await mkdtemp(path.join(os.tmpdir(), "pi-tuicr-"));
             const donePath = path.join(tmpDir, "exit-status");
             const wrapperPath = path.join(tmpDir, "run-tuicr.sh");
+
+            // Isolate tuicr's mandatory session state in the command's temp
+            // directory. Its normal config and git identity remain available,
+            // but the review disappears as soon as the comments are handed off.
+            const reviewEnv: NodeJS.ProcessEnv = {
+                ...process.env,
+                HOME: path.join(tmpDir, "home"),
+                XDG_DATA_HOME: path.join(tmpDir, "data"),
+                XDG_CONFIG_HOME:
+                    process.env.XDG_CONFIG_HOME ??
+                    path.join(os.homedir(), ".config"),
+                GIT_CONFIG_GLOBAL:
+                    process.env.GIT_CONFIG_GLOBAL ??
+                    path.join(os.homedir(), ".gitconfig"),
+            };
             await writeFile(
                 wrapperPath,
-                wrapperScript(repoRoot, tuicrArgs, donePath),
+                wrapperScript(repoRoot, tuicrArgs, donePath, reviewEnv),
                 "utf8",
             );
             await chmod(wrapperPath, 0o700);
@@ -417,31 +451,33 @@ export default function tuicrExtension(pi: ExtensionAPI) {
                     await sleep(POLL_INTERVAL_MS);
                     status = await readDoneStatus(donePath);
                 }
+
+                if (status !== 0) {
+                    ctx.ui.notify(
+                        `tuicr exited with status ${status}`,
+                        "warning",
+                    );
+                    return;
+                }
+
+                const comments = await collectComments(repoRoot, reviewEnv);
+                if (comments.length === 0) {
+                    ctx.ui.notify(
+                        "tuicr review finished with no comments",
+                        "info",
+                    );
+                    return;
+                }
+
+                ctx.ui.notify(
+                    `Passing ${comments.length} tuicr comment${comments.length === 1 ? "" : "s"} to the agent`,
+                    "info",
+                );
+                await pi.sendUserMessage(formatReview(comments, repoRoot));
             } finally {
                 ctx.ui.setStatus("tuicr", undefined);
                 await rm(tmpDir, { recursive: true, force: true });
             }
-
-            if (status !== 0) {
-                ctx.ui.notify(`tuicr exited with status ${status}`, "warning");
-                return;
-            }
-
-            const after = await collectComments(repoRoot);
-            const fresh = [...after.values()].filter(
-                (comment) => !before.has(comment.id),
-            );
-
-            if (fresh.length === 0) {
-                ctx.ui.notify("tuicr review finished with no comments", "info");
-                return;
-            }
-
-            ctx.ui.notify(
-                `Adding ${fresh.length} tuicr comment${fresh.length === 1 ? "" : "s"} to the session`,
-                "info",
-            );
-            await pi.sendUserMessage(formatReview(fresh, repoRoot));
         },
     });
 }
