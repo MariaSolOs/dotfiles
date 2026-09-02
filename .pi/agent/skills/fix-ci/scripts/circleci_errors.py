@@ -45,9 +45,9 @@ def parse_tests_url(url: str) -> dict[str, str]:
 
 
 def infer_api_base(info: dict[str, str]) -> str:
-    env_base = os.environ.get("CIRCLECI_API_BASE")
+    env_base = os.environ.get("CIRCLECI_BASE_URL")
     if env_base:
-        return env_base.rstrip("/")
+        return f"{env_base.rstrip('/')}/api/v2"
 
     host = info["host"]
     if host in {"app.circleci.com", "circleci.com"}:

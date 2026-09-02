@@ -18,9 +18,9 @@ into API calls to CircleCI v2 and summarize failing/erroring tests.
 Make sure that the following environment variables are set in your environment. If not, raise an error.
 
 - `CIRCLECI_TOKEN`
-- `CIRCLECI_API_BASE`
+- `CIRCLECI_BASE_URL` - CircleCI server root URL (for example, `https://circle.example.com`)
 
-For such test run `[ -n "${CIRCLECI_TOKEN}" ]  && echo "ENV OK" || echo "ERROR: MISSING ENV VAR"`
+For such test run `[ -n "${CIRCLECI_TOKEN}" ] && [ -n "${CIRCLECI_BASE_URL}" ] && echo "ENV OK" || echo "ERROR: MISSING ENV VAR"`
 
 ## Usage
 
