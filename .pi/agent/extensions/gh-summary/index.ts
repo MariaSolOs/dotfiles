@@ -619,11 +619,35 @@ function runWithInput(
 // on Linux we paste the command with `exec`, so the tab closes when this script
 // exits after nvim.
 function wrapperScript(nvimScriptPath: string, tmpDir: string): string {
+    const devNvim = path.join(
+        os.homedir(),
+        "Code",
+        "neovim",
+        "build",
+        "bin",
+        "nvim",
+    );
+    const devRuntime = path.join(os.homedir(), "Code", "neovim", "runtime");
+
     return `#!/bin/sh
 set +e
 vimscript=${shellQuote(nvimScriptPath)}
 tmpdir=${shellQuote(tmpDir)}
-nvim -n -S "$vimscript"
+if [ -n "\${NVIM_BIN:-}" ]; then
+  nvim_bin=$NVIM_BIN
+elif command -v nvim >/dev/null 2>&1; then
+  nvim_bin=$(command -v nvim)
+elif [ -x ${shellQuote(devNvim)} ]; then
+  nvim_bin=${shellQuote(devNvim)}
+  if [ -d ${shellQuote(devRuntime)} ]; then
+    VIMRUNTIME=${shellQuote(devRuntime)}
+    export VIMRUNTIME
+  fi
+else
+  echo "nvim not found in PATH and development build not found at ${devNvim}" >&2
+  exit 127
+fi
+"$nvim_bin" -n -S "$vimscript"
 status=$?
 if [ "$status" -eq 0 ]; then
   rm -rf -- "$tmpdir"
