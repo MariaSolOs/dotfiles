@@ -5,15 +5,15 @@
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "SchemaStore.nvim": {
-      "rev": "2940d5e12f8797620cd47dca984d46119e1fa4b8",
+      "rev": "4a0e1b74096937d366031bc1e2b244546af39f8e",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink.cmp": {
-      "rev": "101d71861f6a012f2be80e4100720874330d86aa",
+      "rev": "49d39fda6350d7f789d1da1053e86c9e256f8108",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
-      "rev": "c8fdc12c8a2fab6cf786dd7141a283f8079f902b",
+      "rev": "fd9a48ebbe6ec30d5dfcc5b42c243941ccdca1aa",
       "src": "https://github.com/saghen/blink.lib"
     },
     "bufferline.nvim": {
@@ -29,7 +29,7 @@
       "src": "https://github.com/sindrets/diffview.nvim"
     },
     "flash.nvim": {
-      "rev": "25ce9b72a8be5a8458c8983c8af766c8fbbc2012",
+      "rev": "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a",
       "src": "https://github.com/folke/flash.nvim"
     },
     "fzf-lua": {
@@ -49,7 +49,7 @@
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
     "indent-blankline.nvim": {
-      "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
+      "rev": "f1e186e44d3b7f9ae918008e2c28ce37c6023d2d",
       "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
     },
     "markdown-preview.nvim": {
@@ -57,7 +57,7 @@
       "src": "https://github.com/iamcco/markdown-preview.nvim"
     },
     "mini.ai": {
-      "rev": "25248c6aa002391936a6200f12d1466015987133",
+      "rev": "cb02c5444613475b7edf0c8dc98264c1c857aa6e",
       "src": "https://github.com/nvim-mini/mini.ai"
     },
     "mini.bufremove": {
@@ -65,7 +65,7 @@
       "src": "https://github.com/nvim-mini/mini.bufremove"
     },
     "mini.clue": {
-      "rev": "4d506660e7030a15748ab073bebfe3ed03884000",
+      "rev": "1c136d62729c8c3b0c2d91379bc37efac15d916e",
       "src": "https://github.com/nvim-mini/mini.clue"
     },
     "mini.files": {
@@ -89,7 +89,7 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-dap": {
-      "rev": "9e848e09a697ee95302a3ef2dd43fd6eb709e570",
+      "rev": "c9a0738e45f1bd41d792a126941348dce661cf9b",
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
     "nvim-dap-view": {
@@ -109,7 +109,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "19071296d3d643b48615ee574a20e8a03ac40872",
+      "rev": "5cb0114e6242625db56dd6440e945ed1ece10bc7",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-context": {
@@ -117,7 +117,7 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-context"
     },
     "nvim-treesitter-textobjects": {
-      "rev": "898ee307df58f854d11cd7edd06472574d48014e",
+      "rev": "5c7b0263797dfd1bd6202f2b219f3b53a80b2187",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
     },
     "nvim-ts-autotag": {
