@@ -10,7 +10,6 @@ import {
 import os from "node:os";
 import path from "node:path";
 import type { AssistantMessage, UserMessage } from "@earendil-works/pi-ai";
-import { complete } from "@earendil-works/pi-ai/compat";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 // Keep the summarization request bounded while preserving enough concrete diff
@@ -857,17 +856,6 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             let prTemplate: string | undefined;
             let conversationContext = "";
             try {
-                const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
-                if (!auth.ok || !auth.apiKey) {
-                    throw new Error(
-                        auth.ok
-                            ? `No API key for ${model.provider}`
-                            : auth.error,
-                    );
-                }
-                const apiKey = auth.apiKey;
-                const headers = auth.headers;
-
                 prTemplate = await readPrTemplate(changes.root);
                 conversationContext = buildConversationContext(
                     ctx.sessionManager.getBranch() as SessionEntry[],
@@ -889,21 +877,41 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     timestamp: Date.now(),
                 };
 
-                const response = await complete(
+                // Go through ModelRegistry rather than pi-ai's compatibility
+                // helper so custom providers, resolved auth/base URLs, and
+                // provider-specific request behavior are all preserved.
+                // Newer reasoning-only models reject an omitted/off effort;
+                // preserve the session level while clamping its lowest values.
+                const reasoningEffort =
+                    ctx.thinkingLevel === "off" ||
+                    ctx.thinkingLevel === "minimal"
+                        ? "low"
+                        : ctx.thinkingLevel;
+                const response = await ctx.modelRegistry.complete(
                     model,
                     { systemPrompt: SYSTEM_PROMPT, messages: [userMessage] },
-                    { apiKey, headers },
+                    {
+                        cacheRetention: "none",
+                        reasoningEffort,
+                    },
                 );
 
                 if (response.stopReason === "aborted") {
                     ctx.ui.notify("PR summary generation cancelled", "info");
                     return;
                 }
+                if (response.stopReason === "error") {
+                    throw new Error(
+                        response.errorMessage || "Model request failed",
+                    );
+                }
 
                 summary = stripWrappingCodeFence(textFromResponse(response));
 
                 if (!summary.trim()) {
-                    throw new Error("Model returned an empty summary");
+                    throw new Error(
+                        `Model returned no text (stop reason: ${response.stopReason})`,
+                    );
                 }
             } catch (error) {
                 ctx.ui.notify(
