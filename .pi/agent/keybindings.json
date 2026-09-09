@@ -1,6 +1,6 @@
 {
-  "tui.editor.cursorUp": ["up", "ctrl+p"],
-  "tui.editor.cursorDown": ["down", "ctrl+n"],
+  "tui.editor.historyPrevious": ["ctrl+p"],
+  "tui.editor.historyNext": ["ctrl+n"],
   "tui.select.up": ["up", "ctrl+p"],
   "tui.select.down": ["down", "ctrl+n"],
   "app.session.toggleNamedFilter": ["ctrl+l"],
