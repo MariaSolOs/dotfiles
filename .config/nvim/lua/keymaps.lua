@@ -47,6 +47,11 @@ vim.keymap.set({ 's', 'i', 'n', 'v' }, '<C-S-s>', function()
     return '<esc>:w<cr>'
 end, { desc = 'Exit insert mode and save changes (without formatting)', expr = true })
 
+-- Clear multicursors.
+vim.keymap.set('n', '<C-q>', function()
+    vim.api.nvim_buf_clear_namespace(0, vim.api.nvim_create_namespace 'nvim.multicursor', 0, -1)
+end, { desc = 'Clear multicursors' })
+
 -- Quickly go to the end of the line while in insert mode.
 vim.keymap.set({ 'i', 'c' }, '<C-l>', '<C-o>A', { desc = 'Go to the end of the line' })
 
