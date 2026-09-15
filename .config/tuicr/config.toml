@@ -1,8 +1,5 @@
 # Custom theme
 theme = "miss-dracula"
 
-# Don't show the file list on startup
-show_file_list = false
-
 # Start in single file mode
 single_file_view = true
