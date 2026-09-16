@@ -32,6 +32,7 @@ Requirements:
 - Do not include padding or preamble like "Here’s a summary".
 - Include a suggested PR title and a PR description.
 - Keep the PR description to paragraphs, at most 3, unless a provided PR template requires another structure.
+- Describe changes in the PR description using present participles ("-ing" forms), such as "Removing the unused function", "Adding validation", or "Updating tests", rather than imperative forms like "Remove", "Add", or "Update". Apply this style to change descriptions in both paragraphs and template sections; it does not apply to the suggested PR title.
 - Be concise, but include important facts, design decisions, results, and follow-ups when applicable.
 - Use first person plural or neutral engineering voice when appropriate.`;
 
