@@ -633,6 +633,12 @@ function wrapperScript(nvimScriptPath: string, tmpDir: string): string {
 set +e
 vimscript=${shellQuote(nvimScriptPath)}
 tmpdir=${shellQuote(tmpDir)}
+# Clean up on every wrapper exit, including launch failures and editor errors.
+# Signal handlers exit through the same trap; SIGKILL cannot be trapped.
+trap 'rm -rf -- "$tmpdir"' EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
 if [ -n "\${NVIM_BIN:-}" ]; then
   nvim_bin=$NVIM_BIN
 elif command -v nvim >/dev/null 2>&1; then
@@ -649,9 +655,6 @@ else
 fi
 "$nvim_bin" -n -S "$vimscript"
 status=$?
-if [ "$status" -eq 0 ]; then
-  rm -rf -- "$tmpdir"
-fi
 (
   sleep 0.1
   /usr/bin/osascript -e 'tell application "Ghostty" to activate' \
