@@ -22,7 +22,7 @@ export async function checkEditor(run: Run): Promise<{
 }> {
     if (process.platform !== "darwin") {
         throw new Error(
-            "/reply currently requires macOS and Ghostty 1.3 or newer",
+            "The native pane launcher requires macOS and Ghostty 1.3 or newer",
         );
     }
     // Capture the pane at command invocation, not after the model finishes:
@@ -59,11 +59,13 @@ export async function saveDraft(
     markdown: string,
     nvim: string,
     tempRoot = os.tmpdir(),
+    draftName = "reply",
 ): Promise<{ draftPath: string; wrapperPath: string; directory: string }> {
-    const directory = await mkdtemp(path.join(tempRoot, "pi-reply-"));
-    const draftPath = path.join(directory, "reply.md");
-    const vimPath = path.join(directory, "reply.vim");
-    const wrapperPath = path.join(directory, "open-reply.sh");
+    // /gh-summary shares this lifecycle but uses its own Markdown filename.
+    const directory = await mkdtemp(path.join(tempRoot, `pi-${draftName}-`));
+    const draftPath = path.join(directory, `${draftName}.md`);
+    const vimPath = path.join(directory, `${draftName}.vim`);
+    const wrapperPath = path.join(directory, `open-${draftName}.sh`);
     // Load personal nvim configuration as usual, then disable modelines before
     // opening model-generated text. Show Markdown punctuation, not concealment.
     const vimscript = `set nomodeline noexrc
