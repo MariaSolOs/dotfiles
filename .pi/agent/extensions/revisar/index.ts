@@ -97,7 +97,11 @@ async function openGhostty(script: string): Promise<string | undefined> {
         // Ghostty 1.3's native API runs the wrapper as the tab's command, not
         // as text pasted into a shell. Keep the stable ID so cleanup can close
         // only this review tab even if focus changes or Ghostty keeps it open.
-        const result = await exec("/usr/bin/osascript", ["-e", `on run argv
+        const result = await exec(
+            "/usr/bin/osascript",
+            [
+                "-e",
+                `on run argv
     tell application "Ghostty"
         set cfg to new surface configuration
         set command of cfg to item 1 of argv
@@ -105,7 +109,11 @@ async function openGhostty(script: string): Promise<string | undefined> {
         set reviewTab to new tab in front window with configuration cfg
         return id of reviewTab
     end tell
-end run`, `/bin/sh ${quote(script)}`], { timeout: 10_000 });
+end run`,
+                `/bin/sh ${quote(script)}`,
+            ],
+            { timeout: 10_000 },
+        );
         const tabId = result.stdout.trim();
         if (!tabId) throw new Error("Ghostty did not return the review tab ID");
         return tabId;
@@ -139,7 +147,11 @@ end run`, `/bin/sh ${quote(script)}`], { timeout: 10_000 });
 async function closeGhosttyTab(tabId: string): Promise<void> {
     // The tab may already have closed automatically or been closed by hand.
     // Never fall back to Cmd+W or closing the selected/front tab.
-    await exec("/usr/bin/osascript", ["-e", `on run argv
+    await exec(
+        "/usr/bin/osascript",
+        [
+            "-e",
+            `on run argv
     tell application "Ghostty"
         repeat with win in windows
             repeat with candidate in tabs of win
@@ -150,7 +162,11 @@ async function closeGhosttyTab(tabId: string): Promise<void> {
             end repeat
         end repeat
     end tell
-end run`, tabId], { timeout: 10_000 });
+end run`,
+            tabId,
+        ],
+        { timeout: 10_000 },
+    );
 }
 
 export default function revisarExtension(pi: ExtensionAPI) {
@@ -309,10 +325,11 @@ export default function revisarExtension(pi: ExtensionAPI) {
                     try {
                         await closeGhosttyTab(tabId);
                     } catch (error) {
-                        if (!signal.aborted) ctx.ui.notify(
-                            `Could not close the revisar tab: ${(error as Error).message}`,
-                            "warning",
-                        );
+                        if (!signal.aborted)
+                            ctx.ui.notify(
+                                `Could not close the revisar tab: ${(error as Error).message}`,
+                                "warning",
+                            );
                     }
                 }
                 if (!signal.aborted) ctx.ui.setStatus("revisar", undefined);

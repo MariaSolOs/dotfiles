@@ -1,5 +1,5 @@
 // Run with: node --experimental-test-module-mocks --test index.test.mjs
-// Ghostty/clipboard are mocked; the generated shell wrapper executes for real.
+// Ghostty's native API is mocked; the generated shell wrapper executes for real.
 import assert from "node:assert/strict";
 import { execFile as realExecFile, spawn } from "node:child_process";
 import { access, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
@@ -13,21 +13,33 @@ const realExec = promisify(realExecFile);
 let scenario;
 const quote = (s) => `'${s.replace(/'/g, `'\\''`)}'`;
 function execFile() {}
-execFile[promisify.custom] = (file) => {
+execFile[promisify.custom] = (file, args) => {
     const stdin = new PassThrough();
     const chunks = [];
     stdin.on("data", (chunk) => chunks.push(chunk));
     const finished = new Promise((resolve) => stdin.on("finish", resolve));
     const pending = (async () => {
         if (file === "git") return { stdout: `${scenario.root}\n`, stderr: "" };
-        await finished;
-        if (file.endsWith("pbcopy") || file === "wl-copy") {
-            scenario.command = Buffer.concat(chunks).toString();
-        } else if (file.endsWith("osascript") || file === "hyprctl") {
-            if (scenario.launchError) throw new Error("Automation denied");
-            if (file === "hyprctl") return { stdout: "", stderr: "" };
-            const script = scenario.command.match(/^exec \/bin\/sh '(.*)'$/)[1];
+        if (file.endsWith("osascript")) {
+            assert.equal(args[0], "-e");
+            assert(!args[1].includes("System Events"));
+            if (args[1].includes("close tab candidate")) {
+                assert(args[1].includes("id of candidate is item 1 of argv"));
+                assert(!args[1].includes("front window"));
+                scenario.closed.push(args[2]);
+                if (scenario.closeError) throw new Error("Close denied");
+                return { stdout: "", stderr: "" };
+            }
+            assert(args[1].includes("set wait after command of cfg to false"));
+            assert(
+                args[1].includes(
+                    "new tab in front window with configuration cfg",
+                ),
+            );
+            scenario.command = args[2];
+            const script = scenario.command.match(/^\/bin\/sh '(.*)'$/)[1];
             scenario.dir = path.dirname(script);
+            if (scenario.launchError) throw new Error("Automation denied");
             const source = await readFile(script, "utf8");
             assert(!source.includes("tuicr"));
             assert(!source.includes("XDG_"));
@@ -42,10 +54,20 @@ execFile[promisify.custom] = (file) => {
                     `/bin/sh ${quote(fake)}`,
                 );
                 await writeFile(script, executableWrapper);
-                await realExec("/bin/sh", [script]).catch(() => {});
+                // Nonzero revisar status belongs in the marker, not Ghostty's
+                // process exit status. Even cancel/error must exit cleanly.
+                await realExec("/bin/sh", [script]);
+                scenario.status = await readFile(
+                    path.join(scenario.dir, "status"),
+                    "utf8",
+                );
             }
-        } else throw new Error(`Unexpected command: ${file}`);
-        return { stdout: "", stderr: "" };
+            return { stdout: "review-tab-id\n", stderr: "" };
+        }
+        await finished;
+        throw new Error(
+            `Unexpected command: ${file}: ${Buffer.concat(chunks)}`,
+        );
     })();
     pending.child = { stdin };
     return pending;
@@ -59,6 +81,7 @@ async function setup(t, options = {}) {
     scenario = {
         root,
         program: "printf 'review feedback\\n'\nexit 0\n",
+        closed: [],
         ...options,
     };
     const current = scenario;
@@ -117,6 +140,8 @@ test("explicit send delivers once, then removes transport", async (t) => {
         { text: "review feedback", options: { deliverAs: "followUp" } },
     ]);
     assert.equal(h.statuses.at(-1), undefined);
+    assert.equal(scenario.status, "0");
+    assert.deepEqual(scenario.closed, ["review-tab-id"]);
     await assert.rejects(access(scenario.dir), { code: "ENOENT" });
 });
 
@@ -126,6 +151,8 @@ test("cancel and error never deliver even if stdout contains text", async (t) =>
             program: `printf 'partial feedback'\nprintf 'failure' >&2\nexit ${code}\n`,
         });
         await h.run();
+        assert.equal(scenario.status, String(code));
+        assert.deepEqual(scenario.closed, ["review-tab-id"]);
         assert.equal(h.sent.length, 0);
         assert(
             h.notifications.some((n) =>
@@ -161,6 +188,29 @@ test("shutdown abandons review and concurrent launches are rejected", async (t) 
     await h.run();
     assert.equal(h.sent.length, 0);
     assert.equal(h.editor.length, 0);
+    assert.deepEqual(scenario.closed, ["review-tab-id"]);
+    await assert.rejects(access(scenario.dir), { code: "ENOENT" });
+});
+
+test("tab-close failure does not suppress submitted feedback", async (t) => {
+    const h = await setup(t, { closeError: true });
+    await h.run();
+    assert.equal(h.sent.length, 1);
+    assert.deepEqual(scenario.closed, ["review-tab-id"]);
+    assert(
+        h.notifications.some((n) =>
+            n.includes("Could not close the revisar tab"),
+        ),
+    );
+    await assert.rejects(access(scenario.dir), { code: "ENOENT" });
+});
+
+test("failed launch never closes an unrelated tab", async (t) => {
+    const h = await setup(t, { launchError: true });
+    await h.run();
+    assert.equal(h.sent.length, 0);
+    assert.deepEqual(scenario.closed, []);
+    assert(h.notifications.some((n) => n.includes("Automation denied")));
     await assert.rejects(access(scenario.dir), { code: "ENOENT" });
 });
 
