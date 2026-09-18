@@ -103,7 +103,7 @@ export default function replyExtension(pi: ExtensionAPI) {
                         const loader = new BorderedLoader(
                             tui,
                             theme,
-                            `Drafting reply with ${model.id} (Esc to cancel)...`,
+                            "Drafting reply (Esc to cancel)...",
                         );
                         const signal = AbortSignal.any([
                             controller.signal,
