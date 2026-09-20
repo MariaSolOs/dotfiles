@@ -63,9 +63,6 @@ set fish_cursor_replace_one underscore
 # Fuzzy finder integration.
 fzf --fish | source
 
-# Codex completions.
-codex completion fish | source
-
 # Color theme.
 fish_config theme choose "Dracula Official"
 
