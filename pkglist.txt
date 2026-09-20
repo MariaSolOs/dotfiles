@@ -46,7 +46,6 @@ networkmanager
 ninja
 noto-fonts-cjk
 noto-fonts-emoji
-nvm
 nwg-look
 obsidian
 openssh

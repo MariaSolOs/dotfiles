@@ -44,9 +44,6 @@ if [[ "$(tty)" == "/dev/tty1" ]]; then
     exec start-hyprland
 fi
 
-# Set up Node version manager:
-source /usr/share/nvm/init-nvm.sh
-
 # Drop into fish if:
 # - The parent process isn't fish.
 # - Not running a command like `bash -c 'echo foo'`.
