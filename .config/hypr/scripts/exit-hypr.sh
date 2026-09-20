@@ -4,7 +4,7 @@
 
 if pgrep -x Hyprland >/dev/null; then
     # Use the regular dispatch command.
-    hyprctl dispatch exit
+    hyprctl dispatch 'hl.dsp.exit()'
     # Pause for 2 seconds.
     sleep 2
     # If still alive, be violent.

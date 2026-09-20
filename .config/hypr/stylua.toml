@@ -1,0 +1,6 @@
+indent_type = "Spaces"
+quote_style = "AutoPreferSingle"
+call_parentheses = "None"
+
+[sort_requires]
+enabled = true
