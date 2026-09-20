@@ -44,8 +44,10 @@ man-db
 man-pages
 networkmanager
 ninja
+nodejs
 noto-fonts-cjk
 noto-fonts-emoji
+npm
 nwg-look
 obsidian
 openssh
@@ -76,6 +78,7 @@ swaync
 texinfo
 thunderbird
 trash-cli
+tree-sitter-cli
 udisks2
 ufw
 unzip
