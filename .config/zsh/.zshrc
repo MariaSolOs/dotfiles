@@ -13,11 +13,6 @@ setopt SHARE_HISTORY
 # Ignore duplicated commands history list.
 setopt hist_ignore_dups
 
-# Load nvm and set up bash completions.
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
 # Use a completion menu.
 zstyle ':completion:*' menu select
 

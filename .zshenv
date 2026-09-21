@@ -9,6 +9,7 @@ export PATH="$HOME/.nvim/bin:$PATH" # neovim
 export PATH="$HOME/.cargo/bin:$PATH" # cargo
 export PATH="$HOME/.local/bin:$PATH" # Local scripts.
 export PATH="$HOME/go/bin:$PATH" # Go binaries.
+export PATH="$HOME/.npm-global/bin:$PATH" # NPM global installs
 
 # zsh configuration.
 export HISTFILE="$XDG_CONFIG_HOME/zsh/.zsh_history"
