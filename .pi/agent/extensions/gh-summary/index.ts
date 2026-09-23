@@ -25,6 +25,7 @@ Requirements:
 - Use raw Markdown only; do not wrap the entire response in a code fence.
 - Do not include padding or preamble like "Here's a summary".
 - Include a suggested PR title and a PR description.
+- Use only ASCII apostrophes (', U+0027) and double quotes (", U+0022) in the title and description. Do not use curly apostrophes or quotation marks.
 - Keep the PR description to paragraphs, at most 3, unless a provided PR template requires another structure.
 - Describe changes in the PR description using present participles ("-ing" forms), such as "Removing the unused function", "Adding validation", or "Updating tests", rather than imperative forms like "Remove", "Add", or "Update". Apply this style to change descriptions in both paragraphs and template sections; it does not apply to the suggested PR title.
 - Be concise, but include important facts, design decisions, results, and follow-ups when applicable.
@@ -552,6 +553,12 @@ function stripWrappingCodeFence(text: string): string {
     return (match ? match[1] : trimmed).trimEnd() + "\n";
 }
 
+// Enforce the writing rule even if the isolated model call ignores its prompt,
+// without stripping unrelated Unicode such as names or mathematical symbols.
+function normalizeQuotes(text: string): string {
+    return text.replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"');
+}
+
 function textFromResponse(response: AssistantMessage): string {
     return response.content
         .filter(
@@ -856,7 +863,9 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     );
                 }
 
-                summary = stripWrappingCodeFence(textFromResponse(response));
+                summary = normalizeQuotes(
+                    stripWrappingCodeFence(textFromResponse(response)),
+                );
 
                 if (!summary.trim()) {
                     throw new Error(

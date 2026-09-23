@@ -20,6 +20,12 @@ import ghSummaryExtension from "./index.js";
 
 const exec = promisify(execFile);
 const markdown = "Title: Fix the race\n\nRemoving the race condition.\n";
+const curlyMarkdown =
+    "Title: Fix the worker\u2019s \u201crace\u201d\n\n" +
+    "Removing \u2018stale\u2019 state while keeping 'ASCII' and \"quotes\", caf\u00e9, and \u2192.\n";
+const normalizedMarkdown =
+    'Title: Fix the worker\'s "race"\n\n' +
+    "Removing 'stale' state while keeping 'ASCII' and \"quotes\", caf\u00e9, and \u2192.\n";
 
 async function fixture() {
     const root = await mkdtemp(path.join(process.cwd(), ".gh-summary-test-"));
@@ -66,7 +72,11 @@ esac
     };
 }
 
-function harness(cwd: string, failure?: "prepare" | "model" | "launch") {
+function harness(
+    cwd: string,
+    failure?: "prepare" | "model" | "launch",
+    responseMarkdown = markdown,
+) {
     const notices: string[] = [];
     const editorTexts: string[] = [];
     let handler!: (args: string, ctx: ExtensionCommandContext) => Promise<void>;
@@ -110,11 +120,19 @@ function harness(cwd: string, failure?: "prepare" | "model" | "launch") {
         modelRegistry: {
             complete: async (
                 selected: unknown,
-                context: { messages: { content: { text: string }[] }[] },
+                context: {
+                    systemPrompt: string;
+                    messages: { content: { text: string }[] }[];
+                },
             ) => {
                 modelCalls++;
                 if (process.platform === "darwin") assert.ok(captured);
                 assert.equal(selected, model);
+                assert.match(
+                    context.systemPrompt,
+                    /ASCII apostrophes.*U\+0027/,
+                );
+                assert.match(context.systemPrompt, /double quotes.*U\+0022/);
                 assert.match(context.messages[0].content[0].text, /fixRace/);
                 if (failure === "model") throw new Error("Model failed");
                 return {
@@ -122,7 +140,7 @@ function harness(cwd: string, failure?: "prepare" | "model" | "launch") {
                     content: [
                         {
                             type: "text",
-                            text: `\`\`\`markdown\n${markdown}\`\`\``,
+                            text: `\`\`\`markdown\n${responseMarkdown}\`\`\``,
                         },
                     ],
                 };
@@ -179,6 +197,33 @@ test("gh-summary uses the shared right-pane lifecycle with its own Markdown file
     }
 });
 
+test("normalizes curly quotes in saved drafts and editor recovery without changing other Unicode", async () => {
+    for (const failure of [undefined, "launch"] as const) {
+        const f = await fixture();
+        try {
+            const h = harness(f.root, failure, curlyMarkdown);
+            await h.run();
+            if (failure === "launch") {
+                assert.deepEqual(h.editorTexts, [normalizedMarkdown]);
+                assert.deepEqual(await readdir(f.drafts), []);
+            } else {
+                assert.ok(h.launched);
+                const entries = await readdir(f.drafts);
+                assert.equal(entries.length, 1);
+                assert.equal(
+                    await readFile(
+                        path.join(f.drafts, entries[0], "pr-description.md"),
+                        "utf8",
+                    ),
+                    normalizedMarkdown,
+                );
+            }
+        } finally {
+            await f.dispose();
+        }
+    }
+});
+
 test("preflight and model failures leave no summary files", async () => {
     const f = await fixture();
     try {
@@ -232,7 +277,7 @@ test("Linux uses configured right-split/paste bindings and an exiting shell", as
         await writeFile(fakeNvim, "#!/bin/sh\nexit 42\n", { mode: 0o700 });
         process.env.NVIM_BIN = fakeNvim;
         Object.defineProperty(process, "platform", { value: "linux" });
-        const h = harness(f.root);
+        const h = harness(f.root, undefined, curlyMarkdown);
         await h.run();
         assert.match(h.notices.at(-1)!, /right-hand Ghostty\/neovim pane/);
         const keys = await readFile(shortcuts, "utf8");
@@ -242,6 +287,13 @@ test("Linux uses configured right-split/paste bindings and an exiting shell", as
         const command = await readFile(clipboard, "utf8");
         assert.match(command, /^exec \/bin\/sh /);
         const entries = await readdir(f.drafts);
+        assert.equal(
+            await readFile(
+                path.join(f.drafts, entries[0], "pr-description.md"),
+                "utf8",
+            ),
+            normalizedMarkdown,
+        );
         const wrapper = await readFile(
             path.join(f.drafts, entries[0], "open-gh-summary.sh"),
             "utf8",
