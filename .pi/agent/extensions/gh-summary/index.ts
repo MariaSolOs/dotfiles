@@ -922,7 +922,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     await openInGhosttyLinux(wrapperPath);
                 }
                 ctx.ui.notify(
-                    `Opened PR summary in a right-hand Ghostty/neovim pane. The pane closes and temporary files are deleted when nvim exits (including :wq): ${summaryPath}`,
+                    `Opened PR summary in a right-hand Ghostty/neovim pane: ${summaryPath}`,
                     "info",
                 );
             } catch (error) {
