@@ -1,12 +1,10 @@
 {
-  "lastChangelogVersion": "0.86.1",
+  "lastChangelogVersion": "1.0.4",
   "theme": "miss-dracula",
   "editorPaddingX": 1,
   "treeFilterMode": "no-tools",
-  "defaultModel": "gpt-6-astra",
+  "defaultModel": "gpt-6.1-sol",
   "collapseChangelog": true,
   "defaultProvider": "openai-codex",
-  "warnings": {
-    "anthropicExtraUsage": false
-  }
+  "defaultTools": ["+codemode"]
 }
