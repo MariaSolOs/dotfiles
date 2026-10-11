@@ -1,8 +1,22 @@
 local add = require('vim-pack').add
 
+-- blink-emoji.nvim still requires the async module that blink.cmp moved into blink.lib,
+-- so alias it until the plugin catches up.
+package.preload['blink.cmp.lib.async'] = function()
+    local task = require 'blink.lib.task'
+    return {
+        task = setmetatable({
+            empty = function()
+                return task.resolve()
+            end,
+        }, { __index = task }),
+    }
+end
+
 -- Auto-completion and snippets.
 add {
     { src = 'saghen/blink.lib', setup = false },
+    { src = 'moyiz/blink-emoji.nvim', setup = false },
     {
         src = 'L3MON4D3/LuaSnip',
         module_name = 'luasnip',
@@ -89,7 +103,7 @@ add {
             sources = {
                 -- Disable some sources in comments and strings.
                 default = function()
-                    local sources = { 'lsp', 'buffer' }
+                    local sources = { 'lsp', 'buffer', 'emoji' }
                     local ok, node = pcall(vim.treesitter.get_node)
 
                     if ok and node then
@@ -103,6 +117,18 @@ add {
 
                     return sources
                 end,
+                providers = {
+                    emoji = {
+                        module = 'blink-emoji',
+                        name = 'Emoji',
+                        -- Rank emojis above the other sources when typing `:`.
+                        score_offset = 15,
+                        opts = { insert = true },
+                        should_show_items = function()
+                            return vim.tbl_contains({ 'gitcommit', 'markdown' }, vim.bo.filetype)
+                        end,
+                    },
+                },
             },
             appearance = {
                 kind_icons = require('icons').symbol_kinds,
