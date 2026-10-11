@@ -1,5 +1,4 @@
 local add = require('vim-pack').add
-local on_plugin_update = require('vim-pack').on_plugin_update
 
 -- Prepending nvim-treesitter's `runtime/` shadows Neovim's bundled queries for every language, not just the ones
 -- listed below. Those queries track nvim-treesitter's parser revisions, so any parser Neovim bundles has to be
@@ -95,8 +94,12 @@ add {
     },
 }
 
-on_plugin_update('nvim-treesitter', function()
-    -- Re-install and update parsers.
-    require('nvim-treesitter').install(install_list()):wait(300000)
-    require('nvim-treesitter').update():wait(300000)
-end)
+vim.api.nvim_create_autocmd('PackChanged', {
+    callback = function(args)
+        if args.data.spec.name == 'nvim-treesitter' and (args.data.kind == 'install' or args.data.kind == 'update') then
+            -- Re-install and update parsers.
+            require('nvim-treesitter').install(install_list()):wait(300000)
+            require('nvim-treesitter').update():wait(300000)
+        end
+    end,
+})
