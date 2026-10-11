@@ -5,6 +5,6 @@
   "treeFilterMode": "no-tools",
   "defaultModel": "gpt-6.1-sol",
   "collapseChangelog": true,
-  "defaultProvider": "openai-codex",
+  "defaultProvider": "openai",
   "defaultTools": ["+codemode"]
 }
