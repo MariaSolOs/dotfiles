@@ -53,8 +53,8 @@
       "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
     },
     "markdown-preview.nvim": {
-      "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
-      "src": "https://github.com/iamcco/markdown-preview.nvim"
+      "rev": "ec05f00643513d2e819dcc9176e3a4a0930e33a4",
+      "src": "https://github.com/sammaji/markdown-preview.nvim"
     },
     "mini.ai": {
       "rev": "c2c4278beb759aa24b9506f56a67186a6cc2209c",
