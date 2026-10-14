@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { Run } from "./github.js";
+type Run = (file: string, args: string[]) => Promise<string>;
 
 function shellQuote(value: string): string {
     return `'${value.replace(/'/g, `'\\''`)}'`;
@@ -35,7 +35,7 @@ export async function checkEditor(run: Run): Promise<{
         await run("/bin/sh", [
             "-c",
             'command -v "$1"',
-            "reply",
+            "gh-summary",
             process.env.NVIM_BIN || "nvim",
         ])
     ).trim();
@@ -59,9 +59,8 @@ export async function saveDraft(
     markdown: string,
     nvim: string,
     tempRoot = os.tmpdir(),
-    draftName = "reply",
+    draftName = "pr-description",
 ): Promise<{ draftPath: string; wrapperPath: string; directory: string }> {
-    // /gh-summary shares this lifecycle but uses its own Markdown filename.
     const directory = await mkdtemp(path.join(tempRoot, `pi-${draftName}-`));
     const draftPath = path.join(directory, `${draftName}.md`);
     const vimPath = path.join(directory, `${draftName}.vim`);

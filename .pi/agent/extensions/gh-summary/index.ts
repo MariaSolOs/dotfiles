@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import type { AssistantMessage, UserMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { checkEditor, openDraft, saveDraft } from "../reply/editor.js";
+import { checkEditor, openDraft, saveDraft } from "./editor.js";
 
 // Keep the summarization request bounded while preserving enough concrete diff
 // context for the model to write a useful PR title and description.
@@ -586,7 +586,7 @@ function shellQuote(value: string): string {
 }
 
 // Linux/Hyprland replaces the new pane's shell with this wrapper. macOS uses
-// /reply's native pane launcher instead, including its ID-scoped close/cleanup.
+// the native pane launcher instead, including its ID-scoped close/cleanup.
 function wrapperScript(nvimScriptPath: string, tmpDir: string): string {
     const devNvim = path.join(
         os.homedir(),
@@ -884,7 +884,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             try {
                 let summaryPath: string;
                 if (editor) {
-                    // Share /reply's native split, stable-ID closure, private
+                    // Use the native split, stable-ID closure, private
                     // Markdown buffer, and deletion on every nvim exit.
                     const draft = await saveDraft(
                         summary,

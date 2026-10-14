@@ -15,7 +15,7 @@ import type {
     ExtensionAPI,
     ExtensionCommandContext,
 } from "@earendil-works/pi-coding-agent";
-import { OPEN_PANE_SCRIPT, SOURCE_PANE_SCRIPT } from "../reply/editor.js";
+import { OPEN_PANE_SCRIPT, SOURCE_PANE_SCRIPT } from "./editor.js";
 import ghSummaryExtension from "./index.js";
 
 const exec = promisify(execFile);
@@ -165,7 +165,7 @@ function harness(
     };
 }
 
-test("gh-summary uses the shared right-pane lifecycle with its own Markdown filename", async () => {
+test("gh-summary uses the right-pane lifecycle with its own Markdown filename", async () => {
     const f = await fixture();
     try {
         const h = harness(f.root);
