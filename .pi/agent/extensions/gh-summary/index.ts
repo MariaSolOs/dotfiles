@@ -16,9 +16,8 @@ const MAX_UNTRACKED_FILES = 25;
 const MAX_UNTRACKED_READ_BYTES = 256_000;
 const MAX_UNTRACKED_FILE_CHARS = 12_000;
 
-// The default body structure is adapted from Matt Pocock's `pr` skill: show the
-// change with the smallest useful visual instead of prose, then list how it was
-// tested. A repo PR template takes precedence.
+// The default body shows the change with short prose plus the smallest useful
+// visual, then says how it was tested. A repo PR template takes precedence.
 const SYSTEM_PROMPT = `You write terse GitHub pull request titles and bodies from git changes. Reviewers skim: every line must earn its place.
 
 Grounding:
@@ -34,20 +33,19 @@ Default body template (use it unless a PR template is provided; omit a section e
 
 ## Testing
 
-- <how the change was verified: tests added or run, commands, manual checks>
+<a short paragraph on how the change was verified: tests added or run, commands, manual checks>
 
 Changes visuals (pick one, rarely two; use fenced code blocks):
-- \`diff\` sketch when the point is what changes inside an existing shape (call tree, file tree, component tree, or control flow). Show only the lines needed for context.
 - Pseudocode for logic or algorithms, a call tree for runtime flow, a shallow file tree for broad refactors, or a Mermaid diagram for interaction between components.
 - Keep only the calls, files, states, and boundaries needed to understand the change. Skip the visual if the change is trivial.
 
 Testing:
-- One short bullet per verification step. Mention new or updated tests from the diff, and test runs or manual checks from the provided context.
+- Mention test runs or manual checks from the provided context.
 
 Style:
 - Use raw Markdown only; do not wrap the whole response in a code fence.
 - No preamble, no restating the title, no filler like "This PR..." or "Here's a summary".
-- Prefer visuals and short bullets over paragraphs. No paragraph longer than two sentences.
+- Prefer short paragraphs over bullet lists. No paragraph longer than three sentences.
 - Use only ASCII apostrophes (', U+0027) and double quotes (", U+0022) in the title and body. Do not use curly apostrophes or quotation marks.
 - Describe changes in the body using present participles ("-ing" forms), such as "Removing the unused function" or "Adding validation", rather than imperatives like "Remove" or "Add". This does not apply to the title.
 - Keep the title short and specific (under ~70 characters).`;
