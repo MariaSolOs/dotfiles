@@ -16,20 +16,41 @@ const MAX_UNTRACKED_FILES = 25;
 const MAX_UNTRACKED_READ_BYTES = 256_000;
 const MAX_UNTRACKED_FILE_CHARS = 12_000;
 
-const SYSTEM_PROMPT = `You write concise, human-sounding GitHub pull request titles and descriptions from git changes.
+// The default body structure is adapted from Matt Pocock's `pr` skill: show the
+// change with the smallest useful visual instead of prose, then list how it was
+// tested. A repo PR template takes precedence.
+const SYSTEM_PROMPT = `You write terse GitHub pull request titles and bodies from git changes. Reviewers skim: every line must earn its place.
 
-Requirements:
-- Base the PR summary primarily on the provided git status, commit list, diffs, and untracked file contents.
-- Use provided extra context and conversation context only to understand intent, rationale, constraints, or wording around those git changes.
-- Do not summarize unrelated context or mention work that is not reflected in the git changes.
-- Use raw Markdown only; do not wrap the entire response in a code fence.
-- Do not include padding or preamble like "Here's a summary".
-- Include a suggested PR title and a PR description.
-- Use only ASCII apostrophes (', U+0027) and double quotes (", U+0022) in the title and description. Do not use curly apostrophes or quotation marks.
-- Keep the PR description to paragraphs, at most 3, unless a provided PR template requires another structure.
-- Describe changes in the PR description using present participles ("-ing" forms), such as "Removing the unused function", "Adding validation", or "Updating tests", rather than imperative forms like "Remove", "Add", or "Update". Apply this style to change descriptions in both paragraphs and template sections; it does not apply to the suggested PR title.
-- Be concise, but include important facts, design decisions, results, and follow-ups when applicable.
-- Use first person plural or neutral engineering voice when appropriate.`;
+Grounding:
+- Base the PR primarily on the provided git status, commits, diffs, and untracked file contents.
+- Use extra context and conversation context only to understand intent, rationale, or wording for those changes. Never mention work not reflected in the git changes.
+- Never invent testing. Only cite test runs, commands, or results that appear in the provided context.
+
+Default body template (use it unless a PR template is provided; omit a section entirely if there is nothing grounded to put in it):
+
+## Changes
+
+<one or two short sentences of intent, then the smallest visual that makes the key point clear>
+
+## Testing
+
+- <how the change was verified: tests added or run, commands, manual checks>
+
+Changes visuals (pick one, rarely two; use fenced code blocks):
+- \`diff\` sketch when the point is what changes inside an existing shape (call tree, file tree, component tree, or control flow). Show only the lines needed for context.
+- Pseudocode for logic or algorithms, a call tree for runtime flow, a shallow file tree for broad refactors, or a Mermaid diagram for interaction between components.
+- Keep only the calls, files, states, and boundaries needed to understand the change. Skip the visual if the change is trivial.
+
+Testing:
+- One short bullet per verification step. Mention new or updated tests from the diff, and test runs or manual checks from the provided context.
+
+Style:
+- Use raw Markdown only; do not wrap the whole response in a code fence.
+- No preamble, no restating the title, no filler like "This PR..." or "Here's a summary".
+- Prefer visuals and short bullets over paragraphs. No paragraph longer than two sentences.
+- Use only ASCII apostrophes (', U+0027) and double quotes (", U+0022) in the title and body. Do not use curly apostrophes or quotation marks.
+- Describe changes in the body using present participles ("-ing" forms), such as "Removing the unused function" or "Adding validation", rather than imperatives like "Remove" or "Add". This does not apply to the title.
+- Keep the title short and specific (under ~70 characters).`;
 
 function truncate(value: string, max = MAX_SECTION_CHARS): string {
     if (value.length <= max) return value;
@@ -493,7 +514,7 @@ function buildUserPrompt(
 ): string {
     const templateSection = prTemplate
         ? [
-              "Use this GitHub PR template for the description if possible:",
+              "Use this GitHub PR template instead of the default body template. Keep each section terse and prefer visuals over prose where they fit:",
               "<pull_request_template>",
               prTemplate,
               "</pull_request_template>",
@@ -527,7 +548,7 @@ function buildUserPrompt(
             : "commits on the current branch";
 
     return [
-        `Summarize the ${sourceDescription} into a concise GitHub-ready PR description, together with a suggested title.`,
+        `Summarize the ${sourceDescription} into a terse GitHub-ready PR body, together with a suggested title.`,
         "Focus on the provided git changes. Use extra/context sections only as supporting context for those changes, not as the thing being summarized.",
         "",
         templateSection,
@@ -536,7 +557,7 @@ function buildUserPrompt(
         "Output format:",
         "Title: <suggested PR title>",
         "",
-        "<PR description markdown>",
+        "<PR body markdown>",
         "",
         "Git changes:",
         "<git_changes>",
