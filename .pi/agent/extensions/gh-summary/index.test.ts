@@ -104,6 +104,11 @@ function harness(
     nvimPath = "/fake/nvim",
 ) {
     const notices: string[] = [];
+    const messages: {
+        customType: string;
+        content: string;
+        display: boolean;
+    }[] = [];
     const editorTexts: string[] = [];
     let handler!: (args: string, ctx: ExtensionCommandContext) => Promise<void>;
     let modelCalls = 0;
@@ -111,6 +116,9 @@ function harness(
     let launched = false;
     const pi = {
         on() {},
+        sendMessage(message: (typeof messages)[number]) {
+            messages.push(message);
+        },
         registerCommand(name: string, definition: { handler: typeof handler }) {
             assert.equal(name, "gh-summary");
             handler = definition.handler;
@@ -182,6 +190,7 @@ function harness(
     return {
         run: () => handler("Keep it concise", ctx),
         notices,
+        messages,
         editorTexts,
         get modelCalls() {
             return modelCalls;
@@ -415,7 +424,21 @@ exit ${status}
 test("closing nvim updates the PR title and body from the edited draft", async () => {
     const { f, h } = await closeDraft(0);
     try {
-        await waitFor(() => /Updated PR #7/.test(h.notices.at(-1)!));
+        await waitFor(() => h.messages.length > 0);
+        assert.deepEqual(
+            h.messages.map(({ customType, content, display }) => ({
+                customType,
+                content,
+                display,
+            })),
+            [
+                {
+                    customType: "gh-summary",
+                    content: "Updated PR #7: https://github.com/o/r/pull/7",
+                    display: true,
+                },
+            ],
+        );
         assert.equal(
             await readFile(path.join(f.root, "gh-edit-args"), "utf8"),
             [
@@ -442,6 +465,7 @@ test("a nonzero nvim exit skips the PR update", async () => {
     const { f, h } = await closeDraft(1);
     try {
         await waitFor(() => /not updated/.test(h.notices.at(-1)!));
+        assert.deepEqual(h.messages, []);
         assert.match(h.notices.at(-1)!, /status 1/);
         assert.deepEqual(
             (await readdir(f.root)).filter((n) => n.startsWith("gh-edit")),
@@ -455,7 +479,11 @@ test("a nonzero nvim exit skips the PR update", async () => {
 test("without a PR, closing nvim commits, pushes, and opens a draft PR", async () => {
     const { f, h } = await closeDraft(0, false);
     try {
-        await waitFor(() => /Opened draft PR #8/.test(h.notices.at(-1)!));
+        await waitFor(() => h.messages.length > 0);
+        assert.equal(
+            h.messages[0].content,
+            "Opened draft PR #8: https://github.com/o/r/pull/8",
+        );
         assert.equal(
             await readFile(path.join(f.root, "git-writes"), "utf8"),
             [
@@ -491,6 +519,7 @@ test("on the base branch, closing nvim only copies the draft to the clipboard", 
     const { f, h } = await closeDraft(0, false, "main");
     try {
         await waitFor(() => /Copied the PR draft/.test(h.notices.at(-1)!));
+        assert.deepEqual(h.messages, []);
         assert.equal(
             await readFile(path.join(f.root, "clipboard"), "utf8"),
             "Title: Edited 'title'\n\nEdited body.\n",

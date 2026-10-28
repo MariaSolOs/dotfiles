@@ -923,6 +923,17 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
         watchers.clear();
     });
 
+    // Notifications are transient, so record the PR link in the session
+    // transcript as a displayed custom message. It does not start a turn.
+    const printPrLink = (action: string, pr: PullRequest) => {
+        pi.sendMessage({
+            customType: "gh-summary",
+            content: `${action}: ${pr.url}`,
+            display: true,
+            details: pr,
+        });
+    };
+
     // Runs in the background after the command returns: once nvim exits,
     // push the final draft to GitHub by editing the existing PR or opening a
     // draft one. When GitHub cannot be updated (e.g. on the base branch), copy
@@ -978,10 +989,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             }
             if (target.kind === "edit") {
                 await updatePullRequest(changes.root, target.pr, draft);
-                ctx.ui.notify(
-                    `Updated PR #${target.pr.number}: ${target.pr.url}`,
-                    "info",
-                );
+                printPrLink(`Updated PR #${target.pr.number}`, target.pr);
                 return;
             }
             if (!draft.title) {
@@ -996,7 +1004,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                 title: draft.title,
                 body: draft.body,
             });
-            ctx.ui.notify(`Opened draft PR #${pr.number}: ${pr.url}`, "info");
+            printPrLink(`Opened draft PR #${pr.number}`, pr);
         } catch (error) {
             ctx.ui.notify(
                 `Failed to ${target.kind === "edit" ? `update ${target.pr.url}` : target.kind === "create" ? "open a PR" : "copy the PR draft"}: ${(error as Error).message}`,
