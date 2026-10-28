@@ -150,7 +150,3 @@ Use `Not assessed: no spec available` only when the user confirmed none exists. 
 Keep findings concise and avoid padding with praise or speculative nits. If an assessed axis or subsection has no findings, say `No actionable findings` rather than claiming proof of correctness. Retain the conformance limitation even when independent correctness concerns are reported.
 
 End with validation limitations and a one-line summary giving the finding count and highest severity separately for Standards and Spec. Within Spec, distinguish requirement findings from independent correctness concerns and retain any partial/not-assessed status. Do not give an overall pass when an axis was not assessed.
-
-## 6. Evaluate skill changes
-
-When changing this skill, use the fixture suite in [benchmarks/review-cases.md](benchmarks/review-cases.md). This is maintenance guidance, not an extra step for ordinary code reviews. Compare revisions using the same model, tools, and case inputs in fresh sessions; repeat runs to measure variability. Track missed defects, unsupported findings, unnecessary questions, snapshot/scope mistakes, and review cost. Do not claim a design change improved accuracy without benchmark evidence.
