@@ -39,7 +39,7 @@ Default body template (use it unless a PR template is provided; omit a section e
 
 ## Changes
 
-<one or two short sentences of intent, then the smallest visual that makes the key point clear>
+<one or two short sentences of intent>
 
 ## Testing
 
