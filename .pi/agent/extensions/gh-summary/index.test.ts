@@ -45,12 +45,37 @@ case "$1" in
     case "$2" in
       --show-toplevel) printf '%s\\n' "$PWD" ;;
       --short) printf 'abc123\\n' ;;
-      *) exit 1 ;;
+      --verify) exit 1 ;;
+      *) exit 128 ;;
     esac ;;
-  branch) printf 'feature\\n' ;;
+  branch)
+    if [ -f '${root}/branch' ]; then /bin/cat '${root}/branch'
+    else printf 'feature\\n'; fi ;;
   status) printf ' M changed.ts\\n' ;;
+  add|commit|push) printf '%s\\n' "$*" >> '${root}/git-writes' ;;
   diff) printf '%s\\n' 'diff --git a/changed.ts b/changed.ts' '+fixRace()' ;;
   ls-files) exit 0 ;;
+  *) exit 1 ;;
+esac
+`,
+        { mode: 0o700 },
+    );
+    // Stub gh: `pr view` reports the PR in pr.json when present; `pr edit` and
+    // `pr create` record their argv and stdin body for assertions.
+    await writeFile(
+        path.join(bin, "gh"),
+        `#!/bin/sh
+case "$1 $2" in
+  "pr view")
+    if [ -f '${root}/pr.json' ]; then /bin/cat '${root}/pr.json'
+    else echo 'no pull requests found for branch "feature"' >&2; exit 1; fi ;;
+  "pr create")
+    printf '%s\\n' "$@" > '${root}/gh-create-args'
+    /bin/cat > '${root}/gh-create-body'
+    printf 'https://github.com/o/r/pull/8\\n' ;;
+  "pr edit")
+    printf '%s\\n' "$@" > '${root}/gh-edit-args'
+    /bin/cat > '${root}/gh-edit-body' ;;
   *) exit 1 ;;
 esac
 `,
@@ -76,6 +101,7 @@ function harness(
     cwd: string,
     failure?: "prepare" | "model" | "launch",
     responseMarkdown = markdown,
+    nvimPath = "/fake/nvim",
 ) {
     const notices: string[] = [];
     const editorTexts: string[] = [];
@@ -84,6 +110,7 @@ function harness(
     let captured = false;
     let launched = false;
     const pi = {
+        on() {},
         registerCommand(name: string, definition: { handler: typeof handler }) {
             assert.equal(name, "gh-summary");
             handler = definition.handler;
@@ -96,7 +123,7 @@ function harness(
                 captured = true;
                 stdout = "pi-pane-id\n";
             } else if (file === "/bin/sh") {
-                stdout = "/fake/nvim\n";
+                stdout = `${nvimPath}\n`;
             } else {
                 assert.equal(args[1], OPEN_PANE_SCRIPT);
                 assert.equal(modelCalls, 1);
@@ -190,7 +217,11 @@ test("gh-summary uses the right-pane lifecycle with its own Markdown filename", 
         assert.match(wrapper, /trap cleanup 0/);
         assert.match(wrapper, /close \(first terminal whose id is replyId\)/);
         assert.ok(!wrapper.includes("System Events"));
-        assert.match(h.notices.at(-1)!, /right-hand Ghostty\/neovim pane/);
+        assert.match(wrapper, /exit-status/);
+        assert.ok(
+            h.notices.some((n) => /right-hand Ghostty\/neovim pane/.test(n)),
+        );
+        assert.match(h.notices.at(-1)!, /opens a draft PR/);
         assert.deepEqual(h.editorTexts, []);
     } finally {
         await f.dispose();
@@ -279,7 +310,9 @@ test("Linux uses configured right-split/paste bindings and an exiting shell", as
         Object.defineProperty(process, "platform", { value: "linux" });
         const h = harness(f.root, undefined, curlyMarkdown);
         await h.run();
-        assert.match(h.notices.at(-1)!, /right-hand Ghostty\/neovim pane/);
+        assert.ok(
+            h.notices.some((n) => /right-hand Ghostty\/neovim pane/.test(n)),
+        );
         const keys = await readFile(shortcuts, "utf8");
         assert.match(keys, /ALT SHIFT,V,activewindow/);
         assert.match(keys, /ALT SHIFT,P,activewindow/);
@@ -306,6 +339,167 @@ test("Linux uses configured right-split/paste bindings and an exiting shell", as
         Object.defineProperty(process, "platform", platform);
         if (previousNvim === undefined) delete process.env.NVIM_BIN;
         else process.env.NVIM_BIN = previousNvim;
+        await f.dispose();
+    }
+});
+
+async function waitFor(predicate: () => Promise<boolean> | boolean) {
+    for (let i = 0; i < 200; i++) {
+        if (await predicate()) return;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    assert.fail("timed out waiting for condition");
+}
+
+// Runs the real generated wrapper (standalone, without --close-pane) with a
+// fake nvim that rewrites the draft and exits with the given status.
+async function closeDraft(
+    status: number,
+    existingPr = true,
+    branch = "feature",
+) {
+    const f = await fixture();
+    try {
+        await writeFile(path.join(f.root, "branch"), `${branch}\n`);
+        // Stub the macOS clipboard (Linux uses wl-copy, stubbed separately).
+        await writeFile(
+            path.join(f.bin, "pbcopy"),
+            `#!/bin/sh\n/bin/cat > '${f.root}/clipboard'\n`,
+            { mode: 0o700 },
+        );
+        if (existingPr) {
+            await writeFile(
+                path.join(f.root, "pr.json"),
+                JSON.stringify({
+                    number: 7,
+                    url: "https://github.com/o/r/pull/7",
+                    state: "OPEN",
+                }),
+            );
+        }
+        const fakeNvim = path.join(f.bin, "fake-nvim");
+        await writeFile(
+            fakeNvim,
+            `#!/bin/sh
+draft="\${5%.vim}.md"
+printf '%s\\n' 'Title: Edited \u2019title\u2019' '' 'Edited body.' > "$draft"
+exit ${status}
+`,
+            { mode: 0o700 },
+        );
+        const h = harness(f.root, undefined, markdown, fakeNvim);
+        await h.run();
+        assert.match(
+            h.notices.at(-1)!,
+            existingPr
+                ? /Closing nvim updates PR #7/
+                : branch === "main"
+                  ? /copies the draft to the clipboard \(GitHub will not be updated: main is the base branch\)/
+                  : /commits the worktree changes, pushes feature to origin and opens a draft PR/,
+        );
+        const [entry] = await readdir(f.drafts);
+        const wrapper = path.join(f.drafts, entry, "open-pr-description.sh");
+        assert.match(await readFile(wrapper, "utf8"), /exit-status/);
+        // The wrapper propagates nvim's exit status.
+        await exec("/bin/sh", [wrapper]).catch((error) =>
+            assert.equal(error.code, status),
+        );
+        assert.deepEqual(await readdir(f.drafts), []);
+        return { f, h };
+    } catch (error) {
+        await f.dispose();
+        throw error;
+    }
+}
+
+test("closing nvim updates the PR title and body from the edited draft", async () => {
+    const { f, h } = await closeDraft(0);
+    try {
+        await waitFor(() => /Updated PR #7/.test(h.notices.at(-1)!));
+        assert.equal(
+            await readFile(path.join(f.root, "gh-edit-args"), "utf8"),
+            [
+                "pr",
+                "edit",
+                "https://github.com/o/r/pull/7",
+                "--title",
+                "Edited 'title'",
+                "--body-file",
+                "-",
+                "",
+            ].join("\n"),
+        );
+        assert.equal(
+            await readFile(path.join(f.root, "gh-edit-body"), "utf8"),
+            "Edited body.\n",
+        );
+    } finally {
+        await f.dispose();
+    }
+});
+
+test("a nonzero nvim exit skips the PR update", async () => {
+    const { f, h } = await closeDraft(1);
+    try {
+        await waitFor(() => /not updated/.test(h.notices.at(-1)!));
+        assert.match(h.notices.at(-1)!, /status 1/);
+        assert.deepEqual(
+            (await readdir(f.root)).filter((n) => n.startsWith("gh-edit")),
+            [],
+        );
+    } finally {
+        await f.dispose();
+    }
+});
+
+test("without a PR, closing nvim commits, pushes, and opens a draft PR", async () => {
+    const { f, h } = await closeDraft(0, false);
+    try {
+        await waitFor(() => /Opened draft PR #8/.test(h.notices.at(-1)!));
+        assert.equal(
+            await readFile(path.join(f.root, "git-writes"), "utf8"),
+            [
+                "add --all",
+                "commit --message Edited 'title'",
+                "push --set-upstream origin feature",
+                "",
+            ].join("\n"),
+        );
+        assert.equal(
+            await readFile(path.join(f.root, "gh-create-args"), "utf8"),
+            [
+                "pr",
+                "create",
+                "--draft",
+                "--title",
+                "Edited 'title'",
+                "--body-file",
+                "-",
+                "",
+            ].join("\n"),
+        );
+        assert.equal(
+            await readFile(path.join(f.root, "gh-create-body"), "utf8"),
+            "Edited body.\n",
+        );
+    } finally {
+        await f.dispose();
+    }
+});
+
+test("on the base branch, closing nvim only copies the draft to the clipboard", async () => {
+    const { f, h } = await closeDraft(0, false, "main");
+    try {
+        await waitFor(() => /Copied the PR draft/.test(h.notices.at(-1)!));
+        assert.equal(
+            await readFile(path.join(f.root, "clipboard"), "utf8"),
+            "Title: Edited 'title'\n\nEdited body.\n",
+        );
+        const writes = (await readdir(f.root)).filter((name) =>
+            /^(git-writes|gh-create|gh-edit)/.test(name),
+        );
+        assert.deepEqual(writes, []);
+    } finally {
         await f.dispose();
     }
 });

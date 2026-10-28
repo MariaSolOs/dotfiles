@@ -3,8 +3,18 @@ import { mkdtemp, open, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { AssistantMessage, UserMessage } from "@earendil-works/pi-ai";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { checkEditor, openDraft, saveDraft } from "./editor.js";
+import type {
+    ExtensionAPI,
+    ExtensionCommandContext,
+} from "@earendil-works/pi-coding-agent";
+import {
+    checkEditor,
+    handoffShell,
+    openDraft,
+    saveDraft,
+    waitForDraftClose,
+    type ClosedDraft,
+} from "./editor.js";
 
 // Keep the summarization request bounded while preserving enough concrete diff
 // context for the model to write a useful PR title and description.
@@ -79,12 +89,17 @@ function runCapture(
     args: string[],
     cwd: string,
     allowedExitCodes = [0],
+    input?: string,
 ): Promise<CommandResult> {
     return new Promise((resolve, reject) => {
         const child = spawn(file, args, {
             cwd,
-            stdio: ["ignore", "pipe", "pipe"],
+            stdio: ["pipe", "pipe", "pipe"],
         });
+        // Closing stdin immediately matches an ignored stdin for commands
+        // that do not read input.
+        child.stdin.on("error", () => {});
+        child.stdin.end(input ?? "");
         let stdout = "";
         let stderr = "";
 
@@ -275,6 +290,8 @@ async function buildUntrackedSection(
 
 type GitChanges = {
     root: string;
+    // Checked-out branch name; empty for a detached HEAD.
+    branch: string;
     source: "worktree" | "branch";
     text: string;
 };
@@ -330,20 +347,21 @@ async function collectBranchChanges(
     branch: string,
     head: string,
 ): Promise<GitChanges> {
-    const baseRef = await firstExistingBaseRef(root, branch.trim());
-    if (!baseRef) return { root, source: "branch", text: "" };
+    branch = branch.trim();
+    const baseRef = await firstExistingBaseRef(root, branch);
+    if (!baseRef) return { root, branch, source: "branch", text: "" };
 
     const mergeBase = (
         await runGit(root, ["merge-base", baseRef, "HEAD"], [0, 1])
     ).trim();
-    if (!mergeBase) return { root, source: "branch", text: "" };
+    if (!mergeBase) return { root, branch, source: "branch", text: "" };
 
     const commitCount = Number(
         (
             await runGit(root, ["rev-list", "--count", `${mergeBase}..HEAD`])
         ).trim(),
     );
-    if (commitCount === 0) return { root, source: "branch", text: "" };
+    if (commitCount === 0) return { root, branch, source: "branch", text: "" };
 
     const [commits, diffStat, diff] = await Promise.all([
         runGit(root, ["log", "--oneline", "--decorate", `${mergeBase}..HEAD`]),
@@ -377,7 +395,7 @@ async function collectBranchChanges(
     appendBoundedSection(sections, "Branch diffstat", diffStat, total);
     appendBoundedSection(sections, "Branch diff", diff, total);
 
-    return { root, source: "branch", text: sections.join("\n\n") };
+    return { root, branch, source: "branch", text: sections.join("\n\n") };
 }
 
 async function collectGitChanges(cwd: string): Promise<GitChanges> {
@@ -444,7 +462,12 @@ async function collectGitChanges(cwd: string): Promise<GitChanges> {
         total,
     );
 
-    return { root, source: "worktree", text: sections.join("\n\n") };
+    return {
+        root,
+        branch: branch.trim(),
+        source: "worktree",
+        text: sections.join("\n\n"),
+    };
 }
 
 // Match GitHub's common single-file PR template location; absence is normal.
@@ -588,6 +611,145 @@ function textFromResponse(response: AssistantMessage): string {
         .join("\n");
 }
 
+type PullRequest = { number: number; url: string };
+
+// Look up the open PR for the checked-out branch. Resolves undefined when gh
+// reports there is none; other failures (gh missing, unauthenticated, no
+// GitHub remote) throw so callers do not try to create a PR blindly.
+async function findPullRequest(root: string): Promise<PullRequest | undefined> {
+    const result = await runCapture(
+        "gh",
+        ["pr", "view", "--json", "number,url,state"],
+        root,
+        [0, 1],
+    );
+    if (result.code !== 0) {
+        if (/no (open )?pull requests? found/i.test(result.stderr)) {
+            return undefined;
+        }
+        throw new Error(result.stderr.trim() || "gh pr view failed");
+    }
+    const pr = JSON.parse(result.stdout) as PullRequest & { state?: string };
+    if (pr.state && pr.state !== "OPEN") return undefined;
+    return pr.url ? { number: pr.number, url: pr.url } : undefined;
+}
+
+// What closing the draft does to GitHub, decided when the command starts so
+// the user is told up front and the editor wrapper only waits for pi when
+// there is something to do.
+type PrTarget =
+    | { kind: "edit"; pr: PullRequest }
+    | { kind: "create"; branch: string }
+    | { kind: "none"; reason: string };
+
+// Never rejects: it runs concurrently with generation, and any failure only
+// disables syncing to GitHub.
+async function resolvePrTarget(changes: GitChanges): Promise<PrTarget> {
+    try {
+        return await resolvePrTargetOrThrow(changes);
+    } catch (error) {
+        return { kind: "none", reason: (error as Error).message };
+    }
+}
+
+async function resolvePrTargetOrThrow(changes: GitChanges): Promise<PrTarget> {
+    const pr = await findPullRequest(changes.root);
+    if (pr) return { kind: "edit", pr };
+
+    // Creating a PR commits and pushes, so refuse anywhere that would land
+    // the work on the base branch itself.
+    const branch = changes.branch;
+    if (!branch) return { kind: "none", reason: "HEAD is detached" };
+    const baseRef = await firstExistingBaseRef(changes.root, branch);
+    const baseBranch = baseRef?.replace(/^[^/]+\//, "");
+    if (branch === baseBranch || branch === "main" || branch === "master") {
+        return { kind: "none", reason: `${branch} is the base branch` };
+    }
+    return { kind: "create", branch };
+}
+
+// Split the edited draft back into the "Title: ..." line the model was asked
+// to emit and the Markdown body. Without a title line, the whole draft is the
+// body and the PR's existing title is kept.
+export function parseDraft(markdown: string): {
+    title?: string;
+    body: string;
+} {
+    const lines = normalizeQuotes(markdown).replace(/\r\n/g, "\n").split("\n");
+    const first = lines.findIndex((line) => line.trim());
+    if (first === -1) return { body: "" };
+    const match = lines[first].match(/^\s*Title:\s*(.*?)\s*$/i);
+    if (!match) return { body: lines.slice(first).join("\n").trim() };
+    return {
+        title: match[1] || undefined,
+        body: lines
+            .slice(first + 1)
+            .join("\n")
+            .trim(),
+    };
+}
+
+async function updatePullRequest(
+    root: string,
+    pr: PullRequest,
+    draft: { title?: string; body: string },
+): Promise<void> {
+    const args = ["pr", "edit", pr.url];
+    if (draft.title) args.push("--title", draft.title);
+    // Pipe the body through stdin: it can be large and contain anything.
+    if (draft.body) args.push("--body-file", "-");
+    await runCapture(
+        "gh",
+        args,
+        root,
+        [0],
+        draft.body ? draft.body + "\n" : "",
+    );
+}
+
+// Open a draft PR for the branch from the edited draft. Worktree summaries
+// describe uncommitted work, so commit it first (titled like the PR) so that
+// the PR contains what its description says.
+async function createPullRequest(
+    changes: GitChanges,
+    branch: string,
+    draft: { title: string; body: string },
+): Promise<PullRequest> {
+    const root = changes.root;
+    const current = (await runGit(root, ["branch", "--show-current"])).trim();
+    if (current !== branch) {
+        throw new Error(
+            `the checkout moved from ${branch} to ${current || "a detached HEAD"}`,
+        );
+    }
+
+    if (
+        changes.source === "worktree" &&
+        (await runGit(root, ["status", "--porcelain"])).trim()
+    ) {
+        await runGit(root, ["add", "--all"]);
+        await runGit(root, ["commit", "--message", draft.title]);
+    }
+
+    // Push to a same-named branch on origin; a bare `git push` could target
+    // whatever the branch happens to track (e.g. origin/main).
+    await runGit(root, ["push", "--set-upstream", "origin", branch]);
+
+    const result = await runCapture(
+        "gh",
+        ["pr", "create", "--draft", "--title", draft.title, "--body-file", "-"],
+        root,
+        [0],
+        draft.body + "\n",
+    );
+    const url = result.stdout.trim().split("\n").at(-1) ?? "";
+    const number = Number(url.match(/\/pull\/(\d+)/)?.[1]);
+    if (!url.startsWith("http") || !number) {
+        throw new Error(`unexpected gh pr create output: ${result.stdout}`);
+    }
+    return { number, url };
+}
+
 function vimString(value: string): string {
     return `'${value.replace(/'/g, "''")}'`;
 }
@@ -642,6 +804,8 @@ else
   exit 127
 fi
 "$nvim_bin" -n -i NONE -S "$vimscript"
+status=$?
+${handoffShell(tmpDir)}
 # Like revisar, do not leave Ghostty showing an abnormal command exit after
 # the editor finishes. The EXIT trap still deletes the temporary files.
 exit 0
@@ -666,6 +830,7 @@ function runClipboardCommand(
     file: string,
     args: string[],
     input: string,
+    waitForExit = false,
 ): Promise<void> {
     return new Promise((resolve, reject) => {
         const child = spawn(file, args, {
@@ -700,6 +865,7 @@ function runClipboardCommand(
         });
 
         child.stdin.end(input, () => {
+            if (waitForExit) return;
             // Wayland/X11 clipboard tools often stay alive to serve future paste
             // requests. Once stdin is accepted, continue with Ghostty automation
             // instead of waiting forever for the clipboard owner to exit.
@@ -709,6 +875,11 @@ function runClipboardCommand(
 }
 
 async function copyToClipboard(text: string): Promise<void> {
+    if (process.platform === "darwin") {
+        // pbcopy exits once it has read stdin, so wait for its real result.
+        await runClipboardCommand("pbcopy", [], text, true);
+        return;
+    }
     if (await commandExists("wl-copy")) {
         await runClipboardCommand("wl-copy", [], text);
         return;
@@ -745,6 +916,100 @@ async function openInGhosttyLinux(wrapperPath: string): Promise<void> {
 }
 
 export default function ghSummaryExtension(pi: ExtensionAPI) {
+    // Drafts still open in an editor pane, each waiting to update its PR.
+    const watchers = new Set<AbortController>();
+    pi.on("session_shutdown", () => {
+        for (const watcher of watchers) watcher.abort();
+        watchers.clear();
+    });
+
+    // Runs in the background after the command returns: once nvim exits,
+    // push the final draft to GitHub by editing the existing PR or opening a
+    // draft one. When GitHub cannot be updated (e.g. on the base branch), copy
+    // the draft to the clipboard for manual use instead. Quitting with a
+    // nonzero status (`:cq`) or emptying the draft skips it.
+    const syncOnClose = async (
+        ctx: ExtensionCommandContext,
+        changes: GitChanges,
+        target: PrTarget,
+        directory: string,
+        draftPath: string,
+    ) => {
+        const controller = new AbortController();
+        watchers.add(controller);
+        const skipped =
+            target.kind === "edit"
+                ? `PR #${target.pr.number} was not updated`
+                : target.kind === "create"
+                  ? "no PR was created"
+                  : "nothing was copied";
+        let closed: ClosedDraft | undefined;
+        try {
+            closed = await waitForDraftClose(
+                directory,
+                draftPath,
+                controller.signal,
+            );
+            if (controller.signal.aborted) return;
+            if (!closed) {
+                ctx.ui.notify(
+                    `PR draft closed without a clean nvim exit; ${skipped}`,
+                    "warning",
+                );
+                return;
+            }
+            if (closed.status !== 0) {
+                ctx.ui.notify(
+                    `nvim exited with status ${closed.status}; ${skipped}`,
+                    "info",
+                );
+                return;
+            }
+            const draft = parseDraft(closed.markdown);
+            if (!draft.title && !draft.body) {
+                ctx.ui.notify(`PR draft was empty; ${skipped}`, "info");
+                return;
+            }
+            if (target.kind === "none") {
+                // Copy the buffer verbatim, including its "Title:" line.
+                await copyToClipboard(normalizeQuotes(closed.markdown));
+                ctx.ui.notify("Copied the PR draft to the clipboard", "info");
+                return;
+            }
+            if (target.kind === "edit") {
+                await updatePullRequest(changes.root, target.pr, draft);
+                ctx.ui.notify(
+                    `Updated PR #${target.pr.number}: ${target.pr.url}`,
+                    "info",
+                );
+                return;
+            }
+            if (!draft.title) {
+                ctx.ui.notify(
+                    `PR draft has no "Title:" line; ${skipped}`,
+                    "warning",
+                );
+                if (ctx.hasUI) ctx.ui.setEditorText(closed.markdown);
+                return;
+            }
+            const pr = await createPullRequest(changes, target.branch, {
+                title: draft.title,
+                body: draft.body,
+            });
+            ctx.ui.notify(`Opened draft PR #${pr.number}: ${pr.url}`, "info");
+        } catch (error) {
+            ctx.ui.notify(
+                `Failed to ${target.kind === "edit" ? `update ${target.pr.url}` : target.kind === "create" ? "open a PR" : "copy the PR draft"}: ${(error as Error).message}`,
+                "error",
+            );
+            // The wrapper deletes the draft after handoff; keep the edited
+            // Markdown recoverable in pi's input.
+            if (closed && ctx.hasUI) ctx.ui.setEditorText(closed.markdown);
+        } finally {
+            watchers.delete(controller);
+        }
+    };
+
     pi.registerCommand("gh-summary", {
         description:
             "Create a GitHub-ready PR title/description from git changes and open it in a right-hand Ghostty/neovim pane. Usage: /gh-summary [--repo <path>] [extra context]",
@@ -804,9 +1069,12 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             }
 
             let changes: GitChanges;
+            let targetLookup: Promise<PrTarget>;
             const model = ctx.model;
             try {
                 changes = await collectGitChanges(targetCwd);
+                // Look up the PR while the model generates the summary.
+                targetLookup = resolvePrTarget(changes);
             } catch (error) {
                 ctx.ui.notify(
                     `Failed to inspect git changes: ${(error as Error).message}`,
@@ -899,6 +1167,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                 return;
             }
 
+            const target = await targetLookup;
             let tmpDir: string | undefined;
             try {
                 let summaryPath: string;
@@ -910,6 +1179,8 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                         editor.nvim,
                         os.tmpdir(),
                         "pr-description",
+                        // Every PR target acts on the final draft.
+                        true,
                     );
                     tmpDir = draft.directory;
                     summaryPath = draft.draftPath;
@@ -944,6 +1215,17 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     `Opened PR summary in a right-hand Ghostty/neovim pane: ${summaryPath}`,
                     "info",
                 );
+                const action =
+                    target.kind === "edit"
+                        ? `updates PR #${target.pr.number} (${target.pr.url})`
+                        : target.kind === "create"
+                          ? `${changes.source === "worktree" ? "commits the worktree changes, " : ""}pushes ${target.branch} to origin and opens a draft PR`
+                          : `copies the draft to the clipboard (GitHub will not be updated: ${target.reason})`;
+                ctx.ui.notify(
+                    `Closing nvim ${action}; use :cq to skip`,
+                    "info",
+                );
+                void syncOnClose(ctx, changes, target, tmpDir, summaryPath);
             } catch (error) {
                 ctx.ui.notify(
                     `Failed to open Ghostty/neovim: ${(error as Error).message}`,

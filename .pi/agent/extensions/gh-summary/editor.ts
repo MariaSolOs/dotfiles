@@ -1,6 +1,7 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 type Run = (file: string, args: string[]) => Promise<string>;
 
 function shellQuote(value: string): string {
@@ -46,6 +47,61 @@ export async function checkEditor(run: Run): Promise<{
     return { nvim, terminalId };
 }
 
+// How long a wrapper waits for pi to read the closed draft before deleting it
+// anyway (e.g. because pi has exited): 200 * 0.05s.
+const HANDOFF_ATTEMPTS = 200;
+
+// Shell run after nvim exits when pi is watching the draft. It publishes the
+// editor's exit status atomically, then blocks cleanup until pi acknowledges
+// that it has read the final draft, so deletion cannot race the read.
+export function handoffShell(directory: string): string {
+    const statusPath = path.join(directory, "exit-status");
+    return `printf '%s\\n' "$status" > ${shellQuote(statusPath + ".tmp")} &&
+    /bin/mv -f ${shellQuote(statusPath + ".tmp")} ${shellQuote(statusPath)}
+attempts=0
+while [ ! -e ${shellQuote(path.join(directory, "ack"))} ] && [ "$attempts" -lt ${HANDOFF_ATTEMPTS} ]; do
+    /bin/sleep 0.05
+    attempts=$((attempts + 1))
+done`;
+}
+
+export type ClosedDraft = { status: number; markdown: string };
+
+// Poll for the wrapper's handoff instead of using fs.watch, which is unreliable
+// across platforms for files created by other processes. Resolves undefined if
+// the draft directory disappears without a handoff (pane killed by a signal or
+// the wrapper timed out) or if watching is aborted.
+export async function waitForDraftClose(
+    directory: string,
+    draftPath: string,
+    signal: AbortSignal,
+    intervalMs = 250,
+): Promise<ClosedDraft | undefined> {
+    const statusPath = path.join(directory, "exit-status");
+    while (!signal.aborted) {
+        try {
+            const status = Number((await readFile(statusPath, "utf8")).trim());
+            const markdown = await readFile(draftPath, "utf8");
+            await writeFile(path.join(directory, "ack"), "", { mode: 0o600 });
+            return { status, markdown };
+        } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        }
+        try {
+            await stat(directory);
+        } catch {
+            return undefined;
+        }
+        try {
+            // Unref'd so a pending watcher never keeps pi's process alive.
+            await sleep(intervalMs, undefined, { signal, ref: false });
+        } catch {
+            return undefined;
+        }
+    }
+    return undefined;
+}
+
 export const CLOSE_PANE_SCRIPT = `on run argv
     tell application "Ghostty"
         set replyId to item 1 of argv
@@ -60,6 +116,7 @@ export async function saveDraft(
     nvim: string,
     tempRoot = os.tmpdir(),
     draftName = "pr-description",
+    handoff = false,
 ): Promise<{ draftPath: string; wrapperPath: string; directory: string }> {
     const directory = await mkdtemp(path.join(tempRoot, `pi-${draftName}-`));
     const draftPath = path.join(directory, `${draftName}.md`);
@@ -104,7 +161,9 @@ trap 'exit 129' HUP
 trap 'exit 130' INT
 trap 'exit 143' TERM
 ${shellQuote(nvim)} -n -i NONE -S ${shellQuote(vimPath)}
-exit "$?"
+status=$?
+${handoff ? handoffShell(directory) : ""}
+exit "$status"
 `;
     try {
         await writeFile(draftPath, markdown, { mode: 0o600 });
