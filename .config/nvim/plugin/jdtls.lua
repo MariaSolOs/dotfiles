@@ -15,7 +15,9 @@ add_on_file_type('java', {
 
             local function start_jdtls()
                 local cmd = {
-                    'java',
+                    -- Use Homebrew's JDK (a jdtls dependency) since jdtls may require a newer Java
+                    -- than the system default.
+                    vim.env.HOMEBREW_PREFIX .. '/opt/openjdk/bin/java',
                     '-Declipse.application=org.eclipse.jdt.ls.core.id1',
                     '-Dosgi.bundles.defaultStartLevel=4',
                     '-Declipse.product=org.eclipse.jdt.ls.core.product',
