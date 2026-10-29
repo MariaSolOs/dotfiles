@@ -5,3 +5,6 @@ Session.vim
 CLAUDE.local.md
 settings.local.json
 .claude/.cc-writes/
+
+# Agent plans
+.agents/plans/
