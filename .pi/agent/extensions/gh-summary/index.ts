@@ -46,8 +46,9 @@ Default body template (use it unless a PR template is provided; omit a section e
 <a short paragraph on how the change was verified: tests added or run, commands, manual checks>
 
 Changes visuals (pick one, rarely two; use fenced code blocks):
-- Pseudocode for logic or algorithms, a call tree for runtime flow, a shallow file tree for broad refactors, or a Mermaid diagram for interaction between components.
-- Keep only the calls, files, states, and boundaries needed to understand the change. Skip the visual if the change is trivial.
+- Pseudocode for logic or algorithms, or a Mermaid diagram for runtime flow or interaction between components.
+- Never draw ASCII diagrams (box drawings, arrows, call trees, file trees, or other text art).
+- Keep only the calls, states, and boundaries needed to understand the change. Skip the visual if the change is trivial.
 
 Testing:
 - Mention test runs or manual checks from the provided context.
