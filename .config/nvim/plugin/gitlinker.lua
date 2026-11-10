@@ -5,13 +5,21 @@ add {
     {
         src = 'linrongbin16/gitlinker.nvim',
         opts = function()
+            ---@param kind 'blob'|'blame'
+            local function github_template(kind)
+                return 'https://{_A.HOST}/{_A.ORG}/{_A.REPO}/'
+                    .. kind
+                    .. '/{_A.REV}/{_A.FILE}?plain=1#L{_A.LSTART}'
+                    .. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}"
+            end
+
             return {
                 router = {
                     browse = {
-                        ['^github%.palantir%.build'] = require('gitlinker.routers').github_browse,
+                        ['^github%.palantir%.build'] = github_template('blob'),
                     },
                     blame = {
-                        ['^github%.palantir%.build'] = require('gitlinker.routers').github_blame,
+                        ['^github%.palantir%.build'] = github_template('blame'),
                     },
                 },
             }
