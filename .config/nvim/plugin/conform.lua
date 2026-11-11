@@ -11,20 +11,20 @@ add_on_event('BufWritePre', {
                 c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
                 go = { name = 'gopls', timeout_ms = 500, lsp_format = 'prefer' },
                 java = { 'palantir-java-format' },
-                javascript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-                javascriptreact = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-                json = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-                jsonc = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-                less = { 'prettier' },
+                javascript = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                javascriptreact = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                json = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                jsonc = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                less = { 'oxfmt', 'prettier', stop_after_first = true },
                 lua = { 'stylua' },
-                markdown = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                markdown = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
                 python = { 'ruff_format' },
                 rust = { name = 'rust_analyzer', timeout_ms = 500, lsp_format = 'prefer' },
-                scss = { 'prettier' },
+                scss = { 'oxfmt', 'prettier', stop_after_first = true },
                 sh = { 'shfmt' },
-                typescript = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-                typescriptreact = { 'prettier', name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
-                yaml = { 'prettier' },
+                typescript = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                typescriptreact = { 'oxfmt', 'prettier', stop_after_first = true, name = 'dprint', timeout_ms = 500, lsp_format = 'fallback' },
+                yaml = { 'oxfmt', 'prettier', stop_after_first = true },
                 -- For filetypes without a formatter:
                 ['_'] = { 'trim_whitespace', 'trim_newlines' },
             },
@@ -54,8 +54,10 @@ add_on_event('BufWritePre', {
                 return {}
             end,
             formatters = {
-                -- Require a Prettier configuration file to format.
+                -- Require configuration files.
                 prettier = { require_cwd = true },
+                -- Same for oxfmt.
+                oxfmt = { require_cwd = true },
             },
         },
     },
