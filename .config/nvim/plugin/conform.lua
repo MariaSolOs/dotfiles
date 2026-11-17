@@ -58,7 +58,18 @@ add_on_event('BufWritePre', {
                 -- Require configuration files.
                 prettier = { require_cwd = true },
                 -- Same for oxfmt.
-                oxfmt = { require_cwd = true },
+                oxfmt = {
+                    require_cwd = true,
+                    -- TODO: Remove this override https://github.com/stevearc/conform.nvim/pull/910 is merged.
+                    cwd = function(self, ctx)
+                        return require('conform.util').root_file {
+                            '.oxfmtrc.json',
+                            '.oxfmtrc.jsonc',
+                            'oxfmt.config.ts',
+                            'oxfmt.config.mts',
+                        }(self, ctx)
+                    end,
+                },
             },
         },
     },
