@@ -7,6 +7,7 @@ add_on_event('BufWritePre', {
             -- Leave me alone.
             notify_on_error = false,
             notify_no_formatters = false,
+
             formatters_by_ft = {
                 c = { name = 'clangd', timeout_ms = 500, lsp_format = 'prefer' },
                 go = { name = 'gopls', timeout_ms = 500, lsp_format = 'prefer' },
@@ -55,9 +56,7 @@ add_on_event('BufWritePre', {
                 return {}
             end,
             formatters = {
-                -- Require configuration files.
                 prettier = { require_cwd = true },
-                -- Same for oxfmt.
                 oxfmt = {
                     require_cwd = true,
                     -- TODO: Remove this override https://github.com/stevearc/conform.nvim/pull/910 is merged.
