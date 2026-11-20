@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdtemp, open, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { open, readFile, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { AssistantMessage, UserMessage } from "@earendil-works/pi-ai";
@@ -8,12 +8,12 @@ import type {
     ExtensionCommandContext,
 } from "@earendil-works/pi-coding-agent";
 import {
-    checkEditor,
-    handoffShell,
-    openDraft,
-    saveDraft,
+    copyToClipboard,
+    openMarkdownPane,
+    prepareEditorPane,
     waitForDraftClose,
     type ClosedDraft,
+    type EditorPane,
 } from "./editor.js";
 
 // Keep the summarization request bounded while preserving enough concrete diff
@@ -786,171 +786,6 @@ async function createPullRequest(
     return { number, url };
 }
 
-function vimString(value: string): string {
-    return `'${value.replace(/'/g, "''")}'`;
-}
-
-function nvimScript(summaryPath: string): string {
-    return `set nomodeline noexrc
-execute 'edit ' . fnameescape(${vimString(summaryPath)})
-setlocal filetype=markdown noswapfile noundofile conceallevel=0
-set nobackup nowritebackup
-`;
-}
-
-function shellQuote(value: string): string {
-    return `'${value.replace(/'/g, `'\\''`)}'`;
-}
-
-// Linux/Hyprland replaces the new pane's shell with this wrapper. macOS uses
-// the native pane launcher instead, including its ID-scoped close/cleanup.
-function wrapperScript(nvimScriptPath: string, tmpDir: string): string {
-    const devNvim = path.join(
-        os.homedir(),
-        "Code",
-        "neovim",
-        "build",
-        "bin",
-        "nvim",
-    );
-    const devRuntime = path.join(os.homedir(), "Code", "neovim", "runtime");
-
-    return `#!/bin/sh
-set +e
-vimscript=${shellQuote(nvimScriptPath)}
-tmpdir=${shellQuote(tmpDir)}
-# Clean up on every wrapper exit, including launch failures and editor errors.
-# Signal handlers exit through the same trap; SIGKILL cannot be trapped.
-trap 'rm -rf -- "$tmpdir"' EXIT
-trap 'exit 129' HUP
-trap 'exit 130' INT
-trap 'exit 143' TERM
-if [ -n "\${NVIM_BIN:-}" ]; then
-  nvim_bin=$NVIM_BIN
-elif command -v nvim >/dev/null 2>&1; then
-  nvim_bin=$(command -v nvim)
-elif [ -x ${shellQuote(devNvim)} ]; then
-  nvim_bin=${shellQuote(devNvim)}
-  if [ -d ${shellQuote(devRuntime)} ]; then
-    VIMRUNTIME=${shellQuote(devRuntime)}
-    export VIMRUNTIME
-  fi
-else
-  echo "nvim not found in PATH and development build not found at ${devNvim}" >&2
-  exit 127
-fi
-"$nvim_bin" -n -i NONE -S "$vimscript"
-status=$?
-${handoffShell(tmpDir)}
-# Like revisar, do not leave Ghostty showing an abnormal command exit after
-# the editor finishes. The EXIT trap still deletes the temporary files.
-exit 0
-`;
-}
-
-async function commandExists(command: string): Promise<boolean> {
-    const result = await runCapture(
-        "/bin/sh",
-        ["-c", `command -v ${shellQuote(command)} >/dev/null 2>&1`],
-        process.cwd(),
-        [0, 1, 127],
-    );
-    return result.code === 0;
-}
-
-function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function runClipboardCommand(
-    file: string,
-    args: string[],
-    input: string,
-    waitForExit = false,
-): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const child = spawn(file, args, {
-            stdio: ["pipe", "ignore", "pipe"],
-        });
-        let stderr = "";
-        let settled = false;
-        let settleTimer: NodeJS.Timeout | undefined;
-
-        const settle = (error?: Error) => {
-            if (settled) return;
-            settled = true;
-            if (settleTimer) clearTimeout(settleTimer);
-            child.stderr.destroy();
-            child.unref();
-            if (error) reject(error);
-            else resolve();
-        };
-
-        child.stderr.on("data", (chunk) => {
-            stderr += String(chunk);
-        });
-        child.on("error", settle);
-        child.on("close", (code) => {
-            if (code === 0) settle();
-            else
-                settle(
-                    new Error(
-                        stderr.trim() || `${file} exited with code ${code}`,
-                    ),
-                );
-        });
-
-        child.stdin.end(input, () => {
-            if (waitForExit) return;
-            // Wayland/X11 clipboard tools often stay alive to serve future paste
-            // requests. Once stdin is accepted, continue with Ghostty automation
-            // instead of waiting forever for the clipboard owner to exit.
-            settleTimer = setTimeout(() => settle(), 200);
-        });
-    });
-}
-
-async function copyToClipboard(text: string): Promise<void> {
-    if (process.platform === "darwin") {
-        // pbcopy exits once it has read stdin, so wait for its real result.
-        await runClipboardCommand("pbcopy", [], text, true);
-        return;
-    }
-    if (await commandExists("wl-copy")) {
-        await runClipboardCommand("wl-copy", [], text);
-        return;
-    }
-
-    throw new Error("wl-copy is required for clipboard support on Linux");
-}
-
-async function sendHyprlandShortcut(shortcut: string): Promise<void> {
-    await runCapture(
-        "hyprctl",
-        ["dispatch", "sendshortcut", `${shortcut},activewindow`],
-        process.cwd(),
-    );
-}
-
-async function openInGhosttyLinux(wrapperPath: string): Promise<void> {
-    if (!(await commandExists("hyprctl"))) {
-        throw new Error(
-            "opening a Ghostty pane on Linux currently requires Hyprland's hyprctl",
-        );
-    }
-
-    // Match the configured alt+shift+v (split right) and alt+shift+p (paste)
-    // bindings. Replacing the pane's shell closes it when the wrapper exits.
-    const command = `exec /bin/sh ${shellQuote(wrapperPath)}`;
-    await copyToClipboard(command);
-
-    await sendHyprlandShortcut("ALT SHIFT,V");
-    await sleep(400);
-    await sendHyprlandShortcut("ALT SHIFT,P");
-    await sleep(100);
-    await sendHyprlandShortcut(",Return");
-}
-
 export default function ghSummaryExtension(pi: ExtensionAPI) {
     // Drafts still open in an editor pane, each waiting to update its PR.
     const watchers = new Set<AbortController>();
@@ -1072,17 +907,11 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                 }
                 return result.stdout;
             };
-            let editor: Awaited<ReturnType<typeof checkEditor>> | undefined;
+            let editor: EditorPane;
             try {
                 // Snapshot the source pane before inspecting git or generating
                 // text, so later focus changes cannot redirect the macOS split.
-                if (process.platform === "darwin")
-                    editor = await checkEditor(runEditor);
-                else if (process.platform !== "linux") {
-                    throw new Error(
-                        `Unsupported platform: ${process.platform}`,
-                    );
-                }
+                editor = await prepareEditorPane(runEditor);
             } catch (error) {
                 ctx.ui.notify(
                     `Cannot prepare Ghostty/neovim: ${(error as Error).message}`,
@@ -1212,51 +1041,18 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
             }
 
             const target = await targetLookup;
-            let tmpDir: string | undefined;
             try {
-                let summaryPath: string;
-                if (editor) {
-                    // Use the native split, stable-ID closure, private
-                    // Markdown buffer, and deletion on every nvim exit.
-                    const draft = await saveDraft(
-                        summary,
-                        editor.nvim,
-                        os.tmpdir(),
-                        "pr-description",
-                        // Every PR target acts on the final draft.
-                        true,
-                    );
-                    tmpDir = draft.directory;
-                    summaryPath = draft.draftPath;
-                    await openDraft(
-                        runEditor,
-                        draft.wrapperPath,
-                        draft.directory,
-                        editor.terminalId,
-                    );
-                } else {
-                    tmpDir = await mkdtemp(
-                        path.join(os.tmpdir(), "gh-summary-"),
-                    );
-                    summaryPath = path.join(tmpDir, "pr-description.md");
-                    const nvimScriptPath = path.join(
-                        tmpDir,
-                        "gh-summary.nvim.vim",
-                    );
-                    const wrapperPath = path.join(tmpDir, "open-gh-summary.sh");
-                    await writeFile(summaryPath, summary, { mode: 0o600 });
-                    await writeFile(nvimScriptPath, nvimScript(summaryPath), {
-                        mode: 0o600,
-                    });
-                    await writeFile(
-                        wrapperPath,
-                        wrapperScript(nvimScriptPath, tmpDir),
-                        { mode: 0o700 },
-                    );
-                    await openInGhosttyLinux(wrapperPath);
-                }
+                // The pane owns the draft and deletes it on every nvim exit;
+                // the handoff lets every PR target act on the final draft.
+                const { directory, draftPath } = await openMarkdownPane(
+                    runEditor,
+                    editor,
+                    summary,
+                    "pr-description",
+                    true,
+                );
                 ctx.ui.notify(
-                    `Opened PR summary in a right-hand Ghostty/neovim pane: ${summaryPath}`,
+                    `Opened PR summary in a right-hand Ghostty/neovim pane: ${draftPath}`,
                     "info",
                 );
                 const action =
@@ -1269,25 +1065,15 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     `Closing nvim ${action}; use :cq to skip`,
                     "info",
                 );
-                void syncOnClose(ctx, changes, target, tmpDir, summaryPath);
+                void syncOnClose(ctx, changes, target, directory, draftPath);
             } catch (error) {
                 ctx.ui.notify(
                     `Failed to open Ghostty/neovim: ${(error as Error).message}`,
                     "error",
                 );
+                // openMarkdownPane already removed the draft, so retain the
+                // generated Markdown only in pi's input for recovery.
                 if (ctx.hasUI) ctx.ui.setEditorText(summary);
-                // No editor took ownership: remove the draft here, retaining
-                // the generated Markdown only in pi's input for recovery.
-                if (tmpDir) {
-                    try {
-                        await rm(tmpDir, { recursive: true, force: true });
-                    } catch (cleanupError) {
-                        ctx.ui.notify(
-                            `Failed to delete ${tmpDir}: ${String(cleanupError)}`,
-                            "error",
-                        );
-                    }
-                }
             }
         },
     });

@@ -1,7 +1,11 @@
+import { execFile, spawn } from "node:child_process";
 import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 type Run = (file: string, args: string[]) => Promise<string>;
 
 function shellQuote(value: string): string {
@@ -217,4 +221,236 @@ export async function openDraft(
     await writeFile(path.join(directory, "pane-id"), replyId + "\n", {
         mode: 0o600,
     });
+}
+
+// Linux/Hyprland replaces the new pane's shell with this wrapper. macOS uses
+// the native pane launcher instead, including its ID-scoped close/cleanup.
+function linuxWrapperScript(
+    vimPath: string,
+    directory: string,
+    handoff: boolean,
+): string {
+    const devNvim = path.join(
+        os.homedir(),
+        "Code",
+        "neovim",
+        "build",
+        "bin",
+        "nvim",
+    );
+    const devRuntime = path.join(os.homedir(), "Code", "neovim", "runtime");
+
+    return `#!/bin/sh
+set +e
+vimscript=${shellQuote(vimPath)}
+tmpdir=${shellQuote(directory)}
+# Clean up on every wrapper exit, including launch failures and editor errors.
+# Signal handlers exit through the same trap; SIGKILL cannot be trapped.
+trap 'rm -rf -- "$tmpdir"' EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
+if [ -n "\${NVIM_BIN:-}" ]; then
+  nvim_bin=$NVIM_BIN
+elif command -v nvim >/dev/null 2>&1; then
+  nvim_bin=$(command -v nvim)
+elif [ -x ${shellQuote(devNvim)} ]; then
+  nvim_bin=${shellQuote(devNvim)}
+  if [ -d ${shellQuote(devRuntime)} ]; then
+    VIMRUNTIME=${shellQuote(devRuntime)}
+    export VIMRUNTIME
+  fi
+else
+  echo "nvim not found in PATH and development build not found at ${devNvim}" >&2
+  exit 127
+fi
+"$nvim_bin" -n -i NONE -S "$vimscript"
+status=$?
+${handoff ? handoffShell(directory) : ""}
+# Like revisar, do not leave Ghostty showing an abnormal command exit after
+# the editor finishes. The EXIT trap still deletes the temporary files.
+exit 0
+`;
+}
+
+async function saveLinuxDraft(
+    markdown: string,
+    tempRoot: string,
+    draftName: string,
+    handoff: boolean,
+): Promise<{ draftPath: string; wrapperPath: string; directory: string }> {
+    const directory = await mkdtemp(path.join(tempRoot, `pi-${draftName}-`));
+    const draftPath = path.join(directory, `${draftName}.md`);
+    const vimPath = path.join(directory, `${draftName}.vim`);
+    const wrapperPath = path.join(directory, `open-${draftName}.sh`);
+    const vimscript = `set nomodeline noexrc
+execute 'edit ' . fnameescape(${vimString(draftPath)})
+setlocal filetype=markdown noswapfile noundofile conceallevel=0
+set nobackup nowritebackup
+`;
+    try {
+        await writeFile(draftPath, markdown, { mode: 0o600 });
+        await writeFile(vimPath, vimscript, { mode: 0o600 });
+        await writeFile(
+            wrapperPath,
+            linuxWrapperScript(vimPath, directory, handoff),
+            { mode: 0o700 },
+        );
+        return { draftPath, wrapperPath, directory };
+    } catch (error) {
+        await rm(directory, { recursive: true, force: true });
+        throw error;
+    }
+}
+
+async function commandExists(command: string): Promise<boolean> {
+    try {
+        await execFileAsync("/bin/sh", [
+            "-c",
+            `command -v ${shellQuote(command)} >/dev/null 2>&1`,
+        ]);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function runClipboardCommand(
+    file: string,
+    args: string[],
+    input: string,
+    waitForExit = false,
+): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const child = spawn(file, args, {
+            stdio: ["pipe", "ignore", "pipe"],
+        });
+        let stderr = "";
+        let settled = false;
+        let settleTimer: NodeJS.Timeout | undefined;
+
+        const settle = (error?: Error) => {
+            if (settled) return;
+            settled = true;
+            if (settleTimer) clearTimeout(settleTimer);
+            child.stderr.destroy();
+            child.unref();
+            if (error) reject(error);
+            else resolve();
+        };
+
+        child.stderr.on("data", (chunk) => {
+            stderr += String(chunk);
+        });
+        child.on("error", settle);
+        child.on("close", (code) => {
+            if (code === 0) settle();
+            else
+                settle(
+                    new Error(
+                        stderr.trim() || `${file} exited with code ${code}`,
+                    ),
+                );
+        });
+
+        child.stdin.end(input, () => {
+            if (waitForExit) return;
+            // Wayland/X11 clipboard tools often stay alive to serve future paste
+            // requests. Once stdin is accepted, continue with Ghostty automation
+            // instead of waiting forever for the clipboard owner to exit.
+            settleTimer = setTimeout(() => settle(), 200);
+        });
+    });
+}
+
+export async function copyToClipboard(text: string): Promise<void> {
+    if (process.platform === "darwin") {
+        // pbcopy exits once it has read stdin, so wait for its real result.
+        await runClipboardCommand("pbcopy", [], text, true);
+        return;
+    }
+    if (await commandExists("wl-copy")) {
+        await runClipboardCommand("wl-copy", [], text);
+        return;
+    }
+
+    throw new Error("wl-copy is required for clipboard support on Linux");
+}
+
+async function sendHyprlandShortcut(shortcut: string): Promise<void> {
+    await execFileAsync("hyprctl", [
+        "dispatch",
+        "sendshortcut",
+        `${shortcut},activewindow`,
+    ]);
+}
+
+async function openInGhosttyLinux(wrapperPath: string): Promise<void> {
+    if (!(await commandExists("hyprctl"))) {
+        throw new Error(
+            "opening a Ghostty pane on Linux currently requires Hyprland's hyprctl",
+        );
+    }
+
+    // Match the configured alt+shift+v (split right) and alt+shift+p (paste)
+    // bindings. Replacing the pane's shell closes it when the wrapper exits.
+    const command = `exec /bin/sh ${shellQuote(wrapperPath)}`;
+    await copyToClipboard(command);
+
+    await sendHyprlandShortcut("ALT SHIFT,V");
+    await sleep(400);
+    await sendHyprlandShortcut("ALT SHIFT,P");
+    await sleep(100);
+    await sendHyprlandShortcut(",Return");
+}
+
+// Where a Markdown pane will open. macOS snapshots the source Ghostty pane
+// up front; Hyprland can only split whichever window is active at open time.
+export type EditorPane =
+    | { platform: "darwin"; nvim: string; terminalId: string }
+    | { platform: "linux" };
+
+export async function prepareEditorPane(run: Run): Promise<EditorPane> {
+    if (process.platform === "darwin")
+        return { platform: "darwin", ...(await checkEditor(run)) };
+    if (process.platform === "linux") return { platform: "linux" };
+    throw new Error(`Unsupported platform: ${process.platform}`);
+}
+
+// Write `markdown` to a private temp draft and open it in nvim in a
+// right-hand Ghostty pane. The pane's wrapper owns the draft directory from
+// then on and deletes it when nvim exits; `handoff` additionally makes the
+// wrapper wait for waitForDraftClose to read the final draft first. If the
+// pane cannot be opened, the directory is removed before rethrowing.
+export async function openMarkdownPane(
+    run: Run,
+    pane: EditorPane,
+    markdown: string,
+    draftName: string,
+    handoff = false,
+    tempRoot = os.tmpdir(),
+): Promise<{ draftPath: string; directory: string }> {
+    const draft =
+        pane.platform === "darwin"
+            ? await saveDraft(markdown, pane.nvim, tempRoot, draftName, handoff)
+            : await saveLinuxDraft(markdown, tempRoot, draftName, handoff);
+    try {
+        if (pane.platform === "darwin") {
+            await openDraft(
+                run,
+                draft.wrapperPath,
+                draft.directory,
+                pane.terminalId,
+            );
+        } else {
+            await openInGhosttyLinux(draft.wrapperPath);
+        }
+    } catch (error) {
+        // Prefer reporting the launch failure over a cleanup failure.
+        await rm(draft.directory, { recursive: true, force: true }).catch(
+            () => {},
+        );
+        throw error;
+    }
+    return { draftPath: draft.draftPath, directory: draft.directory };
 }

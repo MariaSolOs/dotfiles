@@ -337,7 +337,7 @@ test("Linux uses configured right-split/paste bindings and an exiting shell", as
             normalizedMarkdown,
         );
         const wrapper = await readFile(
-            path.join(f.drafts, entries[0], "open-gh-summary.sh"),
+            path.join(f.drafts, entries[0], "open-pr-description.sh"),
             "utf8",
         );
         assert.ok(!wrapper.includes("osascript"));
