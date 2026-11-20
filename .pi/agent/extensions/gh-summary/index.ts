@@ -640,7 +640,9 @@ async function findPullRequest(root: string): Promise<PullRequest | undefined> {
 // there is something to do.
 type PrTarget =
     | { kind: "edit"; pr: PullRequest }
-    | { kind: "create"; branch: string }
+    // `newBranch` means the checkout is on the base branch, so the work moves
+    // to a fresh branch named after the final title before committing.
+    | { kind: "create"; branch: string; newBranch: boolean }
     | { kind: "none"; reason: string };
 
 // Never rejects: it runs concurrently with generation, and any failure only
@@ -657,16 +659,42 @@ async function resolvePrTargetOrThrow(changes: GitChanges): Promise<PrTarget> {
     const pr = await findPullRequest(changes.root);
     if (pr) return { kind: "edit", pr };
 
-    // Creating a PR commits and pushes, so refuse anywhere that would land
-    // the work on the base branch itself.
+    // Creating a PR commits and pushes, so never land the work on the base
+    // branch itself: branch off it instead.
     const branch = changes.branch;
     if (!branch) return { kind: "none", reason: "HEAD is detached" };
     const baseRef = await firstExistingBaseRef(changes.root, branch);
     const baseBranch = baseRef?.replace(/^[^/]+\//, "");
-    if (branch === baseBranch || branch === "main" || branch === "master") {
-        return { kind: "none", reason: `${branch} is the base branch` };
+    const newBranch =
+        branch === baseBranch || branch === "main" || branch === "master";
+    return { kind: "create", branch, newBranch };
+}
+
+// Turn a PR title into a branch name made only of [a-z0-9-], which is always
+// a valid ref name, and add a numeric suffix if it is taken locally or on
+// origin so the switch and push cannot collide with unrelated work.
+export function branchSlug(title: string): string {
+    return (
+        title
+            .toLowerCase()
+            .normalize("NFKD")
+            .replace(/[^a-z0-9]+/g, "-")
+            .slice(0, 50)
+            .replace(/^-+|-+$/g, "") || "gh-summary"
+    );
+}
+
+async function uniqueBranchName(root: string, title: string): Promise<string> {
+    const base = branchSlug(title);
+    for (let i = 1; ; i++) {
+        const name = i === 1 ? base : `${base}-${i}`;
+        if (
+            !(await refExists(root, `refs/heads/${name}`)) &&
+            !(await refExists(root, `refs/remotes/origin/${name}`))
+        ) {
+            return name;
+        }
     }
-    return { kind: "create", branch };
 }
 
 // Split the edited draft back into the "Title: ..." line the model was asked
@@ -708,20 +736,27 @@ async function updatePullRequest(
     );
 }
 
-// Open a draft PR for the branch from the edited draft. Worktree summaries
-// describe uncommitted work, so commit it first (titled like the PR) so that
-// the PR contains what its description says.
+// Open a draft PR for the branch from the edited draft. On the base branch,
+// first switch to a new branch at HEAD (carrying any uncommitted work along).
+// Worktree summaries describe uncommitted work, so commit it first (titled
+// like the PR) so that the PR contains what its description says.
 async function createPullRequest(
     changes: GitChanges,
-    branch: string,
+    target: Extract<PrTarget, { kind: "create" }>,
     draft: { title: string; body: string },
 ): Promise<PullRequest> {
+    let branch = target.branch;
     const root = changes.root;
     const current = (await runGit(root, ["branch", "--show-current"])).trim();
     if (current !== branch) {
         throw new Error(
             `the checkout moved from ${branch} to ${current || "a detached HEAD"}`,
         );
+    }
+
+    if (target.newBranch) {
+        branch = await uniqueBranchName(root, draft.title);
+        await runGit(root, ["switch", "--create", branch]);
     }
 
     if (
@@ -937,7 +972,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
 
     // Runs in the background after the command returns: once nvim exits,
     // push the final draft to GitHub by editing the existing PR or opening a
-    // draft one. When GitHub cannot be updated (e.g. on the base branch), copy
+    // draft one. When GitHub cannot be updated (e.g. a detached HEAD), copy
     // the draft to the clipboard for manual use instead. Quitting with a
     // nonzero status (`:cq`) or emptying the draft skips it.
     const syncOnClose = async (
@@ -1001,7 +1036,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                 if (ctx.hasUI) ctx.ui.setEditorText(closed.markdown);
                 return;
             }
-            const pr = await createPullRequest(changes, target.branch, {
+            const pr = await createPullRequest(changes, target, {
                 title: draft.title,
                 body: draft.body,
             });
@@ -1228,7 +1263,7 @@ export default function ghSummaryExtension(pi: ExtensionAPI) {
                     target.kind === "edit"
                         ? `updates PR #${target.pr.number} (${target.pr.url})`
                         : target.kind === "create"
-                          ? `${changes.source === "worktree" ? "commits the worktree changes, " : ""}pushes ${target.branch} to origin and opens a draft PR`
+                          ? `${target.newBranch ? `creates a new branch off ${target.branch} named after the title, ` : ""}${changes.source === "worktree" ? "commits the worktree changes, " : ""}pushes ${target.newBranch ? "it" : target.branch} to origin and opens a draft PR`
                           : `copies the draft to the clipboard (GitHub will not be updated: ${target.reason})`;
                 ctx.ui.notify(
                     `Closing nvim ${action}; use :cq to skip`,

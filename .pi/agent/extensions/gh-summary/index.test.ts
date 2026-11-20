@@ -52,7 +52,7 @@ case "$1" in
     if [ -f '${root}/branch' ]; then /bin/cat '${root}/branch'
     else printf 'feature\\n'; fi ;;
   status) printf ' M changed.ts\\n' ;;
-  add|commit|push) printf '%s\\n' "$*" >> '${root}/git-writes' ;;
+  add|commit|push|switch) printf '%s\\n' "$*" >> '${root}/git-writes' ;;
   diff) printf '%s\\n' 'diff --git a/changed.ts b/changed.ts' '+fixRace()' ;;
   ls-files) exit 0 ;;
   *) exit 1 ;;
@@ -403,7 +403,7 @@ exit ${status}
             existingPr
                 ? /Closing nvim updates PR #7/
                 : branch === "main"
-                  ? /copies the draft to the clipboard \(GitHub will not be updated: main is the base branch\)/
+                  ? /creates a new branch off main named after the title, commits the worktree changes, pushes it to origin and opens a draft PR/
                   : /commits the worktree changes, pushes feature to origin and opens a draft PR/,
         );
         const [entry] = await readdir(f.drafts);
@@ -515,19 +515,27 @@ test("without a PR, closing nvim commits, pushes, and opens a draft PR", async (
     }
 });
 
-test("on the base branch, closing nvim only copies the draft to the clipboard", async () => {
+test("on the base branch, closing nvim creates a branch before committing and opening a PR", async () => {
     const { f, h } = await closeDraft(0, false, "main");
     try {
-        await waitFor(() => /Copied the PR draft/.test(h.notices.at(-1)!));
-        assert.deepEqual(h.messages, []);
+        await waitFor(() => h.messages.length > 0);
         assert.equal(
-            await readFile(path.join(f.root, "clipboard"), "utf8"),
-            "Title: Edited 'title'\n\nEdited body.\n",
+            h.messages[0].content,
+            "Opened draft PR #8: https://github.com/o/r/pull/8",
         );
-        const writes = (await readdir(f.root)).filter((name) =>
-            /^(git-writes|gh-create|gh-edit)/.test(name),
+        assert.equal(
+            await readFile(path.join(f.root, "git-writes"), "utf8"),
+            [
+                "switch --create edited-title",
+                "add --all",
+                "commit --message Edited 'title'",
+                "push --set-upstream origin edited-title",
+                "",
+            ].join("\n"),
         );
-        assert.deepEqual(writes, []);
+        assert.ok(
+            !(await readdir(f.root)).some((name) => name === "clipboard"),
+        );
     } finally {
         await f.dispose();
     }
