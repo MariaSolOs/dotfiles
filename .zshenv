@@ -7,8 +7,8 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # Make sure this stuff is in the path.
 export PATH="$HOME/.nvim/bin:$PATH" # neovim
 export PATH="$HOME/.cargo/bin:$PATH" # cargo
-export PATH="$HOME/.local/bin:$PATH" # Local scripts.
-export PATH="$HOME/go/bin:$PATH" # Go binaries.
+export PATH="$HOME/.local/bin:$PATH" # Local scripts
+export PATH="$HOME/go/bin:$PATH" # Go binaries
 export PATH="$HOME/.npm-global/bin:$PATH" # NPM global installs
 
 # zsh configuration.
