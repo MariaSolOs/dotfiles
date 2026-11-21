@@ -375,7 +375,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     HighlightUrl = { underline = true, fg = colors.neon_cyan, sp = colors.neon_cyan },
 
     -- AI completions.
-    NeoCodeiumSuggestion = { link = 'Comment' },
+    MinuetVirtualText = { link = 'Comment' },
 })
 
 for group, opts in pairs(groups) do
