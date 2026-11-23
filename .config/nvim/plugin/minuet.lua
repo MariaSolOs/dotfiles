@@ -30,6 +30,7 @@ add {
                     next = '<M-n>',
                     accept = '<C-.>',
                     accept_line = '<M-l>',
+                    accept_word = '<M-w>',
                 },
             },
         },
