@@ -640,8 +640,9 @@ async function findPullRequest(root: string): Promise<PullRequest | undefined> {
 // there is something to do.
 type PrTarget =
     | { kind: "edit"; pr: PullRequest }
-    // `newBranch` means the checkout is on the base branch, so the work moves
-    // to a fresh branch named after the final title before committing.
+    // `newBranch` means the checkout is on the base branch or on a branch that
+    // cannot be fast-forwarded on origin, so the work moves to a fresh branch
+    // named after the final title before committing.
     | { kind: "create"; branch: string; newBranch: boolean }
     | { kind: "none"; reason: string };
 
@@ -666,8 +667,33 @@ async function resolvePrTargetOrThrow(changes: GitChanges): Promise<PrTarget> {
     const baseRef = await firstExistingBaseRef(changes.root, branch);
     const baseBranch = baseRef?.replace(/^[^/]+\//, "");
     const newBranch =
-        branch === baseBranch || branch === "main" || branch === "master";
+        branch === baseBranch ||
+        branch === "main" ||
+        branch === "master" ||
+        (await behindOrigin(changes.root, branch));
     return { kind: "create", branch, newBranch };
+}
+
+// True when origin already has commits on `branch` that HEAD lacks (e.g. a
+// shared branch that is behind its remote), so pushing to it would be
+// rejected as non-fast-forward. Based on the last fetch;
+// `createPullRequest` also recovers if the push is rejected anyway.
+async function behindOrigin(root: string, branch: string): Promise<boolean> {
+    const remote = `refs/remotes/origin/${branch}`;
+    if (!(await refExists(root, remote))) return false;
+    const result = await runCapture(
+        "git",
+        ["merge-base", "--is-ancestor", remote, "HEAD"],
+        root,
+        [0, 1],
+    );
+    return result.code === 1;
+}
+
+function isNonFastForward(error: unknown): boolean {
+    return /\[rejected\]|non-fast-forward|fetch first/i.test(
+        (error as Error).message,
+    );
 }
 
 // Turn a PR title into a branch name made only of [a-z0-9-], which is always
@@ -739,7 +765,9 @@ async function updatePullRequest(
 // Open a draft PR for the branch from the edited draft. On the base branch,
 // first switch to a new branch at HEAD (carrying any uncommitted work along).
 // Worktree summaries describe uncommitted work, so commit it first (titled
-// like the PR) so that the PR contains what its description says.
+// like the PR) so that the PR contains what its description says. If origin
+// rejects the push as non-fast-forward, the commit moves to a new branch
+// instead and the original branch is restored to its previous tip.
 async function createPullRequest(
     changes: GitChanges,
     target: Extract<PrTarget, { kind: "create" }>,
@@ -759,6 +787,7 @@ async function createPullRequest(
         await runGit(root, ["switch", "--create", branch]);
     }
 
+    const previousHead = (await runGit(root, ["rev-parse", "HEAD"])).trim();
     if (
         changes.source === "worktree" &&
         (await runGit(root, ["status", "--porcelain"])).trim()
@@ -769,7 +798,20 @@ async function createPullRequest(
 
     // Push to a same-named branch on origin; a bare `git push` could target
     // whatever the branch happens to track (e.g. origin/main).
-    await runGit(root, ["push", "--set-upstream", "origin", branch]);
+    try {
+        await runGit(root, ["push", "--set-upstream", "origin", branch]);
+    } catch (error) {
+        if (target.newBranch || !isNonFastForward(error)) throw error;
+        const original = branch;
+        branch = await uniqueBranchName(root, draft.title);
+        await runGit(root, ["switch", "--create", branch]);
+        // Undo the commit on the original branch; it now lives on `branch`.
+        const head = (await runGit(root, ["rev-parse", "HEAD"])).trim();
+        if (head !== previousHead) {
+            await runGit(root, ["branch", "--force", original, previousHead]);
+        }
+        await runGit(root, ["push", "--set-upstream", "origin", branch]);
+    }
 
     const result = await runCapture(
         "gh",

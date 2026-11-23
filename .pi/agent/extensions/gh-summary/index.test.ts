@@ -45,14 +45,27 @@ case "$1" in
     case "$2" in
       --show-toplevel) printf '%s\\n' "$PWD" ;;
       --short) printf 'abc123\\n' ;;
-      --verify) exit 1 ;;
+      # origin has the checked-out branch only when remote-behind exists.
+      --verify)
+        [ -f '${root}/remote-behind' ] &&
+          [ "$4" = "refs/remotes/origin/$(/bin/cat '${root}/branch')^{commit}" ] ||
+          exit 1 ;;
+      HEAD)
+        if /usr/bin/grep -qs '^commit' '${root}/git-writes'
+        then printf 'committed\\n'; else printf 'previous\\n'; fi ;;
       *) exit 128 ;;
     esac ;;
   branch)
-    if [ -f '${root}/branch' ]; then /bin/cat '${root}/branch'
+    if [ "$2" = --force ]; then printf '%s\\n' "$*" >> '${root}/git-writes'
+    elif [ -f '${root}/branch' ]; then /bin/cat '${root}/branch'
     else printf 'feature\\n'; fi ;;
   status) printf ' M changed.ts\\n' ;;
-  add|commit|push|switch) printf '%s\\n' "$*" >> '${root}/git-writes' ;;
+  push)
+    printf '%s\\n' "$*" >> '${root}/git-writes'
+    if [ "$4" = "$(/bin/cat '${root}/reject-push' 2>/dev/null)" ]; then
+      echo " ! [rejected] $4 -> $4 (non-fast-forward)" >&2; exit 1
+    fi ;;
+  add|commit|switch) printf '%s\\n' "$*" >> '${root}/git-writes' ;;
   diff) printf '%s\\n' 'diff --git a/changed.ts b/changed.ts' '+fixRace()' ;;
   ls-files) exit 0 ;;
   *) exit 1 ;;
@@ -366,6 +379,8 @@ async function closeDraft(
     status: number,
     existingPr = true,
     branch = "feature",
+    setup?: (root: string) => Promise<void>,
+    expectedNotice?: RegExp,
 ) {
     const f = await fixture();
     try {
@@ -396,15 +411,17 @@ exit ${status}
 `,
             { mode: 0o700 },
         );
+        await setup?.(f.root);
         const h = harness(f.root, undefined, markdown, fakeNvim);
         await h.run();
         assert.match(
             h.notices.at(-1)!,
-            existingPr
-                ? /Closing nvim updates PR #7/
-                : branch === "main"
-                  ? /creates a new branch off main named after the title, commits the worktree changes, pushes it to origin and opens a draft PR/
-                  : /commits the worktree changes, pushes feature to origin and opens a draft PR/,
+            expectedNotice ??
+                (existingPr
+                    ? /Closing nvim updates PR #7/
+                    : branch === "main"
+                      ? /creates a new branch off main named after the title, commits the worktree changes, pushes it to origin and opens a draft PR/
+                      : /commits the worktree changes, pushes feature to origin and opens a draft PR/),
         );
         const [entry] = await readdir(f.drafts);
         const wrapper = path.join(f.drafts, entry, "open-pr-description.sh");
@@ -535,6 +552,62 @@ test("on the base branch, closing nvim creates a branch before committing and op
         );
         assert.ok(
             !(await readdir(f.root)).some((name) => name === "clipboard"),
+        );
+    } finally {
+        await f.dispose();
+    }
+});
+
+test("when origin's branch is ahead, closing nvim creates a branch before committing", async () => {
+    const { f, h } = await closeDraft(
+        0,
+        false,
+        "shared",
+        (root) => writeFile(path.join(root, "remote-behind"), ""),
+        /creates a new branch off shared named after the title, commits the worktree changes, pushes it to origin/,
+    );
+    try {
+        await waitFor(() => h.messages.length > 0);
+        assert.equal(
+            await readFile(path.join(f.root, "git-writes"), "utf8"),
+            [
+                "switch --create edited-title",
+                "add --all",
+                "commit --message Edited 'title'",
+                "push --set-upstream origin edited-title",
+                "",
+            ].join("\n"),
+        );
+    } finally {
+        await f.dispose();
+    }
+});
+
+test("a non-fast-forward push moves the commit to a new branch and opens the PR from it", async () => {
+    const { f, h } = await closeDraft(
+        0,
+        false,
+        "shared",
+        (root) => writeFile(path.join(root, "reject-push"), "shared"),
+        /commits the worktree changes, pushes shared to origin/,
+    );
+    try {
+        await waitFor(() => h.messages.length > 0);
+        assert.equal(
+            h.messages[0].content,
+            "Opened draft PR #8: https://github.com/o/r/pull/8",
+        );
+        assert.equal(
+            await readFile(path.join(f.root, "git-writes"), "utf8"),
+            [
+                "add --all",
+                "commit --message Edited 'title'",
+                "push --set-upstream origin shared",
+                "switch --create edited-title",
+                "branch --force shared previous",
+                "push --set-upstream origin edited-title",
+                "",
+            ].join("\n"),
         );
     } finally {
         await f.dispose();
