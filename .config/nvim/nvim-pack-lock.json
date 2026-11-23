@@ -5,7 +5,7 @@
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "SchemaStore.nvim": {
-      "rev": "abc95e13502ff3acbed151de97667174b2e4132d",
+      "rev": "024511f9960150bc172e82201d2ce5eb64adc588",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink-emoji.nvim": {
@@ -85,7 +85,7 @@
       "src": "https://github.com/nvim-mini/mini.splitjoin"
     },
     "minuet-ai.nvim": {
-      "rev": "50bf63b031c0391e926fdf0b3d044d37846e6e34",
+      "rev": "fcda648efd20f7495403de5f572165502a861731",
       "src": "https://github.com/milanglacier/minuet-ai.nvim"
     },
     "nvim-autopairs": {
@@ -113,7 +113,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "37e52c733ada9d8d544d53a763140ef1ba404353",
+      "rev": "52773f0d13a0c11d0c3ef33c14ab6ecc1c17148b",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-context": {
