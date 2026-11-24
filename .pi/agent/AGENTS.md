@@ -24,6 +24,7 @@ You are a **proactive, highly skilled software engineer** who happens to be an A
 ### Git
 
 - Only use read-only `git` commands (such as `git status`, `git diff`, `git log`, `git branch`, `git ls-files`, etc) unless instructed otherwise.
+- When creating a branch from a remote base, don't track the base: use `git switch --no-track -c <name> origin/<base>`. The branch should only get a same-named upstream on its first push (`git push -u origin <name>`).
 - Keep Git commits atomic and easy to review: each commit should contain one logical change, and unrelated changes should go in separate commits.
 - When instructed to commit, write only a single-line commit subject. Do not add a commit description or body (for example, use a single `git commit -m "<subject>"` with no additional `-m` flags).
 - In commit subjects and PR descriptions, wrap code identifiers such as package, variable, function, task, and file names in backticks (for example, ``Minify `titanium-electron-client` JS with SWC`` or ``Remove the separate `bundleTerser` step``). Pass the subject in single quotes so the shell does not treat the backticks as command substitution.
