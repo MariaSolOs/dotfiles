@@ -5,7 +5,7 @@
  * Escape returns to normal mode.
  */
 
-import type { VimState } from "../state.js";
+import type { VimState } from "../state.ts";
 import { matchesKey } from "@earendil-works/pi-tui";
 import {
     isCurrentlyRecording,
@@ -13,7 +13,7 @@ import {
     recordInsertText,
     recordInsertBackspace,
     finalizeRecording,
-} from "../repeat.js";
+} from "../repeat.ts";
 
 export interface ReplaceModeContext {
     state: VimState;

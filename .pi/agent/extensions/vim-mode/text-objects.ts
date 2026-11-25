@@ -3,7 +3,7 @@
  * Each text object returns a range { start, end } within the buffer.
  */
 
-import type { Position } from "./motions.js";
+import type { Position } from "./motions.ts";
 
 export interface TextObjectRange {
     start: Position;

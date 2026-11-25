@@ -6,7 +6,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { VimEditor } from "./vim-editor.js";
+import { VimEditor } from "./vim-editor.ts";
 
 export default function (pi: ExtensionAPI) {
     pi.on("session_start", (event, ctx) => {

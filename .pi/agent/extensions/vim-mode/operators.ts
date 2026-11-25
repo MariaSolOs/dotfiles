@@ -3,9 +3,9 @@
  * Operators (d, c, y, >, <) combine with motions and text objects to act on ranges.
  */
 
-import type { Position, MotionResult } from "./motions.js";
-import type { TextObjectRange } from "./text-objects.js";
-import { deleteToRegister, yankToRegister } from "./registers.js";
+import type { Position, MotionResult } from "./motions.ts";
+import type { TextObjectRange } from "./text-objects.ts";
+import { deleteToRegister, yankToRegister } from "./registers.ts";
 
 export interface OperatorRange {
     start: Position;

@@ -15,8 +15,8 @@ import type {
     ExtensionAPI,
     ExtensionCommandContext,
 } from "@earendil-works/pi-coding-agent";
-import { OPEN_PANE_SCRIPT, SOURCE_PANE_SCRIPT } from "./editor.js";
-import ghSummaryExtension from "./index.js";
+import { OPEN_PANE_SCRIPT, SOURCE_PANE_SCRIPT } from "./editor.ts";
+import ghSummaryExtension from "./index.ts";
 
 const exec = promisify(execFile);
 const markdown = "Title: Fix the race\n\nRemoving the race condition.\n";

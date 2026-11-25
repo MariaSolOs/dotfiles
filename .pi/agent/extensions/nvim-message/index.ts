@@ -2,7 +2,7 @@ import type {
     ExtensionAPI,
     SessionEntry,
 } from "@earendil-works/pi-coding-agent";
-import { openMarkdownPane, prepareEditorPane } from "../gh-summary/editor.js";
+import { openMarkdownPane, prepareEditorPane } from "../gh-summary/editor.ts";
 
 // Text of the most recent assistant message on the active branch. Messages
 // made only of tool calls or thinking are skipped so the result is the last

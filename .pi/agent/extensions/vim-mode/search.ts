@@ -11,7 +11,7 @@
  */
 
 import { matchesKey } from "@earendil-works/pi-tui";
-import type { MotionFn, MotionResult, Position } from "./motions.js";
+import type { MotionFn, MotionResult, Position } from "./motions.ts";
 
 export interface SearchState {
     /** Last search pattern (string, not regex) */

@@ -14,7 +14,7 @@ import {
     waitForDraftClose,
     type ClosedDraft,
     type EditorPane,
-} from "./editor.js";
+} from "./editor.ts";
 
 // Keep the summarization request bounded while preserving enough concrete diff
 // context for the model to write a useful PR title and description.

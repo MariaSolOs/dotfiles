@@ -4,9 +4,9 @@
  * Motions extend the selection, operators act on it.
  */
 
-import type { VimState } from "../state.js";
-import { resetOperatorState } from "../state.js";
-import { isDigit, ESCAPE_SEQS } from "../keys.js";
+import type { VimState } from "../state.ts";
+import { resetOperatorState } from "../state.ts";
+import { isDigit, ESCAPE_SEQS } from "../keys.ts";
 import { matchesKey } from "@earendil-works/pi-tui";
 import {
     wordForward,
@@ -30,21 +30,21 @@ import {
     paragraphForward,
     matchingBracket,
     type MotionFn,
-} from "../motions.js";
+} from "../motions.ts";
 import {
     applyOperator,
     deleteRange,
     extractText,
     type OperatorRange,
-} from "../operators.js";
-import { resolveTextObject } from "../text-objects.js";
+} from "../operators.ts";
+import { resolveTextObject } from "../text-objects.ts";
 import {
     isValidRegister,
     getRegister,
     deleteToRegister,
-} from "../registers.js";
-import type { Position } from "../motions.js";
-import { searchNext, searchPrev, searchWordUnderCursor } from "../search.js";
+} from "../registers.ts";
+import type { Position } from "../motions.ts";
+import { searchNext, searchPrev, searchWordUnderCursor } from "../search.ts";
 
 export interface VisualModeContext {
     state: VimState;

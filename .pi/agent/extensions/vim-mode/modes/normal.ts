@@ -3,9 +3,9 @@
  * Implements vim motions, operators, text objects, mode switching, count prefixes, and pending key states.
  */
 
-import type { VimState } from "../state.js";
-import { resetOperatorState } from "../state.js";
-import { isDigit, ESCAPE_SEQS } from "../keys.js";
+import type { VimState } from "../state.ts";
+import { resetOperatorState } from "../state.ts";
+import { isDigit, ESCAPE_SEQS } from "../keys.ts";
 import {
     wordForward,
     wordBackward,
@@ -29,15 +29,15 @@ import {
     matchingBracket,
     type MotionFn,
     type MotionResult,
-} from "../motions.js";
+} from "../motions.ts";
 import {
     motionToRange,
     textObjectToRange,
     applyOperator,
     type OperatorRange,
-} from "../operators.js";
-import { resolveTextObject } from "../text-objects.js";
-import { getRegister, isValidRegister } from "../registers.js";
+} from "../operators.ts";
+import { resolveTextObject } from "../text-objects.ts";
+import { getRegister, isValidRegister } from "../registers.ts";
 import {
     startRecording,
     recordKey,
@@ -45,9 +45,9 @@ import {
     finalizeRecording,
     getLastChange,
     isCurrentlyRecording,
-} from "../repeat.js";
-import { resetReplaceState } from "./replace.js";
-import { searchNext, searchPrev, searchWordUnderCursor } from "../search.js";
+} from "../repeat.ts";
+import { resetReplaceState } from "./replace.ts";
+import { searchNext, searchPrev, searchWordUnderCursor } from "../search.ts";
 
 export interface NormalModeContext {
     state: VimState;

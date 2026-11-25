@@ -15,22 +15,22 @@ import type {
     EditorTheme,
     AutocompleteProvider,
 } from "@earendil-works/pi-tui";
-import { createInitialState, modeDisplayName, type VimState } from "./state.js";
-import { handleNormalMode, type NormalModeContext } from "./modes/normal.js";
-import { handleInsertMode, type InsertModeContext } from "./modes/insert.js";
-import { handleReplaceMode, type ReplaceModeContext } from "./modes/replace.js";
+import { createInitialState, modeDisplayName, type VimState } from "./state.ts";
+import { handleNormalMode, type NormalModeContext } from "./modes/normal.ts";
+import { handleInsertMode, type InsertModeContext } from "./modes/insert.ts";
+import { handleReplaceMode, type ReplaceModeContext } from "./modes/replace.ts";
 import {
     handleVisualMode,
     getVisualRange,
     type VisualModeContext,
-} from "./modes/visual.js";
-import { ESCAPE_SEQS } from "./keys.js";
+} from "./modes/visual.ts";
+import { ESCAPE_SEQS } from "./keys.ts";
 import {
     handleSearchInput,
     getSearchPrompt,
     getSearchState,
     executeSearchMotion,
-} from "./search.js";
+} from "./search.ts";
 
 export class VimEditor extends CustomEditor {
     public vimState: VimState;

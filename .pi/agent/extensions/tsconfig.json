@@ -3,6 +3,7 @@
     "module": "NodeNext",
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "paths": {
       "@earendil-works/pi-coding-agent": [
