@@ -26,8 +26,9 @@ const MAX_UNTRACKED_FILES = 25;
 const MAX_UNTRACKED_READ_BYTES = 256_000;
 const MAX_UNTRACKED_FILE_CHARS = 12_000;
 
-// The default body shows the change with short prose plus the smallest useful
-// visual, then says how it was tested. A repo PR template takes precedence.
+// The default body explains the problem and the solution at a high level (the
+// diff already shows the code), then says how it was tested. A repo PR
+// template takes precedence.
 const SYSTEM_PROMPT = `You write terse GitHub pull request titles and bodies from git changes. Reviewers skim: every line must earn its place.
 
 Grounding:
@@ -37,18 +38,28 @@ Grounding:
 
 Default body template (use it unless a PR template is provided; omit a section entirely if there is nothing grounded to put in it):
 
-## Changes
+## Problem
 
-<one or two short sentences of intent>
+<one to three short sentences: what is wrong, missing, or painful today, and why it matters>
+
+## Solution
+
+<one to three short sentences: the approach taken to solve the problem and any key decision or trade-off>
 
 ## Testing
 
 <a short paragraph on how the change was verified: tests added or run, commands, manual checks>
 
-Changes visuals (pick one, rarely two; use fenced code blocks):
-- Pseudocode for logic or algorithms, or a Mermaid diagram for runtime flow or interaction between components.
+Problem and solution:
+- Prioritize the why (the problem) and the what at a conceptual level (the solution). Reviewers can read the diff for the how.
+- Do not walk through the code changes: no file-by-file or function-by-function lists, no renamed identifiers, moved code, or incidental refactors unless they are the point of the PR.
+- Mention a specific file, function, or setting only when it is essential to understanding the solution.
+- If the problem is self-evident from a trivial change, merge Problem and Solution into a single short paragraph under "## Summary".
+
+Solution visual (optional, at most one; use a fenced code block):
+- Include one only when the solution involves non-obvious logic or runtime flow that prose cannot convey briefly: pseudocode, or a Mermaid diagram for interaction between components.
 - Never draw ASCII diagrams (box drawings, arrows, call trees, file trees, or other text art).
-- Keep only the calls, states, and boundaries needed to understand the change. Skip the visual if the change is trivial.
+- Keep only the calls, states, and boundaries needed to understand the solution. Skip it for most changes.
 
 Testing:
 - Mention test runs or manual checks from the provided context.
@@ -58,7 +69,7 @@ Style:
 - No preamble, no restating the title, no filler like "This PR..." or "Here's a summary".
 - Prefer short paragraphs over bullet lists. No paragraph longer than three sentences.
 - Use only ASCII apostrophes (', U+0027) and double quotes (", U+0022) in the title and body. Do not use curly apostrophes or quotation marks.
-- Describe changes in the body using present participles ("-ing" forms), such as "Removing the unused function" or "Adding validation", rather than imperatives like "Remove" or "Add". This does not apply to the title.
+- When describing what the PR does in the body, use present participles ("-ing" forms), such as "Removing the unused function" or "Adding validation", rather than imperatives like "Remove" or "Add". This does not apply to the title.
 - Keep the title short and specific (under ~70 characters).`;
 
 function truncate(value: string, max = MAX_SECTION_CHARS): string {
@@ -572,6 +583,7 @@ function buildUserPrompt(
     return [
         `Summarize the ${sourceDescription} into a terse GitHub-ready PR body, together with a suggested title.`,
         "Focus on the provided git changes. Use extra/context sections only as supporting context for those changes, not as the thing being summarized.",
+        "Explain the problem being solved and the solution at a high level; do not narrate the code changes.",
         "",
         templateSection,
         extraContextSection,
